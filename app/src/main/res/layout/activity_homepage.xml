@@ -1,121 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:background="@drawable/gradient_background"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".Homepage">
-
-    <FrameLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main"
+        android:background="@drawable/gradient_background"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|end"
-            app:srcCompat="@drawable/homepage_elipse1" />
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|end"
-            app:srcCompat="@drawable/homepage_elipse2" />
-
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".Homepage">
 
         <FrameLayout
-            android:id="@+id/messageBox"
-            android:layout_width="350dp"
-            android:layout_height="146dp"
-            android:layout_gravity="top|center"
-            android:layout_marginTop="75dp"
-            android:background="@drawable/rectangle_shape"
-            android:elevation="8dp">
-
-            <TextView
-                android:id="@+id/messageText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/imageView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="30dp"
-                android:gravity="start|center_vertical"
-                android:padding="10dp"
-                android:fontFamily="@font/special"
-                android:text="Mabuhay, James!\nMaligayang pagdating!"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_gravity="top|end"
+                app:srcCompat="@drawable/homepage_elipse1" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                app:srcCompat="@drawable/homepage_elipse2" />
+
+
+            <FrameLayout
+                android:id="@+id/messageBox"
+                android:layout_width="350dp"
+                android:layout_height="146dp"
+                android:layout_gravity="top|center"
+                android:layout_marginTop="75dp"
+                android:background="@drawable/rectangle_shape"
+                android:elevation="8dp">
+
+                <TextView
+                    android:id="@+id/messageText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="30dp"
+                    android:gravity="start|center_vertical"
+                    android:padding="10dp"
+                    android:fontFamily="@font/special"
+                    android:text="Mabuhay, James!\nMaligayang pagdating!"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+
+                <ImageView
+                    android:id="@+id/imageView8"
+                    android:layout_width="181dp"
+                    android:layout_height="141dp"
+                    android:layout_gravity="end|bottom"
+                    android:layout_marginEnd="-30dp"
+                    android:layout_marginBottom="10dp"
+                    app:srcCompat="@drawable/tarsier_removebg" />
+
+
+            </FrameLayout>
+
         </FrameLayout>
 
-    </FrameLayout>
-
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingStart="20dp"
-        android:text="MGA ARALIN"
-        android:textColor="#4C2121"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <!-- Lesson Buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-        <Button
-            android:id="@+id/bahagi"
+        <TextView
+            android:id="@+id/titleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_button_beige"
-            android:text="Bahagi ng pananalita"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:gravity="center"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="-50dp"
+            android:layout_marginBottom="20dp"
+            android:paddingStart="20dp"
+            android:fontFamily="@font/source_serif"
+            android:text="MGA ARALIN"
+            android:textColor="#4C2121"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/komprehensyon"
+        <!-- Lesson Buttons -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_button_beige"
-            android:text="Komprehensyon"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:gravity="center"
-            android:layout_marginTop="8dp" />
+            android:layout_height="368dp"
+            android:layout_marginTop="-10dp"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <Button
-            android:id="@+id/kayarian"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_button_beige"
-            android:text="Kayarian ng Pangungusap"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:gravity="center"
-            android:layout_marginTop="8dp" />
+            <Button
+                android:id="@+id/bahagi"
+                android:layout_width="300dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/source_serif"
+                android:background="@drawable/rounded_button_beige"
+                android:layout_gravity="center"
+                android:text="Bahagi ng pananalita"
+                android:textColor="@android:color/black"
+                android:textSize="25sp"  />
 
-        <Button
-            android:id="@+id/palaro"
+            <Button
+                android:id="@+id/komprehensyon"
+                android:fontFamily="@font/source_serif"
+                android:layout_width="300dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_button_beige"
+                android:layout_gravity="center"
+                android:text="Komprehensyon"
+                android:textColor="@android:color/black"
+                android:textSize="25sp"  />
+
+            <Button
+                android:id="@+id/kayarian"
+                android:fontFamily="@font/source_serif"
+                android:layout_width="300dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rounded_button_beige"
+                android:layout_gravity="center"
+                android:text="Kayarian ng Pangungusap"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"  />
+
+            <Button
+                android:id="@+id/palaro"
+                android:fontFamily="@font/source_serif"
+                android:layout_width="300dp"
+                android:layout_height="66dp"
+                android:layout_marginTop="17dp"
+                android:background="@drawable/rounded_button_beige"
+                android:layout_gravity="center"
+                android:text="Palaro"
+                android:textColor="@android:color/black"
+                android:textSize="25sp" />
+
+        </LinearLayout>
+
+        <!-- Fixed Bottom View -->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_button_beige"
-            android:text="Palaro"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:gravity="center"
-            android:layout_marginTop="8dp" />
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="70dp">
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="1dp"
+                android:alpha="0.6"
+                android:background="@drawable/function_tab" />
+        </RelativeLayout>
 
     </LinearLayout>
-
-
-
-</LinearLayout>

@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class Kayarian_ng_pangungusap extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
