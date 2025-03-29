@@ -36,24 +36,24 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="70dp"
                 android:elevation="10dp"
-                android:fontFamily="@font/bagel"
+                android:fontFamily="@font/special"
                 android:gravity="center"
                 android:text="Welcome to"
-                android:textColor="#EE4211"
+                android:textColor="#A27B5C"
                 android:textSize="40sp" />
 
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-20dp"
+                android:layout_marginTop="-10dp"
                 android:elevation="10dp"
-                android:fontFamily="@font/bagel"
+                android:fontFamily="@font/special"
                 android:gravity="center"
                 android:text="HabiAral"
-                android:textColor="#EE4211"
+                android:textColor="#A27B5C"
                 android:textSize="60sp" />
 
         </LinearLayout>
@@ -64,11 +64,11 @@
             android:layout_height="62dp"
             android:layout_gravity="center"
             android:layout_marginTop="90dp"
-            android:backgroundTint="#EE4211"
+            android:background="@drawable/button_color"
             android:fontFamily="@font/special"
             android:text="Let's get started"
             android:textColor="#FFFFFF"
-            android:textSize="20dp" />
+            android:textSize="18dp" />
 
         <ImageView
             android:id="@+id/imageView2"

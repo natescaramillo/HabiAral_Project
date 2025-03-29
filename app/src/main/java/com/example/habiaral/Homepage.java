@@ -5,11 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-public class Homepage extends AppCompatActivity implements View.OnClickListener {
+public class Homepage extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,37 +18,38 @@ public class Homepage extends AppCompatActivity implements View.OnClickListener 
         setContentView(R.layout.activity_homepage);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        // Initialize buttons
-        Button bahagiButton = findViewById(R.id.bahagi);
-        Button komprehensyonButton = findViewById(R.id.komprehensyon);
-        Button kayarianButton = findViewById(R.id.kayarian);
-        Button palaroButton = findViewById(R.id.palaro);
+        Button bahagi = findViewById(R.id.pananalita);
+        Button kayarian = findViewById(R.id.kayarian);
+        Button komprehensyon = findViewById(R.id.komprehensyon);
+        Button palaro = findViewById(R.id.palaro);
 
-        // Set the same OnClickListener for all buttons
-        bahagiButton.setOnClickListener(this);
-        komprehensyonButton.setOnClickListener(this);
-        kayarianButton.setOnClickListener(this);
-        palaroButton.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View view) {
-        Intent intent = null;
-
-        // Use if-else statements to determine which button was clicked
-        if (view.getId() == R.id.bahagi) {
-            intent = new Intent(this, Bahagi_ng_kayarian.class); // Ensure this class exists
-        } else if (view.getId() == R.id.komprehensyon) {
-            intent = new Intent(this, Komprehensyon.class); // Ensure this class exists
-        } else if (view.getId() == R.id.kayarian) {
-            intent = new Intent(this, Kayarian_ng_pangungusap.class); // Ensure this class exists
-        } else if (view.getId() == R.id.palaro) {
-            intent = new Intent(this, Palaro.class); // Ensure this class exists
-        }
-
-        // Start the activity if the intent is not null
-        if (intent != null) {
-            startActivity(intent);
-        }
+        bahagi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Homepage.this, Bahagi_ng_kayarian.class);
+                startActivity(intent);
+            }
+        });
+        kayarian.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Homepage.this, Kayarian_ng_pangungusap.class);
+                startActivity(intent);
+            }
+        });
+        komprehensyon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Homepage.this, Komprehensyon.class);
+                startActivity(intent);
+            }
+        });
+        palaro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Homepage.this, Palaro.class);
+                startActivity(intent);
+            }
+        });
     }
 }

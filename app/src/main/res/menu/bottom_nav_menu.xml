@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Home"
+        android:icon="@drawable/house"
+        android:id="@+id/home"
+        app:iconSize="15dp"/>
+    <item android:title="Progress"
+        android:icon="@drawable/progress"
+        android:id="@+id/progress"
+        app:iconSize="15dp"/>
+    <item android:title="Achievements"
+        android:icon="@drawable/achievement"
+        android:id="@+id/achievement"
+        app:iconSize="15dp"/>
+    <item android:title="Settings"
+        android:icon="@drawable/setting"
+        android:id="@+id/settings"
+        app:iconSize="15dp"/>
+</menu>
