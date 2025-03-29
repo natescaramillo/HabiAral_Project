@@ -8,7 +8,7 @@
         app:iconSize="15dp"/>
     <item android:title="Progress"
         android:icon="@drawable/progress"
-        android:id="@+id/progress"
+        android:id="@+id/progressbar"
         app:iconSize="15dp"/>
     <item android:title="Achievements"
         android:icon="@drawable/achievement"

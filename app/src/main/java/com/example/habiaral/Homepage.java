@@ -1,14 +1,20 @@
 package com.example.habiaral;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.Fragment;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.WindowManager;
+import android.widget.Button;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class Homepage extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,33 +29,11 @@ public class Homepage extends AppCompatActivity {
         Button komprehensyon = findViewById(R.id.komprehensyon);
         Button palaro = findViewById(R.id.palaro);
 
-        bahagi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Homepage.this, Bahagi_ng_kayarian.class);
-                startActivity(intent);
-            }
-        });
-        kayarian.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Homepage.this, Kayarian_ng_pangungusap.class);
-                startActivity(intent);
-            }
-        });
-        komprehensyon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Homepage.this, Komprehensyon.class);
-                startActivity(intent);
-            }
-        });
-        palaro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Homepage.this, Palaro.class);
-                startActivity(intent);
-            }
-        });
+
+
+        bahagi.setOnClickListener(v -> startActivity(new Intent(Homepage.this, Bahagi_ng_kayarian.class)));
+        kayarian.setOnClickListener(v -> startActivity(new Intent(Homepage.this, Kayarian_ng_pangungusap.class)));
+        komprehensyon.setOnClickListener(v -> startActivity(new Intent(Homepage.this, Komprehensyon.class)));
+        palaro.setOnClickListener(v -> startActivity(new Intent(Homepage.this, Palaro.class)));
     }
 }
