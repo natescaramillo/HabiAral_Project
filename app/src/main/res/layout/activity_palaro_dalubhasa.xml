@@ -55,7 +55,8 @@
         android:text="Mga Tanong"
         android:textColor="#000000"
         tools:layout_editor_absoluteX="27dp"
-        tools:layout_editor_absoluteY="77dp" />
+        tools:layout_editor_absoluteY="77dp"
+        tools:ignore="MissingConstraints" />
 
 
     <TextView
@@ -71,7 +72,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="16dp" />
+        tools:layout_editor_absoluteY="16dp"
+        tools:ignore="MissingConstraints" />
 
 
     <TextView
@@ -82,7 +84,8 @@
         android:text="Sagot mo:"
         android:textSize="20dp"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="397dp" />
+        tools:layout_editor_absoluteY="397dp"
+        tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/editTextText3"
@@ -93,7 +96,8 @@
         android:text=""
         tools:layout_editor_absoluteX="18dp"
         tools:layout_editor_absoluteY="441dp"
-        android:background="@drawable/answer_shape"/>
+        android:background="@drawable/answer_shape"
+        tools:ignore="MissingConstraints" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
