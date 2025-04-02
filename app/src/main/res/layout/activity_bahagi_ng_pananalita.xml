@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_background"
+        tools:context=".Bahagi_ng_pananalita">
+
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:text="BAHAGI NG PANANALITA"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.117"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="350dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="44dp"
+            android:backgroundTint="#EE4211"
+            android:text="PANGNGALAN(NOUN)"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView4" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="350dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="4dp"
+            android:backgroundTint="#E0B782"
+            android:text="PANDIWA(VERB)"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="350dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#E0B782"
+            android:text="PANG-URI(ADJECTIVES)"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button3" />
+
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="350dp"
+            android:layout_height="65dp"
+            android:backgroundTint="#E0B782"
+            android:text="PANGATNIG(CONJUNCTION)"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            app:layout_constraintTop_toBottomOf="@id/button4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="350dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="80dp"
+            android:backgroundTint="#E0B782"
+            android:text="PADAMDAM(INTERJECTION)"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button5" />
+
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="350dp"
+            android:layout_height="65dp"
+            android:backgroundTint="#E0B782"
+            android:text="PANGAWING(LINKING VERB)"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button6" />
+
+        <Button
+            android:id="@+id/button8"
+            android:layout_width="350dp"
+            android:layout_height="65dp"
+            android:backgroundTint="#E0B782"
+            android:text="PANG-HALIP(PRONOUN)"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button7" />
+
+        <Button
+            android:id="@+id/button9"
+            android:layout_width="350dp"
+            android:layout_height="65dp"
+            android:backgroundTint="#E0B782"
+            android:text="PANG-AKOP(LIGATURE)"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            app:layout_constraintTop_toBottomOf="@id/button8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/button10"
+            android:layout_width="350dp"
+            android:layout_height="65dp"
+            android:backgroundTint="#E0B782"
+            android:text="PANG-UKOL(PREPOSITION)"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button9" />
+
+        <Button
+            android:id="@+id/button11"
+            android:layout_width="350dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="76dp"
+            android:backgroundTint="#E0B782"
+            android:text="PANG-ABAY(ADVERB)"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
+
+
