@@ -5,6 +5,144 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+<<<<<<< HEAD
     tools:context=".Palaro">
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+=======
+    tools:context=".Palaro"
+    android:background="@drawable/gradient_background">
+
+
+
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="231dp"
+        android:layout_height="83dp"
+        android:text="PALARO"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.172"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.063"
+        tools:ignore="MissingConstraints"></TextView>
+
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="350dp"
+        android:layout_height="66dp"
+        android:backgroundTint="#EE4211"
+        android:text="BAGUHAN"
+        android:textColor="@android:color/white"
+        android:textSize="17dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.209"
+        tools:ignore="MissingConstraints" />
+
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="350dp"
+        android:layout_height="66dp"
+        android:backgroundTint="#E0B782"
+        android:text="HUSAY"
+        android:textColor="@android:color/white"
+        android:textSize="17dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.32"
+        tools:ignore="MissingConstraints" />
+
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="350dp"
+        android:layout_height="66dp"
+        android:backgroundTint="#E0B782"
+        android:text="DALUBHASA"
+        android:textColor="@android:color/white"
+        android:textSize="17dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.439"
+        tools:ignore="MissingConstraints" />
+
+
+    <TextView
+        android:id="@+id/points_dalubhasa"
+        android:layout_width="44dp"
+        android:layout_height="14dp"
+        android:fontFamily="sans-serif"
+        android:text="800points"
+        android:textColor="#4D1E0D"
+        android:textSize="10sp"
+        android:textStyle="italic"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="183dp"
+        tools:layout_editor_absoluteY="335dp" />
+
+
+    <FrameLayout
+        android:layout_width="38dp"
+        android:layout_height="36dp"
+        android:background="@drawable/circle_bg"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="325dp"
+        tools:layout_editor_absoluteY="306dp">
+
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_lock" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="38dp"
+        android:layout_height="36dp"
+        android:background="@drawable/circle_bg"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="325dp"
+        tools:layout_editor_absoluteY="227dp">
+
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_lock" />
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/points_husay"
+        android:layout_width="44dp"
+        android:layout_height="14dp"
+        android:fontFamily="sans-serif"
+        android:text="400points"
+        android:textColor="#4D1E0D"
+        android:textSize="10sp"
+        android:textStyle="italic"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="183dp"
+        tools:layout_editor_absoluteY="256dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+>>>>>>> 19abf87 (Initial Commit)

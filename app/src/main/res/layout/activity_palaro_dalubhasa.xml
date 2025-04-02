@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background">
+
+
+    <Button
+        android:id="@+id/saveExit2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#EE4211"
+        android:fontFamily="@font/source_serif"
+        android:text="Itala at Umalis"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="667dp" />
+
+
+    <Button
+        android:id="@+id/finished2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#EE4211"
+        android:fontFamily="@font/source_serif"
+        android:text="Tapos"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.897"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="667dp" />
+
+
+    <ImageView
+        android:id="@+id/t2"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="end|bottom"
+        android:background="@drawable/tarsier_removebg"
+        tools:layout_editor_absoluteX="130dp"
+        tools:layout_editor_absoluteY="97dp" />
+
+
+    <TextView
+        android:id="@+id/sb2"
+        android:layout_width="237dp"
+        android:layout_height="114dp"
+        android:background="@drawable/speech_bubble"
+        android:fontFamily="@font/source_serif"
+        android:gravity="center"
+        android:text="Mga Tanong"
+        android:textColor="#000000"
+        tools:layout_editor_absoluteX="27dp"
+        tools:layout_editor_absoluteY="77dp" />
+
+
+    <TextView
+        android:id="@+id/tanong2"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:background="@drawable/question_shape"
+        android:fontFamily="@font/source_serif"
+        android:gravity="center"
+        android:text="Unang Tanong"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="16dp" />
+
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/source_serif"
+        android:text="Sagot mo:"
+        android:textSize="20dp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="397dp" />
+
+    <EditText
+        android:id="@+id/editTextText3"
+        android:layout_width="374dp"
+        android:layout_height="153dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text=""
+        tools:layout_editor_absoluteX="18dp"
+        tools:layout_editor_absoluteY="441dp"
+        android:background="@drawable/answer_shape"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
