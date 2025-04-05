@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background">
+
+
+    <Button
+        android:id="@+id/saveExit1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#EE4211"
+        android:fontFamily="@font/source_serif"
+        android:text="Itala at Umalis"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="667dp" />
+
+
+    <Button
+        android:id="@+id/finished1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#EE4211"
+        android:fontFamily="@font/source_serif"
+        android:text="Tapos"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.897"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="667dp" />
+
+
+    <ImageView
+        android:id="@+id/t1"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="end|bottom"
+        android:background="@drawable/tarsier_removebg"
+        tools:layout_editor_absoluteX="130dp"
+        tools:layout_editor_absoluteY="97dp" />
+
+
+    <TextView
+        android:id="@+id/sb1"
+        android:layout_width="237dp"
+        android:layout_height="114dp"
+        android:background="@drawable/speech_bubble"
+        android:fontFamily="@font/source_serif"
+        android:gravity="center"
+        android:text="Mga Tanong"
+        android:textColor="#000000"
+        tools:layout_editor_absoluteX="27dp"
+        tools:layout_editor_absoluteY="77dp" />
+
+
+    <TextView
+        android:id="@+id/tanong1"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:background="@drawable/question_shape"
+        android:fontFamily="@font/source_serif"
+        android:gravity="center"
+        android:text="Unang Tanong"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="16dp" />
+
+
+    <TextView
+        android:id="@+id/sagot1"
+        android:layout_width="378dp"
+        android:layout_height="49dp"
+        android:background="@drawable/answer_shape"
+        android:fontFamily="@font/source_serif"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.515"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="452dp" />
+
+
+    <TextView
+        android:id="@+id/kailangan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/source_serif"
+        android:text="Kailangang Dugtungan:"
+        android:textSize="20dp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="413dp" />
+
+
+    <TextView
+        android:id="@+id/A"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/source_serif"
+        android:text="Sagot mo:"
+        android:textSize="20dp"
+        tools:layout_editor_absoluteX="17dp"
+        tools:layout_editor_absoluteY="515dp" />
+
+    <EditText
+        android:id="@+id/editTextText2"
+        android:layout_width="376dp"
+        android:layout_height="52dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text=""
+        tools:layout_editor_absoluteX="17dp"
+        tools:layout_editor_absoluteY="557dp"
+        android:background="@drawable/answer_shape"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
