@@ -1,39 +1,57 @@
 package com.example.habiaral;
 
+import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.WindowManager;
-import android.widget.Button;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import android.view.MenuItem;
+import android.view.WindowManager;
 
 public class Homepage extends AppCompatActivity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
         setContentView(R.layout.activity_homepage);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        Button bahagi = findViewById(R.id.pananalita);
-        Button kayarian = findViewById(R.id.kayarian);
-        Button komprehensyon = findViewById(R.id.komprehensyon);
-        Button palaro = findViewById(R.id.palaro);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.botnav);
+        loadFragment(new HomeFragment());
 
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
 
+                if (item.getItemId() == R.id.home_nav) {
+                    selectedFragment = new HomeFragment();
+                } else if (item.getItemId() == R.id.progressbar_nav) {
+                    selectedFragment = new ProgressBarFragment();
+                } else if (item.getItemId() == R.id.achievement_nav) {
+                    selectedFragment = new AchievementFragment();
+                } else if (item.getItemId() == R.id.settings_nav) {
+                    selectedFragment = new SettingsFragment();
+                }
 
-        bahagi.setOnClickListener(v -> startActivity(new Intent(Homepage.this, Bahagi_ng_kayarian.class)));
-        kayarian.setOnClickListener(v -> startActivity(new Intent(Homepage.this, Kayarian_ng_pangungusap.class)));
-        komprehensyon.setOnClickListener(v -> startActivity(new Intent(Homepage.this, Komprehensyon.class)));
-        palaro.setOnClickListener(v -> startActivity(new Intent(Homepage.this, Palaro.class)));
+                // Load the selected fragment
+                if (selectedFragment != null) {
+                    loadFragment(selectedFragment);
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    // Helper method to switch fragments
+    private void loadFragment(Fragment fragment) {
+        // Replace the current fragment with the selected one
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
     }
 }
