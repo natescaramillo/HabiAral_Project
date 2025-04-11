@@ -4,18 +4,18 @@
 
     <item android:title="Home"
         android:icon="@drawable/house"
-        android:id="@+id/home"
+        android:id="@+id/home_nav"
         app:iconSize="15dp"/>
     <item android:title="Progress"
         android:icon="@drawable/progress"
-        android:id="@+id/progressbar"
+        android:id="@+id/progressbar_nav"
         app:iconSize="15dp"/>
     <item android:title="Achievements"
         android:icon="@drawable/achievement"
-        android:id="@+id/achievement"
+        android:id="@+id/achievement_nav"
         app:iconSize="15dp"/>
     <item android:title="Settings"
         android:icon="@drawable/setting"
-        android:id="@+id/settings"
+        android:id="@+id/settings_nav"
         app:iconSize="15dp"/>
 </menu>

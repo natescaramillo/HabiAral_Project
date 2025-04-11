@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeFragment">
+
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/homepage_design" />
+
+    <ScrollView
+        android:layout_width="426dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="200dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mga Aralin"
+                android:layout_marginTop="40dp"
+                android:layout_marginLeft="10dp"
+                android:fontFamily="@font/special"
+                android:textColor="#4C2121"
+                android:textSize="30dp"/>
+
+            <Button
+                android:layout_width="320dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:text="Bahagi ng pananalita"
+                android:textSize="20dp"
+                android:fontFamily="@font/special"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="40dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/button_color" />
+
+            <Button
+                android:layout_width="320dp"
+                android:layout_height="150dp"
+                android:textSize="20dp"
+                android:fontFamily="@font/special"
+                android:textColor="#FFFFFF"
+                android:text="Komprehensyon"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/button_color" />
+
+            <Button
+                android:layout_width="320dp"
+                android:layout_height="150dp"
+                android:textSize="20dp"
+                android:fontFamily="@font/special"
+                android:textColor="#FFFFFF"
+                android:text="Kayarian ng Pangungusap"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/button_color" />
+            <Button
+                android:layout_width="320dp"
+                android:layout_height="150dp"
+                android:textSize="20dp"
+                android:fontFamily="@font/special"
+                android:textColor="#FFFFFF"
+                android:text="Palaro"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/button_color" />
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>
