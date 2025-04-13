@@ -35,6 +35,9 @@ public class Homepage extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.settings_nav) {
                     selectedFragment = new SettingsFragment();
                 }
+                else if (item.getItemId() == R.id.dictionary_nav) {
+                    selectedFragment = new dictionary();
+                }
 
                 // Load the selected fragment
                 if (selectedFragment != null) {

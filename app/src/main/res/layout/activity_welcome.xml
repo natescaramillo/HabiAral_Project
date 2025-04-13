@@ -67,7 +67,7 @@
             android:background="@drawable/button_color"
             android:fontFamily="@font/special"
             android:text="Let's get started"
-            android:textColor="#FFFFFF"
+            android:textColor="#4C2121"
             android:textSize="18dp" />
 
         <ImageView

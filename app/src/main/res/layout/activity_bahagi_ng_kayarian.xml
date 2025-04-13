@@ -1,11 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:background="@drawable/gradient_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Bahagi_ng_kayarian">
+    android:fillViewport="true">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_background"
+        tools:context=".Bahagi_ng_pananalita">
+
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="wrap_content"
+            android:layout_height="93dp"
+            android:layout_marginBottom="1095dp"
+            android:alpha="0.6"
+            android:background="#A27B5C"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/special"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="Bahagi ng pananalita"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/view1"
+            app:layout_constraintEnd_toEndOf="@+id/view1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/view1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
+
+

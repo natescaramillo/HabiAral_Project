@@ -8,9 +8,6 @@
 
     tools:context=".Komprehensyon">
 
-
-
-
     <TextView
         android:id="@+id/textView4"
         android:layout_width="231dp"

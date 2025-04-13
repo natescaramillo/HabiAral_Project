@@ -1,18 +1,213 @@
-<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProgressBarFragment">
 
-    <TextView
+    <HorizontalScrollView
         android:layout_width="match_parent"
+        android:layout_height="628dp"
+        android:layout_marginTop="120dp"
+        android:scrollbars="none"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <!-- First card -->
+            <LinearLayout
+                android:layout_width="310dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="398dp"
+                    android:background="@drawable/progress_bar_gradient"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-50dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="Bahagi ng Pananalita"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/special"
+                            android:textStyle="bold" />
+
+                        <FrameLayout
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_marginTop="30dp">
+
+                            <ProgressBar
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:indeterminateOnly="false"
+                                android:max="100"
+                                android:progressDrawable="@drawable/custom_progressbar" />
+
+                            <TextView
+                                android:id="@+id/progress1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="0%"
+                                android:textColor="#FFFFFF"
+                                android:textSize="25dp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+            <!-- Second card -->
+            <LinearLayout
+                android:layout_width="310dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="398dp"
+                    android:background="@drawable/progress_bar_gradient"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-50dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="Komprehensyon"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/special"
+                            android:textStyle="bold" />
+
+                        <FrameLayout
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_marginTop="30dp">
+
+                            <ProgressBar
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:indeterminateOnly="false"
+                                android:max="100"
+                                android:progressDrawable="@drawable/custom_progressbar" />
+
+                            <TextView
+                                android:id="@+id/progress2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="0%"
+                                android:textColor="#FFFFFF"
+                                android:textSize="25dp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
+                    </LinearLayout>
+
+                </FrameLayout>
+            </LinearLayout>
+            <!-- Third Card -->
+            <LinearLayout
+                android:layout_width="310dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="398dp"
+                    android:background="@drawable/progress_bar_gradient"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-50dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="Kayarian ng Pangungusap"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/special"
+                            android:textStyle="bold" />
+
+                        <FrameLayout
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_marginTop="30dp">
+
+                            <ProgressBar
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:indeterminateOnly="false"
+                                android:max="100"
+                                android:progressDrawable="@drawable/custom_progressbar" />
+
+                            <TextView
+                                android:id="@+id/progress3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="0%"
+                                android:textColor="#FFFFFF"
+                                android:textSize="25dp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
+                    </LinearLayout>
+
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <View
+        android:id="@+id/view5"
+        android:alpha="0.6"
+        android:layout_width="wrap_content"
+        android:layout_height="93dp"
+        android:background="#A27B5C" />
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:gravity="center"
-        android:textSize="20dp"
-        android:text="Progress">
-
-    </TextView>
-
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#FFFFFF"
+        android:fontFamily="@font/special"
+        android:textSize="30dp"
+        android:text="Progress" />
 </FrameLayout>

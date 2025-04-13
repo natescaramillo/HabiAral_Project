@@ -1,20 +1,23 @@
 package com.example.habiaral;
 
+
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ProgressBarFragment extends Fragment {
+import androidx.fragment.app.Fragment;
 
-    public ProgressBarFragment() {
-        // Required empty public constructor
-    }
+import java.io.File;
+
+public class dictionary extends Fragment {
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_progress_bar, container, false);
+        return inflater.inflate(R.layout.fragment_dictionary, container, false);
     }
+
 }

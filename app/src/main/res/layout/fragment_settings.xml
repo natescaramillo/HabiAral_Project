@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".SettingsFragment">
 
-
     <View
         android:id="@+id/view3"
         android:layout_width="match_parent"
         android:layout_height="93dp"
+        android:alpha="0.6"
         android:background="#A27B5C" />
 
     <TextView
@@ -18,21 +18,57 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:layout_gravity="center_horizontal"
         android:textColor="#FFFFFF"
         android:fontFamily="@font/special"
         android:textSize="30dp"
         android:text="Settings" />
 
-    <ImageView
-        android:id="@+id/backbutton"
-        android:layout_width="29dp"
-        android:layout_height="32dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="110dp"
-        android:clickable="true"
-        android:src="@drawable/circle_left_solid" />
+    <LinearLayout
+        android:layout_width="423dp"
+        android:layout_height="176dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="-180dp"
+        android:orientation="vertical">
 
+        <FrameLayout
+            android:id="@+id/about_us"
+            android:layout_width="337dp"
+            android:layout_height="51dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_color"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="About Us"
+                android:textColor="#4C2121" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/exit_app"
+            android:layout_width="338dp"
+            android:layout_height="51dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_color"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="Exit Application"
+                android:textColor="#4C2121" />
+        </FrameLayout>
+
+    </LinearLayout>
 
 </FrameLayout>

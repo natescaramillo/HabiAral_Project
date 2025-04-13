@@ -1,19 +1,120 @@
-<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AchievementFragment">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="93dp"
+        android:alpha="0.6"
+        android:background="#A27B5C" />
 
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:gravity="center"
-    android:textSize="20dp"
-    android:text="Achievement">
 
-</TextView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal"
+        android:text="Achievement"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:fontFamily="@font/special"
+        android:gravity="center" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="93dp">
+
+        <!-- Row 1 -->
+        <View
+            android:id="@+id/view5"
+            android:layout_width="92dp"
+            android:layout_height="88dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/rounded_button_beige" />
+
+        <View
+            android:id="@+id/view6"
+            android:layout_width="92dp"
+            android:layout_height="88dp"
+            android:layout_alignTop="@id/view5"
+            android:layout_toEndOf="@id/view5"
+            android:layout_marginStart="18dp"
+            android:background="@drawable/rounded_button_beige" />
+
+        <View
+            android:id="@+id/view7"
+            android:layout_width="92dp"
+            android:layout_height="88dp"
+            android:layout_alignTop="@id/view5"
+            android:layout_toEndOf="@id/view6"
+            android:layout_marginStart="18dp"
+            android:background="@drawable/rounded_button_beige" />
+
+        <!-- Row 2 -->
+        <View
+            android:id="@+id/view8"
+            android:layout_width="92dp"
+            android:layout_height="88dp"
+            android:layout_below="@id/view5"
+            android:layout_alignStart="@id/view5"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/rounded_button_beige" />
+
+        <!-- Row 3 -->
+
+        <View
+            android:id="@+id/view9"
+            android:layout_width="92dp"
+            android:layout_height="88dp"
+            android:layout_below="@id/view6"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@id/view8"
+            android:background="@drawable/rounded_button_beige" />
+
+        <View
+            android:id="@+id/view10"
+            android:layout_width="92dp"
+            android:layout_height="88dp"
+            android:layout_below="@id/view7"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@id/view9"
+            android:background="@drawable/rounded_button_beige" />
+
+        <View
+            android:id="@+id/view11"
+            android:layout_width="92dp"
+            android:layout_height="88dp"
+            android:layout_below="@id/view8"
+            android:layout_alignStart="@id/view8"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/rounded_button_beige" />
+
+        <View
+            android:id="@+id/view12"
+            android:layout_width="92dp"
+            android:layout_height="88dp"
+            android:layout_below="@id/view9"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@id/view11"
+            android:background="@drawable/rounded_button_beige" />
+
+        <View
+            android:id="@+id/view13"
+            android:layout_width="92dp"
+            android:layout_height="88dp"
+            android:layout_below="@id/view10"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@id/view12"
+            android:background="@drawable/rounded_button_beige" />
+
+    </RelativeLayout>
 
 </FrameLayout>

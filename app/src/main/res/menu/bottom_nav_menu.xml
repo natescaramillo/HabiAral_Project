@@ -18,4 +18,8 @@
         android:icon="@drawable/setting"
         android:id="@+id/settings_nav"
         app:iconSize="15dp"/>
+    <item android:title="Dictionary"
+        android:icon="@drawable/book"
+        android:id="@+id/dictionary_nav"
+        app:iconSize="15dp"/>
 </menu>
