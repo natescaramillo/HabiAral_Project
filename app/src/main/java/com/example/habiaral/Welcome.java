@@ -1,4 +1,5 @@
 package com.example.habiaral;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -7,11 +8,13 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Welcome extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(R.layout.activity_welcome);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         Button started = findViewById(R.id.button);
         started.setOnClickListener(new View.OnClickListener() {

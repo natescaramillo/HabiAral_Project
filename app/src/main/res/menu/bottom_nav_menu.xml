@@ -2,23 +2,28 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Home"
+    <item
+        android:title="Home"
         android:icon="@drawable/house"
         android:id="@+id/home_nav"
         app:iconSize="15dp"/>
-    <item android:title="Progress"
+    <item
+        android:title="Progress"
         android:icon="@drawable/progress"
         android:id="@+id/progressbar_nav"
         app:iconSize="15dp"/>
-    <item android:title="Achievements"
+    <item
+        android:title="Achievements"
         android:icon="@drawable/achievement"
         android:id="@+id/achievement_nav"
         app:iconSize="15dp"/>
-    <item android:title="Settings"
+    <item
+        android:title="Settings"
         android:icon="@drawable/setting"
         android:id="@+id/settings_nav"
         app:iconSize="15dp"/>
-    <item android:title="Dictionary"
+    <item
+        android:title="Dictionary"
         android:icon="@drawable/book"
         android:id="@+id/dictionary_nav"
         app:iconSize="15dp"/>

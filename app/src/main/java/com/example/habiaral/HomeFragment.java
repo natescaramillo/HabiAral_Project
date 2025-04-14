@@ -7,29 +7,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HomeFragment extends Fragment {
+
+    private final Map<Integer, Class<?>> lessonMap = new HashMap<>();
 
     public HomeFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        LinearLayout btnLesson1 = view.findViewById(R.id.bahagi);
-        LinearLayout btnLesson2 = view.findViewById(R.id.komprehensyon);
-        LinearLayout btnLesson3 = view.findViewById(R.id.kayarian);
-        LinearLayout btnLesson4 = view.findViewById(R.id.palaro);
+        lessonMap.put(R.id.bahagi, Bahagi_ng_pananalita.class);
+        lessonMap.put(R.id.komprehensyon, Komprehensyon.class);
+        lessonMap.put(R.id.kayarian, Kayarian_ng_pangungusap.class);
+        lessonMap.put(R.id.palaro, Palaro.class);
 
-        btnLesson1.setOnClickListener(v ->
-                startActivity(new Intent(getActivity(), Bahagi_ng_kayarian.class)));
-        btnLesson2.setOnClickListener(v ->
-                startActivity(new Intent(getActivity(), Komprehensyon.class)));
-        btnLesson3.setOnClickListener(v ->
-                startActivity(new Intent(getActivity(), Kayarian_ng_pangungusap.class)));
-        btnLesson4.setOnClickListener(v ->
-                startActivity(new Intent(getActivity(), Palaro.class)));
+        for (Map.Entry<Integer, Class<?>> entry : lessonMap.entrySet()) {
+            LinearLayout button = view.findViewById(entry.getKey());
+            Class<?> activityClass = entry.getValue();
+            if (button != null) {
+                button.setOnClickListener(v ->
+                        startActivity(new Intent(getActivity(), activityClass)));
+            }
+        }
 
         return view;
     }

@@ -7,7 +7,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class Bahagi_ng_kayarian extends AppCompatActivity {
+public class Bahagi_ng_pananalita extends AppCompatActivity {
 
 
 
@@ -17,6 +17,6 @@ public class Bahagi_ng_kayarian extends AppCompatActivity {
         EdgeToEdge.enable(this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        setContentView(R.layout.activity_bahagi_ng_kayarian);
+        setContentView(R.layout.activity_bahagi_ng_pananalita);
     }
 }

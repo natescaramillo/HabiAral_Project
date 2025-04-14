@@ -39,7 +39,7 @@
             android:name=".Komprehensyon"
             android:exported="false" />
         <activity
-            android:name=".Bahagi_ng_kayarian"
+            android:name=".Bahagi_ng_pananalita"
             android:exported="false" />
     </application>
 

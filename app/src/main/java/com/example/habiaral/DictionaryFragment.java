@@ -8,11 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
-import java.io.File;
-
-public class dictionary extends Fragment {
-
-
+public class DictionaryFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
