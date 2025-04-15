@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 public class ProgressBarFragment extends Fragment {
 
     public ProgressBarFragment() {
-        // Required empty public constructor
+
     }
 
     @Override

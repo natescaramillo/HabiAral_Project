@@ -8,6 +8,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Welcome extends AppCompatActivity {
+    private Button startBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,12 +17,12 @@ public class Welcome extends AppCompatActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        Button started = findViewById(R.id.button);
-        started.setOnClickListener(new View.OnClickListener() {
+        startBtn = findViewById(R.id.button);
+        startBtn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Welcome.this, Homepage.class);
-                startActivity(intent);
+                startActivity(new Intent(Welcome.this, Homepage.class));
                 finish();
             }
         });
