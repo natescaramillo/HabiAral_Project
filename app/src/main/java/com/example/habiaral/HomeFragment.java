@@ -20,9 +20,9 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        lessonMap.put(R.id.bahagi, Bahagi_ng_pananalita.class);
+        lessonMap.put(R.id.bahagi, BahagiNgPananalita.class);
         lessonMap.put(R.id.komprehensyon, Komprehensyon.class);
-        lessonMap.put(R.id.kayarian, Kayarian_ng_pangungusap.class);
+        lessonMap.put(R.id.kayarian, KayarianNgPangungusap.class);
         lessonMap.put(R.id.palaro, Palaro.class);
 
         for (Map.Entry<Integer, Class<?>> entry : lessonMap.entrySet()) {

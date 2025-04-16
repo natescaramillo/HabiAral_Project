@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background"
-    tools:context=".Kayarian_ng_pangungusap">
+    tools:context=".KayarianNgPangungusap">
 
 
 
@@ -34,7 +34,7 @@
         android:id="@+id/button"
         android:layout_width="350dp"
         android:layout_height="66dp"
-        android:backgroundTint="#EE4211"
+        android:backgroundTint="#E0B782"
         android:text="PAYAK"
         android:textColor="@android:color/white"
         android:textSize="17dp"

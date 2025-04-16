@@ -21,7 +21,7 @@ public class SettingsFragment extends Fragment {
         FrameLayout btnExit = view.findViewById(R.id.exit_app);
 
         btnAboutUs.setOnClickListener(v ->
-                startActivity(new Intent(requireActivity(), About_Us.class)));
+                startActivity(new Intent(requireActivity(), AboutUs.class)));
 
         btnExit.setOnClickListener(v -> showExitConfirmationDialog());
 

@@ -28,7 +28,7 @@
         android:id="@+id/button"
         android:layout_width="350dp"
         android:layout_height="66dp"
-        android:backgroundTint="#EE4211"
+        android:backgroundTint="#E0B782"
         android:text="ANG ALAMAT NG ROSAS"
         android:textColor="@android:color/white"
         android:textSize="17dp"

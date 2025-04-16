@@ -13,6 +13,11 @@
         android:id="@+id/progressbar_nav"
         app:iconSize="15dp"/>
     <item
+        android:title="Dictionary"
+        android:icon="@drawable/book"
+        android:id="@+id/dictionary_nav"
+        app:iconSize="15dp"/>
+    <item
         android:title="Achievements"
         android:icon="@drawable/achievement"
         android:id="@+id/achievement_nav"
@@ -22,9 +27,5 @@
         android:icon="@drawable/setting"
         android:id="@+id/settings_nav"
         app:iconSize="15dp"/>
-    <item
-        android:title="Dictionary"
-        android:icon="@drawable/book"
-        android:id="@+id/dictionary_nav"
-        app:iconSize="15dp"/>
+
 </menu>

@@ -7,14 +7,14 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class Komprehensyon extends AppCompatActivity {
+public class KayarianNgPangungusap extends AppCompatActivity {
 
     Button button1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_komprehensyon);
+        setContentView(R.layout.activity_kayarian_ng_pangungusap);
 
         button1 = findViewById(R.id.button);
 
@@ -24,7 +24,7 @@ public class Komprehensyon extends AppCompatActivity {
             button1.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#EE4211")));
             button1.setEnabled(false);
 
-            Intent intent = new Intent(Komprehensyon.this, KomprehensyonLesson.class);
+            Intent intent = new Intent(KayarianNgPangungusap.this, KayarianNgPangungusapLesson.class);
             startActivity(intent);
         });
     }

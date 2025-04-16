@@ -9,7 +9,7 @@
     <View
         android:id="@+id/view2"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="180dp"
         android:alpha="0.6"
         android:background="@drawable/homepage_design" />
 
@@ -37,22 +37,20 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Mga Aralin"
-                android:layout_marginTop="40dp"
+                android:layout_height="35dp"
                 android:layout_marginLeft="10dp"
                 android:fontFamily="@font/special"
+                android:text="Mga Aralin"
                 android:textColor="#4C2121"
-                android:textSize="30dp" />
+                android:textSize="25dp" />
 
 
             <LinearLayout
                 android:id="@+id/bahagi"
-                android:layout_width="320dp"
-                android:layout_height="150dp"
+                android:layout_width="375dp"
+                android:layout_height="117dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="40dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/button_color"
                 android:clickable="true"
                 android:focusable="true"
@@ -78,11 +76,10 @@
 
             <LinearLayout
                 android:id="@+id/komprehensyon"
-                android:layout_width="320dp"
-                android:layout_height="150dp"
+                android:layout_width="375dp"
+                android:layout_height="117dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/button_color"
@@ -109,11 +106,10 @@
 
             <LinearLayout
                 android:id="@+id/kayarian"
-                android:layout_width="320dp"
-                android:layout_height="150dp"
+                android:layout_width="375dp"
+                android:layout_height="117dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/button_color"
@@ -140,11 +136,10 @@
 
             <LinearLayout
                 android:id="@+id/palaro"
-                android:layout_width="320dp"
-                android:layout_height="150dp"
+                android:layout_width="375dp"
+                android:layout_height="117dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/button_color"

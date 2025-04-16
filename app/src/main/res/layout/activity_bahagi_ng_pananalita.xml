@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/gradient_background"
-        tools:context=".Bahagi_ng_pananalita">
+        tools:context=".BahagiNgPananalita">
 
 
         <View

@@ -9,10 +9,10 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.HabiAral">
         <activity
-            android:name=".About_Us"
+            android:name=".AboutUs"
             android:exported="false" />
         <activity
-            android:name=".introduction"
+            android:name=".Introduction"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -33,14 +33,21 @@
             android:name=".Palaro"
             android:exported="false" />
         <activity
-            android:name=".Kayarian_ng_pangungusap"
+            android:name=".KayarianNgPangungusap"
             android:exported="false" />
         <activity
             android:name=".Komprehensyon"
             android:exported="false" />
         <activity
-            android:name=".Bahagi_ng_pananalita"
+            android:name=".BahagiNgPananalita"
             android:exported="false" />
+        <activity android:name=".KomprehensyonLesson" />
+        <activity android:name=".KomprehensyonQuiz" />
+        <activity android:name=".KayarianNgPangungusapLesson" />
+        <activity android:name=".KayarianNgPangungusapQuiz" />
+        <activity android:name=".PalaroBaguhan" />
+        <activity android:name=".PalaroHusay" />
+        <activity android:name=".PalaroDalubhasa" />
     </application>
 
 </manifest>

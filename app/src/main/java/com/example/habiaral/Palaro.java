@@ -1,20 +1,37 @@
 package com.example.habiaral;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class Palaro extends AppCompatActivity {
 
+    Button button1, button2, button3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_palaro);
+
+        button1 = findViewById(R.id.button);
+        button2 = findViewById(R.id.button2);
+        button3 = findViewById(R.id.button3);
+
+        button1.setOnClickListener(v -> {
+            Intent intent = new Intent(Palaro.this, PalaroBaguhan.class);
+            startActivity(intent);
+        });
+
+        button2.setOnClickListener(v -> {
+            Intent intent = new Intent(Palaro.this, PalaroHusay.class);
+            startActivity(intent);
+        });
+
+        button3.setOnClickListener(v -> {
+            Intent intent = new Intent(Palaro.this, PalaroDalubhasa.class);
+            startActivity(intent);
+        });
     }
 }
