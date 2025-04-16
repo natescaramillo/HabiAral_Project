@@ -1,4 +1,4 @@
-package com.example.habiaral;
+package com.example.habiaral.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+
+import com.example.habiaral.Activity.AboutUsActivity;
+import com.example.habiaral.R;
 
 public class SettingsFragment extends Fragment {
 
@@ -21,7 +24,7 @@ public class SettingsFragment extends Fragment {
         FrameLayout btnExit = view.findViewById(R.id.exit_app);
 
         btnAboutUs.setOnClickListener(v ->
-                startActivity(new Intent(requireActivity(), AboutUs.class)));
+                startActivity(new Intent(requireActivity(), AboutUsActivity.class)));
 
         btnExit.setOnClickListener(v -> showExitConfirmationDialog());
 

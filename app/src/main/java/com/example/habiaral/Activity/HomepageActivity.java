@@ -1,9 +1,16 @@
-package com.example.habiaral;
+package com.example.habiaral.Activity;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import com.example.habiaral.Fragment.AchievementFragment;
+import com.example.habiaral.Fragment.DictionaryFragment;
+import com.example.habiaral.Fragment.HomeFragment;
+import com.example.habiaral.Fragment.ProgressBarFragment;
+import com.example.habiaral.R;
+import com.example.habiaral.Fragment.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import android.view.MenuItem;
@@ -11,7 +18,7 @@ import android.view.WindowManager;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Homepage extends AppCompatActivity {
+public class HomepageActivity extends AppCompatActivity {
 
     private final Map<Integer, Fragment> fragmentMap = new HashMap<>();
 

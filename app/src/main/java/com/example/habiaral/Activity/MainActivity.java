@@ -1,4 +1,4 @@
-package com.example.habiaral;
+package com.example.habiaral.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.habiaral.R;
 
 public class MainActivity extends AppCompatActivity {
     private static final int SPLASH_DELAY = 2000;
@@ -18,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         new Handler().postDelayed(() -> {
-            Intent intent = new Intent(MainActivity.this, Welcome.class);
+            Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
             startActivity(intent);
             finish();
         }, SPLASH_DELAY);

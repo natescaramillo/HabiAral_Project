@@ -1,4 +1,4 @@
-package com.example.habiaral;
+package com.example.habiaral.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class Welcome extends AppCompatActivity {
+import com.example.habiaral.R;
+
+public class WelcomeActivity extends AppCompatActivity {
     private Button startBtn;
 
     @Override
@@ -22,7 +24,7 @@ public class Welcome extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(Welcome.this, Homepage.class));
+                startActivity(new Intent(WelcomeActivity.this, HomepageActivity.class));
                 finish();
             }
         });

@@ -1,7 +1,9 @@
-package com.example.habiaral;
+package com.example.habiaral.KayarianNgPangungusap;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.habiaral.R;
 
 public class KayarianNgPangungusapQuiz extends AppCompatActivity {
     @Override

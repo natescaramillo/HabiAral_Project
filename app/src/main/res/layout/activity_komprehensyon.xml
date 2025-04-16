@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context=".Komprehensyon">
+    tools:context=".Komprehensyon.Komprehensyon">
 
     <TextView
         android:id="@+id/textView4"

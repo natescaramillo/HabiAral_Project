@@ -1,4 +1,4 @@
-package com.example.habiaral;
+package com.example.habiaral.Komprehensyon;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.habiaral.R;
 
 public class Komprehensyon extends AppCompatActivity {
 

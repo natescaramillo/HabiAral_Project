@@ -1,14 +1,14 @@
-package com.example.habiaral;
+package com.example.habiaral.Komprehensyon;
 
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
 
-public class PalaroDalubhasa extends AppCompatActivity {
+import com.example.habiaral.R;
 
+public class KomprehensyonQuiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_palaro_dalubhasa);
+        setContentView(R.layout.activity_komprehensyon_quiz);
     }
 }

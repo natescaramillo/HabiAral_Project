@@ -1,4 +1,4 @@
-package com.example.habiaral;
+package com.example.habiaral.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
+import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
+import com.example.habiaral.Komprehensyon.Komprehensyon;
+import com.example.habiaral.Palaro.Palaro;
+import com.example.habiaral.R;
+
 import java.util.HashMap;
 import java.util.Map;
 

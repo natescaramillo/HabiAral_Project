@@ -1,4 +1,4 @@
-package com.example.habiaral;
+package com.example.habiaral.Activity;
 
 import android.os.Bundle;
 
@@ -8,7 +8,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class Introduction extends AppCompatActivity {
+import com.example.habiaral.R;
+
+public class IntroActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
