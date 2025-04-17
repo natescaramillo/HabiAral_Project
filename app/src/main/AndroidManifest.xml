@@ -48,6 +48,7 @@
         <activity android:name=".Palaro.PalaroBaguhan" />
         <activity android:name=".Palaro.PalaroHusay" />
         <activity android:name=".Palaro.PalaroDalubhasa" />
+        <activity android:name=".BahagiNgPananalita.Lessons.Pangngalan" />
     </application>
 
 </manifest>
