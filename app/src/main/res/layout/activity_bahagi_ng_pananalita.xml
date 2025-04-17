@@ -12,35 +12,419 @@
         android:background="@drawable/gradient_background"
         tools:context=".BahagiNgPananalita.BahagiNgPananalita">
 
-
         <View
             android:id="@+id/view1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="93dp"
-            android:layout_marginBottom="1095dp"
             android:alpha="0.6"
             android:background="#A27B5C"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:fontFamily="@font/special"
             android:gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
             android:text="Bahagi ng pananalita"
             android:textColor="#FFFFFF"
-            android:textSize="20dp"
-            app:layout_constraintBottom_toBottomOf="@+id/view1"
-            app:layout_constraintEnd_toEndOf="@+id/view1"
+            android:textSize="20sp"
+            app:layout_constraintTop_toTopOf="@id/view1"
+            app:layout_constraintBottom_toBottomOf="@id/view1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/view1" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintEnd_toEndOf="parent" />
 
+        <LinearLayout
+            android:id="@+id/pangngalan"
+            android:layout_width="344dp"
+            android:layout_height="88dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_color"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/special"
+                android:text="PANGNGALAN(NOUN)"
+                android:textColor="#4C2121"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/pandiwa"
+            android:layout_width="342dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="10dp"
+            android:alpha="0.5"
+            android:background="@drawable/button_color"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pangngalan">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/special"
+                android:text="PANDIWA(VERB)"
+                android:textColor="#4C2121"
+                android:textSize="20sp" />
+
+            <FrameLayout
+                android:layout_width="49dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/square">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_lock" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/panguri"
+            android:layout_width="342dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="10dp"
+            android:alpha="0.5"
+            android:background="@drawable/button_color"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pandiwa">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/special"
+                android:text="PANG-URI(ADJECTIVES)"
+                android:textColor="#4C2121"
+                android:textSize="20sp" />
+
+            <FrameLayout
+                android:layout_width="49dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/square">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_lock" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/panghalip"
+            android:layout_width="342dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="10dp"
+            android:alpha="0.5"
+            android:background="@drawable/button_color"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/panguri">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/special"
+                android:text="PANG-HALIP(PRONOUN)"
+                android:textColor="#4C2121"
+                android:textSize="20sp" />
+
+            <FrameLayout
+                android:layout_width="49dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/square">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_lock" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/pangabay"
+            android:layout_width="342dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="10dp"
+            android:alpha="0.5"
+            android:background="@drawable/button_color"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/panghalip">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/special"
+                android:text="PANG-ABAY(ADVERB)"
+                android:textColor="#4C2121"
+                android:textSize="20sp" />
+
+            <FrameLayout
+                android:layout_width="49dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/square">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_lock" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/pangatnig"
+            android:layout_width="342dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="10dp"
+            android:alpha="0.5"
+            android:background="@drawable/button_color"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pangabay">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/special"
+                android:text="PANGATNIG(CONJUCTION)"
+                android:textColor="#4C2121"
+                android:textSize="20sp" />
+
+            <FrameLayout
+                android:layout_width="49dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/square">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_lock" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/pangukol"
+            android:layout_width="342dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="10dp"
+            android:alpha="0.5"
+            android:background="@drawable/button_color"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pangatnig">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/special"
+                android:text="PANG-UKOL(PREPOSITION)"
+                android:textColor="#4C2121"
+                android:textSize="20sp" />
+
+            <FrameLayout
+                android:layout_width="49dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/square">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_lock" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/pangakop"
+            android:layout_width="342dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="10dp"
+            android:alpha="0.5"
+            android:background="@drawable/button_color"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pangukol">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/special"
+                android:text="PANG-AKOP(LIGATURE)"
+                android:textColor="#4C2121"
+                android:textSize="20sp" />
+
+            <FrameLayout
+                android:layout_width="49dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/square">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_lock" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/padamdam"
+            android:layout_width="342dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="10dp"
+            android:alpha="0.5"
+            android:background="@drawable/button_color"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pangakop">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/special"
+                android:text="PADAMDAM(INTERJECTION)"
+                android:textColor="#4C2121"
+                android:textSize="20sp" />
+
+            <FrameLayout
+                android:layout_width="49dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/square">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_lock" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/pangawing"
+            android:layout_width="342dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="10dp"
+            android:alpha="0.5"
+            android:background="@drawable/button_color"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/padamdam">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/special"
+                android:text="PANGAWING(LINKING VERB)"
+                android:textColor="#4C2121"
+                android:textSize="20sp" />
+
+            <FrameLayout
+                android:layout_width="49dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/square">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_lock" />
+            </FrameLayout>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
 
 

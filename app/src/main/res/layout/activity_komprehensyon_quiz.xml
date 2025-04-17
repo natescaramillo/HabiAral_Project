@@ -14,7 +14,7 @@
         android:layout_marginBottom="16dp"
         android:backgroundTint="#EE4211"
         android:fontFamily="@font/source_serif"
-        android:text="Pagsusulit"
+        android:text="Sunod"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
