@@ -32,7 +32,7 @@
             android:gravity="center"
             android:text="About Us"
             android:textColor="#FFFFFF"
-            android:textSize="30sp"
+            android:textSize="20sp"
             app:layout_constraintTop_toTopOf="@id/viewHeader"
             app:layout_constraintBottom_toBottomOf="@id/viewHeader"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,17 +50,17 @@
 
         <LinearLayout
             android:id="@+id/linearAboutUs"
-            android:layout_width="321dp"
-            android:layout_height="wrap_content"
+            android:layout_width="326dp"
+            android:layout_height="161dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/button_color"
+            android:background="@drawable/search_bar"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:gravity="center_vertical"
-            app:layout_constraintTop_toBottomOf="@id/imageMascot"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/imageMascot">
 
             <TextView
                 android:id="@+id/textDescription"
@@ -89,17 +89,17 @@
 
         <LinearLayout
             android:id="@+id/linearOurTeam"
-            android:layout_width="321dp"
-            android:layout_height="wrap_content"
+            android:layout_width="326dp"
+            android:layout_height="166dp"
             android:layout_marginTop="12dp"
-            android:background="@drawable/button_color"
+            android:background="@drawable/search_bar"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:gravity="center_vertical"
-            app:layout_constraintTop_toBottomOf="@id/textViewOurTeamTitle"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/textViewOurTeamTitle">
 
             <TextView
                 android:id="@+id/textTeamDescription"
@@ -127,22 +127,22 @@
 
         <LinearLayout
             android:id="@+id/linearJoinUs"
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
+            android:layout_width="326dp"
+            android:layout_height="70dp"
             android:layout_marginTop="12dp"
-            android:background="@drawable/button_color"
+            android:background="@drawable/search_bar"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:gravity="center_vertical"
-            app:layout_constraintTop_toBottomOf="@id/textViewJoinUsTitle"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/textViewJoinUsTitle">
 
             <TextView
                 android:id="@+id/textFinalNote"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="257dp"
+                android:layout_height="62dp"
                 android:layout_margin="16dp"
                 android:layout_weight="1"
                 android:justificationMode="inter_word"

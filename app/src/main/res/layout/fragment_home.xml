@@ -15,24 +15,22 @@
 
     <TextView
         android:id="@+id/textView21"
-        android:layout_width="207dp"
+        android:layout_width="292dp"
         android:layout_height="84dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
         android:fontFamily="@font/special"
         android:text="Mabuhay! Salamat sa pag gamit!"
-        android:textColor="#FFFFFF"
-        android:textSize="25dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="190dp"
-        android:fontFamily="@font/special"
-        android:text="Mga Aralin"
         android:textColor="#4C2121"
         android:textSize="25dp" />
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/hi_tarshier" />
+
+
 
 
     <LinearLayout
@@ -164,6 +162,8 @@
                 android:textColor="#4C2121"
                 android:textSize="20dp" />
         </LinearLayout>
+
+
 
     </LinearLayout>
 
