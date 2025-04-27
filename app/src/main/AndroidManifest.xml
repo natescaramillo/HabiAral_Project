@@ -9,6 +9,9 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.HabiAral">
         <activity
+            android:name=".Pandiwa"
+            android:exported="false" />
+        <activity
             android:name=".Activity.AboutUsActivity"
             android:exported="false" />
         <activity

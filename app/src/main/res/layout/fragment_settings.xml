@@ -27,9 +27,9 @@
 
     <LinearLayout
         android:layout_width="423dp"
-        android:layout_height="176dp"
+        android:layout_height="251dp"
         android:layout_gravity="center"
-        android:layout_marginTop="-180dp"
+        android:layout_marginTop="-150dp"
         android:orientation="vertical">
 
         <FrameLayout
@@ -47,6 +47,42 @@
                 android:fontFamily="@font/poppins"
                 android:gravity="center"
                 android:text="About Us"
+                android:textColor="#4C2121" />
+
+        </FrameLayout>
+        <FrameLayout
+            android:id="@+id/guide"
+            android:layout_width="337dp"
+            android:layout_height="51dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_color"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="Guide"
+                android:textColor="#4C2121" />
+
+        </FrameLayout>
+        <FrameLayout
+            android:id="@+id/change_username"
+            android:layout_width="337dp"
+            android:layout_height="51dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_color"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="Change Username"
                 android:textColor="#4C2121" />
 
         </FrameLayout>
