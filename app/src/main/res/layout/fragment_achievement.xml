@@ -32,8 +32,8 @@
             android:id="@+id/view5"
             android:layout_width="92dp"
             android:layout_height="88dp"
-            android:layout_marginTop="40dp"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/rounded_button_beige" />
 
         <View
@@ -41,8 +41,8 @@
             android:layout_width="92dp"
             android:layout_height="88dp"
             android:layout_alignTop="@id/view5"
-            android:layout_toEndOf="@id/view5"
             android:layout_marginStart="18dp"
+            android:layout_toEndOf="@id/view5"
             android:background="@drawable/rounded_button_beige" />
 
         <View
@@ -50,8 +50,8 @@
             android:layout_width="92dp"
             android:layout_height="88dp"
             android:layout_alignTop="@id/view5"
-            android:layout_toEndOf="@id/view6"
             android:layout_marginStart="18dp"
+            android:layout_toEndOf="@id/view6"
             android:background="@drawable/rounded_button_beige" />
 
         <!-- Row 2 -->
