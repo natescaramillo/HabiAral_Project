@@ -35,10 +35,10 @@
 
     <LinearLayout
         android:id="@+id/kwento1"
-        android:layout_width="344dp"
-        android:layout_height="88dp"
+        android:layout_width="327dp"
+        android:layout_height="162dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/button_color"
+        android:background="@drawable/rose_bg"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
@@ -52,10 +52,12 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_weight="1"
             android:fontFamily="@font/special"
+            android:gravity="center"
             android:text="ANG ALAMAT NG ROSAS"
-            android:textColor="#4C2121"
+            android:textColor="#FFFFFF"
             android:textSize="20sp" />
 
         <FrameLayout
@@ -76,8 +78,8 @@
 
     <LinearLayout
         android:id="@+id/kwento2"
-        android:layout_width="342dp"
-        android:layout_height="92dp"
+        android:layout_width="327dp"
+        android:layout_height="146dp"
         android:layout_marginTop="10dp"
         android:alpha="0.5"
         android:background="@drawable/button_color"
@@ -117,8 +119,8 @@
 
     <LinearLayout
         android:id="@+id/kwento3"
-        android:layout_width="342dp"
-        android:layout_height="92dp"
+        android:layout_width="331dp"
+        android:layout_height="138dp"
         android:layout_marginTop="10dp"
         android:alpha="0.5"
         android:background="@drawable/button_color"
