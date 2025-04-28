@@ -54,20 +54,23 @@
                             android:layout_marginTop="30dp">
 
                             <ProgressBar
+                                android:id="@+id/progressBar"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:indeterminateOnly="false"
                                 android:max="100"
+                                android:progress="0"
+                                android:visibility="visible"
                                 android:progressDrawable="@drawable/custom_progressbar" />
 
                             <TextView
-                                android:id="@+id/progress1"
+                                android:id="@+id/progressPercentage"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="0%"
                                 android:textColor="#FFFFFF"
-                                android:textSize="25dp"
+                                android:textSize="25sp"
                                 android:textStyle="bold" />
                         </FrameLayout>
                     </LinearLayout>
@@ -112,6 +115,7 @@
                             android:layout_marginTop="30dp">
 
                             <ProgressBar
+                                android:id="@+id/progressBar2"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:indeterminateOnly="false"
@@ -119,13 +123,12 @@
                                 android:progressDrawable="@drawable/custom_progressbar" />
 
                             <TextView
-                                android:id="@+id/progress2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="0%"
                                 android:textColor="#FFFFFF"
-                                android:textSize="25dp"
+                                android:textSize="25sp"
                                 android:textStyle="bold" />
                         </FrameLayout>
                     </LinearLayout>
@@ -170,6 +173,7 @@
                             android:layout_marginTop="30dp">
 
                             <ProgressBar
+                                android:id="@+id/progressBar3"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:indeterminateOnly="false"
@@ -177,7 +181,6 @@
                                 android:progressDrawable="@drawable/custom_progressbar" />
 
                             <TextView
-                                android:id="@+id/progress3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
