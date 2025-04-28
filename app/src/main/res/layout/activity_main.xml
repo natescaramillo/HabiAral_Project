@@ -32,4 +32,27 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
         android:layout_gravity="bottom"/>
+
+    <!-- ProgressBar (Hidden by default) -->
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:indeterminateTint="#A27B5C"
+        android:visibility="gone" />
+
+    <!-- Waiting Text (Hidden by default) -->
+    <TextView
+        android:id="@+id/waiting_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/special"
+        android:text="Waiting for internet connection..."
+        android:textSize="18sp"
+        android:textColor="#A27B5C"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:visibility="gone" />
 </LinearLayout>
