@@ -107,6 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:layout_weight="1"
+                android:fontFamily="@font/special"
                 android:justificationMode="inter_word"
                 android:text="A dedicated team of designers, developers, and students creates HabiAral. Our constant efforts are directed at developing an app that promotes community and teamwork in addition to academic success. We appreciate ingenuity, commitment, and lifelong learning."
                 android:textAlignment="viewStart" />
@@ -145,6 +146,7 @@
                 android:layout_height="62dp"
                 android:layout_margin="16dp"
                 android:layout_weight="1"
+                android:fontFamily="@font/special"
                 android:justificationMode="inter_word"
                 android:text="Thank you for choosing HabiAral! We hope you enjoy using it as much as we enjoyed building it."
                 android:textAlignment="viewStart" />

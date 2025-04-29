@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
                 waitForInternetConnection();
             }, PROGRESS_BAR_DELAY);
         } else {
-            // Internet OK: continue after splash delay
             goToWelcome();
         }
     }

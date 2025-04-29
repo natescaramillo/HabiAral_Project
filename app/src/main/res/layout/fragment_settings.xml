@@ -22,7 +22,7 @@
         android:layout_gravity="center_horizontal"
         android:textColor="#FFFFFF"
         android:fontFamily="@font/special"
-        android:textSize="30dp"
+        android:textSize="20sp"
         android:text="Settings" />
 
     <LinearLayout

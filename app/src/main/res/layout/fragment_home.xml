@@ -23,7 +23,7 @@
         android:fontFamily="@font/special"
         android:text="Mabuhay! Salamat sa pag gamit!"
         android:textColor="#FFFFFF"
-        android:textSize="25dp" />
+        android:textSize="20dp" />
     <ImageView
         android:id="@+id/imageView7"
         android:layout_width="match_parent"

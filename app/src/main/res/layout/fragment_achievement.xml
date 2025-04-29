@@ -18,7 +18,7 @@
         android:layout_gravity="center_horizontal"
         android:text="Achievement"
         android:textColor="#FFFFFF"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:fontFamily="@font/special"
         android:gravity="center" />
 
@@ -28,13 +28,15 @@
         android:layout_marginTop="93dp">
 
         <!-- Row 1 -->
+
         <View
             android:id="@+id/view5"
             android:layout_width="92dp"
             android:layout_height="88dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="25dp"
             android:layout_marginTop="40dp"
-            android:background="@drawable/rounded_button_beige" />
+            android:background="@drawable/rounded_button_beige"
+            android:clickable="true" />
 
         <View
             android:id="@+id/view6"
@@ -54,7 +56,6 @@
             android:layout_toEndOf="@id/view6"
             android:background="@drawable/rounded_button_beige" />
 
-        <!-- Row 2 -->
         <View
             android:id="@+id/view8"
             android:layout_width="92dp"
@@ -64,7 +65,6 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/rounded_button_beige" />
 
-        <!-- Row 3 -->
 
         <View
             android:id="@+id/view9"
