@@ -15,15 +15,6 @@
         android:layout_gravity="top">
 
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="224dp"
-            android:layout_marginTop="-50dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/ellipse_23" />
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,15 +61,6 @@
             android:text="Magsimula"
             android:textColor="#4C2121"
             android:textSize="15dp" />
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-50dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/ellipse_24" />
 
 
     </FrameLayout>
