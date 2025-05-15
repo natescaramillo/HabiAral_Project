@@ -51,7 +51,6 @@ public class HomepageActivity extends AppCompatActivity {
             }
         });
     }
-
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()

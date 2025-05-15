@@ -53,44 +53,251 @@
             android:padding="16dp">
 
             <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="122dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/dictionary_words_box"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Salumpuwit"
+                    android:fontFamily="@font/special"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/volume"
+                    android:contentDescription="Speaker" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ay isang upuan na ginagamit upang umupo."
+                android:fontFamily="@font/special"
+                android:textStyle="italic"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="122dp"
                 android:layout_marginTop="10dp"
+                android:background="@drawable/dictionary_words_box"
                 android:orientation="vertical"
-                android:background="@drawable/search_bar" />
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Guniguni"
+                        android:fontFamily="@font/special"
+                        android:textColor="#000000"
+                        android:textSize="20sp" />
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/volume"
+                        android:contentDescription="Speaker" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Isang bagay na naisip o naimagine lamang o ilusyon"
+                    android:fontFamily="@font/special"
+                    android:textStyle="italic"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="122dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/dictionary_words_box"
                 android:orientation="vertical"
-                android:background="@drawable/search_bar" />
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Pagsamo"
+                        android:fontFamily="@font/special"
+                        android:textColor="#000000"
+                        android:textSize="20sp" />
+                    <ImageView
+                        android:id="@+id/imageView5"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/volume"
+                        android:contentDescription="Speaker" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Taos-pusong pakiusap o pagmamakaawa."
+                    android:fontFamily="@font/special"
+                    android:textStyle="italic"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="122dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/dictionary_words_box"
                 android:orientation="vertical"
-                android:background="@drawable/search_bar"  />
+                android:padding="12dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Tadhana"
+                        android:fontFamily="@font/special"
+                        android:textColor="#000000"
+                        android:textSize="20sp" />
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/volume"
+                        android:contentDescription="Speaker" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Isang hindi maiiwasang pangyayari o kapalaran."
+                    android:fontFamily="@font/special"
+                    android:textStyle="italic"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="122dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/dictionary_words_box"
                 android:orientation="vertical"
-                android:background="@drawable/search_bar"  />
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Alingawngaw"
+                        android:fontFamily="@font/special"
+                        android:textColor="#000000"
+                        android:textSize="20sp" />
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/volume"
+                        android:contentDescription="Speaker" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pag-uulit o pagbalik ng tunog."
+                    android:fontFamily="@font/special"
+                    android:textStyle="italic"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="122dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/dictionary_words_box"
                 android:orientation="vertical"
-                android:background="@drawable/search_bar"  />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="122dp"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical"
-                android:background="@drawable/search_bar"  />
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Kasindak-sindak"
+                        android:fontFamily="@font/special"
+                        android:textColor="#000000"
+                        android:textSize="20sp" />
+                    <ImageView
+                        android:id="@+id/imageView4"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/volume"
+                        android:contentDescription="Speaker" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Labis na nakakatakot o nakakagulat."
+                    android:fontFamily="@font/special"
+                    android:textStyle="italic"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
