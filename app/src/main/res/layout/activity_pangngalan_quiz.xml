@@ -24,22 +24,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/answer2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/answer_option_bg"
-        android:text="Answer 2"
-        app:layout_constraintEnd_toEndOf="@id/answer1"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/answer1"
-        app:layout_constraintTop_toBottomOf="@id/answer1" />
-
     <View
         android:id="@+id/bottomBar"
-        android:layout_width="410dp"
-        android:layout_height="410dp"
+        android:layout_width="411dp"
+        android:layout_height="408dp"
         android:layout_marginBottom="4dp"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -83,17 +71,16 @@
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
     <Button
-        android:id="@+id/nextButton"
-        android:layout_width="wrap_content"
+        android:id="@+id/answer2"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/rounded_button_beige"
-        android:text="Sunod"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/answer3"
-        android:fontFamily="@font/special"/>
+        android:layout_marginTop="20dp"
+        android:background="@drawable/answer_option_bg"
+        android:text="Answer 2"
+        app:layout_constraintEnd_toEndOf="@id/answer1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/answer1"
+        app:layout_constraintTop_toBottomOf="@id/answer1" />
 
     <Button
         android:id="@+id/answer3"
@@ -106,6 +93,20 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/answer1"
         app:layout_constraintTop_toBottomOf="@id/answer2" />
+
+    <Button
+        android:id="@+id/nextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/rounded_button_beige"
+        android:text="Sunod"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/answer3"
+        android:fontFamily="@font/special"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
