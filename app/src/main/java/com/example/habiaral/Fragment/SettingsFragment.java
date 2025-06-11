@@ -68,7 +68,7 @@ public class SettingsFragment extends Fragment {
 
         AlertDialog dialog = new AlertDialog.Builder(requireContext()) // or getActivity()
                 .setView(dialogView)
-                .setCancelable(false)
+                .setCancelable(true)
                 .create();
 
         buttonConfirm.setOnClickListener(v -> {
@@ -81,7 +81,6 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        // Cancel button logic
         buttonCancel.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
