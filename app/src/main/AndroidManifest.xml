@@ -68,6 +68,7 @@
         <activity android:name=".KayarianNgPangungusap.Lessons.Tambalan" />
         <activity android:name=".KayarianNgPangungusap.Lessons.Hugnayan" />
         <activity android:name=".KayarianNgPangungusap.Lessons.Langkapan" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangngalanQuiz" />
 
     </application>
 
