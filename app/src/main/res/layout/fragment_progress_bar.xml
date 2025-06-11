@@ -217,5 +217,5 @@
         android:textColor="#FFFFFF"
         android:fontFamily="@font/special"
         android:textSize="20sp"
-        android:text="Progress" />
+        android:text="Katayuan" />
 </FrameLayout>

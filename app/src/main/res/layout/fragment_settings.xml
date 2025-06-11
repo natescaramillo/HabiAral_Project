@@ -46,7 +46,7 @@
                 android:layout_height="match_parent"
                 android:fontFamily="@font/poppins"
                 android:gravity="center"
-                android:text="About Us"
+                android:text="Tungkol sa Amin"
                 android:textColor="#4C2121" />
 
         </FrameLayout>
@@ -64,7 +64,7 @@
                 android:layout_height="match_parent"
                 android:fontFamily="@font/poppins"
                 android:gravity="center"
-                android:text="Guide"
+                android:text="Gabay"
                 android:textColor="#4C2121" />
 
         </FrameLayout>
@@ -82,7 +82,7 @@
                 android:layout_height="match_parent"
                 android:fontFamily="@font/poppins"
                 android:gravity="center"
-                android:text="Change Username"
+                android:text="Palitan ang Palayaw"
                 android:textColor="#4C2121" />
 
         </FrameLayout>
@@ -101,7 +101,7 @@
                 android:layout_height="match_parent"
                 android:fontFamily="@font/poppins"
                 android:gravity="center"
-                android:text="Exit Application"
+                android:text="Umalis"
                 android:textColor="#4C2121" />
         </FrameLayout>
 

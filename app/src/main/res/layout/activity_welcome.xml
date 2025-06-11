@@ -32,7 +32,7 @@
                 android:elevation="10dp"
                 android:fontFamily="@font/special"
                 android:gravity="center"
-                android:text="Welcome to"
+                android:text="Maligayang Pagdating sa"
                 android:textColor="#A27B5C"
                 android:textSize="40sp" />
 

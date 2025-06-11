@@ -30,7 +30,7 @@
             android:layout_marginTop="20dp"
             android:fontFamily="@font/special"
             android:gravity="center"
-            android:text="About Us"
+            android:text="Tungkol sa Amin"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             app:layout_constraintTop_toTopOf="@id/viewHeader"
