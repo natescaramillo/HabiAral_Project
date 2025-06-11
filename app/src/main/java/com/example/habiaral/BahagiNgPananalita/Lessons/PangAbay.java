@@ -21,7 +21,7 @@ public class PangAbay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pangabay_lesson);
 
-        unlockButton = findViewById(R.id.UnlockButtonPangAbay);
+        unlockButton = findViewById(R.id.UnlockButtonPangabay);
 
         unlockButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,7 +38,7 @@ public class PangAbay extends AppCompatActivity {
         editor.putBoolean("PangAbayDone", true);
         editor.apply();
 
-        Toast.makeText(this, "Next Lesson Unlocked: Pangatnig!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Pwede mo nang simulan ang susunod na aralin!: Pangatnig!", Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(PangAbay.this, BahagiNgPananalita.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

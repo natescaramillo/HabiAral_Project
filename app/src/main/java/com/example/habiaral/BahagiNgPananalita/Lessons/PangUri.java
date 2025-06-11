@@ -21,7 +21,7 @@ public class PangUri extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_panguri_lesson);
 
-        unlockButton = findViewById(R.id.UnlockButtonPangUri);
+        unlockButton = findViewById(R.id.UnlockButtonPanguri);
 
         unlockButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -21,7 +21,7 @@ public class PangUkol extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pangukol_lesson);
 
-        unlockButton = findViewById(R.id.UnlockButtonPangUkol);
+        unlockButton = findViewById(R.id.UnlockButtonPangukol);
 
         unlockButton.setOnClickListener(new View.OnClickListener() {
             @Override

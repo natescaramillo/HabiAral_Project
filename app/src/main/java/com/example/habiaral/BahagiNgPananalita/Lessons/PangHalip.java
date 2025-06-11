@@ -21,7 +21,7 @@ public class PangHalip extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_panghalip_lesson);
 
-        unlockButton = findViewById(R.id.UnlockButtonPangHalip);
+        unlockButton = findViewById(R.id.UnlockButtonPanghalip);
 
         unlockButton.setOnClickListener(new View.OnClickListener() {
             @Override

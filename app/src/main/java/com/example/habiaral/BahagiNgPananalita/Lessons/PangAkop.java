@@ -21,7 +21,7 @@ public class PangAkop extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pangakop_lesson);
 
-        unlockButton = findViewById(R.id.UnlockButtonPangAkop);
+        unlockButton = findViewById(R.id.UnlockButtonPangakop);
 
         unlockButton.setOnClickListener(new View.OnClickListener() {
             @Override
