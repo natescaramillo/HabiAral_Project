@@ -1,4 +1,4 @@
-package com.example.habiaral.BahagiNgPananalita.Lessons;
+package com.example.habiaral.BahagiNgPananalita.Quiz;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,35 +12,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.R;
 
-public class PangAkop extends AppCompatActivity {
+public class PandiwaQuiz extends AppCompatActivity {
 
-    Button unlockButton;
+    Button nextButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pangakop_lesson);
+        setContentView(R.layout.activity_pandiwa_quiz);
 
-        unlockButton = findViewById(R.id.UnlockButtonPangakop);
+        nextButton = findViewById(R.id.pandiwaNextButton);
 
-        unlockButton.setOnClickListener(new View.OnClickListener() {
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                unlockLesson();
+                unlockNextLesson();
             }
         });
     }
 
-    private void unlockLesson() {
+    private void unlockNextLesson() {
         SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putBoolean("PangAkopDone", true);
+        editor.putBoolean("PandiwaDone", true);
         editor.apply();
 
-        Toast.makeText(this, "Next Lesson Unlocked: Padamdam!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Next Lesson Unlocked: PangUri!", Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(PangAkop.this, BahagiNgPananalita.class);
+        Intent intent = new Intent(PandiwaQuiz.this, BahagiNgPananalita.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
 

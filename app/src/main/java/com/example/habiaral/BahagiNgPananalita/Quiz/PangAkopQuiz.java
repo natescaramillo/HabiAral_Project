@@ -1,4 +1,4 @@
-package com.example.habiaral.BahagiNgPananalita.Lessons;
+package com.example.habiaral.BahagiNgPananalita.Quiz;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,35 +12,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.R;
 
-public class PangUkol extends AppCompatActivity {
+public class PangAkopQuiz extends AppCompatActivity {
 
-    Button unlockButton;
+    Button nextButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pangukol_lesson);
+        setContentView(R.layout.activity_pangakop_quiz);
 
-        unlockButton = findViewById(R.id.UnlockButtonPangukol);
+        nextButton = findViewById(R.id.pangakopNextButton);
 
-        unlockButton.setOnClickListener(new View.OnClickListener() {
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                unlockLesson();
+                unlockNextLesson();
             }
         });
     }
 
-    private void unlockLesson() {
+    private void unlockNextLesson() {
         SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putBoolean("PangUkolDone", true);
+        editor.putBoolean("PangAkopDone", true);
         editor.apply();
 
-        Toast.makeText(this, "Next Lesson Unlocked: Pang-Akop!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Next Lesson Unlocked: Padamdam!", Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(PangUkol.this, BahagiNgPananalita.class);
+        Intent intent = new Intent(PangAkopQuiz.this, BahagiNgPananalita.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
 

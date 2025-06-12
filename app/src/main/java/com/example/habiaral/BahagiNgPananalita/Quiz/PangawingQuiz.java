@@ -1,4 +1,4 @@
-package com.example.habiaral.BahagiNgPananalita.Lessons;
+package com.example.habiaral.BahagiNgPananalita.Quiz;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,26 +12,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.R;
 
-public class Pangawing extends AppCompatActivity {
+public class PangawingQuiz extends AppCompatActivity {
 
-    Button unlockButton;
+    Button nextButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pangawing_lesson);
+        setContentView(R.layout.activity_pangawing_quiz);
 
-        unlockButton = findViewById(R.id.UnlockButtonPangawing);
+        nextButton = findViewById(R.id.pangawingNextButton);
 
-        unlockButton.setOnClickListener(new View.OnClickListener() {
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                unlockLesson();
+                completeAllLessons();
             }
         });
     }
 
-    private void unlockLesson() {
+    private void completeAllLessons() {
         SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -40,7 +40,7 @@ public class Pangawing extends AppCompatActivity {
 
         Toast.makeText(this, "Congratulations! You have completed all lessons!", Toast.LENGTH_LONG).show();
 
-        Intent intent = new Intent(Pangawing.this, BahagiNgPananalita.class);
+        Intent intent = new Intent(PangawingQuiz.this, BahagiNgPananalita.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
 

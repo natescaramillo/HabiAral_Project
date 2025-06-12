@@ -8,16 +8,16 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.BahagiNgPananalita.Lessons.Padamdam;
-import com.example.habiaral.BahagiNgPananalita.Lessons.Pandiwa;
-import com.example.habiaral.BahagiNgPananalita.Lessons.PangAbay;
-import com.example.habiaral.BahagiNgPananalita.Lessons.PangAkop;
-import com.example.habiaral.BahagiNgPananalita.Lessons.PangHalip;
-import com.example.habiaral.BahagiNgPananalita.Lessons.PangUkol;
-import com.example.habiaral.BahagiNgPananalita.Lessons.PangUri;
-import com.example.habiaral.BahagiNgPananalita.Lessons.Pangatnig;
-import com.example.habiaral.BahagiNgPananalita.Lessons.Pangawing;
-import com.example.habiaral.BahagiNgPananalita.Lessons.Pangngalan;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PadamdamLesson;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PangAbayLesson;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PangAkopLesson;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PangHalipLesson;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PangUkolLesson;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PangUriLesson;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PangatnigLesson;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PangawingLesson;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PangngalanLesson;
 
 import com.example.habiaral.R;
 
@@ -78,16 +78,16 @@ public class BahagiNgPananalita extends AppCompatActivity {
         unlockButton(btnPadamdam, pangAkopDone, padamdamLock);
         unlockButton(btnPangawing, padamdamDone, pangawingLock);
 
-        btnPangngalan.setOnClickListener(v -> startActivity(new Intent(this, Pangngalan.class)));
-        btnPandiwa.setOnClickListener(v -> startActivity(new Intent(this, Pandiwa.class)));
-        btnPangUri.setOnClickListener(v -> startActivity(new Intent(this, PangUri.class)));
-        btnPangHalip.setOnClickListener(v -> startActivity(new Intent(this, PangHalip.class)));
-        btnPangAbay.setOnClickListener(v -> startActivity(new Intent(this, PangAbay.class)));
-        btnPangatnig.setOnClickListener(v -> startActivity(new Intent(this, Pangatnig.class)));
-        btnPangukol.setOnClickListener(v -> startActivity(new Intent(this, PangUkol.class)));
-        btnPangAkop.setOnClickListener(v -> startActivity(new Intent(this, PangAkop.class)));
-        btnPadamdam.setOnClickListener(v -> startActivity(new Intent(this, Padamdam.class)));
-        btnPangawing.setOnClickListener(v -> startActivity(new Intent(this, Pangawing.class)));
+        btnPangngalan.setOnClickListener(v -> startActivity(new Intent(this, PangngalanLesson.class)));
+        btnPandiwa.setOnClickListener(v -> startActivity(new Intent(this, PandiwaLesson.class)));
+        btnPangUri.setOnClickListener(v -> startActivity(new Intent(this, PangUriLesson.class)));
+        btnPangHalip.setOnClickListener(v -> startActivity(new Intent(this, PangHalipLesson.class)));
+        btnPangAbay.setOnClickListener(v -> startActivity(new Intent(this, PangAbayLesson.class)));
+        btnPangatnig.setOnClickListener(v -> startActivity(new Intent(this, PangatnigLesson.class)));
+        btnPangukol.setOnClickListener(v -> startActivity(new Intent(this, PangUkolLesson.class)));
+        btnPangAkop.setOnClickListener(v -> startActivity(new Intent(this, PangAkopLesson.class)));
+        btnPadamdam.setOnClickListener(v -> startActivity(new Intent(this, PadamdamLesson.class)));
+        btnPangawing.setOnClickListener(v -> startActivity(new Intent(this, PangawingLesson.class)));
     }
 
     private void unlockButton(LinearLayout layout, boolean isUnlocked, FrameLayout lock) {

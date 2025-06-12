@@ -21,7 +21,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pangngalan_quiz);
 
-        nextButton = findViewById(R.id.nextButton);
+        nextButton = findViewById(R.id.pangngalanNextButton);
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +43,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         Intent intent = new Intent(PangngalanQuiz.this, BahagiNgPananalita.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+
         finish();
     }
 }

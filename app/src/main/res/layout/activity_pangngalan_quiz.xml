@@ -94,7 +94,7 @@
         app:layout_constraintTop_toBottomOf="@id/answer2" />
 
     <Button
-        android:id="@+id/nextButton"
+        android:id="@+id/pangngalanNextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"

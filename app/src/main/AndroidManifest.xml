@@ -51,16 +51,26 @@
         <activity android:name=".Palaro.PalaroBaguhan" />
         <activity android:name=".Palaro.PalaroHusay" />
         <activity android:name=".Palaro.PalaroDalubhasa" />
-        <activity android:name=".BahagiNgPananalita.Lessons.Pangngalan" />
-        <activity android:name=".BahagiNgPananalita.Lessons.Pandiwa" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangUri" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangHalip" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangAbay" />
-        <activity android:name=".BahagiNgPananalita.Lessons.Pangatnig" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangUkol" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangAkop" />
-        <activity android:name=".BahagiNgPananalita.Lessons.Padamdam" />
-        <activity android:name=".BahagiNgPananalita.Lessons.Pangawing" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangngalanLesson" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangngalanQuiz" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PandiwaLesson" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PandiwaQuiz" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangUriLesson" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangUriQuiz" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangHalipLesson" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangHalipQuiz" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangAbayLesson" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangAbayQuiz" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangatnigLesson" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangatnigQuiz" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangUkolLesson" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangUkolQuiz" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangAkopLesson" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangAkopQuiz" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PadamdamLesson" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PadamdamQuiz" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangawingLesson" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangawingQuiz" />
         <activity android:name=".Komprehensyon.Stories.Kwento1" />
         <activity android:name=".Komprehensyon.Stories.Kwento2" />
         <activity android:name=".Komprehensyon.Stories.Kwento3" />
@@ -68,8 +78,6 @@
         <activity android:name=".KayarianNgPangungusap.Lessons.Tambalan" />
         <activity android:name=".KayarianNgPangungusap.Lessons.Hugnayan" />
         <activity android:name=".KayarianNgPangungusap.Lessons.Langkapan" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangngalanQuiz" />
-
     </application>
 
 </manifest>

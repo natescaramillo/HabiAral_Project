@@ -7,24 +7,24 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
+import com.example.habiaral.BahagiNgPananalita.Quiz.PangAbayQuiz;
 import com.example.habiaral.R;
 
-public class Pangngalan extends AppCompatActivity {
+public class PangAbayLesson extends AppCompatActivity {
 
     Button unlockButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pangngalan_lesson);
+        setContentView(R.layout.activity_pangabay_lesson);
 
-        unlockButton = findViewById(R.id.UnlockButtonPangngalan);
+        unlockButton = findViewById(R.id.UnlockButtonPangabay);
 
         unlockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Pangngalan.this, PangngalanQuiz.class);
+                Intent intent = new Intent(PangAbayLesson.this, PangAbayQuiz.class);
                 startActivity(intent);
             }
         });

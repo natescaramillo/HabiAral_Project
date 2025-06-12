@@ -1,11 +1,10 @@
-package com.example.habiaral.BahagiNgPananalita.Lessons;
+package com.example.habiaral.BahagiNgPananalita.Quiz;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,35 +12,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.R;
 
-public class Pandiwa extends AppCompatActivity {
+public class PangUkolQuiz extends AppCompatActivity {
 
-    Button unlockButton;
+    Button nextButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pandiwa_lesson);
+        setContentView(R.layout.activity_pangukol_quiz);
 
-        unlockButton = findViewById(R.id.UnlockButtonPandiwa);
+        nextButton = findViewById(R.id.pangukolNextButton);
 
-        unlockButton.setOnClickListener(new View.OnClickListener() {
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                unlockLesson();
+                unlockNextLesson();
             }
         });
     }
 
-    private void unlockLesson() {
+    private void unlockNextLesson() {
         SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putBoolean("PandiwaDone", true);
+        editor.putBoolean("PangUkolDone", true);
         editor.apply();
 
-        Toast.makeText(this, "Next Lesson Unlocked: PangUri!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Next Lesson Unlocked: Pang-Akop!", Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(Pandiwa.this, BahagiNgPananalita.class);
+        Intent intent = new Intent(PangUkolQuiz.this, BahagiNgPananalita.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
 
