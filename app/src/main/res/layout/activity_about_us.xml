@@ -70,7 +70,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/special"
                 android:justificationMode="inter_word"
-                android:text="At HabiAral, we strive to empower learners through personalized educational tools. Our goal is to provide students with an intuitive, easy-to-use platform that helps them track their academic progress, learn effectively, and develop new skills at their own pace."
+                android:text="Sa HabiAral, layunin naming bigyang-kapangyarihan ang mga mag-aaral sa pamamagitan ng madaling gamiting plataporma para sa epektibong pagkatuto at pagsubaybay ng kanilang pag-unlad."
                 android:textAlignment="viewStart" />
         </LinearLayout>
 
@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:fontFamily="@font/special"
-            android:text="OUR TEAM"
+            android:text="AMING GRUPO"
             android:textColor="#4C2121"
             android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@id/linearAboutUs"
@@ -109,7 +109,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/special"
                 android:justificationMode="inter_word"
-                android:text="A dedicated team of designers, developers, and students creates HabiAral. Our constant efforts are directed at developing an app that promotes community and teamwork in addition to academic success. We appreciate ingenuity, commitment, and lifelong learning."
+                    android:text="Ang HabiAral ay binubuo ng mga estudyanteng designer at developer upang itaguyod ang pagkatuto, pagtutulungan, at tagumpay sa larangan ng edukasyong Pilipino na naglalayong paunlarin ang kasanayan sa pagbuo ng pangungusap at pag-unawa."
                 android:textAlignment="viewStart" />
         </LinearLayout>
 
@@ -119,7 +119,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:fontFamily="@font/special"
-            android:text="JOIN US ON OUR JOURNEY"
+            android:text="SAMAHAN NIYO KAMI"
             android:textColor="#4C2121"
             android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@id/linearOurTeam"
@@ -148,7 +148,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/special"
                 android:justificationMode="inter_word"
-                android:text="Thank you for choosing HabiAral! We hope you enjoy using it as much as we enjoyed building it."
+                android:text="Salamat sa pagpili ng HabiAral! Nawa’y maging kapaki-pakinabang ito sa inyo gaya ng kasiyahang nadama namin sa paggawa nito"
                 android:textAlignment="viewStart" />
         </LinearLayout>
 
