@@ -12,7 +12,7 @@
         android:id="@+id/questionTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/rounded_rect"
         android:backgroundTint="#DDB28D"
         android:fontFamily="@font/special"
@@ -26,8 +26,8 @@
 
     <View
         android:id="@+id/bottomBar"
-        android:layout_width="391dp"
-        android:layout_height="421dp"
+        android:layout_width="483dp"
+        android:layout_height="418dp"
         android:layout_marginBottom="4dp"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
