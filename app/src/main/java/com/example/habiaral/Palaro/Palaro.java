@@ -17,9 +17,9 @@ public class Palaro extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_palaro);
 
-        button1 = findViewById(R.id.button);
-        button2 = findViewById(R.id.button2);
-        button3 = findViewById(R.id.button3);
+        //0button1 = findViewById(R.id.button);
+        //button2 = findViewById(R.id.button2);
+        //button3 = findViewById(R.id.button3);
 
         button1.setOnClickListener(v -> {
             Intent intent = new Intent(Palaro.this, PalaroBaguhan.class);

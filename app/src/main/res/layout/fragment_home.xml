@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".Fragment.HomeFragment">
 
     <View
@@ -65,7 +66,7 @@
                 android:fontFamily="@font/special"
                 android:gravity="center"
                 android:text="Bahagi ng pananalita"
-                android:textColor="#4C2121"
+                android:textColor="#ffffff"
                 android:textSize="20dp" />
         </LinearLayout>
 
@@ -96,7 +97,7 @@
                 android:fontFamily="@font/special"
                 android:gravity="center"
                 android:text="Pag-Unawa"
-                android:textColor="#4C2121"
+                android:textColor="#FFFFFF"
                 android:textSize="20dp" />
         </LinearLayout>
 

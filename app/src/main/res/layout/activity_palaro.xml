@@ -10,72 +10,213 @@
 
 
     <FrameLayout
-        android:id="@+id/frameLayout5"
+        android:id="@+id/frameLayout_palaro"
         android:layout_width="438dp"
         android:layout_height="541dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.518"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.568">
+        app:layout_constraintVertical_bias="0.563">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="426dp"
+            android:layout_height="590dp">
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="350dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="100dp"
-            android:background="@drawable/button_color"
-            android:text="Baguhan"
-            android:textColor="@android:color/white"
-            android:textSize="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.491"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.209"
-            tools:ignore="MissingConstraints" />
+            <View
+                android:id="@+id/view15"
+                android:layout_width="266dp"
+                android:layout_height="53dp"
+                android:background="@drawable/energy_bar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.418"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.122" />
 
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="43dp"
+                android:layout_height="37dp"
+                app:layout_constraintBottom_toBottomOf="@+id/view15"
+                app:layout_constraintEnd_toEndOf="@+id/view15"
+                app:layout_constraintHorizontal_bias="0.13"
+                app:layout_constraintStart_toStartOf="@+id/view15"
+                app:layout_constraintTop_toTopOf="@+id/view15"
+                app:srcCompat="@drawable/bolt" />
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="350dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="210dp"
-            android:background="@drawable/button_color"
-            android:text="HUSAY"
-            android:textColor="@android:color/white"
-            android:textSize="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.491"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.32"
-            tools:ignore="MissingConstraints" />
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="49dp"
+                android:layout_height="16dp"
+                android:fontFamily="@font/special"
+                android:text="Enerhiya"
+                android:textColor="#FC4D2B06"
+                android:textSize="10dp"
+                app:layout_constraintEnd_toEndOf="@+id/view15"
+                app:layout_constraintHorizontal_bias="0.331"
+                app:layout_constraintStart_toStartOf="@+id/view15"
+                tools:layout_editor_absoluteY="80dp" />
 
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="350dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="320dp"
-            android:background="@drawable/button_color"
-            android:text="DALUBHASA"
-            android:textColor="@android:color/white"
-            android:textSize="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.491"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.439"
-            tools:ignore="MissingConstraints" />
+            <TextView
+                android:id="@+id/total_energy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="@font/special"
+                android:text="/100"
+                android:textColor="#FC4D2B06"
+                android:textSize="15dp"
+                app:layout_constraintEnd_toEndOf="@+id/view15"
+                tools:layout_editor_absoluteY="77dp" />
 
+            <TextView
+                android:id="@+id/current_energy2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="64dp"
+                android:fontFamily="@font/special"
+                android:text="100"
+                android:textColor="#FC4D2B06"
+                android:textSize="15dp"
+                app:layout_constraintEnd_toEndOf="@+id/view15"
+                tools:layout_editor_absoluteY="77dp" />
+
+            <ProgressBar
+                android:id="@+id/palaro_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="290dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="36dp"
+                android:progressDrawable="@drawable/custom_palaro_bar"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_editor_absoluteY="139dp" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="73dp"
+                android:layout_height="71dp"
+                app:srcCompat="@drawable/achievement"
+                tools:layout_editor_absoluteX="294dp"
+                tools:layout_editor_absoluteY="121dp" />
+
+            <View
+                android:id="@+id/view14"
+                android:layout_width="285dp"
+                android:layout_height="91dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:background="@drawable/button_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.475"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/palaro_progress"
+                app:layout_constraintVertical_bias="0.165" />
+
+            <View
+                android:id="@+id/view16"
+                android:layout_width="285dp"
+                android:layout_height="91dp"
+                android:background="@drawable/button_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view14"
+                app:layout_constraintVertical_bias="0.05" />
+
+            <View
+                android:id="@+id/view17"
+                android:layout_width="285dp"
+                android:layout_height="91dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/button_color"
+                app:layout_constraintEnd_toEndOf="@+id/view16"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/view16"
+                app:layout_constraintTop_toBottomOf="@+id/view16" />
+
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:text="Baguhan"
+                android:textColor="#ffffff"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/view14"
+                app:layout_constraintHorizontal_bias="0.51"
+                app:layout_constraintStart_toStartOf="@+id/view14"
+                tools:layout_editor_absoluteY="258dp" />
+
+            <TextView
+                android:id="@+id/textView26"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:text="Husay"
+                android:textColor="#ffffff"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/view16"
+                app:layout_constraintHorizontal_bias="0.515"
+                app:layout_constraintStart_toStartOf="@+id/view16"
+                tools:layout_editor_absoluteY="355dp" />
+
+            <TextView
+                android:id="@+id/textView28"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:text="points: 400"
+                android:textColor="#ffffff"
+                android:textSize="10dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView26"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/textView26"
+                tools:layout_editor_absoluteY="381dp" />
+
+            <TextView
+                android:id="@+id/textView29"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:text="points: 800"
+                android:textColor="#ffffff"
+                android:textSize="10dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView27"
+                app:layout_constraintHorizontal_bias="0.574"
+                app:layout_constraintStart_toStartOf="@+id/textView27"
+                tools:layout_editor_absoluteY="469dp" />
+
+            <TextView
+                android:id="@+id/textView27"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:text="Dalubhasa"
+                android:textColor="#ffffff"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/view17"
+                app:layout_constraintStart_toStartOf="@+id/view17"
+                tools:layout_editor_absoluteY="443dp" />
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="40dp"
+                android:layout_height="38dp"
+                app:srcCompat="@drawable/game_mechanics"
+                tools:layout_editor_absoluteX="327dp"
+                tools:layout_editor_absoluteY="5dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 
     <View
@@ -94,14 +235,14 @@
         android:id="@+id/textView18"
         android:layout_width="112dp"
         android:layout_height="32dp"
-        android:layout_marginTop="24dp"
         android:layout_marginBottom="28dp"
         android:fontFamily="@font/special"
         android:text="Palaro"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
         android:textColor="#FFFFFF"
-        android:textSize="25dp"
-        android:gravity="center
-"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintHorizontal_bias="0.49"
