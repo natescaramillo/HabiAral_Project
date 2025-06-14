@@ -75,14 +75,15 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="match_parent"
+        android:layout_width="286dp"
         android:layout_height="62dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="100dp"
+        android:layout_gravity="center"
         android:background="@drawable/button_color"
         android:fontFamily="@font/special"
         android:text="Magsimula"
-        android:textColor="#4C2121"
+        android:textColor="#FFFFFF"
         android:textSize="15sp" />
 </LinearLayout>
