@@ -148,7 +148,7 @@
         app:layout_constraintTop_toTopOf="@+id/bottomBar" />
 
     <EditText
-        android:id="@+id/answerInput"
+        android:id="@+id/dalubhasa_answer"
         android:layout_width="341dp"
         android:layout_height="161dp"
         android:layout_marginStart="24dp"

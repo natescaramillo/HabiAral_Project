@@ -143,81 +143,96 @@
         app:layout_constraintTop_toTopOf="@+id/bottomBar" />
 
 
-    <Button
-        android:id="@+id/answer1"
+    <TextView
+        android:id="@+id/baguhan_answer1"
         android:layout_width="99dp"
         android:layout_height="47dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/answer_option_bg"
+        android:backgroundTint="#FFEFEA"
+        android:fontFamily="@font/special"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-    <Button
-        android:id="@+id/answer5"
+
+    <TextView
+        android:id="@+id/baguhan_answer2"
         android:layout_width="99dp"
         android:layout_height="47dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="112dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/answer_option_bg"
+        android:backgroundTint="#FFEFEA"
+        android:fontFamily="@font/special"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-    <Button
-        android:id="@+id/answer6"
-        android:layout_width="99dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/answer_option_bg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timerBar" />
-
-    <Button
-        android:id="@+id/answer8"
-        android:layout_width="99dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/answer_option_bg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timerBar" />
-
-    <Button
-        android:id="@+id/answer7"
+    <TextView
+        android:id="@+id/baguhan_answer3"
         android:layout_width="99dp"
         android:layout_height="47dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="112dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/answer_option_bg"
+        android:backgroundTint="#FFEFEA"
+        android:fontFamily="@font/special"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-    <Button
-        android:id="@+id/answer9"
+    <TextView
+        android:id="@+id/baguhan_answer4"
         android:layout_width="99dp"
         android:layout_height="47dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="112dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/answer_option_bg"
+        android:backgroundTint="#FFEFEA"
+        android:fontFamily="@font/special"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
+
+    <TextView
+        android:id="@+id/baguhan_answer5"
+        android:layout_width="99dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/answer_option_bg"
+        android:backgroundTint="#FFEFEA"
+        android:fontFamily="@font/special"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timerBar" />
+
+    <TextView
+        android:id="@+id/baguhan_answer6"
+        android:layout_width="99dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/answer_option_bg"
+        android:backgroundTint="#FFEFEA"
+        android:fontFamily="@font/special"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.987"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timerBar" />
+
+
 
     <Button
         android:id="@+id/UnlockButtonPalaro"
