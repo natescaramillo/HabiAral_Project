@@ -2,146 +2,297 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/questionDalubhasa"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background">
+    android:background="@drawable/question_bg_drawable"
+    tools:context=".Activity.PalaroHusay">
 
-
-    <Button
-        android:id="@+id/saveExit1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#EE4211"
-        android:fontFamily="@font/source_serif"
-        android:text="Itala at Umalis"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
-
-    <Button
-        android:id="@+id/finished1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#EE4211"
-        android:fontFamily="@font/source_serif"
-        android:text="Tapos"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
+    <TextView
+        android:id="@+id/instructionText"
+        android:layout_width="333dp"
+        android:layout_height="155dp"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_rect"
+        android:backgroundTint="#FFEFEA"
+        android:fontFamily="@font/special"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="46dp"
+        tools:layout_editor_absoluteY="52dp" />
 
 
     <ImageView
-        android:id="@+id/t1"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_gravity="end|bottom"
-        android:background="@drawable/tarsier_removebg"
+        android:id="@+id/characterIcon"
+        android:layout_width="207dp"
+        android:layout_height="192dp"
+        android:src="@drawable/tarsier_removebg"
+        tools:layout_editor_absoluteX="204dp"
+        tools:layout_editor_absoluteY="109dp" />
+
+    <View
+        android:id="@+id/bottomBar"
+        android:layout_width="394dp"
+        android:layout_height="478dp"
+        android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.157"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.18"
+        app:layout_constraintStart_toStartOf="@+id/bottomBar"
+        app:layout_constraintTop_toTopOf="@+id/bottomBar"
+        app:layout_constraintVertical_bias="0.024"
+        app:srcCompat="@drawable/icons8_heart_48" />
+
+    <ImageView
+        android:id="@+id/imageView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintStart_toEndOf="@+id/imageView9"
+        app:layout_constraintTop_toTopOf="@+id/bottomBar"
+        app:srcCompat="@drawable/icons8_heart_48" />
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintStart_toEndOf="@+id/imageView10"
+        app:layout_constraintTop_toTopOf="@+id/bottomBar"
+        app:srcCompat="@drawable/icons8_heart_48" />
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintStart_toEndOf="@+id/imageView11"
+        app:layout_constraintTop_toTopOf="@+id/bottomBar"
+        app:srcCompat="@drawable/icons8_heart_48" />
+
+    <ImageView
+        android:id="@+id/imageView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+        app:layout_constraintStart_toEndOf="@+id/imageView8"
+        app:layout_constraintTop_toTopOf="@+id/bottomBar"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/icons8_heart_48" />
+
+    <ProgressBar
+        android:id="@+id/timerBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="348dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="32dp"
+        android:background="@null"
+        android:backgroundTint="#E0E0E0"
+        android:clipToOutline="true"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="100"
+        android:progressDrawable="@drawable/custom_progress_drawable"
+        android:progressTint="#4CAF50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bottomBar" />
+
+
+    <TextView
+        android:id="@+id/whole_answer"
+        android:layout_width="332dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="38dp"
+        android:layout_marginEnd="24dp"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_rect"
+        android:backgroundTint="#FFEFEA"
+        android:fontFamily="@font/special"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/bottomBar"
+        app:layout_constraintStart_toStartOf="@+id/bottomBar"
+        tools:layout_editor_absoluteY="469dp" />
+
+
+    <Button
+        android:id="@+id/answer1"
+        android:layout_width="99dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/answer_option_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timerBar" />
+
+    <Button
+        android:id="@+id/answer5"
+        android:layout_width="99dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/answer_option_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timerBar" />
+
+    <Button
+        android:id="@+id/answer"
+        android:layout_width="99dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="184dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/answer_option_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timerBar" />
+
+    <Button
+        android:id="@+id/answer4"
+        android:layout_width="99dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="184dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/answer_option_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timerBar" />
+
+    <Button
+        android:id="@+id/answer10"
+        android:layout_width="99dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="184dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/answer_option_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.299" />
+        app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-    <TextView
-        android:id="@+id/sb1"
-        android:layout_width="237dp"
-        android:layout_height="114dp"
-        android:background="@drawable/speech_bubble"
-        android:fontFamily="@font/source_serif"
-        android:gravity="center"
-        android:text="Mga Tanong"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <Button
+        android:id="@+id/answer6"
+        android:layout_width="99dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/answer_option_bg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.155"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.131" />
+        app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-
-    <TextView
-        android:id="@+id/tanong1"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:background="@drawable/question_shape"
-        android:fontFamily="@font/source_serif"
-        android:gravity="center"
-        android:text="Unang Tanong"
-        android:textColor="@color/white"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <Button
+        android:id="@+id/answer8"
+        android:layout_width="99dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/answer_option_bg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-    <TextView
-        android:id="@+id/sagot1"
-        android:layout_width="378dp"
-        android:layout_height="49dp"
-        android:background="@drawable/answer_shape"
-        android:fontFamily="@font/source_serif"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <Button
+        android:id="@+id/answer7"
+        android:layout_width="99dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/answer_option_bg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.515"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.664" />
+        app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
+    <Button
+        android:id="@+id/answer9"
+        android:layout_width="99dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/answer_option_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-    <TextView
-        android:id="@+id/kailangan"
+    <Button
+        android:id="@+id/UnlockButtonPalaro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/source_serif"
-        android:text="Kailangang Dugtungan:"
-        android:textSize="20dp"
+        android:background="@drawable/rounded_button_beige"
+        android:fontFamily="@font/special"
+        android:text="Tapos"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.082"
+        app:layout_constraintHorizontal_bias="0.869"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.59" />
+        app:layout_constraintVertical_bias="0.963" />
 
-    <TextView
-        android:id="@+id/A"
+    <Button
+        android:id="@+id/UnlockButtonPalaro1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/source_serif"
-        android:text="Sagot mo:"
-        android:textSize="20dp"
+        android:background="@drawable/rounded_button_beige"
+        android:fontFamily="@font/special"
+        android:text="Itala at Umalis"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintHorizontal_bias="0.107"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.731" />
+        app:layout_constraintVertical_bias="0.963" />
 
-    <EditText
-        android:id="@+id/editTextText2"
-        android:layout_width="376dp"
-        android:layout_height="52dp"
-        android:background="@drawable/answer_shape"
-        android:ems="10"
-        android:inputType="text"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="parent"
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.485"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.817" />
+        tools:layout_editor_absoluteY="673dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

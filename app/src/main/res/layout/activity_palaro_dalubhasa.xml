@@ -14,7 +14,7 @@
         android:layout_width="327dp"
         android:layout_height="152dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="80dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/rounded_rect"
         android:backgroundTint="#FFEFEA"
@@ -30,8 +30,8 @@
             android:layout_height="99dp"
             android:layout_weight="1"
             android:fontFamily="@font/special"
-            android:textAlignment="center"
             android:text="Bumuo ka ng taguntong na gumagamit ng bahagi ng pananalita tungkol sa iyong paboritong aktibidad."
+            android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="16sp"
             tools:layout_editor_absoluteX="39dp"
@@ -64,10 +64,10 @@
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.169"
+        app:layout_constraintHorizontal_bias="0.18"
         app:layout_constraintStart_toStartOf="@+id/bottomBar"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:layout_constraintVertical_bias="0.055"
+        app:layout_constraintVertical_bias="0.024"
         app:srcCompat="@drawable/icons8_heart_48" />
 
     <ImageView
@@ -75,7 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="28dp"
         app:layout_constraintStart_toEndOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
         app:srcCompat="@drawable/icons8_heart_48" />
@@ -85,7 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="28dp"
         app:layout_constraintStart_toEndOf="@+id/imageView10"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
         app:srcCompat="@drawable/icons8_heart_48" />
@@ -95,7 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="28dp"
         app:layout_constraintStart_toEndOf="@+id/imageView11"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
         app:srcCompat="@drawable/icons8_heart_48" />
@@ -118,7 +118,7 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="84dp"
         android:layout_marginEnd="32dp"
         android:background="@null"
         android:backgroundTint="#E0E0E0"
@@ -137,7 +137,7 @@
         android:id="@+id/answerLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="188dp"
+        android:layout_marginTop="144dp"
         android:fontFamily="@font/special"
         android:text="Sagot mo:"
         android:textColor="#000"
@@ -152,7 +152,7 @@
         android:layout_width="341dp"
         android:layout_height="161dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="220dp"
+        android:layout_marginTop="172dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/rounded_rect"
         android:gravity="top|start"
@@ -160,9 +160,37 @@
         android:inputType="textMultiLine"
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.181"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bottomBar" />
+
+    <Button
+        android:id="@+id/UnlockButtonPalaro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_button_beige"
+        android:fontFamily="@font/special"
+        android:text="Tapos"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.869"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.963" />
+
+    <Button
+        android:id="@+id/UnlockButtonPalaro1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_button_beige"
+        android:fontFamily="@font/special"
+        android:text="Itala at Umalis"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.107"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.963" />
 
     <LinearLayout
         android:id="@+id/buttonLayout"
