@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.widget.ImageView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -32,7 +32,6 @@ public class SettingsFragment extends Fragment {
 
         btnAboutUs.setOnClickListener(v ->
                 startActivity(new Intent(requireActivity(), AboutUsActivity.class)));
-
         btnExit.setOnClickListener(v -> showExitConfirmationDialog());
         btnChangeUsername.setOnClickListener(v -> showChangeNicknameDialog());
 
@@ -57,7 +56,6 @@ public class SettingsFragment extends Fragment {
 
         dialog.show();
     }
-
     private void showChangeNicknameDialog() {
         LayoutInflater inflater = LayoutInflater.from(requireContext()); // Use requireContext() for Fragment
         View dialogView = inflater.inflate(R.layout.dialog_box_change_username, null); // Make sure XML filename is correct

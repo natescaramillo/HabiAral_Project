@@ -16,12 +16,12 @@
 
     <TextView
         android:id="@+id/textView21"
-        android:layout_width="292dp"
+        android:layout_width="334dp"
         android:layout_height="84dp"
         android:layout_marginLeft="35dp"
         android:layout_marginTop="30dp"
-        android:gravity="center"
         android:fontFamily="@font/special"
+        android:gravity="center"
         android:text="Mabuhay! Salamat sa pag gamit!"
         android:textColor="#FFFFFF"
         android:textSize="20dp" />
@@ -41,8 +41,8 @@
 
         <LinearLayout
             android:id="@+id/bahagi"
-            android:layout_width="351dp"
-            android:layout_height="117dp"
+            android:layout_width="331dp"
+            android:layout_height="114dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="240dp"
             android:background="@drawable/button_color"
@@ -72,8 +72,8 @@
 
         <LinearLayout
             android:id="@+id/komprehensyon"
-            android:layout_width="350dp"
-            android:layout_height="117dp"
+            android:layout_width="334dp"
+            android:layout_height="114dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:background="@drawable/button_color"
@@ -103,8 +103,8 @@
 
         <LinearLayout
             android:id="@+id/kayarian"
-            android:layout_width="350dp"
-            android:layout_height="117dp"
+            android:layout_width="336dp"
+            android:layout_height="113dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:background="@drawable/button_color"
@@ -133,8 +133,8 @@
 
         <LinearLayout
             android:id="@+id/palaro"
-            android:layout_width="345dp"
-            android:layout_height="117dp"
+            android:layout_width="336dp"
+            android:layout_height="107dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:background="@drawable/button_color"
