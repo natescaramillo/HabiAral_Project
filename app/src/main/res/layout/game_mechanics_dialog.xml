@@ -3,22 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/pop_up_main_color">
+    android:layout_height="wrap_content"
+    android:background="@drawable/pop_up_main_color"
+    android:padding="16dp">
 
     <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:fillViewport="true"
+        android:scrollbarSize="0dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:layout_gravity="center"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
 
             <TextView
                 android:id="@+id/game_mechanic_header"
@@ -34,7 +37,6 @@
                 android:id="@+id/how"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/special"
                 android:text="Paano Laruin?"
@@ -45,14 +47,12 @@
                 android:id="@+id/game_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
                 android:fontFamily="@font/special"
                 android:justificationMode="inter_word"
-                android:text="Ikaw ay mag uumpisa ng iyong palaro sa Baguhan(Beginner), kung saan dito ay tutukuyin ang mga pangunahing hamon para mapagtibay angpundasyon Sa bawat tamang sagot at natapos na gawain,makakakuha ka ng puntos na mag-aangat sa iyo sa susunod na antas, ang Husay(Skilled). Dito, mas magiging kapana-panabik ang mga hamon at kakailanganin ng mas malalim na pag-unawa upang magtagumpay. Patuloy lang sa pagsusumikap, dahil kapag nakamit mo ang sapat na puntos sa antas na ito, aabutin mo ang pinakamataas na ranggo ang Dalubhasa(Expert). Sa Dalubhasa, haharapin mo ang pinakamahihirap na hamon na susubok sa kabuuan ng iyong kakayahan at kaalaman. Sa bawat antas na iyong inaakyat, may mga achievement kang mai-unlock na nagpapanatili sa karanasan bilang masaya at kapakipakinabang. Manatiling motivated, pamahalaan ang iyong energy nang maayos, at sikaping makamit ang lahat ng milestone upang maging dalubhasa sa wikang Filipino."
+                android:text="Ikaw ay mag uumpisa ng iyong palaro sa Baguhan(Beginner), kung saan dito ay tutukuyin ang mga pangunahing hamon para mapagtibay ang pundasyon. Sa bawat tamang sagot at natapos na gawain, makakakuha ka ng puntos na mag-aangat sa iyo sa susunod na antas, ang Husay(Skilled).Dito, nagiging mas nakakaengganyo ang mga hamon at nangangailangan ng mas malalim na pag-unawa upang makabisado. Patuloy na sumulong, dahil kapag nakakuha ka ng sapat na puntos sa antas na ito, maaabot mo ang Dalubhasa (Expert), ang pinakamataas na ranggo sa laro. Sa Dalubhasa, haharapin mo ang pinakamahihirap na gawain na sumusubok sa iyong buong kaalaman sa mga kasanayang natutunan mo. Ang bawat antas na uunlad mo ay nagbubukas ng mga tagumpay na nagpapanatili sa karanasan sa pag-aaral na kapana-panabik at kapakipakinabang. Manatiling motibasyon, pamahalaan ang iyong enerhiya nang matalino, at magsikap na i-unlock ang lahat ng mga milestone upang maging matalino sa Filipino."
                 android:textColor="#3A2A09"
                 android:textSize="15dp" />
-
-
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

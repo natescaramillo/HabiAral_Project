@@ -47,7 +47,7 @@
                 android:fontFamily="@font/poppins"
                 android:gravity="center"
                 android:text="Tungkol sa Amin"
-                android:textColor="#4C2121" />
+                android:textColor="#ffffff" />
 
         </FrameLayout>
         <FrameLayout
@@ -65,7 +65,7 @@
                 android:fontFamily="@font/poppins"
                 android:gravity="center"
                 android:text="Gabay"
-                android:textColor="#4C2121" />
+                android:textColor="#ffffff" />
 
         </FrameLayout>
         <FrameLayout
@@ -83,7 +83,7 @@
                 android:fontFamily="@font/poppins"
                 android:gravity="center"
                 android:text="Palitan ang Palayaw"
-                android:textColor="#4C2121" />
+                android:textColor="#ffffff" />
 
         </FrameLayout>
 
@@ -102,7 +102,7 @@
                 android:fontFamily="@font/poppins"
                 android:gravity="center"
                 android:text="Umalis"
-                android:textColor="#4C2121" />
+                android:textColor="#ffffff" />
         </FrameLayout>
 
     </LinearLayout>

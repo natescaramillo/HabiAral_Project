@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="24dp"
-    android:background="@drawable/dialog_box">
+    android:background="@drawable/pop_up_main_color">
 
     <TextView
         android:id="@+id/textViewTitle"
@@ -37,42 +37,42 @@
 
     <EditText
         android:id="@+id/editTextUsername"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="308dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/special"
         android:hint="Bagong Palayaw"
+        android:padding="12dp"
         android:textColor="#000000"
         android:textColorHint="#888888"
-        android:fontFamily="@font/special"
-        android:padding="12dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/textViewPrompt"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/textViewPrompt" />
 
     <Button
         android:id="@+id/buttonConfirm"
         android:layout_width="100dp"
         android:layout_height="60dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/button_color"
         android:fontFamily="@font/special"
         android:text="Palitan"
-        android:textColor="#4C2121"
-        app:layout_constraintTop_toBottomOf="@id/editTextUsername"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textColor="#ffffff"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextUsername" />
 
     <Button
         android:id="@+id/buttonCancel"
         android:layout_width="100dp"
         android:layout_height="60dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="40dp"
         android:background="@drawable/button_color"
         android:fontFamily="@font/special"
         android:text="Kanselahin"
-        android:textColor="#4C2121"
-        app:layout_constraintTop_toBottomOf="@id/editTextUsername"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:textColor="#ffffff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextUsername" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

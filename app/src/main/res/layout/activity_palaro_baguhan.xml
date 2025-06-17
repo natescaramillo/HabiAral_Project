@@ -12,16 +12,19 @@
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="108dp"
         android:fontFamily="@font/special"
         android:text="Punan ang mga patlang"
         android:textSize="16sp"
-        tools:layout_editor_absoluteX="55dp"
-        tools:layout_editor_absoluteY="88dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.193"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/instructionText"
-        android:layout_width="322dp"
-        android:layout_height="93dp"
+        android:layout_width="319dp"
+        android:layout_height="113dp"
         android:layout_weight="1"
         android:background="@drawable/rounded_rect"
         android:backgroundTint="#FFEFEA"
@@ -29,25 +32,31 @@
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="16sp"
-        tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="114dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.478"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.213" />
 
     <ImageView
         android:id="@+id/characterIcon"
-        android:layout_width="207dp"
-        android:layout_height="192dp"
+        android:layout_width="174dp"
+        android:layout_height="162dp"
+        android:layout_marginTop="132dp"
         android:src="@drawable/tarsier_removebg"
-        tools:layout_editor_absoluteX="204dp"
-        tools:layout_editor_absoluteY="109dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/bottomBar"
-        android:layout_width="392dp"
-        android:layout_height="431dp"
+        android:layout_width="352dp"
+        android:layout_height="420dp"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.157"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
@@ -59,10 +68,10 @@
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.18"
+        app:layout_constraintHorizontal_bias="0.153"
         app:layout_constraintStart_toStartOf="@+id/bottomBar"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:layout_constraintVertical_bias="0.024"
+        app:layout_constraintVertical_bias="0.022"
         app:srcCompat="@drawable/icons8_heart_48" />
 
     <ImageView
@@ -145,8 +154,8 @@
 
     <TextView
         android:id="@+id/baguhan_answer1"
-        android:layout_width="99dp"
-        android:layout_height="47dp"
+        android:layout_width="83dp"
+        android:layout_height="43dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="32dp"
@@ -158,11 +167,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-
     <TextView
         android:id="@+id/baguhan_answer2"
-        android:layout_width="99dp"
-        android:layout_height="47dp"
+        android:layout_width="83dp"
+        android:layout_height="43dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="112dp"
         android:layout_marginEnd="32dp"
@@ -176,8 +184,8 @@
 
     <TextView
         android:id="@+id/baguhan_answer3"
-        android:layout_width="99dp"
-        android:layout_height="47dp"
+        android:layout_width="83dp"
+        android:layout_height="43dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="112dp"
         android:layout_marginEnd="32dp"
@@ -190,8 +198,8 @@
 
     <TextView
         android:id="@+id/baguhan_answer4"
-        android:layout_width="99dp"
-        android:layout_height="47dp"
+        android:layout_width="83dp"
+        android:layout_height="43dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="112dp"
         android:layout_marginEnd="32dp"
@@ -205,8 +213,8 @@
 
     <TextView
         android:id="@+id/baguhan_answer5"
-        android:layout_width="99dp"
-        android:layout_height="47dp"
+        android:layout_width="83dp"
+        android:layout_height="43dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="32dp"
@@ -219,8 +227,8 @@
 
     <TextView
         android:id="@+id/baguhan_answer6"
-        android:layout_width="99dp"
-        android:layout_height="47dp"
+        android:layout_width="83dp"
+        android:layout_height="43dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="32dp"

@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.habiaral.R;
 
 public class Palaro extends AppCompatActivity {
-    Button button1, button2, button3;
+    View button1, button2, button3;
     ImageView gameMechanicsIcon;
 
     @Override
