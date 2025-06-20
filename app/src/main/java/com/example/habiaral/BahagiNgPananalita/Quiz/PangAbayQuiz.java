@@ -21,7 +21,7 @@ public class PangAbayQuiz extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pangabay_quiz);
 
-        nextButton = findViewById(R.id.nextButton);
+        nextButton = findViewById(R.id.pangabayNextButton);
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
