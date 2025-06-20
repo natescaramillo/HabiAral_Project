@@ -52,8 +52,8 @@
 
     <View
         android:id="@+id/bottomBar"
-        android:layout_width="352dp"
-        android:layout_height="420dp"
+        android:layout_width="364dp"
+        android:layout_height="421dp"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
