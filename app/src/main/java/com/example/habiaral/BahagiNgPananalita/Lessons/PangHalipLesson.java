@@ -1,6 +1,7 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,8 +28,16 @@ public class PangHalipLesson extends AppCompatActivity {
         unlockButton = findViewById(R.id.UnlockButtonPanghalip);
         videoView = findViewById(R.id.videoViewPanghalip);
 
-        unlockButton.setEnabled(false);
-        unlockButton.setAlpha(0.5f);
+        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
+        boolean isLessonDone = sharedPreferences.getBoolean("PangHalipDone", false);
+
+        if (isLessonDone) {
+            unlockButton.setEnabled(true);
+            unlockButton.setAlpha(1f);
+        } else {
+            unlockButton.setEnabled(false);
+            unlockButton.setAlpha(0.5f);
+        }
 
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.panghalip_lesson);
         videoView.setVideoURI(videoUri);
@@ -42,8 +51,10 @@ public class PangHalipLesson extends AppCompatActivity {
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                unlockButton.setEnabled(true);
-                unlockButton.setAlpha(1f);
+                if (!isLessonDone) {
+                    unlockButton.setEnabled(true);
+                    unlockButton.setAlpha(1f);
+                }
             }
         });
 
