@@ -28,7 +28,7 @@
         android:layout_marginTop="8dp"
         android:fontFamily="@font/special"
         android:gravity="center"
-        android:text="Pumili kung gusto mong subukan muli o bumalik sa Home Page:"
+        android:text="Pumili kung gusto mong subukan muli o bumalik sa Pangunahing Pahina:"
         android:textColor="#A27B5C"
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@id/textViewTitle"
