@@ -44,4 +44,9 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation ("com.google.firebase:firebase-auth:22.3.1")
+    implementation ("com.google.android.gms:play-services-auth:21.0.0")
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
+
 }
+apply(plugin = "com.google.gms.google-services")
