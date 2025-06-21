@@ -55,7 +55,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/special"
             android:text="PAYAK"
-            android:textColor="#4C2121"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <FrameLayout
@@ -97,7 +97,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/special"
             android:text="TAMBALAN"
-            android:textColor="#4C2121"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <FrameLayout
@@ -138,7 +138,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/special"
             android:text="HUGNAYAN"
-            android:textColor="#4C2121"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <FrameLayout
@@ -179,7 +179,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/special"
             android:text="LANGKAPAN"
-            android:textColor="#4C2121"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <FrameLayout
