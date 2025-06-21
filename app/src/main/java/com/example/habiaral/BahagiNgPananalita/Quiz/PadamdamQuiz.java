@@ -48,6 +48,7 @@ public class PadamdamQuiz extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_box_option, null);
+
         builder.setView(dialogView);
         builder.setCancelable(false);
 
@@ -55,6 +56,8 @@ public class PadamdamQuiz extends AppCompatActivity {
         Button homeButton = dialogView.findViewById(R.id.buttonHome);
 
         AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
         dialog.show();
 
         retryButton.setOnClickListener(v -> {
