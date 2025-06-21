@@ -99,7 +99,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/special"
             android:text="ANG KWENTO NI LINO AT ANG KANIYANG LOBONG PANYO"
-            android:textColor="#4C2121"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <FrameLayout
@@ -140,7 +140,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/special"
             android:text="ANG ALAMAT NG PUNONG MANGGA"
-            android:textColor="#4C2121"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <FrameLayout

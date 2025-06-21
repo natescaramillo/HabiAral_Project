@@ -58,7 +58,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/special"
                 android:text="PANGNGALAN(NOUN)"
-                android:textColor="#4C2121"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <FrameLayout
@@ -100,7 +100,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/special"
                 android:text="PANDIWA(VERB)"
-                android:textColor="#4C2121"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <FrameLayout
@@ -141,7 +141,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/special"
                 android:text="PANG-URI(ADJECTIVES)"
-                android:textColor="#4C2121"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <FrameLayout
@@ -182,7 +182,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/special"
                 android:text="PANG-HALIP(PRONOUN)"
-                android:textColor="#4C2121"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <FrameLayout
@@ -223,7 +223,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/special"
                 android:text="PANG-ABAY(ADVERB)"
-                android:textColor="#4C2121"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <FrameLayout
@@ -264,7 +264,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/special"
                 android:text="PANGATNIG(CONJUCTION)"
-                android:textColor="#4C2121"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <FrameLayout
@@ -305,7 +305,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/special"
                 android:text="PANG-UKOL(PREPOSITION)"
-                android:textColor="#4C2121"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <FrameLayout
@@ -346,7 +346,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/special"
                 android:text="PANG-AKOP(LIGATURE)"
-                android:textColor="#4C2121"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <FrameLayout
@@ -387,7 +387,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/special"
                 android:text="PADAMDAM(INTERJECTION)"
-                android:textColor="#4C2121"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <FrameLayout
@@ -428,7 +428,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/special"
                 android:text="PANGAWING(LINKING VERB)"
-                android:textColor="#4C2121"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <FrameLayout
