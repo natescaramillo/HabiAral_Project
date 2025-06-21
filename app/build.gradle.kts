@@ -47,6 +47,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth:22.3.1")
     implementation ("com.google.android.gms:play-services-auth:21.0.0")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation ("com.google.firebase:firebase-firestore:24.10.1")
 
 }
 apply(plugin = "com.google.gms.google-services")
