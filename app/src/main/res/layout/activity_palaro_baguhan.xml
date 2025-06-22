@@ -53,8 +53,8 @@
 
     <View
         android:id="@+id/bottomBar"
-        android:layout_width="379dp"
-        android:layout_height="403dp"
+        android:layout_width="397dp"
+        android:layout_height="398dp"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -69,10 +69,10 @@
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.178"
+        app:layout_constraintHorizontal_bias="0.216"
         app:layout_constraintStart_toStartOf="@+id/bottomBar"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:layout_constraintVertical_bias="0.026"
+        app:layout_constraintVertical_bias="0.027"
         app:srcCompat="@drawable/icons8_heart_48" />
 
     <ImageView
