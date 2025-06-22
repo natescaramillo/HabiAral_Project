@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Button;
+
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -175,6 +177,7 @@ public class Palaro extends AppCompatActivity {
 
     private void showGameMechanics() {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.game_mechanics_dialog, null);
+
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(dialogView)
                 .create();
@@ -183,9 +186,15 @@ public class Palaro extends AppCompatActivity {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
 
+        Button btnIsara = dialogView.findViewById(R.id.btn_isara);
+        btnIsara.setOnClickListener(v -> {
+            dialog.dismiss(); // Close the dialog
+        });
+
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
     }
+
 
     @Override
     protected void onDestroy() {

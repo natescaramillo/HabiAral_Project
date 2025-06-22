@@ -9,7 +9,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="wrap_content"
+        android:maxHeight="600dp"
         android:fillViewport="true"
         android:scrollbarSize="0dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,36 +24,176 @@
             android:orientation="vertical"
             android:padding="8dp">
 
+            <!-- Header -->
             <TextView
                 android:id="@+id/game_mechanic_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/special"
                 android:gravity="center"
-                android:text="Mekanika ng laro"
+                android:text="Paano Laruin ang Palaro"
                 android:textColor="#3A2A09"
                 android:textSize="30dp" />
 
+            <!-- Subheader -->
             <TextView
                 android:id="@+id/how"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/special"
-                android:text="Paano Laruin?"
+                android:text="Mga Hakbang:"
                 android:textColor="#3A2A09"
                 android:textSize="20dp" />
 
-            <TextView
-                android:id="@+id/game_description"
+            <!-- STEP 1 -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:text="Hakbang 1"
+                    android:textColor="#3A2A09"
+                    android:textSize="18sp"
+                    android:layout_marginEnd="8dp"/>
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+
+                    android:contentDescription="Hakbang 1 larawan"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/special"
-                android:justificationMode="inter_word"
-                android:text="Ikaw ay mag uumpisa ng iyong palaro sa Baguhan(Beginner), kung saan dito ay tutukuyin ang mga pangunahing hamon para mapagtibay ang pundasyon. Sa bawat tamang sagot at natapos na gawain, makakakuha ka ng puntos na mag-aangat sa iyo sa susunod na antas, ang Husay(Skilled).Dito, nagiging mas nakakaengganyo ang mga hamon at nangangailangan ng mas malalim na pag-unawa upang makabisado. Patuloy na sumulong, dahil kapag nakakuha ka ng sapat na puntos sa antas na ito, maaabot mo ang Dalubhasa (Expert), ang pinakamataas na ranggo sa laro. Sa Dalubhasa, haharapin mo ang pinakamahihirap na gawain na sumusubok sa iyong buong kaalaman sa mga kasanayang natutunan mo. Ang bawat antas na uunlad mo ay nagbubukas ng mga tagumpay na nagpapanatili sa karanasan sa pag-aaral na kapana-panabik at kapakipakinabang. Manatiling motibasyon, pamahalaan ang iyong enerhiya nang matalino, at magsikap na i-unlock ang lahat ng mga milestone upang maging matalino sa Filipino."
+                android:text="Pindutin ang 'Simula' upang umpisahan ang mini-game."
                 android:textColor="#3A2A09"
-                android:textSize="15dp" />
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"/>
+
+            <!-- STEP 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:text="Hakbang 2"
+                    android:textColor="#3A2A09"
+                    android:textSize="18sp"
+                    android:layout_marginEnd="8dp"/>
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+
+                    android:contentDescription="Hakbang 2 larawan"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/special"
+                android:text="Sagutin ang mga tanong o kumpletuhin ang mga gawain."
+                android:textColor="#3A2A09"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"/>
+
+            <!-- STEP 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:text="Hakbang 3"
+                    android:textColor="#3A2A09"
+                    android:textSize="18sp"
+                    android:layout_marginEnd="8dp"/>
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+
+                    android:contentDescription="Hakbang 3 larawan"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/special"
+                android:text="Iwasan ang mga maling sagot o mga hadlang."
+                android:textColor="#3A2A09"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"/>
+
+            <!-- STEP 4 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:text="Hakbang 4"
+                    android:textColor="#3A2A09"
+                    android:textSize="18sp"
+                    android:layout_marginEnd="8dp"/>
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+
+                    android:contentDescription="Hakbang 4 larawan"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/special"
+                android:text="Tapusin ang laro at subukang makuha ang mataas na puntos!"
+                android:textColor="#3A2A09"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"/>
+
+            <!-- OKAY BUTTON -->
+            <Button
+                android:id="@+id/btn_isara"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Isara"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#3A2A09"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/special"/>
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
