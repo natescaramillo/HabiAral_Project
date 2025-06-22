@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/questionDalubhasa"
+    android:id="@+id/questionBaguhan"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/question_bg_drawable"
@@ -12,7 +12,7 @@
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="76dp"
         android:fontFamily="@font/special"
         android:text="Punan ang mga patlang"
         android:textSize="16sp"
@@ -22,28 +22,29 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/instructionText"
+        android:id="@+id/baguhan_instructionText"
         android:layout_width="319dp"
         android:layout_height="113dp"
         android:layout_weight="1"
         android:background="@drawable/rounded_rect"
         android:backgroundTint="#FFEFEA"
         android:fontFamily="@font/special"
+        android:gravity="center"
         android:textAlignment="center"
         android:textColor="#000000"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.478"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.213" />
+        app:layout_constraintVertical_bias="0.156" />
 
     <ImageView
         android:id="@+id/characterIcon"
         android:layout_width="174dp"
         android:layout_height="162dp"
-        android:layout_marginTop="132dp"
+        android:layout_marginTop="164dp"
         android:src="@drawable/tarsier_removebg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -52,8 +53,8 @@
 
     <View
         android:id="@+id/bottomBar"
-        android:layout_width="364dp"
-        android:layout_height="421dp"
+        android:layout_width="379dp"
+        android:layout_height="403dp"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -68,10 +69,10 @@
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.153"
+        app:layout_constraintHorizontal_bias="0.178"
         app:layout_constraintStart_toStartOf="@+id/bottomBar"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:layout_constraintVertical_bias="0.022"
+        app:layout_constraintVertical_bias="0.026"
         app:srcCompat="@drawable/icons8_heart_48" />
 
     <ImageView
@@ -154,14 +155,17 @@
 
     <TextView
         android:id="@+id/baguhan_answer1"
-        android:layout_width="83dp"
-        android:layout_height="43dp"
+        android:layout_width="100dp"
+        android:layout_height="45dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/answer_option_bg"
         android:backgroundTint="#FFEFEA"
+        android:clickable="true"
         android:fontFamily="@font/special"
+        android:gravity="center"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -169,14 +173,17 @@
 
     <TextView
         android:id="@+id/baguhan_answer2"
-        android:layout_width="83dp"
-        android:layout_height="43dp"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="112dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/answer_option_bg"
         android:backgroundTint="#FFEFEA"
+        android:clickable="true"
         android:fontFamily="@font/special"
+        android:gravity="center"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -184,28 +191,34 @@
 
     <TextView
         android:id="@+id/baguhan_answer3"
-        android:layout_width="83dp"
-        android:layout_height="43dp"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="112dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/answer_option_bg"
         android:backgroundTint="#FFEFEA"
+        android:clickable="true"
         android:fontFamily="@font/special"
+        android:gravity="center"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
     <TextView
         android:id="@+id/baguhan_answer4"
-        android:layout_width="83dp"
-        android:layout_height="43dp"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="112dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/answer_option_bg"
         android:backgroundTint="#FFEFEA"
+        android:clickable="true"
         android:fontFamily="@font/special"
+        android:gravity="center"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -213,13 +226,16 @@
 
     <TextView
         android:id="@+id/baguhan_answer5"
-        android:layout_width="83dp"
-        android:layout_height="43dp"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="32dp"
+        android:gravity="center"
+        android:textSize="20sp"
         android:background="@drawable/answer_option_bg"
         android:backgroundTint="#FFEFEA"
+        android:clickable="true"
         android:fontFamily="@font/special"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -227,13 +243,16 @@
 
     <TextView
         android:id="@+id/baguhan_answer6"
-        android:layout_width="83dp"
-        android:layout_height="43dp"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/answer_option_bg"
         android:backgroundTint="#FFEFEA"
+        android:clickable="true"
+        android:gravity="center"
+        android:textSize="20sp"
         android:fontFamily="@font/special"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.987"
@@ -241,25 +260,24 @@
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
 
-
     <Button
         android:id="@+id/UnlockButtonPalaro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="121dp"
+        android:layout_height="52dp"
         android:background="@drawable/rounded_button_beige"
         android:fontFamily="@font/special"
         android:text="Tapos"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.869"
+        app:layout_constraintHorizontal_bias="0.871"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.963" />
+        app:layout_constraintVertical_bias="0.96" />
 
     <Button
         android:id="@+id/UnlockButtonPalaro1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="121dp"
+        android:layout_height="52dp"
         android:background="@drawable/rounded_button_beige"
         android:fontFamily="@font/special"
         android:text="Itala at Umalis"
@@ -279,7 +297,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="650dp" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
