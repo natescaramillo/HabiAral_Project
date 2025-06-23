@@ -19,6 +19,7 @@
             android:exported="false" />
         <activity
             android:name=".Activity.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,56 +29,95 @@
         </activity>
         <activity
             android:name=".Activity.HomepageActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name=".Activity.WelcomeActivity"
+            android:screenOrientation="portrait"
+
             android:exported="true" />
         <activity
             android:name=".Palaro.Palaro"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".KayarianNgPangungusap.KayarianNgPangungusap"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".Komprehensyon.Komprehensyon"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".BahagiNgPananalita.BahagiNgPananalita"
+            android:screenOrientation="portrait"
             android:exported="false" />
-        <activity android:name=".Komprehensyon.KomprehensyonStory" />
-        <activity android:name=".Komprehensyon.KomprehensyonQuiz" />
-        <activity android:name=".KayarianNgPangungusap.KayarianNgPangungusapLesson" />
+        <activity android:name=".Komprehensyon.KomprehensyonStory"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Komprehensyon.KomprehensyonQuiz"
+            android:screenOrientation="portrait" />
+        <activity android:name=".KayarianNgPangungusap.KayarianNgPangungusapLesson"
+            android:screenOrientation="portrait"/>
         <activity android:name=".KayarianNgPangungusap.KayarianNgPangungusapQuiz" />
-        <activity android:name=".Palaro.PalaroBaguhan" />
-        <activity android:name=".Palaro.PalaroHusay" />
-        <activity android:name=".Palaro.PalaroDalubhasa" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangngalanLesson" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangngalanQuiz" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PandiwaLesson" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PandiwaQuiz" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangUriLesson" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangUriQuiz" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangHalipLesson" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangHalipQuiz" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangAbayLesson" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangAbayQuiz" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangatnigLesson" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangatnigQuiz" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangUkolLesson" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangUkolQuiz" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangAkopLesson" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangAkopQuiz" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PadamdamLesson" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PadamdamQuiz" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangawingLesson" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangawingQuiz" />
-        <activity android:name=".Komprehensyon.Stories.Kwento1" />
-        <activity android:name=".Komprehensyon.Stories.Kwento2" />
-        <activity android:name=".Komprehensyon.Stories.Kwento3" />
-        <activity android:name=".KayarianNgPangungusap.Lessons.Payak" />
-        <activity android:name=".KayarianNgPangungusap.Lessons.Tambalan" />
-        <activity android:name=".KayarianNgPangungusap.Lessons.Hugnayan" />
-        <activity android:name=".KayarianNgPangungusap.Lessons.Langkapan" />
+        <activity android:name=".Palaro.PalaroBaguhan" android:screenOrientation="portrait" />
+        <activity android:name=".Palaro.PalaroHusay"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Palaro.PalaroDalubhasa"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangngalanLesson"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangngalanQuiz"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PandiwaLesson"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PandiwaQuiz"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangUriLesson"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangUriQuiz"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangHalipLesson"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangHalipQuiz"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangAbayLesson"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangAbayQuiz"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangatnigLesson"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangatnigQuiz"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangUkolLesson"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangUkolQuiz"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangAkopLesson"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangAkopQuiz"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PadamdamLesson"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PadamdamQuiz"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Lessons.PangawingLesson"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BahagiNgPananalita.Quiz.PangawingQuiz"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Komprehensyon.Stories.Kwento1"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Komprehensyon.Stories.Kwento2"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Komprehensyon.Stories.Kwento3"
+            android:screenOrientation="portrait" />
+        <activity android:name=".KayarianNgPangungusap.Lessons.Payak"
+            android:screenOrientation="portrait" />
+        <activity android:name=".KayarianNgPangungusap.Lessons.Tambalan"
+            android:screenOrientation="portrait" />
+        <activity android:name=".KayarianNgPangungusap.Lessons.Hugnayan"
+            android:screenOrientation="portrait" />
+        <activity android:name=".KayarianNgPangungusap.Lessons.Langkapan"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
