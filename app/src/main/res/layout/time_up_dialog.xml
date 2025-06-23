@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="333dp"
+        android:layout_height="386dp"
+        android:background="@drawable/pop_up_main_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.407">
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="231dp"
+            android:layout_height="36dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="53dp"
+            android:layout_marginTop="42dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginBottom="290dp"
+            android:fontFamily="@font/special"
+            android:gravity="center"
+            android:text="Tapos na ang oras"
+            android:textColor="@color/black"
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/btn_balik"
+            android:layout_width="81dp"
+            android:layout_height="34dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="124dp"
+            android:layout_marginTop="289dp"
+            android:layout_marginEnd="114dp"
+            android:layout_marginBottom="45dp"
+            android:backgroundTint="#3A2A09"
+            android:fontFamily="@font/special"
+            android:text="Bumalik"
+            android:textColor="#FFFFFF" />
+
+        <ImageView
+            android:id="@+id/imageView13"
+            android:layout_width="148dp"
+            android:layout_height="190dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="200dp"
+            android:layout_marginBottom="95dp"
+            app:srcCompat="@drawable/new_logo_removed_bg" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="129dp"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="160dp"
+            android:layout_marginTop="175dp"
+            android:layout_marginEnd="44dp"
+            android:layout_marginBottom="192dp"
+            android:fontFamily="@font/special"
+            android:text="nakuhang puntos:"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/puntos"
+            android:layout_width="55dp"
+            android:layout_height="28dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="185dp"
+            android:layout_marginTop="189dp"
+            android:layout_marginEnd="80dp"
+            android:layout_marginBottom="151dp"
+            android:fontFamily="@font/special"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@color/black"
+            android:textSize="30sp" />
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

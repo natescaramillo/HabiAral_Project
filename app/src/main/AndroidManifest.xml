@@ -59,7 +59,8 @@
         <activity android:name=".KayarianNgPangungusap.KayarianNgPangungusapLesson"
             android:screenOrientation="portrait"/>
         <activity android:name=".KayarianNgPangungusap.KayarianNgPangungusapQuiz" />
-        <activity android:name=".Palaro.PalaroBaguhan" android:screenOrientation="portrait" />
+        <activity android:name=".Palaro.PalaroBaguhan"
+            android:screenOrientation="portrait" />
         <activity android:name=".Palaro.PalaroHusay"
             android:screenOrientation="portrait" />
         <activity android:name=".Palaro.PalaroDalubhasa"
