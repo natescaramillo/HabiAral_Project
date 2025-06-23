@@ -8,7 +8,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.content.Intent;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.R;
@@ -52,8 +53,8 @@ public class PalaroBaguhan extends AppCompatActivity {
         // Show MCL1 first
         loadCharacterLine("MCL1");
 
-        // After 7 seconds, show 3..2..1 then load the question
-        new Handler().postDelayed(this::showCountdownThenLoadQuestion, 7000);
+        // After 3 seconds, show 3..2..1 then load the question
+        new Handler().postDelayed(this::showCountdownThenLoadQuestion, 3000);
 
         // Answer click listener
         View.OnClickListener answerClickListener = view -> {
@@ -192,6 +193,21 @@ public class PalaroBaguhan extends AppCompatActivity {
             public void onFinish() {
                 timerBar.setProgress(0);
                 Toast.makeText(PalaroBaguhan.this, "Time's up!", Toast.LENGTH_SHORT).show();
+                View showTotalPoints = getLayoutInflater().inflate(R.layout.time_up_dialog,null);
+                AlertDialog dialog = new AlertDialog.Builder(PalaroBaguhan.this)
+                        .setView(showTotalPoints)
+                        .setCancelable(false)
+                        .create();
+                        dialog.show();
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                }
+                Button balik = showTotalPoints.findViewById(R.id.btn_balik);
+                balik.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    Intent intent = new Intent(PalaroBaguhan.this, Palaro.class);
+                    startActivity(intent);
+                });
             }
         }.start();
     }
