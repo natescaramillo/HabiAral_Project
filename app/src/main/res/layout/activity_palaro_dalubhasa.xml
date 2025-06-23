@@ -9,46 +9,40 @@
     tools:context=".Activity.PalaroDalubhasa">
 
 
-    <LinearLayout
-        android:id="@+id/instructionBox"
-        android:layout_width="327dp"
-        android:layout_height="152dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="24dp"
+    <TextView
+        android:id="@+id/dalubhasa_instructionText"
+        android:layout_width="337dp"
+        android:layout_height="137dp"
+        android:layout_weight="1"
         android:background="@drawable/rounded_rect"
         android:backgroundTint="#FFEFEA"
-        android:orientation="horizontal"
-        android:padding="16dp"
+        android:fontFamily="@font/special"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.105" />
 
-        <TextView
-            android:id="@+id/instructionText"
-            android:layout_width="288dp"
-            android:layout_height="99dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/special"
-            android:text="Bumuo ka ng taguntong na gumagamit ng bahagi ng pananalita tungkol sa iyong paboritong aktibidad."
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            tools:layout_editor_absoluteX="39dp"
-            tools:layout_editor_absoluteY="150dp" />
-
-        <ImageView
-            android:id="@+id/characterIcon"
-            android:layout_width="52dp"
-            android:layout_height="101dp"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/tarsier_removebg" />
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/characterIcon"
+        android:layout_width="174dp"
+        android:layout_height="162dp"
+        android:layout_marginTop="140dp"
+        android:src="@drawable/tarsier_removebg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.978"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/bottomBar"
-        android:layout_width="376dp"
-        android:layout_height="450dp"
+        android:layout_width="394dp"
+        android:layout_height="448dp"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,10 +58,10 @@
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.18"
+        app:layout_constraintHorizontal_bias="0.191"
         app:layout_constraintStart_toStartOf="@+id/bottomBar"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:layout_constraintVertical_bias="0.024"
+        app:layout_constraintVertical_bias="0.026"
         app:srcCompat="@drawable/icons8_heart_48" />
 
     <ImageView
@@ -143,7 +137,7 @@
         android:textColor="#000"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.095"
+        app:layout_constraintHorizontal_bias="0.145"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bottomBar" />
 
@@ -152,7 +146,7 @@
         android:layout_width="317dp"
         android:layout_height="156dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="172dp"
+        android:layout_marginTop="176dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/rounded_rect"
         android:gravity="top|start"
@@ -160,7 +154,6 @@
         android:inputType="textMultiLine"
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.181"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bottomBar" />
 
