@@ -2,4 +2,6 @@
     <string name="app_name">HabiAral</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_web_client_id">612860240418-6j94e06tc5be4gc75bsafprrt67lqahb.apps.googleusercontent.com</string>
+
 </resources>
