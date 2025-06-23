@@ -134,7 +134,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
                     docRef.set(student)
                             .addOnSuccessListener(unused -> {
-                                Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Matagumpay ang pag-log in", Toast.LENGTH_SHORT).show();
                                 goToHomePage();
                             })
                             .addOnFailureListener(e -> {
