@@ -3,18 +3,74 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/pop_up_main_color">
+    android:layout_height="match_parent">
 
     <ScrollView
-        android:layout_width="431dp"
-        android:layout_height="783dp"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+            android:background="@drawable/pop_up_main_color"
+            android:padding="24dp">
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/special"
+                android:text="Gabay"
+                android:textColor="#4C2121"
+                android:textSize="25sp" />
+
+            <!-- Body Text -->
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/special"
+                android:justificationMode="inter_word"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac vulputate eros. Sed nec tortor non dolor lobortis ullamcorper. Sed in augue nulla. Integer ornare arcu id elit euismod semper. Morbi auctor finibus ex, pellentesque suscipit arcu aliquam aliquam. Morbi odio augue, facilisis sit amet libero eu, dignissim cursus metus."
+                android:textColor="#4C2121"
+                android:textSize="15sp" />
+
+            <!-- Close Button -->
+            <Button
+                android:id="@+id/btn_isara_gabay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView2"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#3A2A09"
+                android:fontFamily="@font/special"
+                android:text="ISARA"
+                android:textColor="#FFFFFF" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
