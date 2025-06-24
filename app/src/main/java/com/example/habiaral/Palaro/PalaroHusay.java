@@ -13,10 +13,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.R;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PalaroHusay extends AppCompatActivity {
 
@@ -32,6 +35,7 @@ public class PalaroHusay extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private int correctAnswerCount = 0;
+    private static final String DOCUMENT_ID = "MP1"; // minigame_progress document ID
 
     private final List<TextView> selectedWords = new ArrayList<>();
 
@@ -217,9 +221,37 @@ public class PalaroHusay extends AppCompatActivity {
             @Override
             public void onFinish() {
                 timerBar.setProgress(0);
+                saveHusayScore();
                 Toast.makeText(PalaroHusay.this, "Time's up!", Toast.LENGTH_SHORT).show();
             }
         }.start();
+    }
+
+    private void saveHusayScore() {
+        int husayScore = correctAnswerCount * 3;
+
+        DocumentReference docRef = db.collection("minigame_progress").document(DOCUMENT_ID);
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("husay_score", husayScore);
+        updates.put("total_score", husayScore); // Only baguhan counted now
+
+        docRef.update(updates)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(PalaroHusay.this, "Score saved!", Toast.LENGTH_SHORT).show();
+
+                    if (husayScore >= 800) {
+                        unlockDalubhasa(docRef);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(PalaroHusay.this, "Failed to save score.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void unlockDalubhasa(DocumentReference docRef) {
+        docRef.update("husay_unlocked", true)
+                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Dalubhasa unlocked!", Toast.LENGTH_LONG).show());
     }
 
     @Override

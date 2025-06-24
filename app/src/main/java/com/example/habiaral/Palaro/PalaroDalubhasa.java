@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.R;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -37,6 +38,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private static final String DALUBHASA_ID = "D1";
     private static final String CORRECT_ID = "DCA1";
     private static final String WRONG_ID = "DWA1";
+
+    // Optional: Update or remove if implementing scoring
+    private int correctAnswerCount = 0;
+    private static final String DOCUMENT_ID = "MP1"; // Replace with actual dynamic ID if needed
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +143,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private void startTimer() {
         if (countDownTimer != null) {
-            countDownTimer.cancel(); // ❗ Stop existing timer
+            countDownTimer.cancel();
         }
 
         countDownTimer = new CountDownTimer(TOTAL_TIME, 100) {
@@ -156,13 +161,13 @@ public class PalaroDalubhasa extends AppCompatActivity {
             @Override
             public void onFinish() {
                 timerBar.setProgress(0);
+                saveDalubhasaScore();
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
                 Toast.makeText(PalaroDalubhasa.this, "Time's up!", Toast.LENGTH_SHORT).show();
             }
         }.start();
     }
-
 
     private boolean isValidSentence(String input) {
         String[] words = input.trim().split("\\s+");
@@ -180,6 +185,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Tamang sagot naipasa!", Toast.LENGTH_SHORT).show();
                     loadCharacterLine("MCL2");
+                    correctAnswerCount++;
                     nextQuestion();
                 })
                 .addOnFailureListener(e -> {
@@ -206,17 +212,33 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void nextQuestion() {
-        if (countDownTimer != null) countDownTimer.cancel(); // ❗ Cancel old timer
+        if (countDownTimer != null) countDownTimer.cancel();
         userSentenceInput.setText("");
         userSentenceInput.setEnabled(false);
         btnTapos.setEnabled(false);
         hasSubmitted = false;
 
-        // Load next question
         loadDalubhasaInstruction();
         startTimer();
     }
 
+    private void saveDalubhasaScore() {
+        int score = correctAnswerCount * 5;
+
+        DocumentReference docRef = db.collection("minigame_progress").document(DOCUMENT_ID);
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("dalubhasa_score", score);
+        updates.put("total_score", score); // You can modify this logic for cumulative score
+
+        docRef.update(updates)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(PalaroDalubhasa.this, "Score saved!", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(PalaroDalubhasa.this, "Failed to save score.", Toast.LENGTH_SHORT).show();
+                });
+    }
 
     @Override
     protected void onDestroy() {
