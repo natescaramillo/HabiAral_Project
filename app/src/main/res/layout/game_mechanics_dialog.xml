@@ -24,7 +24,6 @@
             android:orientation="vertical"
             android:padding="8dp">
 
-            <!-- Header -->
             <TextView
                 android:id="@+id/game_mechanic_header"
                 android:layout_width="match_parent"
