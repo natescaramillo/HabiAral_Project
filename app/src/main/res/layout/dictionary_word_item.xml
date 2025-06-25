@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dictionary_words_box"
+    android:padding="12dp"
+    android:layout_marginTop="10dp">
+
+    <LinearLayout
+        android:id="@+id/dictionary_word_item"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/wordTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sample Word"
+            android:textSize="20sp"
+            android:textColor="#ffffff"
+            android:fontFamily="@font/special" />
+
+        <ImageView
+            android:id="@+id/speakerIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/volume"
+            android:contentDescription="Speaker" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/meaningTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This is a sample meaning."
+        android:textColor="#ffffff"
+        android:textSize="15sp"
+        android:textStyle="italic"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/special" />
+
+</LinearLayout>
