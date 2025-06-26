@@ -12,11 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.R;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Locale;
 
@@ -43,8 +43,6 @@ public class Palaro extends AppCompatActivity {
     private static final String KEY_POINTS = "userPoints";
     private static final String KEY_LAST_ENERGY_TIME = "lastEnergyTime";
 
-    FirebaseFirestore db;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,36 +57,32 @@ public class Palaro extends AppCompatActivity {
         currentEnergyText = findViewById(R.id.current_energy2);
         energyTimerText = findViewById(R.id.time_energy);
         palaroProgress = findViewById(R.id.palaro_progress);
-
         palaroProgress.setMax(2000);
 
         prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         editor = prefs.edit();
 
-        db = FirebaseFirestore.getInstance();
-
         userEnergy = prefs.getInt(KEY_ENERGY, 100);
+        userPoints = prefs.getInt(KEY_POINTS, 0);
 
         gameMechanicsIcon.setOnClickListener(v -> showGameMechanics());
 
-        loadUserScoresFromFirestore();
+        updateUI();
+        checkLocks();
         startEnergyRegeneration();
 
         button1.setOnClickListener(v -> {
             if (userEnergy >= ENERGY_COST) {
-                button1.setEnabled(false); // Prevent multiple rapid clicks
                 userEnergy -= ENERGY_COST;
-                long now = System.currentTimeMillis();
-                editor.putInt(KEY_ENERGY, userEnergy);
-                editor.putLong(KEY_LAST_ENERGY_TIME, now);
-                editor.apply();
-
+                editor.putInt(KEY_ENERGY, userEnergy).apply();
+                editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis()).apply();
                 updateUI();
                 checkLocks();
                 startEnergyRegeneration();
 
-                startActivity(new Intent(Palaro.this, PalaroBaguhan.class));
-                button1.postDelayed(() -> button1.setEnabled(true), 1000);
+                Intent intent = new Intent(this, PalaroBaguhan.class);
+                intent.putExtra("resetProgress", true);
+                startActivity(intent);
             } else {
                 Toast.makeText(this, "Not enough energy!", Toast.LENGTH_SHORT).show();
             }
@@ -96,9 +90,7 @@ public class Palaro extends AppCompatActivity {
 
         button2.setOnClickListener(v -> {
             if (userPoints >= 400) {
-                button2.setEnabled(false);
                 startActivity(new Intent(Palaro.this, PalaroHusay.class));
-                button2.postDelayed(() -> button2.setEnabled(true), 1000);
             } else {
                 Toast.makeText(this, "Unlock Husay at 400 points!", Toast.LENGTH_SHORT).show();
             }
@@ -106,34 +98,27 @@ public class Palaro extends AppCompatActivity {
 
         button3.setOnClickListener(v -> {
             if (userPoints >= 800) {
-                button3.setEnabled(false);
                 startActivity(new Intent(Palaro.this, PalaroDalubhasa.class));
-                button3.postDelayed(() -> button3.setEnabled(true), 1000);
             } else {
                 Toast.makeText(this, "Unlock Dalubhasa at 800 points!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void loadUserScoresFromFirestore() {
-        db.collection("minigame_progress").document("MP1")
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        int baguhanScore = documentSnapshot.getLong("baguhan_score") != null ? documentSnapshot.getLong("baguhan_score").intValue() : 0;
-                        int husayScore = documentSnapshot.getLong("husay_score") != null ? documentSnapshot.getLong("husay_score").intValue() : 0;
-                        int dalubhasaScore = documentSnapshot.getLong("dalubhasa_score") != null ? documentSnapshot.getLong("dalubhasa_score").intValue() : 0;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-                        userPoints = baguhanScore + husayScore + dalubhasaScore;
-                        updateUI();
-                        checkLocks();
-                    } else {
-                        Toast.makeText(this, "No score data found!", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to load scores: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+            int baguhanScore = data.getIntExtra("baguhanScore", 0);
+            if (baguhanScore > 0) {
+                userPoints += baguhanScore;
+                editor.putInt(KEY_POINTS, userPoints).apply();
+                updateUI();
+                checkLocks();
+                Toast.makeText(this, "Nagdagdag ng " + baguhanScore + " puntos!", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void updateUI() {
@@ -173,10 +158,14 @@ public class Palaro extends AppCompatActivity {
 
             if (energyTimerText != null) {
                 energyTimerText.setVisibility(View.VISIBLE);
-                startEnergyCountDown(timeUntilNext);
             }
+
+            startEnergyCountDown(timeUntilNext);
         } else {
-            if (energyTimer != null) energyTimer.cancel();
+            if (energyTimer != null) {
+                energyTimer.cancel();
+            }
+
             if (energyTimerText != null) {
                 energyTimerText.setText("FULL");
                 energyTimerText.setVisibility(View.GONE);
@@ -185,21 +174,20 @@ public class Palaro extends AppCompatActivity {
     }
 
     private void startEnergyCountDown(long millisUntilFinished) {
-        if (energyTimer != null) energyTimer.cancel();
+        if (energyTimer != null) {
+            energyTimer.cancel();
+        }
 
         energyTimer = new CountDownTimer(millisUntilFinished, 1000) {
             public void onTick(long millisUntilFinished) {
                 int minutes = (int) (millisUntilFinished / 1000) / 60;
                 int seconds = (int) (millisUntilFinished / 1000) % 60;
-                if (energyTimerText != null) {
-                    energyTimerText.setText(String.format(Locale.getDefault(), "%d:%02d", minutes, seconds));
-                }
+                String time = String.format(Locale.getDefault(), "%d:%02d", minutes, seconds);
+                energyTimerText.setText(time);
             }
 
             public void onFinish() {
-                if (energyTimerText != null) {
-                    energyTimerText.setText("0:00");
-                }
+                energyTimerText.setText("0:00");
                 startEnergyRegeneration();
             }
         }.start();
@@ -235,6 +223,7 @@ public class Palaro extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         editor.putInt(KEY_ENERGY, userEnergy);
+        editor.putInt(KEY_POINTS, userPoints);
         editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis());
         editor.apply();
     }
@@ -243,7 +232,8 @@ public class Palaro extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         userEnergy = prefs.getInt(KEY_ENERGY, 100);
-        loadUserScoresFromFirestore();
+        userPoints = prefs.getInt(KEY_POINTS, 0);
+        updateUI();
         startEnergyRegeneration();
     }
 }
