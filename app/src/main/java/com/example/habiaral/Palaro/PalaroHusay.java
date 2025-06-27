@@ -30,14 +30,18 @@ public class PalaroHusay extends AppCompatActivity {
     private Button unlockButton;
 
     private CountDownTimer countDownTimer;
-    private static final long TOTAL_TIME = 20000; // 20 seconds
+    private static final long TOTAL_TIME = 20000;
     private long timeLeft = TOTAL_TIME;
 
     private FirebaseFirestore db;
     private int correctAnswerCount = 0;
-    private static final String DOCUMENT_ID = "MP1"; // minigame_progress document ID
+    private static final String DOCUMENT_ID = "MP1";
 
     private final List<TextView> selectedWords = new ArrayList<>();
+    private TextView selectedAnswer;
+    private boolean isTimeUp = false;
+    private boolean isAnswered = false;
+    private int currentQuestionNumber = 1; // Set default question number (you can update later)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,26 +65,37 @@ public class PalaroHusay extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         loadCharacterLine("MHCL1");
-
         new Handler().postDelayed(this::showCountdownThenLoadWords, 7000);
 
-        unlockButton.setOnClickListener(v -> {
-            String userAnswer = fullAnswerView.getText().toString().trim();
+        View.OnClickListener answerClickListener = view -> {
+            if (isTimeUp || isAnswered) return;
+            resetAnswerBackgrounds();
+            view.setBackgroundResource(R.drawable.answer_option_bg_selected);
+            selectedAnswer = (TextView) view;
+        };
 
-            if (!userAnswer.isEmpty()) {
-                db.collection("husay_correct_answers").document("HCA1")
+        answer1.setOnClickListener(answerClickListener);
+        answer2.setOnClickListener(answerClickListener);
+        answer3.setOnClickListener(answerClickListener);
+        answer4.setOnClickListener(answerClickListener);
+        answer5.setOnClickListener(answerClickListener);
+        answer6.setOnClickListener(answerClickListener);
+
+        unlockButton.setOnClickListener(v -> {
+            if (isTimeUp || isAnswered) return;
+
+            if (selectedAnswer != null) {
+                isAnswered = true;
+                String userAnswer = selectedAnswer.getText().toString();
+                String correctDocId = "HCA" + currentQuestionNumber;
+                db.collection("husay_correct_answers").document(correctDocId)
                         .get()
                         .addOnSuccessListener(documentSnapshot -> {
                             if (documentSnapshot.exists()) {
                                 String correctAnswer = documentSnapshot.getString("correctAnswer");
-
                                 if (normalize(userAnswer).equals(normalize(correctAnswer))) {
                                     correctAnswerCount++;
-                                    if (correctAnswerCount == 1) {
-                                        loadCharacterLine("MCL2");
-                                    } else {
-                                        loadCharacterLine("MCL3");
-                                    }
+                                    loadCharacterLine(correctAnswerCount == 1 ? "MCL2" : "MCL3");
                                     Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
                                 } else {
                                     loadCharacterLine("MCL4");
@@ -99,35 +114,32 @@ public class PalaroHusay extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String line = documentSnapshot.getString("line");
-                        husayInstruction.setText(line);
+                        husayInstruction.setText(documentSnapshot.getString("line"));
                     }
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Failed to load line: " + lineId, Toast.LENGTH_SHORT).show());
     }
 
-    private void loadHusayWords() {
-        db.collection("husay").document("H1")
+    private void loadHusayWords(String docId) {
+        db.collection("husay").document(docId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         List<String> words = (List<String>) documentSnapshot.get("words");
 
                         if (words != null && words.size() >= 9) {
-                            answer1.setText(words.get(0));
-                            answer2.setText(words.get(1));
-                            answer3.setText(words.get(2));
-                            answer4.setText(words.get(3));
-                            answer5.setText(words.get(4));
-                            answer6.setText(words.get(5));
-                            answer7.setText(words.get(6));
-                            answer8.setText(words.get(7));
-                            answer9.setText(words.get(8));
+                            TextView[] answers = {
+                                    answer1, answer2, answer3,
+                                    answer4, answer5, answer6,
+                                    answer7, answer8, answer9
+                            };
 
-                            TextView[] answers = {answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9};
+                            for (int i = 0; i < 9; i++) {
+                                TextView answer = answers[i];
+                                answer.setText(words.get(i));
+                                answer.setEnabled(true);
 
-                            for (TextView answer : answers) {
                                 answer.setOnClickListener(view -> {
                                     TextView tapped = (TextView) view;
                                     if (tapped.isEnabled()) {
@@ -153,7 +165,6 @@ public class PalaroHusay extends AppCompatActivity {
                                         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                                             long currentTime = System.currentTimeMillis();
                                             if (currentTime - lastTapTime < 300) {
-                                                // Double tap detected
                                                 TextView tapped = (TextView) view;
                                                 String word = tapped.getText().toString();
                                                 String currentText = fullAnswerView.getText().toString();
@@ -171,13 +182,15 @@ public class PalaroHusay extends AppCompatActivity {
                                     }
                                 });
                             }
+
+                            selectedWords.clear();
+                            fullAnswerView.setText("");
                         }
                     } else {
                         Toast.makeText(this, "Words not found.", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to load words.", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to load words.", Toast.LENGTH_SHORT).show());
     }
 
     private void showCountdownThenLoadWords() {
@@ -193,9 +206,8 @@ public class PalaroHusay extends AppCompatActivity {
                     countdownHandler.postDelayed(this, 1000);
                 } else {
                     loadCharacterLine("MHCL2");
-
                     new Handler().postDelayed(() -> {
-                        loadHusayWords();
+                        loadHusayWords("H1");
                         startTimer();
                     }, 1500);
                 }
@@ -220,6 +232,7 @@ public class PalaroHusay extends AppCompatActivity {
 
             @Override
             public void onFinish() {
+                isTimeUp = true;
                 timerBar.setProgress(0);
                 saveHusayScore();
                 Toast.makeText(PalaroHusay.this, "Time's up!", Toast.LENGTH_SHORT).show();
@@ -239,14 +252,11 @@ public class PalaroHusay extends AppCompatActivity {
         docRef.update(updates)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(PalaroHusay.this, "Score saved!", Toast.LENGTH_SHORT).show();
-
                     if (husayScore >= 800) {
                         unlockDalubhasa(docRef);
                     }
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(PalaroHusay.this, "Failed to save score.", Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Toast.makeText(PalaroHusay.this, "Failed to save score.", Toast.LENGTH_SHORT).show());
     }
 
     private void unlockDalubhasa(DocumentReference docRef) {
@@ -260,10 +270,19 @@ public class PalaroHusay extends AppCompatActivity {
         if (countDownTimer != null) countDownTimer.cancel();
     }
 
+    private void resetAnswerBackgrounds() {
+        answer1.setBackgroundResource(R.drawable.answer_option_bg);
+        answer2.setBackgroundResource(R.drawable.answer_option_bg);
+        answer3.setBackgroundResource(R.drawable.answer_option_bg);
+        answer4.setBackgroundResource(R.drawable.answer_option_bg);
+        answer5.setBackgroundResource(R.drawable.answer_option_bg);
+        answer6.setBackgroundResource(R.drawable.answer_option_bg);
+    }
+
     private String normalize(String text) {
         return text.toLowerCase()
-                .replaceAll("[^a-zA-Z0-9 ]", "") // remove punctuation
-                .replaceAll("\\s+", " ")         // normalize multiple spaces
+                .replaceAll("[^a-zA-Z0-9 ]", "")
+                .replaceAll("\\s+", " ")
                 .trim();
     }
 }
