@@ -27,7 +27,8 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="398dp"
-                    android:background="@drawable/progress_bar_gradient"
+                    android:background="@drawable/progress_bar_color"
+                    android:alpha="0.6"
                     android:layout_gravity="center"
                     android:layout_marginTop="-50dp">
 
@@ -83,12 +84,14 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="20dp"
                 android:gravity="center"
+
                 android:orientation="vertical">
 
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="398dp"
-                    android:background="@drawable/progress_bar_gradient"
+                    android:background="@drawable/progress_bar_color"
+                    android:alpha="0.6"
                     android:layout_gravity="center"
                     android:layout_marginTop="-50dp">
 
@@ -149,7 +152,8 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="398dp"
-                    android:background="@drawable/progress_bar_gradient"
+                    android:background="@drawable/progress_bar_color"
+                    android:alpha="0.6"
                     android:layout_gravity="center"
                     android:layout_marginTop="-50dp">
 

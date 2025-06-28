@@ -1,46 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/dictionary_words_box"
+    android:alpha="0.6"
     android:padding="12dp"
     android:layout_marginTop="10dp">
 
     <LinearLayout
         android:id="@+id/dictionary_word_item"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_width="288dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/wordTextView"
-            android:layout_width="0dp"
+            android:layout_width="299dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="@font/special"
             android:text="Sample Word"
-            android:textSize="20sp"
             android:textColor="#ffffff"
-            android:fontFamily="@font/special" />
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/speakerIcon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/volume"
-            android:contentDescription="Speaker" />
+            android:layout_marginRight="10dp"
+            android:contentDescription="Speaker"
+            android:src="@drawable/volume" />
+
     </LinearLayout>
 
     <TextView
         android:id="@+id/meaningTextView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/special"
         android:text="This is a sample meaning."
         android:textColor="#ffffff"
         android:textSize="15sp"
-        android:textStyle="italic"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/special" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/dictionary_word_item"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/dictionary_word_item"
+        app:layout_constraintTop_toBottomOf="@+id/dictionary_word_item"
+        app:layout_constraintVertical_bias="0.0" />
 
-</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

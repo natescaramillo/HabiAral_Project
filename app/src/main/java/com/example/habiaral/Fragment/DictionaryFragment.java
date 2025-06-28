@@ -35,7 +35,7 @@ public class DictionaryFragment extends Fragment {
     }
     private void loadWordsFromFirestore() {
         db.collection("diksiyonaryo")
-                .orderBy("wordID")  // make sure 'wordID' exists in Firestore
+                .orderBy("wordID")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
