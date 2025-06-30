@@ -224,7 +224,6 @@ public class Palaro extends AppCompatActivity {
         super.onPause();
         editor.putInt(KEY_ENERGY, userEnergy);
         editor.putInt(KEY_POINTS, userPoints);
-        editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis());
         editor.apply();
     }
 
