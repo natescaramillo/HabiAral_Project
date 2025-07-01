@@ -86,28 +86,44 @@ public class PalaroHusay extends AppCompatActivity {
         unlockButton.setOnClickListener(v -> {
             if (isTimeUp || isAnswered) return;
 
-            if (selectedAnswer != null) {
-                isAnswered = true;
-                String userAnswer = selectedAnswer.getText().toString();
-                String correctDocId = "HCA" + currentQuestionNumber;
-                db.collection("husay_correct_answers").document(correctDocId)
-                        .get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            if (documentSnapshot.exists()) {
-                                String correctAnswer = documentSnapshot.getString("correctAnswer");
-                                if (normalize(userAnswer).equals(normalize(correctAnswer))) {
-                                    correctAnswerCount++;
-                                    loadCharacterLine(correctAnswerCount == 1 ? "MCL2" : "MCL3");
-                                    Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    loadCharacterLine("MCL4");
-                                    Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            } else {
+            String userAnswer = fullAnswerView.getText().toString().trim();
+            if (userAnswer.isEmpty()) {
                 Toast.makeText(this, "Paki buuin muna ang pangungusap.", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            isAnswered = true;
+            String correctDocId = "HCA" + currentQuestionNumber;
+            db.collection("husay_correct_answers").document(correctDocId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String correctAnswer = documentSnapshot.getString("correctAnswer");
+                            if (normalize(userAnswer).equals(normalize(correctAnswer))) {
+                                correctAnswerCount++;
+                                loadCharacterLine(correctAnswerCount == 1 ? "MCL2" : "MCL3");
+                                Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                loadCharacterLine("MCL4");
+                                Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
+                            }
+
+                            // 👉 Add this to proceed to next question
+                            currentQuestionNumber++;
+                            if (currentQuestionNumber <= 10) {
+                                new Handler().postDelayed(() -> {
+                                    loadHusayWords("H" + currentQuestionNumber);
+                                    fullAnswerView.setText("");
+                                    isAnswered = false;
+                                    isTimeUp = false;
+                                    startTimer(); // restart timer for next question
+                                }, 3000);
+                            } else {
+                                countDownTimer.cancel();
+                                saveHusayScore(); // end
+                            }
+                        }
+                    });
         });
 
         // Handle back press with confirmation dialog
