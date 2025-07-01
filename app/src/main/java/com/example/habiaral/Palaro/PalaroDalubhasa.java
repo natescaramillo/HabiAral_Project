@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,6 +12,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.R;
@@ -87,6 +90,40 @@ public class PalaroDalubhasa extends AppCompatActivity {
             }
             return false;
         });
+
+        // Handle back press with confirmation dialog
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                showBackConfirmationDialog();
+            }
+        });
+    }
+
+    private void showBackConfirmationDialog() {
+        View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+
+        AlertDialog backDialog = new AlertDialog.Builder(this)
+                .setView(backDialogView)
+                .setCancelable(false)
+                .create();
+
+        if (backDialog.getWindow() != null) {
+            backDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        Button yesButton = backDialogView.findViewById(R.id.button5);
+        Button noButton = backDialogView.findViewById(R.id.button6);
+
+        yesButton.setOnClickListener(v -> {
+            if (countDownTimer != null) countDownTimer.cancel();
+            backDialog.dismiss();
+            finish();
+        });
+
+        noButton.setOnClickListener(v -> backDialog.dismiss());
+
+        backDialog.show();
     }
 
     private void loadCharacterLine(String lineId) {
