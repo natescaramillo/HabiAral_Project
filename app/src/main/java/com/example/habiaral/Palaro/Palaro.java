@@ -32,7 +32,7 @@ public class Palaro extends AppCompatActivity {
 
     final int ENERGY_COST = 20;
     final int ENERGY_MAX = 100;
-    final long ENERGY_INTERVAL = 3 * 60 * 1000;
+    final long ENERGY_INTERVAL = 3 * 60 * 1000; // 3 minutes in milliseconds
 
     CountDownTimer energyTimer;
 
@@ -65,6 +65,12 @@ public class Palaro extends AppCompatActivity {
         userEnergy = prefs.getInt(KEY_ENERGY, 100);
         userPoints = prefs.getInt(KEY_POINTS, 0);
 
+        // ✅ Only set lastEnergyTime if it doesn't exist (first launch)
+        if (!prefs.contains(KEY_LAST_ENERGY_TIME)) {
+            editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis());
+            editor.apply();
+        }
+
         gameMechanicsIcon.setOnClickListener(v -> showGameMechanics());
 
         updateUI();
@@ -75,10 +81,9 @@ public class Palaro extends AppCompatActivity {
             if (userEnergy >= ENERGY_COST) {
                 userEnergy -= ENERGY_COST;
                 editor.putInt(KEY_ENERGY, userEnergy).apply();
-                editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis()).apply();
                 updateUI();
                 checkLocks();
-                startEnergyRegeneration();
+                startEnergyRegeneration(); // No resetting lastEnergyTime here
 
                 Intent intent = new Intent(this, PalaroBaguhan.class);
                 intent.putExtra("resetProgress", true);
