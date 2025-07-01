@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.activity.OnBackPressedCallback;
+
 public class PalaroBaguhan extends AppCompatActivity {
 
     private TextView baguhanQuestion, answer1, answer2, answer3, answer4, answer5, answer6, selectedAnswer;
@@ -157,6 +159,13 @@ public class PalaroBaguhan extends AppCompatActivity {
             Toast.makeText(this, "Naitala na ang progreso. Paalam muna!", Toast.LENGTH_SHORT).show();
             finish();
             return true;
+        });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                showBackConfirmationDialog();
+            }
         });
     }
 
@@ -317,7 +326,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (!documentSnapshot.exists()) {
-                        finishQuiz(); // No more questions
+                        finishQuiz();
                         return;
                     }
 
@@ -356,5 +365,31 @@ public class PalaroBaguhan extends AppCompatActivity {
         super.onDestroy();
         if (countDownTimer != null) countDownTimer.cancel();
         saveProgressToFirebase();
+    }
+
+    private void showBackConfirmationDialog() {
+        View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+
+        AlertDialog backDialog = new AlertDialog.Builder(this)
+                .setView(backDialogView)
+                .setCancelable(false)
+                .create();
+
+        if (backDialog.getWindow() != null) {
+            backDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        Button yesButton = backDialogView.findViewById(R.id.button5);
+        Button noButton = backDialogView.findViewById(R.id.button6);
+
+        yesButton.setOnClickListener(v -> {
+            saveProgressToFirebase();
+            backDialog.dismiss();
+            finish();
+        });
+
+        noButton.setOnClickListener(v -> backDialog.dismiss());
+
+        backDialog.show();
     }
 }

@@ -30,9 +30,9 @@ public class Palaro extends AppCompatActivity {
     int userPoints;
     int userEnergy;
 
-    final int ENERGY_COST = 20;
+    final int ENERGY_COST = 10;
     final int ENERGY_MAX = 100;
-    final long ENERGY_INTERVAL = 3 * 60 * 1000; // 3 minutes in milliseconds
+    final long ENERGY_INTERVAL = 3 * 60 * 1000;
 
     CountDownTimer energyTimer;
 
@@ -42,6 +42,8 @@ public class Palaro extends AppCompatActivity {
     private static final String KEY_ENERGY = "userEnergy";
     private static final String KEY_POINTS = "userPoints";
     private static final String KEY_LAST_ENERGY_TIME = "lastEnergyTime";
+
+    private static final int BAGUHAN_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,7 @@ public class Palaro extends AppCompatActivity {
         currentEnergyText = findViewById(R.id.current_energy2);
         energyTimerText = findViewById(R.id.time_energy);
         palaroProgress = findViewById(R.id.palaro_progress);
-        palaroProgress.setMax(2000);
+        palaroProgress.setMax(800);
 
         prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         editor = prefs.edit();
@@ -65,11 +67,13 @@ public class Palaro extends AppCompatActivity {
         userEnergy = prefs.getInt(KEY_ENERGY, 100);
         userPoints = prefs.getInt(KEY_POINTS, 0);
 
-        // ✅ Only set lastEnergyTime if it doesn't exist (first launch)
         if (!prefs.contains(KEY_LAST_ENERGY_TIME)) {
             editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis());
             editor.apply();
         }
+
+        userPoints = 800;
+        editor.putInt(KEY_POINTS, userPoints).apply();
 
         gameMechanicsIcon.setOnClickListener(v -> showGameMechanics());
 
@@ -83,11 +87,11 @@ public class Palaro extends AppCompatActivity {
                 editor.putInt(KEY_ENERGY, userEnergy).apply();
                 updateUI();
                 checkLocks();
-                startEnergyRegeneration(); // No resetting lastEnergyTime here
+                startEnergyRegeneration();
 
                 Intent intent = new Intent(this, PalaroBaguhan.class);
                 intent.putExtra("resetProgress", true);
-                startActivity(intent);
+                startActivityForResult(intent, BAGUHAN_REQUEST_CODE);
             } else {
                 Toast.makeText(this, "Not enough energy!", Toast.LENGTH_SHORT).show();
             }
@@ -114,13 +118,18 @@ public class Palaro extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-            int baguhanScore = data.getIntExtra("baguhanScore", 0);
+        if (requestCode == BAGUHAN_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            int baguhanScore = data.getIntExtra("baguhanPoints", 0);
             if (baguhanScore > 0) {
                 userPoints += baguhanScore;
-                editor.putInt(KEY_POINTS, userPoints).apply();
+
+                // ✅ Save updated points
+                editor.putInt(KEY_POINTS, userPoints);
+                editor.apply();
+
                 updateUI();
                 checkLocks();
+
                 Toast.makeText(this, "Nagdagdag ng " + baguhanScore + " puntos!", Toast.LENGTH_SHORT).show();
             }
         }

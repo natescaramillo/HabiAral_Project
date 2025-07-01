@@ -39,15 +39,17 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(files("libs\\NGramPatternGrammar.jar"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    // Firebase BoM (manages Firebase versions)
     implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation ("com.google.firebase:firebase-auth:22.3.1")
-    implementation ("com.google.android.gms:play-services-auth:21.0.0")
-    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation ("com.google.firebase:firebase-firestore:24.10.1")
 
+    // Firebase modules
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth:22.3.1")
+    implementation("com.google.firebase:firebase-firestore:24.10.1")
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
 }
 apply(plugin = "com.google.gms.google-services")

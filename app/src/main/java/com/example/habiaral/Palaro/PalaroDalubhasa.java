@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.R;
+import com.example.habiaral.GrammarCheckerUtil;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -39,9 +39,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private static final String CORRECT_ID = "DCA1";
     private static final String WRONG_ID = "DWA1";
 
-    // Optional: Update or remove if implementing scoring
     private int correctAnswerCount = 0;
-    private static final String DOCUMENT_ID = "MP1"; // Replace with actual dynamic ID if needed
+    private static final String DOCUMENT_ID = "MP1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +53,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
         btnTapos = findViewById(R.id.UnlockButtonPalaro);
 
         db = FirebaseFirestore.getInstance();
+
+        GrammarCheckerUtil.initChecker();
 
         userSentenceInput.setEnabled(false);
         btnTapos.setEnabled(false);
@@ -171,7 +172,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private boolean isValidSentence(String input) {
         String[] words = input.trim().split("\\s+");
-        return words.length >= 5 && input.endsWith(".");
+        return words.length >= 5
+                && input.endsWith(".")
+                && GrammarCheckerUtil.isSentenceGrammaticallyCorrect(input);
     }
 
     private void saveCorrectAnswer(String sentence) {
@@ -229,7 +232,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         Map<String, Object> updates = new HashMap<>();
         updates.put("dalubhasa_score", score);
-        updates.put("total_score", score); // You can modify this logic for cumulative score
+        updates.put("total_score", score);
 
         docRef.update(updates)
                 .addOnSuccessListener(aVoid -> {
