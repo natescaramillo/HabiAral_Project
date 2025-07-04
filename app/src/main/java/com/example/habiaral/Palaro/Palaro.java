@@ -59,7 +59,6 @@ public class Palaro extends AppCompatActivity {
         currentEnergyText = findViewById(R.id.current_energy2);
         energyTimerText = findViewById(R.id.time_energy);
         palaroProgress = findViewById(R.id.palaro_progress);
-        palaroProgress.setMax(800);
 
         prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         editor = prefs.edit();
@@ -71,9 +70,6 @@ public class Palaro extends AppCompatActivity {
             editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis());
             editor.apply();
         }
-
-        userPoints = 800;
-        editor.putInt(KEY_POINTS, userPoints).apply();
 
         gameMechanicsIcon.setOnClickListener(v -> showGameMechanics());
 
@@ -112,6 +108,13 @@ public class Palaro extends AppCompatActivity {
                 Toast.makeText(this, "Unlock Dalubhasa at 800 points!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        Button debugAddPoints = findViewById(R.id.debug_add_points);
+        debugAddPoints.setOnClickListener(v -> {
+            userPoints += 100;
+            editor.putInt(KEY_POINTS, userPoints).apply();
+            updateUI();
+        });
     }
 
     @Override
@@ -138,8 +141,35 @@ public class Palaro extends AppCompatActivity {
     private void updateUI() {
         userPointText.setText(String.valueOf(userPoints));
         currentEnergyText.setText(String.valueOf(userEnergy));
-        palaroProgress.setProgress(userPoints);
+
+        ImageView trophyImage = findViewById(R.id.trophy_image);
+
+        int tierStart = 0;
+        int tierEnd = 400;
+        int progressPercent = 0;
+
+        if (userPoints >= 1200) {
+            trophyImage.setImageResource(R.drawable.gold_trophy);
+            tierStart = 800;
+            progressPercent = calculatePercent(userPoints, tierStart);
+        } else if (userPoints >= 800) {
+            trophyImage.setImageResource(R.drawable.silver_trophy_1);
+            tierStart = 800;
+            progressPercent = calculatePercent(userPoints, tierStart);
+        } else if (userPoints >= 400) {
+            trophyImage.setImageResource(R.drawable.bronze_trophy);
+            tierStart = 400;
+            progressPercent = calculatePercent(userPoints, tierStart);
+        } else {
+            trophyImage.setImageResource(R.drawable.unranked_trophy_1);
+            progressPercent = calculatePercent(userPoints, tierStart);
+        }
+
+        palaroProgress.setMax(100); // Match XML
+        palaroProgress.setProgress(progressPercent); // Percent based
     }
+
+
 
     private void checkLocks() {
         button2.setEnabled(userPoints >= 400);
@@ -249,4 +279,14 @@ public class Palaro extends AppCompatActivity {
         updateUI();
         startEnergyRegeneration();
     }
+
+    private int calculatePercent(int points, int tierStart) {
+        int raw = points - tierStart;
+        if (raw < 0) raw = 0;
+        if (raw > 400) raw = 400;
+
+        // 👇 Adjust this to a value relative to max (which is 100)
+        return Math.round((raw / 400f) * 100);
+    }
+
 }
