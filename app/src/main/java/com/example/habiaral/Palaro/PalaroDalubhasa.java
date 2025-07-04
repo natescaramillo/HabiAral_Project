@@ -12,9 +12,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.R;
+import com.example.habiaral.GrammarCheckerUtil;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -39,9 +42,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private static final String CORRECT_ID = "DCA1";
     private static final String WRONG_ID = "DWA1";
 
-    // Optional: Update or remove if implementing scoring
     private int correctAnswerCount = 0;
-    private static final String DOCUMENT_ID = "MP1"; // Replace with actual dynamic ID if needed
+    private static final String DOCUMENT_ID = "MP1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
         btnTapos = findViewById(R.id.UnlockButtonPalaro);
 
         db = FirebaseFirestore.getInstance();
+
+        GrammarCheckerUtil.initChecker();
 
         userSentenceInput.setEnabled(false);
         btnTapos.setEnabled(false);
@@ -86,6 +90,40 @@ public class PalaroDalubhasa extends AppCompatActivity {
             }
             return false;
         });
+
+        // Handle back press with confirmation dialog
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                showBackConfirmationDialog();
+            }
+        });
+    }
+
+    private void showBackConfirmationDialog() {
+        View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+
+        AlertDialog backDialog = new AlertDialog.Builder(this)
+                .setView(backDialogView)
+                .setCancelable(false)
+                .create();
+
+        if (backDialog.getWindow() != null) {
+            backDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        Button yesButton = backDialogView.findViewById(R.id.button5);
+        Button noButton = backDialogView.findViewById(R.id.button6);
+
+        yesButton.setOnClickListener(v -> {
+            if (countDownTimer != null) countDownTimer.cancel();
+            backDialog.dismiss();
+            finish();
+        });
+
+        noButton.setOnClickListener(v -> backDialog.dismiss());
+
+        backDialog.show();
     }
 
     private void loadCharacterLine(String lineId) {
@@ -171,7 +209,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private boolean isValidSentence(String input) {
         String[] words = input.trim().split("\\s+");
-        return words.length >= 5 && input.endsWith(".");
+        return words.length >= 5
+                && input.endsWith(".")
+                && GrammarCheckerUtil.isSentenceGrammaticallyCorrect(input);
     }
 
     private void saveCorrectAnswer(String sentence) {
@@ -229,7 +269,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         Map<String, Object> updates = new HashMap<>();
         updates.put("dalubhasa_score", score);
-        updates.put("total_score", score); // You can modify this logic for cumulative score
+        updates.put("total_score", score);
 
         docRef.update(updates)
                 .addOnSuccessListener(aVoid -> {

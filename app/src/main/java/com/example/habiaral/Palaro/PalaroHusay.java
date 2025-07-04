@@ -10,6 +10,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.R;
@@ -41,7 +43,7 @@ public class PalaroHusay extends AppCompatActivity {
     private TextView selectedAnswer;
     private boolean isTimeUp = false;
     private boolean isAnswered = false;
-    private int currentQuestionNumber = 1; // Set default question number (you can update later)
+    private int currentQuestionNumber = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,29 +86,79 @@ public class PalaroHusay extends AppCompatActivity {
         unlockButton.setOnClickListener(v -> {
             if (isTimeUp || isAnswered) return;
 
-            if (selectedAnswer != null) {
-                isAnswered = true;
-                String userAnswer = selectedAnswer.getText().toString();
-                String correctDocId = "HCA" + currentQuestionNumber;
-                db.collection("husay_correct_answers").document(correctDocId)
-                        .get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            if (documentSnapshot.exists()) {
-                                String correctAnswer = documentSnapshot.getString("correctAnswer");
-                                if (normalize(userAnswer).equals(normalize(correctAnswer))) {
-                                    correctAnswerCount++;
-                                    loadCharacterLine(correctAnswerCount == 1 ? "MCL2" : "MCL3");
-                                    Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    loadCharacterLine("MCL4");
-                                    Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            } else {
+            String userAnswer = fullAnswerView.getText().toString().trim();
+            if (userAnswer.isEmpty()) {
                 Toast.makeText(this, "Paki buuin muna ang pangungusap.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            isAnswered = true;
+            String correctDocId = "HCA" + currentQuestionNumber;
+            db.collection("husay_correct_answers").document(correctDocId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String correctAnswer = documentSnapshot.getString("correctAnswer");
+                            if (normalize(userAnswer).equals(normalize(correctAnswer))) {
+                                correctAnswerCount++;
+                                loadCharacterLine(correctAnswerCount == 1 ? "MCL2" : "MCL3");
+                                Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                loadCharacterLine("MCL4");
+                                Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
+                            }
+
+                            // 👉 Add this to proceed to next question
+                            currentQuestionNumber++;
+                            if (currentQuestionNumber <= 10) {
+                                new Handler().postDelayed(() -> {
+                                    loadHusayWords("H" + currentQuestionNumber);
+                                    fullAnswerView.setText("");
+                                    isAnswered = false;
+                                    isTimeUp = false;
+                                    startTimer(); // restart timer for next question
+                                }, 3000);
+                            } else {
+                                countDownTimer.cancel();
+                                saveHusayScore(); // end
+                            }
+                        }
+                    });
+        });
+
+        // Handle back press with confirmation dialog
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                showBackConfirmationDialog();
             }
         });
+    }
+
+    private void showBackConfirmationDialog() {
+        View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+
+        AlertDialog backDialog = new AlertDialog.Builder(this)
+                .setView(backDialogView)
+                .setCancelable(false)
+                .create();
+
+        if (backDialog.getWindow() != null) {
+            backDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        Button yesButton = backDialogView.findViewById(R.id.button5);
+        Button noButton = backDialogView.findViewById(R.id.button6);
+
+        yesButton.setOnClickListener(v -> {
+            if (countDownTimer != null) countDownTimer.cancel();
+            backDialog.dismiss();
+            finish();
+        });
+
+        noButton.setOnClickListener(v -> backDialog.dismiss());
+
+        backDialog.show();
     }
 
     private void loadCharacterLine(String lineId) {
@@ -247,7 +299,7 @@ public class PalaroHusay extends AppCompatActivity {
 
         Map<String, Object> updates = new HashMap<>();
         updates.put("husay_score", husayScore);
-        updates.put("total_score", husayScore); // Only baguhan counted now
+        updates.put("total_score", husayScore);
 
         docRef.update(updates)
                 .addOnSuccessListener(aVoid -> {

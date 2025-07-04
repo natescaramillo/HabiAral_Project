@@ -30,7 +30,7 @@ public class Palaro extends AppCompatActivity {
     int userPoints;
     int userEnergy;
 
-    final int ENERGY_COST = 20;
+    final int ENERGY_COST = 10;
     final int ENERGY_MAX = 100;
     final long ENERGY_INTERVAL = 3 * 60 * 1000;
 
@@ -42,6 +42,8 @@ public class Palaro extends AppCompatActivity {
     private static final String KEY_ENERGY = "userEnergy";
     private static final String KEY_POINTS = "userPoints";
     private static final String KEY_LAST_ENERGY_TIME = "lastEnergyTime";
+
+    private static final int BAGUHAN_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +59,17 @@ public class Palaro extends AppCompatActivity {
         currentEnergyText = findViewById(R.id.current_energy2);
         energyTimerText = findViewById(R.id.time_energy);
         palaroProgress = findViewById(R.id.palaro_progress);
-        palaroProgress.setMax(2000);
 
         prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         editor = prefs.edit();
 
         userEnergy = prefs.getInt(KEY_ENERGY, 100);
         userPoints = prefs.getInt(KEY_POINTS, 0);
+
+        if (!prefs.contains(KEY_LAST_ENERGY_TIME)) {
+            editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis());
+            editor.apply();
+        }
 
         gameMechanicsIcon.setOnClickListener(v -> showGameMechanics());
 
@@ -75,14 +81,13 @@ public class Palaro extends AppCompatActivity {
             if (userEnergy >= ENERGY_COST) {
                 userEnergy -= ENERGY_COST;
                 editor.putInt(KEY_ENERGY, userEnergy).apply();
-                editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis()).apply();
                 updateUI();
                 checkLocks();
                 startEnergyRegeneration();
 
                 Intent intent = new Intent(this, PalaroBaguhan.class);
                 intent.putExtra("resetProgress", true);
-                startActivity(intent);
+                startActivityForResult(intent, BAGUHAN_REQUEST_CODE);
             } else {
                 Toast.makeText(this, "Not enough energy!", Toast.LENGTH_SHORT).show();
             }
@@ -103,19 +108,31 @@ public class Palaro extends AppCompatActivity {
                 Toast.makeText(this, "Unlock Dalubhasa at 800 points!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        Button debugAddPoints = findViewById(R.id.debug_add_points);
+        debugAddPoints.setOnClickListener(v -> {
+            userPoints += 100;
+            editor.putInt(KEY_POINTS, userPoints).apply();
+            updateUI();
+        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-            int baguhanScore = data.getIntExtra("baguhanScore", 0);
+        if (requestCode == BAGUHAN_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            int baguhanScore = data.getIntExtra("baguhanPoints", 0);
             if (baguhanScore > 0) {
                 userPoints += baguhanScore;
-                editor.putInt(KEY_POINTS, userPoints).apply();
+
+                // ✅ Save updated points
+                editor.putInt(KEY_POINTS, userPoints);
+                editor.apply();
+
                 updateUI();
                 checkLocks();
+
                 Toast.makeText(this, "Nagdagdag ng " + baguhanScore + " puntos!", Toast.LENGTH_SHORT).show();
             }
         }
@@ -124,8 +141,35 @@ public class Palaro extends AppCompatActivity {
     private void updateUI() {
         userPointText.setText(String.valueOf(userPoints));
         currentEnergyText.setText(String.valueOf(userEnergy));
-        palaroProgress.setProgress(userPoints);
+
+        ImageView trophyImage = findViewById(R.id.trophy_image);
+
+        int tierStart = 0;
+        int tierEnd = 400;
+        int progressPercent = 0;
+
+        if (userPoints >= 1200) {
+            trophyImage.setImageResource(R.drawable.gold_trophy);
+            tierStart = 800;
+            progressPercent = calculatePercent(userPoints, tierStart);
+        } else if (userPoints >= 800) {
+            trophyImage.setImageResource(R.drawable.silver_trophy_1);
+            tierStart = 800;
+            progressPercent = calculatePercent(userPoints, tierStart);
+        } else if (userPoints >= 400) {
+            trophyImage.setImageResource(R.drawable.bronze_trophy);
+            tierStart = 400;
+            progressPercent = calculatePercent(userPoints, tierStart);
+        } else {
+            trophyImage.setImageResource(R.drawable.unranked_trophy_1);
+            progressPercent = calculatePercent(userPoints, tierStart);
+        }
+
+        palaroProgress.setMax(100); // Match XML
+        palaroProgress.setProgress(progressPercent); // Percent based
     }
+
+
 
     private void checkLocks() {
         button2.setEnabled(userPoints >= 400);
@@ -224,7 +268,6 @@ public class Palaro extends AppCompatActivity {
         super.onPause();
         editor.putInt(KEY_ENERGY, userEnergy);
         editor.putInt(KEY_POINTS, userPoints);
-        editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis());
         editor.apply();
     }
 
@@ -236,4 +279,14 @@ public class Palaro extends AppCompatActivity {
         updateUI();
         startEnergyRegeneration();
     }
+
+    private int calculatePercent(int points, int tierStart) {
+        int raw = points - tierStart;
+        if (raw < 0) raw = 0;
+        if (raw > 400) raw = 400;
+
+        // 👇 Adjust this to a value relative to max (which is 100)
+        return Math.round((raw / 400f) * 100);
+    }
+
 }
