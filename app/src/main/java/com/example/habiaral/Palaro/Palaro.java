@@ -30,7 +30,7 @@ public class Palaro extends AppCompatActivity {
     int userPoints;
     int userEnergy;
 
-    final int ENERGY_COST = 10;
+    final int ENERGY_COST = 20;
     final int ENERGY_MAX = 100;
     final long ENERGY_INTERVAL = 3 * 60 * 1000;
 
@@ -80,7 +80,14 @@ public class Palaro extends AppCompatActivity {
         button1.setOnClickListener(v -> {
             if (userEnergy >= ENERGY_COST) {
                 userEnergy -= ENERGY_COST;
+
+                // ✅ I-set lang ang KEY_LAST_ENERGY_TIME kung dati ay full (100) at ngayon lang nagbawas
+                if (userEnergy == ENERGY_MAX - ENERGY_COST) {
+                    editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis());
+                }
+
                 editor.putInt(KEY_ENERGY, userEnergy).apply();
+
                 updateUI();
                 checkLocks();
                 startEnergyRegeneration();
@@ -92,6 +99,7 @@ public class Palaro extends AppCompatActivity {
                 Toast.makeText(this, "Not enough energy!", Toast.LENGTH_SHORT).show();
             }
         });
+
 
         button2.setOnClickListener(v -> {
             if (userPoints >= 400) {
@@ -123,6 +131,7 @@ public class Palaro extends AppCompatActivity {
 
         if (requestCode == BAGUHAN_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             int baguhanScore = data.getIntExtra("baguhanPoints", 0);
+
             if (baguhanScore > 0) {
                 userPoints += baguhanScore;
 
@@ -277,7 +286,6 @@ public class Palaro extends AppCompatActivity {
         userEnergy = prefs.getInt(KEY_ENERGY, 100);
         userPoints = prefs.getInt(KEY_POINTS, 0);
         updateUI();
-        startEnergyRegeneration();
     }
 
     private int calculatePercent(int points, int tierStart) {
