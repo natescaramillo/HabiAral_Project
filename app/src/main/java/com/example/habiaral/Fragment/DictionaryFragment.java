@@ -75,7 +75,8 @@ public class DictionaryFragment extends Fragment {
 
         speakerIcon.setOnClickListener(v -> {
             if (textToSpeech != null) {
-                textToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null, null);
+                String toSpeak = word + ". Kahulugan: " + meaning;
+                textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
             }
         });
 
