@@ -8,17 +8,17 @@
         android:id="@+id/home_nav"
         app:iconSize="15dp"/>
     <item
-        android:title="Progress"
+        android:title="Katayuan"
         android:icon="@drawable/progress"
         android:id="@+id/progressbar_nav"
         app:iconSize="15dp"/>
     <item
-        android:title="Dictionary"
+        android:title="Diksiyonaryo"
         android:icon="@drawable/book"
         android:id="@+id/dictionary_nav"
         app:iconSize="15dp"/>
     <item
-        android:title="Achievements"
+        android:title="Parangal"
         android:icon="@drawable/achievement"
         android:id="@+id/achievement_nav"
         app:iconSize="15dp"/>
