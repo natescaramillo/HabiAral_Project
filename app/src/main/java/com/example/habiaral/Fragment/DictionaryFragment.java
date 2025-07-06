@@ -15,11 +15,18 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import android.speech.tts.TextToSpeech;
+import android.widget.Toast;
+
+import java.util.Locale;
+
 public class DictionaryFragment extends Fragment {
 
     private FirebaseFirestore db;
     private LinearLayout wordContainer;
     private LayoutInflater inflater;
+
+    private TextToSpeech textToSpeech;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,6 +37,14 @@ public class DictionaryFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         loadWordsFromFirestore();
+
+        textToSpeech = new TextToSpeech(requireContext(), status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                textToSpeech.setLanguage(new Locale("tl", "PH"));
+            } else {
+                Toast.makeText(getContext(), "Text-to-Speech failed to initialize", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return view;
     }
@@ -58,8 +73,21 @@ public class DictionaryFragment extends Fragment {
         wordText.setText(word);
         meaningText.setText(meaning);
 
-        // Optional: Add Text-to-Speech here later if needed
+        speakerIcon.setOnClickListener(v -> {
+            if (textToSpeech != null) {
+                textToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null, null);
+            }
+        });
 
         wordContainer.addView(wordItemView);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
     }
 }
