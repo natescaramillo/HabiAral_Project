@@ -54,6 +54,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     private String studentID;
 
     private int remainingHearts = 5;
+    private int correctStreak = 0;
     private ImageView[] heartIcons;
 
     @Override
@@ -131,16 +132,34 @@ public class PalaroBaguhan extends AppCompatActivity {
                                 if (userAnswer.equalsIgnoreCase(correctAnswer)) {
                                     correctAnswerCount++;
                                     baguhanScore += 5;
-                                    loadCharacterLine("MCL2");
+                                    correctStreak++;
+
+                                    // Set MCL based on streak
+                                    if (correctStreak == 1) {
+                                        loadCharacterLine("MCL2");
+                                    } else if (correctStreak == 2) {
+                                        loadCharacterLine("MCL3");
+                                    } else if (correctStreak >= 3) {
+                                        loadCharacterLine("MCL4");
+                                    }
+
                                     Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
+
                                     timeLeft = Math.min(timeLeft + 3000, TOTAL_TIME);
                                     startTimer(timeLeft);
                                 } else {
-                                    loadCharacterLine("MCL4");
-                                    Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
+                                    correctStreak = 0;
                                     deductHeart();
+                                    if (remainingHearts > 0) {
+                                        loadCharacterLine("MCL6");
+                                    } else {
+                                        loadCharacterLine("MCL5");
+                                    }
+
+                                    Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
                                 }
                             }
+
 
                             new Handler().postDelayed(() -> {
                                 currentQuestionNumber++;
