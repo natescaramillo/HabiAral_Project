@@ -11,8 +11,8 @@
 
     <TextView
         android:id="@+id/dalubhasa_instructionText"
-        android:layout_width="337dp"
-        android:layout_height="137dp"
+        android:layout_width="325dp"
+        android:layout_height="127dp"
         android:layout_weight="1"
         android:background="@drawable/rounded_rect"
         android:backgroundTint="#FFEFEA"
@@ -23,19 +23,18 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.105" />
+        app:layout_constraintVertical_bias="0.069" />
 
     <ImageView
         android:id="@+id/characterIcon"
-        android:layout_width="174dp"
-        android:layout_height="162dp"
-        android:layout_marginTop="140dp"
-        android:src="@drawable/tarsier_removebg"
+        android:layout_width="292dp"
+        android:layout_height="260dp"
+        android:layout_marginTop="84dp"
+        android:src="@drawable/tarsierpng"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.978"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
