@@ -3,20 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="500dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/pop_up_main_color"
     android:padding="16dp">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:maxHeight="600dp"
         android:fillViewport="true"
-        android:scrollbarSize="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:scrollbarSize="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,6 +20,7 @@
             android:orientation="vertical"
             android:padding="8dp">
 
+            <!-- Header -->
             <TextView
                 android:id="@+id/game_mechanic_header"
                 android:layout_width="match_parent"
@@ -32,18 +29,18 @@
                 android:gravity="center"
                 android:text="Paano Laruin ang Palaro"
                 android:textColor="#3A2A09"
-                android:textSize="30dp" />
+                android:textSize="30sp" />
 
             <!-- Subheader -->
             <TextView
                 android:id="@+id/how"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/special"
                 android:text="Mga Hakbang:"
                 android:textColor="#3A2A09"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
 
             <!-- STEP 1 -->
             <LinearLayout
@@ -61,23 +58,28 @@
                     android:text="Hakbang 1"
                     android:textColor="#3A2A09"
                     android:textSize="18sp"
-                    android:layout_marginEnd="8dp"/>
+                    android:layout_marginEnd="8dp"
+                    android:textStyle="bold"/>
 
                 <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="183dp"
+                    android:layout_height="130dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="Hakbang 1 larawan"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/hakbang_1" />
 
-                    android:contentDescription="Hakbang 1 larawan"/>
+                <!-- Add valid image source -->
             </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:fontFamily="@font/special"
-                android:text="Pindutin ang 'Simula' upang umpisahan ang mini-game."
+                android:text="Pindutin ang Mapipiling Pindutan upang umpisahan ang Palaro."
                 android:textColor="#3A2A09"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp"/>
+                android:textSize="14sp" />
 
             <!-- STEP 2 -->
             <LinearLayout
@@ -88,30 +90,33 @@
                 android:gravity="center_vertical">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="167dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/special"
                     android:text="Hakbang 2"
                     android:textColor="#3A2A09"
                     android:textSize="18sp"
-                    android:layout_marginEnd="8dp"/>
+                    android:textStyle="bold" />
 
                 <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-
-                    android:contentDescription="Hakbang 2 larawan"/>
+                    android:layout_width="182dp"
+                    android:layout_height="130dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="Hakbang 2 larawan"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/hakbang_2" />
+                <!-- Add valid image source -->
             </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:fontFamily="@font/special"
-                android:text="Sagutin ang mga tanong o kumpletuhin ang mga gawain."
+                android:text="Sagutin ang mga tanong o kumpletuhin ang mga gawain bago maubos ang oras."
                 android:textColor="#3A2A09"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp"/>
+                android:textSize="14sp" />
 
             <!-- STEP 3 -->
             <LinearLayout
@@ -129,23 +134,17 @@
                     android:text="Hakbang 3"
                     android:textColor="#3A2A09"
                     android:textSize="18sp"
-                    android:layout_marginEnd="8dp"/>
+                    android:layout_marginEnd="8dp"
+                    android:textStyle="bold"/>
 
                 <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-
-                    android:contentDescription="Hakbang 3 larawan"/>
+                    android:layout_width="180dp"
+                    android:layout_height="130dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="Hakbang 3 larawan"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/hakbang_3" /> <!-- Add valid image source -->
             </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/special"
-                android:text="Iwasan ang mga maling sagot o mga hadlang."
-                android:textColor="#3A2A09"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp"/>
 
             <!-- STEP 4 -->
             <LinearLayout
@@ -163,23 +162,25 @@
                     android:text="Hakbang 4"
                     android:textColor="#3A2A09"
                     android:textSize="18sp"
-                    android:layout_marginEnd="8dp"/>
+                    android:textStyle="bold"/>
 
                 <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-
-                    android:contentDescription="Hakbang 4 larawan"/>
+                    android:layout_width="178dp"
+                    android:layout_height="130dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="Hakbang 4 larawan"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/hakbang_4" /> <!-- Add valid image source -->
             </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:fontFamily="@font/special"
                 android:text="Tapusin ang laro at subukang makuha ang mataas na puntos!"
                 android:textColor="#3A2A09"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp"/>
+                android:textSize="14sp" />
 
             <!-- OKAY BUTTON -->
             <Button

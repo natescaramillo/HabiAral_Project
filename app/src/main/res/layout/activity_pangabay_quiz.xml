@@ -106,6 +106,13 @@
         app:layout_constraintTop_toBottomOf="@id/answer3"
         android:fontFamily="@font/special"/>
 
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="317dp"
+        android:layout_height="489dp"
+        android:src="@drawable/tarsierpng"
+        tools:layout_editor_absoluteX="47dp"
+        tools:layout_editor_absoluteY="-31dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,8 +11,8 @@
 
     <TextView
         android:id="@+id/husay_instructionText"
-        android:layout_width="333dp"
-        android:layout_height="155dp"
+        android:layout_width="324dp"
+        android:layout_height="118dp"
         android:layout_marginTop="48dp"
         android:layout_weight="1"
         android:background="@drawable/rounded_rect"
@@ -28,12 +28,11 @@
 
     <ImageView
         android:id="@+id/characterIcon"
-        android:layout_width="188dp"
-        android:layout_height="168dp"
-        android:layout_marginTop="128dp"
-        android:src="@drawable/tarsier_removebg"
+        android:layout_width="293dp"
+        android:layout_height="299dp"
+        android:layout_marginTop="48dp"
+        android:src="@drawable/tarsierpng"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

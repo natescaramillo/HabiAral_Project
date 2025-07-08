@@ -7,45 +7,42 @@
     android:layout_height="match_parent"
     tools:context=".Fragment.DictionaryFragment">
 
-    <!-- Header background -->
     <View
-        android:id="@+id/view1"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="93dp"
         android:alpha="0.6"
         android:background="#A27B5C" />
 
     <!-- Title -->
     <TextView
-        android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:fontFamily="@font/special"
-        android:gravity="center"
+        android:layout_gravity="center_horizontal"
         android:text="Diksiyonaryo"
         android:textColor="#FFFFFF"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:fontFamily="@font/special"
+        android:gravity="center" />
 
-    <!-- Search Bar -->
+
+    <!-- Word List Scrollable Container -->
     <EditText
         android:id="@+id/searchBarId"
         android:layout_width="325dp"
         android:layout_height="49dp"
-        android:textCursorDrawable="@drawable/custom_caret"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="90dp"
-        android:padding="10dp"
+        android:layout_marginTop="110dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/search_bar"
-        android:hint=" Search" />
+        android:hint=" Search"
+        android:padding="10dp"
+        android:textCursorDrawable="@drawable/custom_caret" />
 
-    <!-- Word List Scrollable Container -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="175dp"
         android:fillViewport="true">
 
         <LinearLayout

@@ -14,30 +14,35 @@
         android:alpha="0.6"
         android:background="@drawable/homepage_design" />
 
-
-
-    <TextView
-        android:id="@+id/textView21"
-        android:layout_width="334dp"
-        android:layout_height="84dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:text="Mabuhay!\nSalamat sa pag gamit!"
-        android:textColor="#FFFFFF"
-        android:textSize="20dp" />
-    <TextView
-        android:id="@+id/nickname_id"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textColor="#FFFFFF"
-        android:textSize="20dp"
-        android:layout_marginLeft="160dp"
-        android:layout_marginTop="90dp"
-        android:text="Mark" />
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="40dp">
+
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/special"
+            android:gravity="center"
+            android:text="Mabuhay!\nSalamat sa pag gamit!"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/nickname_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/special"
+            android:gravity="center"
+            android:text="Mark"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp" />
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/imageView7"
         android:layout_width="match_parent"

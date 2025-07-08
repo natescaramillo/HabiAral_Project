@@ -100,9 +100,12 @@
                 android:max="100"
                 android:progress="0"
                 android:progressDrawable="@drawable/custom_palaro_bar"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/view15"
+                app:layout_constraintHorizontal_bias="0.384"
                 app:layout_constraintStart_toStartOf="@+id/view15"
-                app:layout_constraintTop_toBottomOf="@+id/view15" />
+                app:layout_constraintTop_toBottomOf="@+id/view15"
+                app:layout_constraintVertical_bias="0.0" />
 
             <ImageView
                 android:id="@+id/game_mechanic_icon"
@@ -194,7 +197,7 @@
 
             <TextView
                 android:id="@+id/dalubhasa_text"
-                android:layout_width="114dp"
+                android:layout_width="wrap_content"
                 android:layout_height="39dp"
                 android:fontFamily="@font/special"
                 android:gravity="center"
@@ -209,12 +212,13 @@
 
             <ImageView
                 android:id="@+id/trophy_image"
-                android:layout_width="355dp"
-                android:layout_height="402dp"
-                android:layout_marginStart="136dp"
-                android:layout_marginTop="20dp"
+                android:layout_width="306dp"
+                android:layout_height="330dp"
+                android:layout_marginStart="152dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.144"
                 app:srcCompat="@drawable/unranked_trophy_1" />
 
             <TextView

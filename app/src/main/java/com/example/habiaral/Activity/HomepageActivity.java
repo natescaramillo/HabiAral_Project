@@ -17,6 +17,9 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import java.util.HashMap;
 import java.util.Map;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 
 public class HomepageActivity extends AppCompatActivity {
 
@@ -27,8 +30,6 @@ public class HomepageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
         BottomNavigationView bottomNavigationView = findViewById(R.id.botnav);
 
         fragmentMap.put(R.id.home_nav, new HomeFragment());
@@ -38,6 +39,13 @@ public class HomepageActivity extends AppCompatActivity {
         fragmentMap.put(R.id.dictionary_nav, new DictionaryFragment());
 
         loadFragment(fragmentMap.get(R.id.home_nav));
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.botnav), (v, insets) -> {
+            int bottomInset = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom;
+            v.setPadding(0, 0, 0, bottomInset);
+            return insets;
+        });
+
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
