@@ -3,6 +3,9 @@ package com.example.habiaral.Palaro;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -16,17 +19,20 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.R;
 import com.example.habiaral.GrammarCheckerUtil;
+import com.example.habiaral.GrammarError;
+import com.example.habiaral.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PalaroDalubhasa extends AppCompatActivity {
 
     private TextView dalubhasaInstruction;
+    private TextView grammarFeedbackText;
     private EditText userSentenceInput;
     private ProgressBar timerBar;
     private Button btnTapos;
@@ -51,6 +57,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         setContentView(R.layout.activity_palaro_dalubhasa);
 
         dalubhasaInstruction = findViewById(R.id.dalubhasa_instructionText);
+        grammarFeedbackText = findViewById(R.id.grammar_feedback);
         userSentenceInput = findViewById(R.id.dalubhasa_answer);
         timerBar = findViewById(R.id.timerBar);
         btnTapos = findViewById(R.id.UnlockButtonPalaro);
@@ -71,11 +78,20 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 String sentence = userSentenceInput.getText().toString().trim();
                 if (sentence.isEmpty()) {
                     Toast.makeText(this, "Pakisulat ang iyong pangungusap.", Toast.LENGTH_SHORT).show();
-                } else if (!isValidSentence(sentence)) {
-                    saveWrongAnswer(sentence);
                 } else {
-                    saveCorrectAnswer(sentence);
+                    List<GrammarError> errors = GrammarCheckerUtil.getGrammarErrors(sentence);
+
+                    if (!errors.isEmpty()) {
+                        showUnderlinedGrammar(sentence, errors);
+                        saveWrongAnswer(sentence);
+                    } else if (isValidSentence(sentence)) {
+                        grammarFeedbackText.setText(""); // clear feedback
+                        saveCorrectAnswer(sentence);
+                    } else {
+                        Toast.makeText(this, "Maling pangungusap.", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
                 hasSubmitted = true;
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
@@ -98,6 +114,21 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 showBackConfirmationDialog();
             }
         });
+    }
+
+    private void showUnderlinedGrammar(String sentence, List<GrammarError> errors) {
+        SpannableString spannable = new SpannableString(sentence);
+        for (GrammarError error : errors) {
+            if (error.start >= 0 && error.end <= sentence.length()) {
+                spannable.setSpan(
+                        new UnderlineSpan(),
+                        error.start,
+                        error.end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+            }
+        }
+        grammarFeedbackText.setText(spannable);
     }
 
     private void showBackConfirmationDialog() {
@@ -254,6 +285,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private void nextQuestion() {
         if (countDownTimer != null) countDownTimer.cancel();
         userSentenceInput.setText("");
+        grammarFeedbackText.setText("");
         userSentenceInput.setEnabled(false);
         btnTapos.setEnabled(false);
         hasSubmitted = false;
