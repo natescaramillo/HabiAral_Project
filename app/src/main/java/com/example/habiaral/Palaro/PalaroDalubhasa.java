@@ -63,14 +63,12 @@ public class PalaroDalubhasa extends AppCompatActivity {
         btnTapos = findViewById(R.id.UnlockButtonPalaro);
 
         db = FirebaseFirestore.getInstance();
-
         GrammarCheckerUtil.initChecker();
 
         userSentenceInput.setEnabled(false);
         btnTapos.setEnabled(false);
 
         loadCharacterLine("MDCL1");
-
         new Handler().postDelayed(this::showCountdownThenLoadInstruction, 7000);
 
         btnTapos.setOnClickListener(v -> {
@@ -78,20 +76,12 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 String sentence = userSentenceInput.getText().toString().trim();
                 if (sentence.isEmpty()) {
                     Toast.makeText(this, "Pakisulat ang iyong pangungusap.", Toast.LENGTH_SHORT).show();
+                } else if (!isValidSentenceStructureOnly(sentence)) {
+                    Toast.makeText(this, "Pakilagyan ng tamang estruktura.", Toast.LENGTH_SHORT).show();
                 } else {
-                    List<GrammarError> errors = GrammarCheckerUtil.getGrammarErrors(sentence);
-
-                    if (!errors.isEmpty()) {
-                        showUnderlinedGrammar(sentence, errors);
-                        saveWrongAnswer(sentence);
-                    } else if (isValidSentence(sentence)) {
-                        grammarFeedbackText.setText(""); // clear feedback
-                        saveCorrectAnswer(sentence);
-                    } else {
-                        Toast.makeText(this, "Maling pangungusap.", Toast.LENGTH_SHORT).show();
-                    }
+                    grammarFeedbackText.setText("");
+                    saveCorrectAnswer(sentence);
                 }
-
                 hasSubmitted = true;
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
@@ -107,7 +97,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
             return false;
         });
 
-        // Handle back press with confirmation dialog
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -116,24 +105,13 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
     }
 
-    private void showUnderlinedGrammar(String sentence, List<GrammarError> errors) {
-        SpannableString spannable = new SpannableString(sentence);
-        for (GrammarError error : errors) {
-            if (error.start >= 0 && error.end <= sentence.length()) {
-                spannable.setSpan(
-                        new UnderlineSpan(),
-                        error.start,
-                        error.end,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-            }
-        }
-        grammarFeedbackText.setText(spannable);
+    private boolean isValidSentenceStructureOnly(String input) {
+        String[] words = input.trim().split("\\s+");
+        return words.length >= 5 && input.endsWith(".");
     }
 
     private void showBackConfirmationDialog() {
         View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
-
         AlertDialog backDialog = new AlertDialog.Builder(this)
                 .setView(backDialogView)
                 .setCancelable(false)
@@ -153,7 +131,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
 
         noButton.setOnClickListener(v -> backDialog.dismiss());
-
         backDialog.show();
     }
 
@@ -162,8 +139,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String line = documentSnapshot.getString("line");
-                        dalubhasaInstruction.setText(line);
+                        dalubhasaInstruction.setText(documentSnapshot.getString("line"));
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -176,8 +152,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String instruction = documentSnapshot.getString("instruction");
-                        dalubhasaInstruction.setText(instruction);
+                        dalubhasaInstruction.setText(documentSnapshot.getString("instruction"));
                         userSentenceInput.setEnabled(true);
                         btnTapos.setEnabled(true);
                     } else {
@@ -211,9 +186,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void startTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
+        if (countDownTimer != null) countDownTimer.cancel();
 
         countDownTimer = new CountDownTimer(TOTAL_TIME, 100) {
             @Override
@@ -221,7 +194,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 timeLeft = millisUntilFinished;
                 int progress = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(progress);
-
                 if (millisUntilFinished <= 5000 && millisUntilFinished >= 4900) {
                     loadCharacterLine("MCL5");
                 }
@@ -236,13 +208,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 Toast.makeText(PalaroDalubhasa.this, "Time's up!", Toast.LENGTH_SHORT).show();
             }
         }.start();
-    }
-
-    private boolean isValidSentence(String input) {
-        String[] words = input.trim().split("\\s+");
-        return words.length >= 5
-                && input.endsWith(".")
-                && GrammarCheckerUtil.isSentenceGrammaticallyCorrect(input);
     }
 
     private void saveCorrectAnswer(String sentence) {
@@ -264,24 +229,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 });
     }
 
-    private void saveWrongAnswer(String sentence) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("sentence", sentence);
-        data.put("dalubhasaID", DALUBHASA_ID);
-        data.put("wrong_answersID", WRONG_ID);
-
-        db.collection("dalubhasa_wrong_answers").document(WRONG_ID)
-                .set(data)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Maling sagot naipasa.", Toast.LENGTH_SHORT).show();
-                    loadCharacterLine("MCL3");
-                    nextQuestion();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Hindi naisave ang maling sagot.", Toast.LENGTH_SHORT).show();
-                });
-    }
-
     private void nextQuestion() {
         if (countDownTimer != null) countDownTimer.cancel();
         userSentenceInput.setText("");
@@ -289,14 +236,12 @@ public class PalaroDalubhasa extends AppCompatActivity {
         userSentenceInput.setEnabled(false);
         btnTapos.setEnabled(false);
         hasSubmitted = false;
-
         loadDalubhasaInstruction();
         startTimer();
     }
 
     private void saveDalubhasaScore() {
         int score = correctAnswerCount * 5;
-
         DocumentReference docRef = db.collection("minigame_progress").document(DOCUMENT_ID);
 
         Map<String, Object> updates = new HashMap<>();
@@ -304,12 +249,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
         updates.put("total_score", score);
 
         docRef.update(updates)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(PalaroDalubhasa.this, "Score saved!", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(PalaroDalubhasa.this, "Failed to save score.", Toast.LENGTH_SHORT).show();
-                });
+                .addOnSuccessListener(aVoid -> Toast.makeText(PalaroDalubhasa.this, "Score saved!", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(PalaroDalubhasa.this, "Failed to save score.", Toast.LENGTH_SHORT).show());
     }
 
     @Override
