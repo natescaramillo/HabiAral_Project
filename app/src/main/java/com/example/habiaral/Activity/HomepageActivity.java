@@ -3,6 +3,7 @@ package com.example.habiaral.Activity;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.habiaral.Fragment.AchievementFragment;
@@ -29,7 +30,7 @@ public class HomepageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.botnav);
 
@@ -41,23 +42,19 @@ public class HomepageActivity extends AppCompatActivity {
 
         loadFragment(fragmentMap.get(R.id.home_nav));
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.botnav), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(bottomNavigationView, (v, insets) -> {
             int bottomInset = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom;
             v.setPadding(0, 0, 0, bottomInset);
             return insets;
         });
 
-
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment selectedFragment = fragmentMap.get(item.getItemId());
-                if (selectedFragment != null) {
-                    loadFragment(selectedFragment);
-                    return true;
-                }
-                return false;
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = fragmentMap.get(item.getItemId());
+            if (selectedFragment != null) {
+                loadFragment(selectedFragment);
+                return true;
             }
+            return false;
         });
     }
     private void loadFragment(Fragment fragment) {
