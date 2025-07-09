@@ -57,10 +57,20 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <View
+                    <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
-                        android:background="@drawable/rounded_button_achievement" />
+                        android:background="@drawable/rounded_button_achievement">
+
+                        <ImageView
+                            android:layout_width="78dp"
+                            android:layout_height="77dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounded_image"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/a1" />
+                    </FrameLayout>
 
 
                     <TextView
@@ -85,10 +95,20 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <View
+                    <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
-                        android:background="@drawable/rounded_button_achievement" />
+                        android:background="@drawable/rounded_button_achievement">
+
+                        <ImageView
+                            android:layout_width="78dp"
+                            android:layout_height="77dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/a2"
+                            android:background="@drawable/rounded_image"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/achievement2text"
@@ -112,10 +132,20 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <View
+                    <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
-                        android:background="@drawable/rounded_button_achievement" />
+                        android:background="@drawable/rounded_button_achievement">
+
+                        <ImageView
+                            android:layout_width="78dp"
+                            android:layout_height="77dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounded_image"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/a3" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/achievement3text"
@@ -148,10 +178,20 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <View
+                    <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
-                        android:background="@drawable/rounded_button_achievement" />
+                        android:background="@drawable/rounded_button_achievement">
+
+                        <ImageView
+                            android:layout_width="78dp"
+                            android:layout_height="77dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounded_image"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/a4" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/achievement4text"
@@ -175,10 +215,20 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <View
+                    <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
-                        android:background="@drawable/rounded_button_achievement" />
+                        android:background="@drawable/rounded_button_achievement">
+
+                        <ImageView
+                            android:layout_width="78dp"
+                            android:layout_height="77dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounded_image"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/a5" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/achievement5text"
@@ -202,10 +252,20 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <View
+                    <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
-                        android:background="@drawable/rounded_button_achievement" />
+                        android:background="@drawable/rounded_button_achievement">
+
+                        <ImageView
+                            android:layout_width="78dp"
+                            android:layout_height="77dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounded_image"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/a6" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/achievement6text"
@@ -237,10 +297,20 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <View
+                    <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
-                        android:background="@drawable/rounded_button_achievement" />
+                        android:background="@drawable/rounded_button_achievement">
+
+                        <ImageView
+                            android:layout_width="78dp"
+                            android:layout_height="77dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounded_image"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/a7" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/achievement7text"
@@ -264,10 +334,20 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <View
+                    <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
-                        android:background="@drawable/rounded_button_achievement" />
+                        android:background="@drawable/rounded_button_achievement">
+
+                        <ImageView
+                            android:layout_width="78dp"
+                            android:layout_height="77dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounded_image"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/a8" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/achievement8text"
@@ -291,10 +371,20 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <View
+                    <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
-                        android:background="@drawable/rounded_button_achievement" />
+                        android:background="@drawable/rounded_button_achievement">
+
+                        <ImageView
+                            android:layout_width="78dp"
+                            android:layout_height="77dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounded_image"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/a9" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/achievement9text"
@@ -326,10 +416,20 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <View
+                    <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
-                        android:background="@drawable/rounded_button_achievement" />
+                        android:background="@drawable/rounded_button_achievement">
+
+                        <ImageView
+                            android:layout_width="78dp"
+                            android:layout_height="77dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounded_image"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/a10" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/achievement10text"
@@ -353,10 +453,20 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <View
+                    <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
-                        android:background="@drawable/rounded_button_achievement" />
+                        android:background="@drawable/rounded_button_achievement">
+
+                        <ImageView
+                            android:layout_width="78dp"
+                            android:layout_height="77dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounded_image"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/a11" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/achievement11text"
@@ -380,10 +490,20 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <View
+                    <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
-                        android:background="@drawable/rounded_button_achievement" />
+                        android:background="@drawable/rounded_button_achievement">
+
+                        <ImageView
+                            android:layout_width="78dp"
+                            android:layout_height="77dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounded_image"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/a12" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/achievement12text"
