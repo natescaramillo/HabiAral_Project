@@ -11,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.speech.tts.TextToSpeech;
+import java.util.Locale;
+
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +56,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     private static final String KEY_CORRECT_COUNT = "correctAnswerCount";
     private static final String KEY_SCORE = "baguhanScore";
     private String studentID;
+    private TextToSpeech tts;
 
     private int remainingHearts = 5;
     private int correctStreak = 0;
@@ -61,6 +66,18 @@ public class PalaroBaguhan extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_palaro_baguhan);
+
+        tts = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                Locale tagalogLocale = new Locale("fil", "PH");
+                int langResult = tts.setLanguage(tagalogLocale);
+                tts.setSpeechRate(1.3f); // ⏩ Medyo mabilis (default is 1.0f)
+                if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Toast.makeText(this, "❗ TTS: Wikang Tagalog hindi suportado.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
 
         // Reset progress if needed
         if (getIntent().getBooleanExtra("resetProgress", false)) {
@@ -163,7 +180,6 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                             new Handler().postDelayed(() -> {
                                 currentQuestionNumber++;
-                                saveProgress();
                                 resetForNextQuestion();
                                 loadBaguhanQuestion();
                             }, 2000);
@@ -174,7 +190,7 @@ public class PalaroBaguhan extends AppCompatActivity {
         });
 
         unlockButton1.setOnLongClickListener(v -> {
-            saveProgressToFirebase();
+            saveBaguhanScore();
             Toast.makeText(this, "Naitala na ang progreso. Paalam muna!", Toast.LENGTH_SHORT).show();
             finish();
             return true;
@@ -218,17 +234,29 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void saveBaguhanScore() {
-        DocumentReference docRef = db.collection("minigame_progress").document(DOCUMENT_ID);
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("baguhan_score", baguhanScore);
-        updates.put("total_score", baguhanScore);
-        updates.put("studentID", studentID);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) return;
 
-        docRef.update(updates)
-                .addOnSuccessListener(aVoid -> {
-                    if (baguhanScore >= 400) unlockHusay(docRef);
-                });
+        String userId = currentUser.getUid(); // Use UID as document ID
+        DocumentReference docRef = db.collection("minigame_progress").document(userId);
+
+        docRef.get().addOnSuccessListener(snapshot -> {
+            int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
+            int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
+
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("baguhan_score", baguhanScore);
+            updates.put("studentID", userId);
+            updates.put("total_score", baguhanScore + husay + dalubhasa);
+
+            docRef.set(updates, SetOptions.merge())
+                    .addOnSuccessListener(aVoid -> {
+                        if (baguhanScore >= 400) unlockHusay(docRef);
+                    });
+        });
     }
+
+
 
     private void unlockHusay(DocumentReference docRef) {
         docRef.update("husay_unlocked", true)
@@ -263,9 +291,6 @@ public class PalaroBaguhan extends AppCompatActivity {
             public void onTick(long millisUntilFinished) {
                 timeLeft = millisUntilFinished;
                 timerBar.setProgress((int) (timeLeft * 100 / TOTAL_TIME));
-                if (millisUntilFinished <= 5000 && millisUntilFinished >= 4900) {
-                    loadCharacterLine("MCL5");
-                }
             }
 
             @Override
@@ -318,26 +343,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         }
     }
 
-    private void saveProgress() {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(KEY_QUESTION_NUM, currentQuestionNumber);
-        editor.putInt(KEY_CORRECT_COUNT, correctAnswerCount);
-        editor.putInt(KEY_SCORE, baguhanScore);
-        editor.apply();
-    }
-
-    private void saveProgressToFirebase() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            Map<String, Object> progress = new HashMap<>();
-            progress.put("currentQuestionNumber", currentQuestionNumber);
-            progress.put("correctAnswerCount", correctAnswerCount);
-            progress.put("baguhanScore", baguhanScore);
-
-            db.collection("student_progress").document(currentUser.getUid()).set(progress);
-        }
-    }
-
     private void loadBaguhanQuestion() {
         String questionDocId = "B" + currentQuestionNumber;
 
@@ -352,7 +357,11 @@ public class PalaroBaguhan extends AppCompatActivity {
                     String question = documentSnapshot.getString("baguhan_question");
                     List<String> choices = (List<String>) documentSnapshot.get("choices");
 
-                    if (question != null) baguhanQuestion.setText(question);
+                    if (question != null) {
+                        baguhanQuestion.setText(question);
+                        String spokenVersion = question.replaceAll("_+", "blanko");
+                        speakText(spokenVersion);;
+                    }
                     if (choices != null && choices.size() >= 6) {
                         answer1.setText(choices.get(0));
                         answer2.setText(choices.get(1));
@@ -374,7 +383,10 @@ public class PalaroBaguhan extends AppCompatActivity {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String line = documentSnapshot.getString("line");
-                        if (line != null) baguhanQuestion.setText(line);
+                        if (line != null) {
+                            baguhanQuestion.setText(line);
+                            speakText(line);
+                        }
                     }
                 });
     }
@@ -383,7 +395,12 @@ public class PalaroBaguhan extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (countDownTimer != null) countDownTimer.cancel();
-        saveProgressToFirebase();
+        saveBaguhanScore();
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+
     }
 
     private void showBackConfirmationDialog() {
@@ -402,7 +419,7 @@ public class PalaroBaguhan extends AppCompatActivity {
         Button noButton = backDialogView.findViewById(R.id.button6);
 
         yesButton.setOnClickListener(v -> {
-            saveProgressToFirebase();
+            saveBaguhanScore();
             backDialog.dismiss();
             finish();
         });
@@ -411,4 +428,10 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         backDialog.show();
     }
+    private void speakText(String text) {
+        if (tts != null && !text.isEmpty()) {
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+        }
+    }
+
 }
