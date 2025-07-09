@@ -145,7 +145,7 @@
         app:layout_constraintStart_toStartOf="@+id/bottomBar"
         app:layout_constraintTop_toTopOf="@+id/bottomBar" />
 
-    <TextView
+    <Button
         android:id="@+id/husay_answer1"
         android:layout_width="100dp"
         android:layout_height="45dp"
@@ -165,7 +165,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-    <TextView
+    <Button
         android:id="@+id/husay_answer2"
         android:layout_width="100dp"
         android:layout_height="45dp"
@@ -185,7 +185,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-    <TextView
+    <Button
         android:id="@+id/husay_answer3"
         android:layout_width="100dp"
         android:layout_height="45dp"
@@ -205,7 +205,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-    <TextView
+    <Button
         android:id="@+id/husay_answer4"
         android:layout_width="100dp"
         android:layout_height="45dp"
@@ -225,7 +225,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-    <TextView
+    <Button
         android:id="@+id/husay_answer5"
         android:layout_width="100dp"
         android:layout_height="45dp"
@@ -245,7 +245,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-    <TextView
+    <Button
         android:id="@+id/husay_answer6"
         android:layout_width="100dp"
         android:layout_height="45dp"
@@ -266,7 +266,7 @@
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
 
-    <TextView
+    <Button
         android:id="@+id/husay_answer7"
         android:layout_width="100dp"
         android:layout_height="45dp"
@@ -286,7 +286,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-    <TextView
+    <Button
         android:id="@+id/husay_answer8"
         android:layout_width="100dp"
         android:layout_height="45dp"
@@ -306,7 +306,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-    <TextView
+    <Button
         android:id="@+id/husay_answer9"
         android:layout_width="100dp"
         android:layout_height="45dp"

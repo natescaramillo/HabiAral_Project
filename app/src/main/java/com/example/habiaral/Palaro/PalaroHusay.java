@@ -14,10 +14,16 @@
     import androidx.activity.OnBackPressedCallback;
     import androidx.appcompat.app.AlertDialog;
     import androidx.appcompat.app.AppCompatActivity;
+    import android.speech.tts.TextToSpeech;
+    import java.util.Locale;
 
     import com.example.habiaral.R;
     import com.google.firebase.firestore.DocumentReference;
     import com.google.firebase.firestore.FirebaseFirestore;
+    import com.google.firebase.auth.FirebaseAuth;
+    import com.google.firebase.auth.FirebaseUser;
+    import com.google.firebase.firestore.SetOptions;
+
 
     import java.util.ArrayList;
     import java.util.HashMap;
@@ -27,7 +33,7 @@
     public class PalaroHusay extends AppCompatActivity {
 
         private TextView husayInstruction;
-        private TextView answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9;
+        private Button answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9;
         private TextView fullAnswerView;
         private ProgressBar timerBar;
         private Button unlockButton;
@@ -48,6 +54,9 @@
         private int correctStreak = 0;
         private int remainingHearts = 5;
         private ImageView[] heartIcons;
+        private TextToSpeech tts;
+        private boolean isTtsReady = false;
+
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +87,22 @@
 
             db = FirebaseFirestore.getInstance();
 
+            tts = new TextToSpeech(this, status -> {
+                if (status == TextToSpeech.SUCCESS) {
+                    Locale tagalogLocale = new Locale("fil", "PH");
+                    int langResult = tts.setLanguage(tagalogLocale);
+                    tts.setSpeechRate(1.3f);
+                    if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Toast.makeText(this, "❗ TTS: Wikang Tagalog hindi suportado.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        isTtsReady = true; // ✅ now ready
+                    }
+                } else {
+                    Toast.makeText(this, "❗ TTS Initialization failed.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
             loadCharacterLine("MHCL1");
             new Handler().postDelayed(this::showCountdownThenLoadWords, 7000);
 
@@ -104,6 +129,7 @@
                         .addOnSuccessListener(documentSnapshot -> {
                             if (documentSnapshot.exists()) {
                                 String correctAnswer = documentSnapshot.getString("correctAnswer");
+
                                 if (userAnswer.equalsIgnoreCase(correctAnswer)) {
                                     correctAnswerCount++;
                                     husayScore += 5;
@@ -144,6 +170,7 @@
                         });
             });
         }
+
 
         private void setupAnswerSelection() {
             TextView[] answers = {answer1, answer2, answer3, answer4, answer5, answer6};
@@ -203,7 +230,10 @@
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
-                            husayInstruction.setText(documentSnapshot.getString("line"));
+                            String line = documentSnapshot.getString("line");
+                            husayInstruction.setText(line);
+                            speakText(line);
+
                         }
                     });
         }
@@ -235,9 +265,16 @@
                                             fullAnswerView.setText((current + " " + ((TextView) view).getText()).trim());
                                             view.setEnabled(false);
                                             selectedWords.add((TextView) view);
-                                            if (selectedWords.size() == 9 && !fullAnswerView.getText().toString().endsWith(".")) {
-                                                fullAnswerView.append(".");
+                                            if (selectedWords.size() == 9) {
+                                                String currentText = fullAnswerView.getText().toString();
+                                                if (!currentText.endsWith(".")) {
+                                                    fullAnswerView.append(".");
+                                                    currentText = fullAnswerView.getText().toString(); // update text after appending
+                                                }
+                                                // ✅ Speak sentence automatically
+                                                speakText(currentText.trim());
                                             }
+
                                         }
                                     });
 
@@ -318,23 +355,35 @@
         }
 
         private void saveHusayScore() {
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser == null) return;
+
+            String userId = currentUser.getUid();
             int finalScore = correctAnswerCount * 3;
-            DocumentReference docRef = db.collection("minigame_progress").document(DOCUMENT_ID);
 
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("husay_score", finalScore);
-            updates.put("total_score", finalScore);
+            DocumentReference docRef = db.collection("minigame_progress").document(userId);
 
-            docRef.update(updates)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(PalaroHusay.this, "Score saved!", Toast.LENGTH_SHORT).show();
-                        if (finalScore >= 800) {
-                            unlockDalubhasa(docRef);
-                        }
-                    })
-                    .addOnFailureListener(e ->
-                            Toast.makeText(PalaroHusay.this, "Failed to save score.", Toast.LENGTH_SHORT).show());
+            docRef.get().addOnSuccessListener(snapshot -> {
+                int baguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
+                int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
+
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("husay_score", finalScore);
+                updates.put("total_score", finalScore + baguhan + dalubhasa);
+
+                docRef.set(updates, SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(PalaroHusay.this, "✅ Husay score saved!", Toast.LENGTH_SHORT).show();
+                            if (finalScore >= 800) {
+                                unlockDalubhasa(docRef);
+                            }
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(PalaroHusay.this, "❌ Failed to save Husay score.", Toast.LENGTH_SHORT).show();
+                        });
+            });
         }
+
 
         private void unlockDalubhasa(DocumentReference docRef) {
             Map<String, Object> update = new HashMap<>();
@@ -359,5 +408,25 @@
                 loadCharacterLine("MCL5");
             }
         }
+        private void speakText(String text) {
+            if (tts != null && isTtsReady && !text.isEmpty()) {
+                tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+            } else {
+                Toast.makeText(this, "⛔ TTS not ready yet.", Toast.LENGTH_SHORT).show();
+            }
+        }
 
-    }
+        @Override
+        protected void onDestroy() {
+            super.onDestroy();
+            if (countDownTimer != null) countDownTimer.cancel();
+            saveHusayScore();
+            if (tts != null) {
+                tts.stop();
+                tts.shutdown();
+            }
+
+        }
+        }
+
+
