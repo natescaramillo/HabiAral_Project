@@ -121,7 +121,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         docRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Maligayang Pagbalik!", Toast.LENGTH_SHORT).show();
                 goToHomePage();
             } else {
                 db.collection("students").get().addOnSuccessListener(querySnapshot -> {
