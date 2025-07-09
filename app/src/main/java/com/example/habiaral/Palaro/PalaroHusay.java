@@ -33,7 +33,7 @@
     public class PalaroHusay extends AppCompatActivity {
 
         private TextView husayInstruction;
-        private TextView answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9;
+        private Button answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9;
         private TextView fullAnswerView;
         private ProgressBar timerBar;
         private Button unlockButton;

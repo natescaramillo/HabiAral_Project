@@ -33,7 +33,8 @@ import androidx.activity.OnBackPressedCallback;
 
 public class PalaroBaguhan extends AppCompatActivity {
 
-    private TextView baguhanQuestion, answer1, answer2, answer3, answer4, answer5, answer6, selectedAnswer;
+    private Button  answer1, answer2, answer3, answer4, answer5, answer6, selectedAnswer;
+    private TextView baguhanQuestion;
     private ProgressBar timerBar;
     private Button unlockButton, unlockButton1;
 
@@ -123,7 +124,7 @@ public class PalaroBaguhan extends AppCompatActivity {
             if (isTimeUp || isAnswered) return;
             resetAnswerBackgrounds();
             view.setBackgroundResource(R.drawable.answer_option_bg_selected);
-            selectedAnswer = (TextView) view;
+            selectedAnswer = (Button) view;
         };
 
         answer1.setOnClickListener(answerClickListener);
