@@ -4,7 +4,7 @@
     <!-- When button is pressed -->
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <solid android:color="#CC5500"/> <!-- Burnt orange when pressed -->
+            <solid android:color="@color/beige"/> <!-- Beige when pressed -->
             <corners android:radius="10dp" />
             <stroke android:width="2dp" android:color="#5A2D0C" />
         </shape>
