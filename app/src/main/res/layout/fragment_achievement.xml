@@ -1,110 +1,403 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
     tools:context=".Fragment.AchievementFragment">
 
-    <!-- Header Bar -->
+    <!-- Header Background -->
     <View
         android:layout_width="match_parent"
         android:layout_height="93dp"
         android:alpha="0.6"
         android:background="#A27B5C" />
 
-    <!-- Title -->
+    <!-- Title Text -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:fontFamily="@font/special"
         android:text="Parangal"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        android:fontFamily="@font/special"
         android:gravity="center" />
 
-    <!-- Grid of Achievements -->
+    <!-- Scrollable Grid Content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="-150dp">
+        android:layout_marginTop="93dp">
 
-        <GridLayout
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:alignmentMode="alignMargins"
-            android:columnCount="3"
-            android:padding="24dp"
-            android:rowCount="3"
-            android:useDefaultMargins="true">
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="40dp"
+            android:paddingBottom="24dp">
 
-            <!-- 9 Achievement blocks -->
-            <View
-                android:id="@+id/view5"
-                android:layout_width="90dp"
-                android:layout_height="84dp"
-                android:background="@drawable/rounded_button_achievement"
-                android:alpha="0.6" />
+            <!-- Row 1 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <View
-                android:id="@+id/view6"
-                android:layout_width="90dp"
-                android:layout_height="84dp"
-                android:background="@drawable/rounded_button_achievement"
-                android:alpha="0.6" />
+                <!-- Achievement 1 -->
+                <LinearLayout
+                    android:id="@+id/achievement1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-            <View
-                android:id="@+id/view7"
-                android:layout_width="90dp"
-                android:layout_height="84dp"
-                android:background="@drawable/rounded_button_achievement"
-                android:alpha="0.6" />
+                    <View
+                        android:layout_width="94dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/rounded_button_achievement" />
 
-            <View
-                android:id="@+id/view8"
-                android:layout_width="90dp"
-                android:layout_height="84dp"
-                android:background="@drawable/rounded_button_achievement"
-                android:alpha="0.6" />
 
-            <View
-                android:id="@+id/view9"
-                android:layout_width="90dp"
-                android:layout_height="84dp"
-                android:background="@drawable/rounded_button_achievement"
-                android:alpha="0.6" />
+                    <TextView
+                        android:id="@+id/achievement1text"
+                        android:layout_width="94dp"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/achievement_label"
+                        android:fontFamily="@font/special"
+                        android:gravity="center"
+                        android:text="Achievement 1"
+                        android:textColor="#000000"
+                        android:textSize="10dp" />
+                </LinearLayout>
 
-            <View
-                android:id="@+id/view10"
-                android:layout_width="90dp"
-                android:layout_height="84dp"
-                android:background="@drawable/rounded_button_achievement"
-                android:alpha="0.6" />
+                <!-- Achievement 2 -->
+                <LinearLayout
+                    android:id="@+id/achievement2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-            <View
-                android:id="@+id/view11"
-                android:layout_width="90dp"
-                android:layout_height="84dp"
-                android:background="@drawable/rounded_button_achievement"
-                android:alpha="0.6" />
+                    <View
+                        android:layout_width="94dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/rounded_button_achievement" />
 
-            <View
-                android:id="@+id/view12"
-                android:layout_width="90dp"
-                android:layout_height="84dp"
-                android:background="@drawable/rounded_button_achievement"
-                android:alpha="0.6" />
+                    <TextView
+                        android:id="@+id/achievement2text"
+                        android:layout_width="94dp"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/achievement_label"
+                        android:fontFamily="@font/special"
+                        android:gravity="center"
+                        android:text="Achievement 2"
+                        android:textColor="#000000"
+                        android:textSize="10dp" />
+                </LinearLayout>
 
-            <View
-                android:id="@+id/view13"
-                android:layout_width="90dp"
-                android:layout_height="84dp"
-                android:background="@drawable/rounded_button_achievement"
-                android:alpha="0.6" />
+                <!-- Achievement 3 -->
+                <LinearLayout
+                    android:id="@+id/achievement3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-        </GridLayout>
+                    <View
+                        android:layout_width="94dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/rounded_button_achievement" />
+
+                    <TextView
+                        android:id="@+id/achievement3text"
+                        android:layout_width="94dp"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/achievement_label"
+                        android:fontFamily="@font/special"
+                        android:gravity="center"
+                        android:text="Achievement 3"
+                        android:textColor="#000000"
+                        android:textSize="10dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Row 2 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <!-- Achievement 4 -->
+                <LinearLayout
+                    android:id="@+id/achievement4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="94dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/rounded_button_achievement" />
+
+                    <TextView
+                        android:id="@+id/achievement4text"
+                        android:layout_width="94dp"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/achievement_label"
+                        android:fontFamily="@font/special"
+                        android:gravity="center"
+                        android:text="Achievement 4"
+                        android:textColor="#000000"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <!-- Achievement 5 -->
+                <LinearLayout
+                    android:id="@+id/achievement5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="94dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/rounded_button_achievement" />
+
+                    <TextView
+                        android:id="@+id/achievement5text"
+                        android:layout_width="94dp"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/achievement_label"
+                        android:fontFamily="@font/special"
+                        android:gravity="center"
+                        android:text="Achievement 5"
+                        android:textColor="#000000"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <!-- Achievement 6 -->
+                <LinearLayout
+                    android:id="@+id/achievement6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="94dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/rounded_button_achievement" />
+
+                    <TextView
+                        android:id="@+id/achievement6text"
+                        android:layout_width="94dp"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/achievement_label"
+                        android:fontFamily="@font/special"
+                        android:gravity="center"
+                        android:text="Achievement 6"
+                        android:textColor="#000000"
+                        android:textSize="10dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Row 3 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <!-- Achievement 7 -->
+                <LinearLayout
+                    android:id="@+id/achievement7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="94dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/rounded_button_achievement" />
+
+                    <TextView
+                        android:id="@+id/achievement7text"
+                        android:layout_width="94dp"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/achievement_label"
+                        android:fontFamily="@font/special"
+                        android:gravity="center"
+                        android:text="Achievement 7"
+                        android:textColor="#000000"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <!-- Achievement 8 -->
+                <LinearLayout
+                    android:id="@+id/achievement8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="94dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/rounded_button_achievement" />
+
+                    <TextView
+                        android:id="@+id/achievement8text"
+                        android:layout_width="94dp"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/achievement_label"
+                        android:fontFamily="@font/special"
+                        android:gravity="center"
+                        android:text="Achievement 8"
+                        android:textColor="#000000"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <!-- Achievement 9 -->
+                <LinearLayout
+                    android:id="@+id/achievement9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="94dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/rounded_button_achievement" />
+
+                    <TextView
+                        android:id="@+id/achievement9text"
+                        android:layout_width="94dp"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/achievement_label"
+                        android:fontFamily="@font/special"
+                        android:gravity="center"
+                        android:text="Achievement 9"
+                        android:textColor="#000000"
+                        android:textSize="10dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <!-- Achievement 10 -->
+                <LinearLayout
+                    android:id="@+id/achievement10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="94dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/rounded_button_achievement" />
+
+                    <TextView
+                        android:id="@+id/achievement10text"
+                        android:layout_width="94dp"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/achievement_label"
+                        android:fontFamily="@font/special"
+                        android:gravity="center"
+                        android:text="Achievement 10"
+                        android:textColor="#000000"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <!-- Achievement 11-->
+                <LinearLayout
+                    android:id="@+id/achievement11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="94dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/rounded_button_achievement" />
+
+                    <TextView
+                        android:id="@+id/achievement11text"
+                        android:layout_width="94dp"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/achievement_label"
+                        android:fontFamily="@font/special"
+                        android:gravity="center"
+                        android:text="Achievement 11"
+                        android:textColor="#000000"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <!-- Achievement 12 -->
+                <LinearLayout
+                    android:id="@+id/achievement12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="94dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/rounded_button_achievement" />
+
+                    <TextView
+                        android:id="@+id/achievement12text"
+                        android:layout_width="94dp"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/achievement_label"
+                        android:fontFamily="@font/special"
+                        android:gravity="center"
+                        android:text="Achievement 12"
+                        android:textColor="#000000"
+                        android:textSize="10dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
     </ScrollView>
-
 </FrameLayout>

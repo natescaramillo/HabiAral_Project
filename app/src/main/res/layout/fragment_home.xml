@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
     android:background="@drawable/gradient_background"
     tools:context=".Fragment.HomeFragment">
 
     <View
         android:id="@+id/view2"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="171dp"
         android:alpha="0.6"
         android:background="@drawable/homepage_design" />
 
