@@ -241,21 +241,47 @@ public class PalaroBaguhan extends AppCompatActivity {
         String userId = currentUser.getUid(); // Use UID as document ID
         DocumentReference docRef = db.collection("minigame_progress").document(userId);
 
+        // Check if document exists first
         docRef.get().addOnSuccessListener(snapshot -> {
             int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
             int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
 
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("baguhan_score", baguhanScore);
-            updates.put("studentID", userId);
-            updates.put("total_score", baguhanScore + husay + dalubhasa);
+            // If document already exists and has minigame_progressID, reuse it
+            if (snapshot.exists() && snapshot.contains("minigame_progressID")) {
+                String existingProgressId = snapshot.getString("minigame_progressID");
 
-            docRef.set(updates, SetOptions.merge())
-                    .addOnSuccessListener(aVoid -> {
-                        if (baguhanScore >= 400) unlockHusay(docRef);
-                    });
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("baguhan_score", baguhanScore);
+                updates.put("studentID", userId);
+                updates.put("minigame_progressID", existingProgressId); // reuse
+                updates.put("total_score", baguhanScore + husay + dalubhasa);
+
+                docRef.set(updates, SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> {
+                            if (baguhanScore >= 400) unlockHusay(docRef);
+                        });
+
+            } else {
+                // No ID yet — generate new MP# by counting docs
+                db.collection("minigame_progress").get().addOnSuccessListener(querySnapshot -> {
+                    int nextNumber = querySnapshot.size() + 1;
+                    String newProgressId = "MP" + nextNumber;
+
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("baguhan_score", baguhanScore);
+                    updates.put("studentID", userId);
+                    updates.put("minigame_progressID", newProgressId); // auto-gen MP ID
+                    updates.put("total_score", baguhanScore + husay + dalubhasa);
+
+                    docRef.set(updates, SetOptions.merge())
+                            .addOnSuccessListener(aVoid -> {
+                                if (baguhanScore >= 400) unlockHusay(docRef);
+                            });
+                });
+            }
         });
     }
+
 
 
 
