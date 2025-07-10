@@ -238,49 +238,63 @@ public class PalaroBaguhan extends AppCompatActivity {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) return;
 
-        String userId = currentUser.getUid(); // Use UID as document ID
-        DocumentReference docRef = db.collection("minigame_progress").document(userId);
+        String userId = currentUser.getUid(); // Firebase UID
 
-        // Check if document exists first
-        docRef.get().addOnSuccessListener(snapshot -> {
-            int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
-            int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
+        // Step 1: Get studentId from students collection
+        db.collection("students").document(userId).get().addOnSuccessListener(studentDoc -> {
+            if (!studentDoc.exists()) {
+                Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            // If document already exists and has minigame_progressID, reuse it
-            if (snapshot.exists() && snapshot.contains("minigame_progressID")) {
-                String existingProgressId = snapshot.getString("minigame_progressID");
+            String studentID = studentDoc.getString("studentId"); // ✅ Now this is properly fetched
+            DocumentReference docRef = db.collection("minigame_progress").document(userId);
 
-                Map<String, Object> updates = new HashMap<>();
-                updates.put("baguhan_score", baguhanScore);
-                updates.put("studentID", userId);
-                updates.put("minigame_progressID", existingProgressId); // reuse
-                updates.put("total_score", baguhanScore + husay + dalubhasa);
+            // Step 2: Check if minigame_progress already exists
+            docRef.get().addOnSuccessListener(snapshot -> {
+                int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
+                int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
 
-                docRef.set(updates, SetOptions.merge())
-                        .addOnSuccessListener(aVoid -> {
-                            if (baguhanScore >= 400) unlockHusay(docRef);
-                        });
-
-            } else {
-                // No ID yet — generate new MP# by counting docs
-                db.collection("minigame_progress").get().addOnSuccessListener(querySnapshot -> {
-                    int nextNumber = querySnapshot.size() + 1;
-                    String newProgressId = "MP" + nextNumber;
+                if (snapshot.exists() && snapshot.contains("minigame_progressID")) {
+                    // Reuse existing ID
+                    String existingProgressId = snapshot.getString("minigame_progressID");
 
                     Map<String, Object> updates = new HashMap<>();
                     updates.put("baguhan_score", baguhanScore);
-                    updates.put("studentID", userId);
-                    updates.put("minigame_progressID", newProgressId); // auto-gen MP ID
+                    updates.put("studentID", studentID); // ✅ Correct student ID
+                    updates.put("minigame_progressID", existingProgressId);
                     updates.put("total_score", baguhanScore + husay + dalubhasa);
 
                     docRef.set(updates, SetOptions.merge())
                             .addOnSuccessListener(aVoid -> {
                                 if (baguhanScore >= 400) unlockHusay(docRef);
                             });
-                });
-            }
+
+                } else {
+                    // Generate new minigame_progressID
+                    db.collection("minigame_progress").get().addOnSuccessListener(querySnapshot -> {
+                        int nextNumber = querySnapshot.size() + 1;
+                        String newProgressId = "MP" + nextNumber;
+
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("baguhan_score", baguhanScore);
+                        updates.put("studentID", studentID); // ✅ Correct student ID
+                        updates.put("minigame_progressID", newProgressId);
+                        updates.put("total_score", baguhanScore + husay + dalubhasa);
+
+                        docRef.set(updates, SetOptions.merge())
+                                .addOnSuccessListener(aVoid -> {
+                                    if (baguhanScore >= 400) unlockHusay(docRef);
+                                });
+                    });
+                }
+            });
+
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, "Failed to fetch student info", Toast.LENGTH_SHORT).show();
         });
     }
+
 
 
 

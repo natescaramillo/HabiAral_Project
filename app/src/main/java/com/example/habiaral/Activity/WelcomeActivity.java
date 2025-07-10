@@ -52,8 +52,13 @@ public class WelcomeActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().signOut(); // Sign out any user
             prefs.edit().putBoolean("firstLaunch", false).apply(); // Mark as launched
         } else if (mAuth.getCurrentUser() != null) {
-            // User already signed in, go to homepage directly
-            goToHomePage();
+            // ✅ Check nickname before proceeding
+            GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(this);
+            if (lastSignedInAccount != null) {
+                saveUserToFirestore(lastSignedInAccount);
+            } else {
+                mGoogleSignInClient.signOut(); // fallback cleanup
+            }
             return;
         }
 
@@ -121,9 +126,19 @@ public class WelcomeActivity extends AppCompatActivity {
 
         docRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Toast.makeText(this, "Maligayang Pagbalik!", Toast.LENGTH_SHORT).show();
-                goToHomePage();
+                // Check if nickname exists and is not empty
+                String nickname = documentSnapshot.getString("nickname");
+                Log.d("DEBUG", "Nickname: " + nickname);
+
+                if (nickname != null && !nickname.trim().isEmpty()) {
+                    Toast.makeText(this, "Maligayang Pagbalik, " + nickname + "!", Toast.LENGTH_SHORT).show();
+                    goToHomePage();
+                } else {
+                    goToIntroduction();
+                }
+
             } else {
+                // New user: generate ID and go to introduction
                 db.collection("students").get().addOnSuccessListener(querySnapshot -> {
                     int count = querySnapshot.size();
                     String generatedId = String.format("STUDENT%03d", count + 1);
@@ -135,13 +150,12 @@ public class WelcomeActivity extends AppCompatActivity {
                     docRef.set(student)
                             .addOnSuccessListener(unused -> {
                                 Toast.makeText(this, "Matagumpay ang pag-log in", Toast.LENGTH_SHORT).show();
-                                goToHomePage();
+                                goToIntroduction();
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(this, "Failed to save user data", Toast.LENGTH_SHORT).show();
                                 Log.e("Firestore", "Save error", e);
                             });
-
                 }).addOnFailureListener(e -> {
                     Toast.makeText(this, "Failed to count students", Toast.LENGTH_SHORT).show();
                     Log.e("Firestore", "Counting error", e);
@@ -151,6 +165,13 @@ public class WelcomeActivity extends AppCompatActivity {
             Toast.makeText(this, "Error checking user data", Toast.LENGTH_SHORT).show();
             Log.e("Firestore", "Check error", e);
         });
+    }
+
+    private void goToIntroduction() {
+        Intent intent = new Intent(this, Introduction.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void goToHomePage() {

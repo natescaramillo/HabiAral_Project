@@ -361,40 +361,33 @@
             String userId = currentUser.getUid();
             int finalScore = correctAnswerCount * 3;
 
-            DocumentReference docRef = db.collection("minigame_progress").document(userId);
+            // Step 1: Get studentID from 'students' collection
+            db.collection("students").document(userId).get().addOnSuccessListener(studentDoc -> {
+                if (!studentDoc.exists()) {
+                    Toast.makeText(PalaroHusay.this, "❌ Student record not found.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-            docRef.get().addOnSuccessListener(snapshot -> {
-                int baguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
-                int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
+                String studentID = studentDoc.getString("studentId");
+                if (studentID == null || studentID.isEmpty()) {
+                    Toast.makeText(PalaroHusay.this, "❌ Missing studentId field.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                if (snapshot.exists() && snapshot.contains("minigame_progressID")) {
-                    // ✅ Reuse existing progress ID
-                    String existingProgressId = snapshot.getString("minigame_progressID");
+                DocumentReference docRef = db.collection("minigame_progress").document(userId);
 
-                    Map<String, Object> updates = new HashMap<>();
-                    updates.put("husay_score", finalScore);
-                    updates.put("minigame_progressID", existingProgressId);
-                    updates.put("total_score", finalScore + baguhan + dalubhasa);
+                docRef.get().addOnSuccessListener(snapshot -> {
+                    int baguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
+                    int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
 
-                    docRef.set(updates, SetOptions.merge())
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(PalaroHusay.this, "✅ Husay score saved!", Toast.LENGTH_SHORT).show();
-                                if (finalScore >= 800) unlockDalubhasa(docRef);
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(PalaroHusay.this, "❌ Failed to save Husay score.", Toast.LENGTH_SHORT).show();
-                            });
-
-                } else {
-                    // ❌ No progress ID yet — generate new one
-                    db.collection("minigame_progress").get().addOnSuccessListener(querySnapshot -> {
-                        int nextNumber = querySnapshot.size() + 1;
-                        String newProgressId = "MP" + nextNumber;
+                    if (snapshot.exists() && snapshot.contains("minigame_progressID")) {
+                        // Reuse existing minigame_progressID
+                        String existingProgressId = snapshot.getString("minigame_progressID");
 
                         Map<String, Object> updates = new HashMap<>();
                         updates.put("husay_score", finalScore);
-                        updates.put("minigame_progressID", newProgressId);
-                        updates.put("studentID", userId);
+                        updates.put("studentID", studentID); // ✅ correct student ID
+                        updates.put("minigame_progressID", existingProgressId);
                         updates.put("total_score", finalScore + baguhan + dalubhasa);
 
                         docRef.set(updates, SetOptions.merge())
@@ -405,8 +398,33 @@
                                 .addOnFailureListener(e -> {
                                     Toast.makeText(PalaroHusay.this, "❌ Failed to save Husay score.", Toast.LENGTH_SHORT).show();
                                 });
-                    });
-                }
+
+                    } else {
+                        // No progress doc yet — generate new progress ID
+                        db.collection("minigame_progress").get().addOnSuccessListener(querySnapshot -> {
+                            int nextNumber = querySnapshot.size() + 1;
+                            String newProgressId = "MP" + nextNumber;
+
+                            Map<String, Object> updates = new HashMap<>();
+                            updates.put("husay_score", finalScore);
+                            updates.put("studentID", studentID);
+                            updates.put("minigame_progressID", newProgressId);
+                            updates.put("total_score", finalScore + baguhan + dalubhasa);
+
+                            docRef.set(updates, SetOptions.merge())
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(PalaroHusay.this, "✅ Husay score saved!", Toast.LENGTH_SHORT).show();
+                                        if (finalScore >= 800) unlockDalubhasa(docRef);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(PalaroHusay.this, "❌ Failed to save Husay score.", Toast.LENGTH_SHORT).show();
+                                    });
+                        });
+                    }
+                });
+
+            }).addOnFailureListener(e -> {
+                Toast.makeText(PalaroHusay.this, "❌ Error fetching student info.", Toast.LENGTH_SHORT).show();
             });
         }
 
