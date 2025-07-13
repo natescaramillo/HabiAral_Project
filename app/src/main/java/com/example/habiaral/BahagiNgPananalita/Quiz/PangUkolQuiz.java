@@ -13,6 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PangUkolQuiz extends AppCompatActivity {
 
@@ -35,13 +42,37 @@ public class PangUkolQuiz extends AppCompatActivity {
     }
 
     private void unlockNextLesson() {
+        // ✅ SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
         editor.putBoolean("PangUkolDone", true);
         editor.apply();
 
-        Toast.makeText(this, "Next Lesson Unlocked: Pang-Akop!", Toast.LENGTH_SHORT).show();
+        // ✅ Firestore update
+        saveCompletionToFirestore();
+
+        Toast.makeText(this, "Next Lesson Unlocked: Pang-angkop!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void saveCompletionToFirestore() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        Map<String, Object> pangUkolStatus = new HashMap<>();
+        pangUkolStatus.put("status", "completed");
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("pangukol", pangUkolStatus);
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("lessons", lessonsMap);
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_1", updateMap), SetOptions.merge());
     }
 
     private void showResultDialog() {

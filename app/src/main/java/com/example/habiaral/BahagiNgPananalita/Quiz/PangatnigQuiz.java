@@ -13,6 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PangatnigQuiz extends AppCompatActivity {
 
@@ -25,23 +32,45 @@ public class PangatnigQuiz extends AppCompatActivity {
 
         nextButton = findViewById(R.id.pangatnigNextButton);
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                unlockNextLesson();
-                showResultDialog();
-            }
+        nextButton.setOnClickListener(view -> {
+            unlockNextLesson();
+            showResultDialog();
         });
     }
 
     private void unlockNextLesson() {
+        // Save to SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
         editor.putBoolean("PangatnigDone", true);
         editor.apply();
 
+        // Save to Firestore
+        saveProgressToFirestore();
+
         Toast.makeText(this, "Next Lesson Unlocked: Pang-ukol!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void saveProgressToFirestore() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        Map<String, Object> pangatnigStatus = new HashMap<>();
+        pangatnigStatus.put("status", "completed");
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("pangatnig", pangatnigStatus);
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("lessons", lessonsMap);
+        updateMap.put("current_lesson", "pangatnig");
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_1", updateMap), SetOptions.merge());
     }
 
     private void showResultDialog() {

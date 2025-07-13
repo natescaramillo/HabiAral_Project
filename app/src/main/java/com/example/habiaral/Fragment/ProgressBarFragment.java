@@ -7,9 +7,16 @@ import android.widget.TextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.fragment.app.Fragment;
 import androidx.annotation.Nullable;
+
 import com.example.habiaral.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Map;
 
 public class ProgressBarFragment extends Fragment {
 
@@ -32,47 +39,74 @@ public class ProgressBarFragment extends Fragment {
 
         sharedPreferences = getActivity().getSharedPreferences("LessonProgress", getContext().MODE_PRIVATE);
 
-        updateProgress();
+        updateProgressFromFirestore();
     }
 
-    private void updateProgress() {
-        int bahagiCompleted = 0;
-        if (sharedPreferences.getBoolean("PangngalanDone", false)) bahagiCompleted++;
-        if (sharedPreferences.getBoolean("PandiwaDone", false)) bahagiCompleted++;
-        if (sharedPreferences.getBoolean("PangUriDone", false)) bahagiCompleted++;
-        if (sharedPreferences.getBoolean("PangHalipDone", false)) bahagiCompleted++;
-        if (sharedPreferences.getBoolean("PangAbayDone", false)) bahagiCompleted++;
-        if (sharedPreferences.getBoolean("PangatnigDone", false)) bahagiCompleted++;
-        if (sharedPreferences.getBoolean("PangUkolDone", false)) bahagiCompleted++;
-        if (sharedPreferences.getBoolean("PangAkopDone", false)) bahagiCompleted++;
-        if (sharedPreferences.getBoolean("PadamdamDone", false)) bahagiCompleted++;
-        if (sharedPreferences.getBoolean("PangawingDone", false)) bahagiCompleted++;
+    private void updateProgressFromFirestore() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
 
-        int bahagiTotal = 10;
-        int bahagiProgress = (bahagiCompleted * 100) / bahagiTotal;
-        progressBarBahagi.setProgress(bahagiProgress);
-        progressPercentageBahagi.setText(bahagiProgress + "%");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
 
-        int komprehensyonCompleted = 0;
-        if (sharedPreferences.getBoolean("Kwento1Done", false)) komprehensyonCompleted++;
-        if (sharedPreferences.getBoolean("Kwento2Done", false)) komprehensyonCompleted++;
-        if (sharedPreferences.getBoolean("Kwento3Done", false)) komprehensyonCompleted++;
+        db.collection("module_progress")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (!snapshot.exists()) return;
 
-        int komprehensyonTotal = 3;
-        int komprehensyonProgress = (komprehensyonCompleted * 100) / komprehensyonTotal;
-        progressBarKomprehensyon.setProgress(komprehensyonProgress);
-        progressPercentageKomprehensyon.setText(komprehensyonProgress + "%");
+                    Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
+                    if (module1 == null) return;
 
-        int kayarianCompleted = 0;
-        if (sharedPreferences.getBoolean("PayakDone", false)) kayarianCompleted++;
-        if (sharedPreferences.getBoolean("TambalanDone", false)) kayarianCompleted++;
-        if (sharedPreferences.getBoolean("HugnayanDone", false)) kayarianCompleted++;
-        if (sharedPreferences.getBoolean("LangkapanDone", false)) kayarianCompleted++;
+                    Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
+                    if (lessons == null) return;
 
-        int kayarianTotal = 4;
-        int kayarianProgress = (kayarianCompleted * 100) / kayarianTotal;
-        progressBarKayarian.setProgress(kayarianProgress);
-        progressPercentageKayarian.setText(kayarianProgress + "%");
+                    int bahagiCompleted = 0;
+                    String[] bahagiKeys = {
+                            "pangngalan", "pandiwa", "panguri", "panghalip", "pangabay",
+                            "pangatnig", "pangukol", "pangakop", "padamdam", "pangawing"
+                    };
+
+                    for (String key : bahagiKeys) {
+                        Map<String, Object> lessonData = (Map<String, Object>) lessons.get(key);
+                        if (lessonData != null && "completed".equals(lessonData.get("status"))) {
+                            bahagiCompleted++;
+                        }
+                    }
+
+                    int bahagiProgress = (bahagiCompleted * 100) / bahagiKeys.length;
+                    progressBarBahagi.setProgress(bahagiProgress);
+                    progressPercentageBahagi.setText(bahagiProgress + "%");
+
+                    // Update other progress bars from SharedPreferences
+                    updateKomprehensyonFromSharedPref();
+                    updateKayarianFromSharedPref();
+                });
+    }
+
+    private void updateKomprehensyonFromSharedPref() {
+        int completed = 0;
+        if (sharedPreferences.getBoolean("Kwento1Done", false)) completed++;
+        if (sharedPreferences.getBoolean("Kwento2Done", false)) completed++;
+        if (sharedPreferences.getBoolean("Kwento3Done", false)) completed++;
+
+        int total = 3;
+        int progress = (completed * 100) / total;
+        progressBarKomprehensyon.setProgress(progress);
+        progressPercentageKomprehensyon.setText(progress + "%");
+    }
+
+    private void updateKayarianFromSharedPref() {
+        int completed = 0;
+        if (sharedPreferences.getBoolean("PayakDone", false)) completed++;
+        if (sharedPreferences.getBoolean("TambalanDone", false)) completed++;
+        if (sharedPreferences.getBoolean("HugnayanDone", false)) completed++;
+        if (sharedPreferences.getBoolean("LangkapanDone", false)) completed++;
+
+        int total = 4;
+        int progress = (completed * 100) / total;
+        progressBarKayarian.setProgress(progress);
+        progressPercentageKayarian.setText(progress + "%");
     }
 
     @Override
@@ -83,6 +117,6 @@ public class ProgressBarFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateProgress();
+        updateProgressFromFirestore();
     }
 }

@@ -13,6 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PangawingQuiz extends AppCompatActivity {
 
@@ -25,16 +32,14 @@ public class PangawingQuiz extends AppCompatActivity {
 
         nextButton = findViewById(R.id.pangawingNextButton);
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                completeAllLessons();
-                showResultDialog();
-            }
+        nextButton.setOnClickListener(view -> {
+            completeLesson();
+            updateLessonStatusInFirestore();
+            showResultDialog();
         });
     }
 
-    private void completeAllLessons() {
+    private void completeLesson() {
         SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -42,6 +47,28 @@ public class PangawingQuiz extends AppCompatActivity {
         editor.apply();
 
         Toast.makeText(this, "Congratulations! You have completed all lessons!", Toast.LENGTH_LONG).show();
+    }
+
+    private void updateLessonStatusInFirestore() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        Map<String, Object> pangawingStatus = new HashMap<>();
+        pangawingStatus.put("status", "completed");
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("pangawing", pangawingStatus);
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("lessons", lessonsMap);
+        updateMap.put("current_lesson", "pangawing");
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_1", updateMap), SetOptions.merge());
     }
 
     private void showResultDialog() {
@@ -55,6 +82,7 @@ public class PangawingQuiz extends AppCompatActivity {
         Button homeButton = dialogView.findViewById(R.id.buttonHome);
 
         AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
 
         retryButton.setOnClickListener(v -> {

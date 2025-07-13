@@ -16,17 +16,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PangngalanQuiz extends AppCompatActivity {
 
-    TextView questionText;
-    TextView questionTitle;
-
+    TextView questionText, questionTitle;
     Button answer1, answer2, answer3, nextButton;
     ProgressBar timerBar;
 
@@ -53,22 +56,16 @@ public class PangngalanQuiz extends AppCompatActivity {
         timerBar = findViewById(R.id.timerBar);
 
         db = FirebaseFirestore.getInstance();
-
         quizIDs = new ArrayList<>();
         Collections.addAll(quizIDs, "QQ1", "QQ2", "QQ3", "QQ4", "QQ5", "QQ6", "QQ7", "QQ8", "QQ9", "QQ10");
         Collections.shuffle(quizIDs);
 
-        loadCharacterLine("QCL1"); // Step 1: Show QCL1
+        loadCharacterLine("QCL1");
 
-// Step 2: After 5s, show QCL2
         new Handler().postDelayed(() -> {
             loadCharacterLine("QCL2");
-
-            // Step 3: After 3s of QCL2, show countdown
             new Handler().postDelayed(this::showCountdownThenLoadQuestion, 3000);
-
         }, 5000);
-
 
         View.OnClickListener choiceClickListener = view -> {
             if (isAnswered) return;
@@ -94,7 +91,8 @@ public class PangngalanQuiz extends AppCompatActivity {
                 resetButtons();
                 loadQuestion(quizIDs.get(currentIndex));
             } else {
-                unlockNextLesson();
+                unlockNextLesson(); // Also sets SharedPreferences
+                saveQuizResultToFirestore(); // ✅ Update Firestore progress to 'completed'
                 showResultDialog();
             }
         });
@@ -107,8 +105,8 @@ public class PangngalanQuiz extends AppCompatActivity {
             new Handler().postDelayed(() -> {
                 questionText.setText("1");
                 new Handler().postDelayed(() -> {
-                    questionText.setText(""); // Clear countdown
-                    loadQuestion(quizIDs.get(currentIndex)); // Load quiz question
+                    questionText.setText("");
+                    loadQuestion(quizIDs.get(currentIndex));
                 }, 1000);
             }, 1000);
         }, 1000);
@@ -172,6 +170,7 @@ public class PangngalanQuiz extends AppCompatActivity {
                     loadQuestion(quizIDs.get(currentIndex));
                 } else {
                     unlockNextLesson();
+                    saveQuizResultToFirestore(); // ✅ Save progress even if time runs out
                     showResultDialog();
                 }
             }
@@ -199,7 +198,7 @@ public class PangngalanQuiz extends AppCompatActivity {
                                 answer2.setText(choices.get(1));
                                 answer3.setText(choices.get(2));
 
-                                startTimer(); // Start the timer here only
+                                startTimer();
                             }
                         }
                     } else {
@@ -259,5 +258,28 @@ public class PangngalanQuiz extends AppCompatActivity {
             case 10: return "Ikasampung tanong";
             default: return "Tanong";
         }
+    }
+
+    // ✅ Firestore update: set pangngalan lesson status to completed
+    private void saveQuizResultToFirestore() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        Map<String, Object> pangngalanStatus = new HashMap<>();
+        pangngalanStatus.put("status", "completed");
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("pangngalan", pangngalanStatus);
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("lessons", lessonsMap);
+        updateMap.put("current_lesson", "pangngalan");
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_1", updateMap), SetOptions.merge());
     }
 }

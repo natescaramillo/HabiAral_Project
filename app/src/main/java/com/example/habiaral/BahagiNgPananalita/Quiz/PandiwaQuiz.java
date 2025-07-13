@@ -13,6 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PandiwaQuiz extends AppCompatActivity {
 
@@ -25,23 +32,42 @@ public class PandiwaQuiz extends AppCompatActivity {
 
         nextButton = findViewById(R.id.pandiwaNextButton);
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                unlockNextLesson();
-                showResultDialog();
-            }
+        nextButton.setOnClickListener(view -> {
+            unlockNextLesson();      // SharedPreferences
+            saveQuizResultToFirestore(); // Firestore
+            showResultDialog();     // Result dialog
         });
     }
 
     private void unlockNextLesson() {
         SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
         editor.putBoolean("PandiwaDone", true);
         editor.apply();
 
         Toast.makeText(this, "Next Lesson Unlocked: PangUri!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void saveQuizResultToFirestore() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        Map<String, Object> pandiwaStatus = new HashMap<>();
+        pandiwaStatus.put("status", "completed");
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("pandiwa", pandiwaStatus);
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("lessons", lessonsMap);
+        updateMap.put("current_lesson", "pandiwa");
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_1", updateMap), SetOptions.merge());
     }
 
     private void showResultDialog() {

@@ -13,6 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PangHalipQuiz extends AppCompatActivity {
 
@@ -25,12 +32,10 @@ public class PangHalipQuiz extends AppCompatActivity {
 
         nextButton = findViewById(R.id.panghalipNextButton);
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                unlockNextLesson();
-                showResultDialog();
-            }
+        nextButton.setOnClickListener(view -> {
+            unlockNextLesson();
+            saveQuizResultToFirestore();
+            showResultDialog();
         });
     }
 
@@ -42,6 +47,28 @@ public class PangHalipQuiz extends AppCompatActivity {
         editor.apply();
 
         Toast.makeText(this, "Next Lesson Unlocked: Pang-abay!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void saveQuizResultToFirestore() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        Map<String, Object> pangHalipStatus = new HashMap<>();
+        pangHalipStatus.put("status", "completed");
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("panghalip", pangHalipStatus);
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("lessons", lessonsMap);
+        updateMap.put("current_lesson", "panghalip");
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_1", updateMap), SetOptions.merge());
     }
 
     private void showResultDialog() {

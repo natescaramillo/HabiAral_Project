@@ -8,11 +8,19 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.VideoView;
 import android.widget.MediaController;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangHalipQuiz;
 import com.example.habiaral.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PangHalipLesson extends AppCompatActivity {
 
@@ -48,13 +56,18 @@ public class PangHalipLesson extends AppCompatActivity {
 
         videoView.start();
 
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                if (!isLessonDone) {
-                    unlockButton.setEnabled(true);
-                    unlockButton.setAlpha(1f);
-                }
+        videoView.setOnCompletionListener(mp -> {
+            if (!isLessonDone) {
+                unlockButton.setEnabled(true);
+                unlockButton.setAlpha(1f);
+
+                // ✅ Save to SharedPreferences
+                SharedPreferences.Editor editor = getSharedPreferences("LessonProgress", MODE_PRIVATE).edit();
+                editor.putBoolean("PangHalipDone", true);
+                editor.apply();
+
+                // ✅ Save to Firestore
+                saveProgressToFirestore();
             }
         });
 
@@ -62,5 +75,33 @@ public class PangHalipLesson extends AppCompatActivity {
             Intent intent = new Intent(PangHalipLesson.this, PangHalipQuiz.class);
             startActivity(intent);
         });
+    }
+
+    private void saveProgressToFirestore() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        // Create lessons map for panghalip
+        Map<String, Object> lessonMap = new HashMap<>();
+        Map<String, Object> pangHalipStatus = new HashMap<>();
+        pangHalipStatus.put("status", "in_progress");
+        lessonMap.put("panghalip", pangHalipStatus);
+
+        Map<String, Object> progress = new HashMap<>();
+        progress.put("modulename", "Bahagi ng Pananalita");
+        progress.put("status", "in_progress");
+        progress.put("current_lesson", "panghalip");
+        progress.put("lessons", lessonMap);
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_1", progress), SetOptions.merge())
+                .addOnSuccessListener(aVoid ->
+                        Log.d("Firestore", "✅ Progress saved for Panghalip lesson"))
+                .addOnFailureListener(e ->
+                        Log.e("Firestore", "❌ Failed to save progress", e));
     }
 }
