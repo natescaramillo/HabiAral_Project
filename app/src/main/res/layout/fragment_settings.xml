@@ -28,7 +28,7 @@
 
     <LinearLayout
         android:layout_width="423dp"
-        android:layout_height="251dp"
+        android:layout_height="320dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="120dp"
         android:orientation="vertical">
@@ -103,6 +103,25 @@
                 android:fontFamily="@font/poppins"
                 android:gravity="center"
                 android:text="Umalis"
+                android:textColor="#ffffff" />
+        </FrameLayout>
+
+
+        <FrameLayout
+            android:id="@+id/logout"
+            android:layout_width="338dp"
+            android:layout_height="51dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_color"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="Logout"
                 android:textColor="#ffffff" />
         </FrameLayout>
 
