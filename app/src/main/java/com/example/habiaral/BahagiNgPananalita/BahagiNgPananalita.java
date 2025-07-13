@@ -12,7 +12,6 @@ import com.example.habiaral.BahagiNgPananalita.Lessons.*;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -24,12 +23,122 @@ public class BahagiNgPananalita extends AppCompatActivity {
     LinearLayout btnPangngalan, btnPandiwa, btnPangUri, btnPangHalip, btnPangAbay, btnPangatnig, btnPangukol, btnPangAkop, btnPadamdam, btnPangawing;
     FrameLayout pangngalanLock, pandiwaLock, pangUriLock, pangHalipLock, pangAbayLock, pangatnigLock, pangUkolLock, pangAkopLock, padamdamLock, pangawingLock;
     SharedPreferences sharedPreferences;
+    FirebaseFirestore db;
+    String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bahagi_ng_pananalita);
 
+        initViews();
+        sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        uid = user.getUid();
+        db = FirebaseFirestore.getInstance();
+
+        // Step 1: Fetch studentId
+        db.collection("students").document(uid).get().addOnSuccessListener(studentSnap -> {
+            if (studentSnap.exists()) {
+                if (studentSnap.contains("studentId")) {
+                    String studentID = studentSnap.getString("studentId");
+                    android.util.Log.d("STUDENT_ID_FETCHED", "Fetched studentId: " + studentID);
+
+                    // Step 2: Save to module_progress without overwriting other fields
+                    Map<String, Object> update = new HashMap<>();
+                    update.put("studentId", studentID);
+
+                    db.collection("module_progress").document(uid)
+                            .set(update, SetOptions.merge())
+                            .addOnSuccessListener(unused -> {
+                                android.util.Log.d("STUDENT_ID_SAVED", "Saved to module_progress: " + studentID);
+                                loadLessonProgress();
+                            })
+                            .addOnFailureListener(e -> {
+                                android.util.Log.e("SAVE_FAIL", "Failed saving studentId", e);
+                                loadLessonProgress();
+                            });
+                } else {
+                    android.util.Log.w("MISSING_FIELD", "studentId field missing in students/" + uid);
+                    loadLessonProgress();
+                }
+            } else {
+                android.util.Log.w("NO_DOC", "No student document found for uid: " + uid);
+                loadLessonProgress();
+            }
+        }).addOnFailureListener(e -> {
+            android.util.Log.e("FETCH_FAIL", "Error fetching student doc", e);
+            loadLessonProgress();
+        });
+    }
+
+    private void loadLessonProgress() {
+        db.collection("module_progress").document(uid).get().addOnSuccessListener(snapshot -> {
+            if (!snapshot.exists()) return;
+
+            Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
+            if (module1 == null) return;
+
+            Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
+            if (lessons == null) return;
+
+            boolean pangngalanDone = isCompleted(lessons, "pangngalan");
+            boolean pandiwaDone = isCompleted(lessons, "pandiwa");
+            boolean pangUriDone = isCompleted(lessons, "panguri");
+            boolean pangHalipDone = isCompleted(lessons, "panghalip");
+            boolean pangAbayDone = isCompleted(lessons, "pangabay");
+            boolean pangatnigDone = isCompleted(lessons, "pangatnig");
+            boolean pangUkolDone = isCompleted(lessons, "pangukol");
+            boolean pangAkopDone = isCompleted(lessons, "pangakop");
+            boolean padamdamDone = isCompleted(lessons, "padamdam");
+            boolean pangawingDone = isCompleted(lessons, "pangawing");
+
+            // Unlock logic
+            unlockButton(btnPangngalan, true, pangngalanLock);
+            unlockButton(btnPandiwa, pangngalanDone, pandiwaLock);
+            unlockButton(btnPangUri, pandiwaDone, pangUriLock);
+            unlockButton(btnPangHalip, pangUriDone, pangHalipLock);
+            unlockButton(btnPangAbay, pangHalipDone, pangAbayLock);
+            unlockButton(btnPangatnig, pangAbayDone, pangatnigLock);
+            unlockButton(btnPangukol, pangatnigDone, pangUkolLock);
+            unlockButton(btnPangAkop, pangUkolDone, pangAkopLock);
+            unlockButton(btnPadamdam, pangAkopDone, padamdamLock);
+            unlockButton(btnPangawing, padamdamDone, pangawingLock);
+
+            // Save to SharedPreferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("PangngalanDone", pangngalanDone);
+            editor.putBoolean("PandiwaDone", pandiwaDone);
+            editor.putBoolean("PangUriDone", pangUriDone);
+            editor.putBoolean("PangHalipDone", pangHalipDone);
+            editor.putBoolean("PangAbayDone", pangAbayDone);
+            editor.putBoolean("PangatnigDone", pangatnigDone);
+            editor.putBoolean("PangUkolDone", pangUkolDone);
+            editor.putBoolean("PangAkopDone", pangAkopDone);
+            editor.putBoolean("PadamdamDone", padamdamDone);
+            editor.putBoolean("PangawingDone", pangawingDone);
+            editor.apply();
+
+            checkAndCompleteModule();
+        });
+    }
+
+    private boolean isCompleted(Map<String, Object> lessons, String key) {
+        Map<String, Object> data = (Map<String, Object>) lessons.get(key);
+        return data != null && "completed".equals(data.get("status"));
+    }
+
+    private void unlockButton(LinearLayout layout, boolean isUnlocked, FrameLayout lock) {
+        layout.setEnabled(isUnlocked);
+        layout.setClickable(isUnlocked);
+        layout.setAlpha(isUnlocked ? 1.0f : 0.5f);
+        lock.setVisibility(isUnlocked ? FrameLayout.GONE : FrameLayout.VISIBLE);
+    }
+
+    private void initViews() {
         btnPangngalan = findViewById(R.id.pangngalan);
         btnPandiwa = findViewById(R.id.pandiwa);
         btnPangUri = findViewById(R.id.panguri);
@@ -52,61 +161,6 @@ public class BahagiNgPananalita extends AppCompatActivity {
         padamdamLock = findViewById(R.id.padamdamLock);
         pangawingLock = findViewById(R.id.pangawingLock);
 
-        sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            String uid = user.getUid();
-
-            db.collection("module_progress").document(uid).get().addOnSuccessListener(snapshot -> {
-                if (snapshot.exists()) {
-                    Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
-                    if (module1 != null) {
-                        Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
-                        if (lessons != null) {
-                            boolean pangngalanDone = isCompleted(lessons, "pangngalan");
-                            boolean pandiwaDone = isCompleted(lessons, "pandiwa");
-                            boolean pangUriDone = isCompleted(lessons, "panguri");
-                            boolean pangHalipDone = isCompleted(lessons, "panghalip");
-                            boolean pangAbayDone = isCompleted(lessons, "pangabay");
-                            boolean pangatnigDone = isCompleted(lessons, "pangatnig");
-                            boolean pangUkolDone = isCompleted(lessons, "pangukol");
-                            boolean pangAkopDone = isCompleted(lessons, "pangakop");
-                            boolean padamdamDone = isCompleted(lessons, "padamdam");
-                            boolean pangawingDone = isCompleted(lessons, "pangawing");
-
-                            unlockButton(btnPangngalan, true, pangngalanLock);
-                            unlockButton(btnPandiwa, pangngalanDone, pandiwaLock);
-                            unlockButton(btnPangUri, pandiwaDone, pangUriLock);
-                            unlockButton(btnPangHalip, pangUriDone, pangHalipLock);
-                            unlockButton(btnPangAbay, pangHalipDone, pangAbayLock);
-                            unlockButton(btnPangatnig, pangAbayDone, pangatnigLock);
-                            unlockButton(btnPangukol, pangatnigDone, pangUkolLock);
-                            unlockButton(btnPangAkop, pangUkolDone, pangAkopLock);
-                            unlockButton(btnPadamdam, pangAkopDone, padamdamLock);
-                            unlockButton(btnPangawing, padamdamDone, pangawingLock);
-
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putBoolean("PangngalanDone", pangngalanDone);
-                            editor.putBoolean("PandiwaDone", pandiwaDone);
-                            editor.putBoolean("PangUriDone", pangUriDone);
-                            editor.putBoolean("PangHalipDone", pangHalipDone);
-                            editor.putBoolean("PangAbayDone", pangAbayDone);
-                            editor.putBoolean("PangatnigDone", pangatnigDone);
-                            editor.putBoolean("PangUkolDone", pangUkolDone);
-                            editor.putBoolean("PangAkopDone", pangAkopDone);
-                            editor.putBoolean("PadamdamDone", padamdamDone);
-                            editor.putBoolean("PangawingDone", pangawingDone);
-                            editor.apply();
-
-                            checkAndCompleteModule();
-                        }
-                    }
-                }
-            });
-        }
-
         btnPangngalan.setOnClickListener(v -> startActivity(new Intent(this, PangngalanLesson.class)));
         btnPandiwa.setOnClickListener(v -> startActivity(new Intent(this, PandiwaLesson.class)));
         btnPangUri.setOnClickListener(v -> startActivity(new Intent(this, PangUriLesson.class)));
@@ -117,18 +171,6 @@ public class BahagiNgPananalita extends AppCompatActivity {
         btnPangAkop.setOnClickListener(v -> startActivity(new Intent(this, PangAkopLesson.class)));
         btnPadamdam.setOnClickListener(v -> startActivity(new Intent(this, PadamdamLesson.class)));
         btnPangawing.setOnClickListener(v -> startActivity(new Intent(this, PangawingLesson.class)));
-    }
-
-    private boolean isCompleted(Map<String, Object> lessons, String key) {
-        Map<String, Object> data = (Map<String, Object>) lessons.get(key);
-        return data != null && "completed".equals(data.get("status"));
-    }
-
-    private void unlockButton(LinearLayout layout, boolean isUnlocked, FrameLayout lock) {
-        layout.setEnabled(isUnlocked);
-        layout.setClickable(isUnlocked);
-        layout.setAlpha(isUnlocked ? 1.0f : 0.5f);
-        lock.setVisibility(isUnlocked ? FrameLayout.GONE : FrameLayout.VISIBLE);
     }
 
     private void checkAndCompleteModule() {
@@ -143,19 +185,22 @@ public class BahagiNgPananalita extends AppCompatActivity {
                 && sharedPreferences.getBoolean("PadamdamDone", false)
                 && sharedPreferences.getBoolean("PangawingDone", false);
 
-        if (allDone) {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            if (user == null) return;
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
 
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            String uid = user.getUid();
+        String uid = user.getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            Map<String, Object> moduleStatus = new HashMap<>();
-            moduleStatus.put("status", "completed");
+        Map<String, Object> update = new HashMap<>();
+        Map<String, Object> module1Updates = new HashMap<>();
 
-            db.collection("module_progress")
-                    .document(uid)
-                    .set(Map.of("module_1", moduleStatus), SetOptions.merge());
-        }
+        module1Updates.put("modulename", "Bahagi ng Pananalita");
+        module1Updates.put("status", allDone ? "completed" : "in_progress");
+
+        update.put("module_1", module1Updates);
+
+        db.collection("module_progress").document(uid)
+                .set(update, SetOptions.merge());
     }
+
 }
