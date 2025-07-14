@@ -1,6 +1,8 @@
 package com.example.habiaral.Fragment;
 
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +72,10 @@ public class DictionaryFragment extends Fragment {
         TextView meaningText = wordItemView.findViewById(R.id.meaningTextView);
         ImageView speakerIcon = wordItemView.findViewById(R.id.speakerIcon);
 
-        wordText.setText(word);
+        SpannableString underlinedWord = new SpannableString(word);
+        underlinedWord.setSpan(new UnderlineSpan(), 0, word.length(), 0);
+
+        wordText.setText(underlinedWord);
         meaningText.setText(meaning);
 
         speakerIcon.setOnClickListener(v -> {

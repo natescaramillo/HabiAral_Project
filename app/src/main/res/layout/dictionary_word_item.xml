@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/special"
-        android:text="This is a sample meaning that now wraps and fits properly inside the box without going beyond."
+        android:text="This is an example meaning"
         android:textColor="#ffffff"
         android:textSize="15sp"
         app:layout_constraintTop_toBottomOf="@id/dictionary_word_item"
