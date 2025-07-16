@@ -110,6 +110,9 @@ public class PangawingQuiz extends AppCompatActivity {
                     if (achievements != null && achievements.containsKey(saCode)) {
                         alreadyUnlocked = true;
                     }
+                } else {
+                    // 🔁 If doc was deleted manually, reset local flag to allow re-unlock
+                    clearAchievementDialogFlag(saCode);
                 }
 
                 // ✅ Even if already unlocked in Firestore, still mark locally
@@ -120,12 +123,11 @@ public class PangawingQuiz extends AppCompatActivity {
                     return;
                 }
 
-                // ✅ Skip if already shown locally
-                if (isAchievementDialogAlreadyShown(saCode)) {
+                // ✅ Skip if already shown locally AND Firestore doc exists
+                if (isAchievementDialogAlreadyShown(saCode) && saSnapshot.exists()) {
                     return;
                 }
 
-                // ✅ Proceed to unlock
                 continueUnlockingAchievement(db, uid, saCode, achievementId);
             });
         });
@@ -152,8 +154,7 @@ public class PangawingQuiz extends AppCompatActivity {
                 db.collection("student_achievements").document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            // ✅ Mark as shown before displaying the dialog
-                            markAchievementDialogAsShown(saCode);
+                            markAchievementDialogAsShown(saCode); // ✅ Mark before showing
                             showAchievementUnlockedDialog(title);
                         }));
             });
@@ -168,7 +169,6 @@ public class PangawingQuiz extends AppCompatActivity {
                 .show();
     }
 
-    // ✅ Save & check local dialog shown flag
     private boolean isAchievementDialogAlreadyShown(String achievementCode) {
         SharedPreferences prefs = getSharedPreferences("AchievementDialogs", MODE_PRIVATE);
         return prefs.getBoolean(achievementCode, false);
@@ -177,6 +177,11 @@ public class PangawingQuiz extends AppCompatActivity {
     private void markAchievementDialogAsShown(String achievementCode) {
         SharedPreferences prefs = getSharedPreferences("AchievementDialogs", MODE_PRIVATE);
         prefs.edit().putBoolean(achievementCode, true).apply();
+    }
+
+    private void clearAchievementDialogFlag(String achievementCode) {
+        SharedPreferences prefs = getSharedPreferences("AchievementDialogs", MODE_PRIVATE);
+        prefs.edit().remove(achievementCode).apply();
     }
 
     private void showResultDialog() {
