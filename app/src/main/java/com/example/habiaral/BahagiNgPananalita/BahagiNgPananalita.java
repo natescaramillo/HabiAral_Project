@@ -40,6 +40,8 @@ public class BahagiNgPananalita extends AppCompatActivity {
         uid = user.getUid();
         db = FirebaseFirestore.getInstance();
 
+        loadFromCache();
+
         // Step 1: Fetch studentId
         db.collection("students").document(uid).get().addOnSuccessListener(studentSnap -> {
             if (studentSnap.exists()) {
@@ -201,6 +203,30 @@ public class BahagiNgPananalita extends AppCompatActivity {
 
         db.collection("module_progress").document(uid)
                 .set(update, SetOptions.merge());
+    }
+
+    private void loadFromCache() {
+        boolean pangngalanDone = sharedPreferences.getBoolean("PangngalanDone", false);
+        boolean pandiwaDone = sharedPreferences.getBoolean("PandiwaDone", false);
+        boolean pangUriDone = sharedPreferences.getBoolean("PangUriDone", false);
+        boolean pangHalipDone = sharedPreferences.getBoolean("PangHalipDone", false);
+        boolean pangAbayDone = sharedPreferences.getBoolean("PangAbayDone", false);
+        boolean pangatnigDone = sharedPreferences.getBoolean("PangatnigDone", false);
+        boolean pangUkolDone = sharedPreferences.getBoolean("PangUkolDone", false);
+        boolean pangAkopDone = sharedPreferences.getBoolean("PangAkopDone", false);
+        boolean padamdamDone = sharedPreferences.getBoolean("PadamdamDone", false);
+        boolean pangawingDone = sharedPreferences.getBoolean("PangawingDone", false);
+
+        unlockButton(btnPangngalan, true, pangngalanLock);
+        unlockButton(btnPandiwa, pangngalanDone, pandiwaLock);
+        unlockButton(btnPangUri, pandiwaDone, pangUriLock);
+        unlockButton(btnPangHalip, pangUriDone, pangHalipLock);
+        unlockButton(btnPangAbay, pangHalipDone, pangAbayLock);
+        unlockButton(btnPangatnig, pangAbayDone, pangatnigLock);
+        unlockButton(btnPangukol, pangatnigDone, pangUkolLock);
+        unlockButton(btnPangAkop, pangUkolDone, pangAkopLock);
+        unlockButton(btnPadamdam, pangAkopDone, padamdamLock);
+        unlockButton(btnPangawing, padamdamDone, pangawingLock);
     }
 
 }
