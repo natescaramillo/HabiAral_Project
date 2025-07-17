@@ -1,7 +1,6 @@
 package com.example.habiaral.Palaro;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -38,6 +37,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     private ProgressBar timerBar;
     private Button unlockButton, unlockButton1;
 
+
     private CountDownTimer countDownTimer;
     private static final long TOTAL_TIME = 20000;
     private long timeLeft = TOTAL_TIME;
@@ -51,11 +51,6 @@ public class PalaroBaguhan extends AppCompatActivity {
     private boolean isAnswered = false;
     private boolean isTimeUp = false;
 
-    private SharedPreferences preferences;
-    private static final String PREF_NAME = "BaguhanPrefs";
-    private static final String KEY_QUESTION_NUM = "currentQuestionNumber";
-    private static final String KEY_CORRECT_COUNT = "correctAnswerCount";
-    private static final String KEY_SCORE = "baguhanScore";
     private String studentID;
     private TextToSpeech tts;
 
@@ -81,11 +76,6 @@ public class PalaroBaguhan extends AppCompatActivity {
 
 
         // Reset progress if needed
-        if (getIntent().getBooleanExtra("resetProgress", false)) {
-            SharedPreferences.Editor editor = getSharedPreferences(PREF_NAME, MODE_PRIVATE).edit();
-            editor.clear();
-            editor.apply();
-        }
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -112,10 +102,9 @@ public class PalaroBaguhan extends AppCompatActivity {
         };
 
         db = FirebaseFirestore.getInstance();
-        preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        currentQuestionNumber = preferences.getInt(KEY_QUESTION_NUM, 1);
-        correctAnswerCount = preferences.getInt(KEY_CORRECT_COUNT, 0);
-        baguhanScore = preferences.getInt(KEY_SCORE, 0);
+        currentQuestionNumber = 1;
+        correctAnswerCount = 0;
+        baguhanScore = 0;
 
         loadCharacterLine("MCL1");
         new Handler().postDelayed(this::showCountdownThenLoadQuestion, 3000);
@@ -254,20 +243,24 @@ public class PalaroBaguhan extends AppCompatActivity {
             docRef.get().addOnSuccessListener(snapshot -> {
                 int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
                 int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
+                int oldBaguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
+                int newBaguhanTotal = oldBaguhan + baguhanScore;
 
                 if (snapshot.exists() && snapshot.contains("minigame_progressID")) {
                     // Reuse existing ID
                     String existingProgressId = snapshot.getString("minigame_progressID");
 
                     Map<String, Object> updates = new HashMap<>();
-                    updates.put("baguhan_score", baguhanScore);
+                    updates.put("baguhan_score", newBaguhanTotal);
                     updates.put("studentID", studentID); // ✅ Correct student ID
                     updates.put("minigame_progressID", existingProgressId);
-                    updates.put("total_score", baguhanScore + husay + dalubhasa);
+                    updates.put("total_score", newBaguhanTotal + husay + dalubhasa);
 
                     docRef.set(updates, SetOptions.merge())
                             .addOnSuccessListener(aVoid -> {
-                                if (baguhanScore >= 400) unlockHusay(docRef);
+                                if (newBaguhanTotal >= 400) unlockHusay(docRef);
+                                baguhanScore = 0; // ✅ Reset after save
+
                             });
 
                 } else {
@@ -277,14 +270,14 @@ public class PalaroBaguhan extends AppCompatActivity {
                         String newProgressId = "MP" + nextNumber;
 
                         Map<String, Object> updates = new HashMap<>();
-                        updates.put("baguhan_score", baguhanScore);
+                        updates.put("baguhan_score", newBaguhanTotal);
                         updates.put("studentID", studentID); // ✅ Correct student ID
                         updates.put("minigame_progressID", newProgressId);
-                        updates.put("total_score", baguhanScore + husay + dalubhasa);
+                        updates.put("total_score", newBaguhanTotal + husay + dalubhasa);
 
                         docRef.set(updates, SetOptions.merge())
                                 .addOnSuccessListener(aVoid -> {
-                                    if (baguhanScore >= 400) unlockHusay(docRef);
+                                    if (newBaguhanTotal >= 400) unlockHusay(docRef);
                                 });
                     });
                 }
@@ -297,13 +290,18 @@ public class PalaroBaguhan extends AppCompatActivity {
 
 
 
-
-
     private void unlockHusay(DocumentReference docRef) {
-        docRef.update("husay_unlocked", true)
-                .addOnSuccessListener(aVoid ->
-                        Toast.makeText(this, "🎉 Husay unlocked!", Toast.LENGTH_LONG).show());
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("husay_unlocked", true);
+
+        docRef.set(updates, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Nakaabot ka sa 400! Na-unlock ang Husay!", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(this, Palaro.class));
+                    finish();
+                });
     }
+
 
     private void showCountdownThenLoadQuestion() {
         final Handler countdownHandler = new Handler();
@@ -434,15 +432,18 @@ public class PalaroBaguhan extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        if (baguhanScore > 0) {
+            saveBaguhanScore();
+        }
+
         if (countDownTimer != null) countDownTimer.cancel();
-        saveBaguhanScore();
         if (tts != null) {
             tts.stop();
             tts.shutdown();
         }
-
+        super.onDestroy();
     }
+
 
     private void showBackConfirmationDialog() {
         View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
