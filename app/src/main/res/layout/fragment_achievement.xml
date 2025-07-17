@@ -68,8 +68,15 @@
                             android:layout_gravity="center"
                             android:background="@drawable/rounded_image"
                             android:clipToOutline="true"
+                            android:alpha="0.2"
                             android:scaleType="centerCrop"
                             android:src="@drawable/a1" />
+                        <ImageView
+                            android:id="@+id/achievement_lock1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock" />
                     </FrameLayout>
 
 
@@ -95,6 +102,7 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
+
                     <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
@@ -105,11 +113,18 @@
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:src="@drawable/a2"
+                            android:alpha="0.2"
                             android:background="@drawable/rounded_image"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop" />
-                    </FrameLayout>
 
+                        <ImageView
+                            android:id="@+id/achievement_lock2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock" />
+                    </FrameLayout>
                     <TextView
                         android:id="@+id/achievement2text"
                         android:layout_width="94dp"
@@ -142,9 +157,17 @@
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:background="@drawable/rounded_image"
+                            android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
                             android:src="@drawable/a3" />
+
+                        <ImageView
+                            android:id="@+id/achievement_lock3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock" />
                     </FrameLayout>
 
                     <TextView
@@ -188,9 +211,16 @@
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:background="@drawable/rounded_image"
+                            android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
                             android:src="@drawable/a4" />
+                        <ImageView
+                            android:id="@+id/achievement_lock4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock" />
                     </FrameLayout>
 
                     <TextView
@@ -225,9 +255,16 @@
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:background="@drawable/rounded_image"
+                            android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
                             android:src="@drawable/a5" />
+                        <ImageView
+                            android:id="@+id/achievement_lock5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock" />
                     </FrameLayout>
 
                     <TextView
@@ -262,9 +299,16 @@
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:background="@drawable/rounded_image"
+                            android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
                             android:src="@drawable/a6" />
+                        <ImageView
+                            android:id="@+id/achievement_lock6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock" />
                     </FrameLayout>
 
                     <TextView
@@ -307,9 +351,16 @@
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:background="@drawable/rounded_image"
+                            android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
                             android:src="@drawable/a7" />
+                        <ImageView
+                            android:id="@+id/achievement_lock7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock" />
                     </FrameLayout>
 
                     <TextView
@@ -344,9 +395,16 @@
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:background="@drawable/rounded_image"
+                            android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
                             android:src="@drawable/a8" />
+                        <ImageView
+                            android:id="@+id/achievement_lock8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock" />
                     </FrameLayout>
 
                     <TextView
@@ -381,9 +439,16 @@
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:background="@drawable/rounded_image"
+                            android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
                             android:src="@drawable/a9" />
+                        <ImageView
+                            android:id="@+id/achievement_lock9"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock" />
                     </FrameLayout>
 
                     <TextView
@@ -426,9 +491,16 @@
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:background="@drawable/rounded_image"
+                            android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
                             android:src="@drawable/a10" />
+                        <ImageView
+                            android:id="@+id/achievement_lock10"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock" />
                     </FrameLayout>
 
                     <TextView
@@ -463,9 +535,16 @@
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:background="@drawable/rounded_image"
+                            android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
                             android:src="@drawable/a11" />
+                        <ImageView
+                            android:id="@+id/achievement_lock11"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock" />
                     </FrameLayout>
 
                     <TextView
@@ -500,9 +579,16 @@
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:background="@drawable/rounded_image"
+                            android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
                             android:src="@drawable/a12" />
+                        <ImageView
+                            android:id="@+id/achievement_lock12"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock" />
                     </FrameLayout>
 
                     <TextView
@@ -545,9 +631,16 @@
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:background="@drawable/rounded_image"
+                            android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/a13" /> <!-- Replace with your actual drawable -->
+                            android:src="@drawable/a13" />
+                        <ImageView
+                            android:id="@+id/achievement_lock13"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock" />
                     </FrameLayout>
 
                     <TextView
