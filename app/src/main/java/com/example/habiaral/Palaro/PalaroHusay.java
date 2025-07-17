@@ -132,7 +132,7 @@
 
                                 if (userAnswer.equalsIgnoreCase(correctAnswer)) {
                                     correctAnswerCount++;
-                                    husayScore += 5;
+                                    husayScore += 3;
                                     correctStreak++;
 
                                     if (correctStreak == 1) {
@@ -356,49 +356,43 @@
 
         private void saveHusayScore() {
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-            if (currentUser == null) return;
+            if (currentUser == null || husayScore <= 0) return;
 
             String userId = currentUser.getUid();
-            int finalScore = correctAnswerCount * 3;
 
             // Step 1: Get studentID from 'students' collection
             db.collection("students").document(userId).get().addOnSuccessListener(studentDoc -> {
                 if (!studentDoc.exists()) {
-                    Toast.makeText(PalaroHusay.this, "❌ Student record not found.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                String studentID = studentDoc.getString("studentId");
-                if (studentID == null || studentID.isEmpty()) {
-                    Toast.makeText(PalaroHusay.this, "❌ Missing studentId field.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
+                String studentID = studentDoc.getString("studentId"); // ✅ Now this is properly fetched
                 DocumentReference docRef = db.collection("minigame_progress").document(userId);
 
                 docRef.get().addOnSuccessListener(snapshot -> {
                     int baguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
                     int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
+                    int oldHusay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
+                    int newHusayTotal = oldHusay + husayScore;
 
                     if (snapshot.exists() && snapshot.contains("minigame_progressID")) {
                         // Reuse existing minigame_progressID
                         String existingProgressId = snapshot.getString("minigame_progressID");
 
                         Map<String, Object> updates = new HashMap<>();
-                        updates.put("husay_score", finalScore);
+                        updates.put("husay_score", newHusayTotal);
                         updates.put("studentID", studentID); // ✅ correct student ID
                         updates.put("minigame_progressID", existingProgressId);
-                        updates.put("total_score", finalScore + baguhan + dalubhasa);
+                        updates.put("total_score", newHusayTotal + baguhan + dalubhasa);
 
                         docRef.set(updates, SetOptions.merge())
                                 .addOnSuccessListener(aVoid -> {
                                     Toast.makeText(PalaroHusay.this, "✅ Husay score saved!", Toast.LENGTH_SHORT).show();
-                                    if (finalScore >= 800) unlockDalubhasa(docRef);
-                                })
-                                .addOnFailureListener(e -> {
-                                    Toast.makeText(PalaroHusay.this, "❌ Failed to save Husay score.", Toast.LENGTH_SHORT).show();
-                                });
+                                    if (newHusayTotal >= 800) unlockDalubhasa(docRef);
+                                    husayScore = 0; // ✅ Reset after save
 
+                                });
                     } else {
                         // No progress doc yet — generate new progress ID
                         db.collection("minigame_progress").get().addOnSuccessListener(querySnapshot -> {
@@ -406,15 +400,15 @@
                             String newProgressId = "MP" + nextNumber;
 
                             Map<String, Object> updates = new HashMap<>();
-                            updates.put("husay_score", finalScore);
+                            updates.put("husay_score", newHusayTotal);
                             updates.put("studentID", studentID);
                             updates.put("minigame_progressID", newProgressId);
-                            updates.put("total_score", finalScore + baguhan + dalubhasa);
+                            updates.put("total_score", newHusayTotal + baguhan + dalubhasa);
 
                             docRef.set(updates, SetOptions.merge())
                                     .addOnSuccessListener(aVoid -> {
                                         Toast.makeText(PalaroHusay.this, "✅ Husay score saved!", Toast.LENGTH_SHORT).show();
-                                        if (finalScore >= 800) unlockDalubhasa(docRef);
+                                        if (newHusayTotal >= 800) unlockDalubhasa(docRef);
                                     })
                                     .addOnFailureListener(e -> {
                                         Toast.makeText(PalaroHusay.this, "❌ Failed to save Husay score.", Toast.LENGTH_SHORT).show();
@@ -463,15 +457,17 @@
 
         @Override
         protected void onDestroy() {
-            super.onDestroy();
+            if (husayScore > 0) {
+                saveHusayScore();
+            }
+
             if (countDownTimer != null) countDownTimer.cancel();
-            saveHusayScore();
             if (tts != null) {
                 tts.stop();
                 tts.shutdown();
             }
-
+            super.onDestroy();
         }
-        }
+    }
 
 

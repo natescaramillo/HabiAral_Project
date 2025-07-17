@@ -17,6 +17,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Locale;
 
@@ -45,10 +49,14 @@ public class Palaro extends AppCompatActivity {
 
     private static final int BAGUHAN_REQUEST_CODE = 1;
 
+    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_palaro);
+
+        db = FirebaseFirestore.getInstance();
 
         button1 = findViewById(R.id.button);
         button2 = findViewById(R.id.button2);
@@ -76,12 +84,12 @@ public class Palaro extends AppCompatActivity {
         updateUI();
         checkLocks();
         startEnergyRegeneration();
+        loadTotalScoreFromFirestore();
 
         button1.setOnClickListener(v -> {
             if (userEnergy >= ENERGY_COST) {
                 userEnergy -= ENERGY_COST;
 
-                // ✅ I-set lang ang KEY_LAST_ENERGY_TIME kung dati ay full (100) at ngayon lang nagbawas
                 if (userEnergy == ENERGY_MAX - ENERGY_COST) {
                     editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis());
                 }
@@ -99,7 +107,6 @@ public class Palaro extends AppCompatActivity {
                 Toast.makeText(this, "Not enough energy!", Toast.LENGTH_SHORT).show();
             }
         });
-
 
         button2.setOnClickListener(v -> {
             if (userPoints >= 400) {
@@ -125,6 +132,35 @@ public class Palaro extends AppCompatActivity {
         });
     }
 
+    private void loadTotalScoreFromFirestore() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) return;
+
+        String userId = currentUser.getUid();
+        DocumentReference docRef = db.collection("minigame_progress").document(userId);
+
+        docRef.get().addOnSuccessListener(snapshot -> {
+            if (snapshot.exists()) {
+                int baguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
+                int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
+                int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
+
+                int totalScore = baguhan + husay + dalubhasa;
+                userPoints = totalScore;
+                editor.putInt(KEY_POINTS, userPoints).apply();
+                updateUI();
+                checkLocks();
+            } else {
+                userPoints = 0;
+                editor.putInt(KEY_POINTS, userPoints).apply();
+                updateUI();
+                checkLocks();
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, "Failed to load progress", Toast.LENGTH_SHORT).show();
+        });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -134,8 +170,6 @@ public class Palaro extends AppCompatActivity {
 
             if (baguhanScore > 0) {
                 userPoints += baguhanScore;
-
-                // ✅ Save updated points
                 editor.putInt(KEY_POINTS, userPoints);
                 editor.apply();
 
@@ -174,11 +208,9 @@ public class Palaro extends AppCompatActivity {
             progressPercent = calculatePercent(userPoints, tierStart);
         }
 
-        palaroProgress.setMax(100); // Match XML
-        palaroProgress.setProgress(progressPercent); // Percent based
+        palaroProgress.setMax(100);
+        palaroProgress.setProgress(progressPercent);
     }
-
-
 
     private void checkLocks() {
         button2.setEnabled(userPoints >= 400);
@@ -286,6 +318,8 @@ public class Palaro extends AppCompatActivity {
         userEnergy = prefs.getInt(KEY_ENERGY, 100);
         userPoints = prefs.getInt(KEY_POINTS, 0);
         updateUI();
+        loadTotalScoreFromFirestore();
+
     }
 
     private int calculatePercent(int points, int tierStart) {
@@ -293,7 +327,6 @@ public class Palaro extends AppCompatActivity {
         if (raw < 0) raw = 0;
         if (raw > 400) raw = 400;
 
-        // 👇 Adjust this to a value relative to max (which is 100)
         return Math.round((raw / 400f) * 100);
     }
 
