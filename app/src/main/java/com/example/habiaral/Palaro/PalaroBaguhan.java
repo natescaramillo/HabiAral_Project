@@ -28,10 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.graphics.PorterDuff;
-import android.graphics.Color;
-
-
 import androidx.activity.OnBackPressedCallback;
 
 public class PalaroBaguhan extends AppCompatActivity {
@@ -330,22 +326,21 @@ public class PalaroBaguhan extends AppCompatActivity {
         if (countDownTimer != null) countDownTimer.cancel();
 
         countDownTimer = new CountDownTimer(startTime, 100) {
-
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeft = millisUntilFinished;
                 int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(percent);
 
+                // Change ProgressBar color based on remaining time
                 if (percent <= 25) {
-                    timerBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                    timerBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_red));
                 } else if (percent <= 50) {
-                    timerBar.getProgressDrawable().setColorFilter(Color.parseColor("#FFA500"), PorterDuff.Mode.SRC_IN);
+                    timerBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_orange));
                 } else {
-                    timerBar.getProgressDrawable().setColorFilter(Color.parseColor("#4CAF50"), PorterDuff.Mode.SRC_IN);
+                    timerBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_default));
                 }
             }
-
 
             @Override
             public void onFinish() {
