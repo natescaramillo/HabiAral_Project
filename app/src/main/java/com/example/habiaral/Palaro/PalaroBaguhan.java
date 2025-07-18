@@ -27,6 +27,7 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import androidx.core.content.ContextCompat;
 
 import androidx.activity.OnBackPressedCallback;
 
@@ -332,13 +333,12 @@ public class PalaroBaguhan extends AppCompatActivity {
                 int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(percent);
 
-                // Change ProgressBar color based on remaining time
                 if (percent <= 25) {
-                    timerBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_red));
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.progress_red));
                 } else if (percent <= 50) {
-                    timerBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_orange));
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.progress_orange));
                 } else {
-                    timerBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_default));
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.progress_default));
                 }
             }
 
@@ -351,6 +351,7 @@ public class PalaroBaguhan extends AppCompatActivity {
             }
         }.start();
     }
+
 
 
     private void resetForNextQuestion() {
