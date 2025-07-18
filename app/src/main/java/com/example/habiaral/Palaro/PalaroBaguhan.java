@@ -27,7 +27,10 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import androidx.core.content.ContextCompat;
+
+import android.graphics.PorterDuff;
+import android.graphics.Color;
+
 
 import androidx.activity.OnBackPressedCallback;
 
@@ -327,6 +330,7 @@ public class PalaroBaguhan extends AppCompatActivity {
         if (countDownTimer != null) countDownTimer.cancel();
 
         countDownTimer = new CountDownTimer(startTime, 100) {
+
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeft = millisUntilFinished;
@@ -334,13 +338,14 @@ public class PalaroBaguhan extends AppCompatActivity {
                 timerBar.setProgress(percent);
 
                 if (percent <= 25) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.progress_red));
+                    timerBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
                 } else if (percent <= 50) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.progress_orange));
+                    timerBar.getProgressDrawable().setColorFilter(Color.parseColor("#FFA500"), PorterDuff.Mode.SRC_IN);
                 } else {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.progress_default));
+                    timerBar.getProgressDrawable().setColorFilter(Color.parseColor("#4CAF50"), PorterDuff.Mode.SRC_IN);
                 }
             }
+
 
             @Override
             public void onFinish() {
@@ -351,7 +356,6 @@ public class PalaroBaguhan extends AppCompatActivity {
             }
         }.start();
     }
-
 
 
     private void resetForNextQuestion() {
