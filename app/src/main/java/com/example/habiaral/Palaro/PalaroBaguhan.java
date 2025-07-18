@@ -332,14 +332,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                 int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(percent);
 
-                // Change ProgressBar color based on remaining time
-                if (percent <= 25) {
-                    timerBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_red));
-                } else if (percent <= 50) {
-                    timerBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_orange));
-                } else {
-                    timerBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_default));
-                }
             }
 
             @Override
