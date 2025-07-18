@@ -133,30 +133,35 @@ public class PangawingQuiz extends AppCompatActivity {
         });
     }
 
-    private void continueUnlockingAchievement(FirebaseFirestore db, String uid, String saCode, String achievementId) {
+    private void continueUnlockingAchievement(FirebaseFirestore db, String uid, String saCode, String achievementID) {
         db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
             if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
             String studentId = studentDoc.getString("studentId");
 
-            db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
+            db.collection("achievements").document(achievementID).get().addOnSuccessListener(achDoc -> {
                 if (!achDoc.exists() || !achDoc.contains("title")) return;
                 String title = achDoc.getString("title");
 
                 Map<String, Object> achievementData = new HashMap<>();
-                achievementData.put("achievementId", achievementId);
+                achievementData.put("achievementID", achievementID);
                 achievementData.put("title", title);
                 achievementData.put("unlockedAt", Timestamp.now());
 
+                Map<String, Object> achievementsMap = new HashMap<>();
+                achievementsMap.put(saCode, achievementData); // e.g., "SA11": {...}
+
                 Map<String, Object> wrapper = new HashMap<>();
                 wrapper.put("studentId", studentId);
-                wrapper.put("achievements." + saCode, achievementData);
+                wrapper.put("achievements", achievementsMap); // not achievements.SA11 directly
 
-                db.collection("student_achievements").document(uid)
+                db.collection("student_achievements")
+                        .document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            markAchievementDialogAsShown(saCode); // ✅ Mark before showing
+                            markAchievementDialogAsShown(saCode);
                             showAchievementUnlockedDialog(title);
                         }));
+
             });
         });
     }
