@@ -3,9 +3,6 @@ package com.example.habiaral.Palaro;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -19,14 +16,11 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.GrammarCheckerUtil;
-import com.example.habiaral.GrammarError;
 import com.example.habiaral.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PalaroDalubhasa extends AppCompatActivity {
@@ -63,7 +57,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         btnTapos = findViewById(R.id.UnlockButtonPalaro);
 
         db = FirebaseFirestore.getInstance();
-        GrammarCheckerUtil.initChecker();
 
         userSentenceInput.setEnabled(false);
         btnTapos.setEnabled(false);
@@ -79,12 +72,24 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 } else if (!isValidSentenceStructureOnly(sentence)) {
                     Toast.makeText(this, "Pakilagyan ng tamang estruktura.", Toast.LENGTH_SHORT).show();
                 } else {
-                    grammarFeedbackText.setText("");
-                    saveCorrectAnswer(sentence);
+                    grammarFeedbackText.setText("⏳ Sinusuri ang gramatika...");
+                    // 🔍 Perform grammar checking
+                    GrammarChecker.checkGrammar(this, sentence, new GrammarChecker.GrammarCallback() {
+                        @Override
+                        public void onResult(String response) {
+                            parseGrammarResult(response);
+                            saveCorrectAnswer(sentence);
+                            hasSubmitted = true;
+                            userSentenceInput.setEnabled(false);
+                            btnTapos.setEnabled(false);
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            grammarFeedbackText.setText("⚠️ Error sa pagsusuri: " + error);
+                        }
+                    });
                 }
-                hasSubmitted = true;
-                userSentenceInput.setEnabled(false);
-                btnTapos.setEnabled(false);
             }
         });
 
@@ -257,5 +262,35 @@ public class PalaroDalubhasa extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (countDownTimer != null) countDownTimer.cancel();
+    }
+
+    private void parseGrammarResult(String json) {
+        try {
+            org.json.JSONObject jsonObject = new org.json.JSONObject(json);
+            org.json.JSONArray matches = jsonObject.getJSONArray("matches");
+
+            if (matches.length() == 0) {
+                grammarFeedbackText.setText("✅ Walang nakitang grammatical errors.");
+                return;
+            }
+
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < matches.length(); i++) {
+                org.json.JSONObject match = matches.getJSONObject(i);
+                String message = match.getString("message");
+                org.json.JSONArray replacements = match.getJSONArray("replacements");
+
+                result.append("🔸 ").append(message);
+                if (replacements.length() > 0) {
+                    result.append("\n👉 Mungkahi: ").append(replacements.getJSONObject(0).getString("value"));
+                }
+                result.append("\n\n");
+            }
+
+            grammarFeedbackText.setText(result.toString());
+
+        } catch (Exception e) {
+            grammarFeedbackText.setText("⚠️ May problema sa pag-parse ng resulta.");
+        }
     }
 }
