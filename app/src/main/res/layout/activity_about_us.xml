@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     android:background="@drawable/gradient_background"
+    android:fitsSystemWindows="false"
     tools:context=".Activity.AboutUsActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <View
             android:id="@+id/viewHeader"
             android:layout_width="0dp"
@@ -21,7 +20,7 @@
             android:background="#A27B5C"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
             android:id="@+id/textAboutUs"
@@ -33,10 +32,12 @@
             android:text="Tungkol sa Amin"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
-            app:layout_constraintTop_toTopOf="@id/viewHeader"
             app:layout_constraintBottom_toBottomOf="@id/viewHeader"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/viewHeader"
+            app:layout_constraintVertical_bias="0.382" />
 
         <ImageView
             android:id="@+id/imageMascot"
@@ -165,7 +166,7 @@
                 android:fontFamily="@font/special"
                 android:gravity="center"
                 android:justificationMode="inter_word"
-                android:text="Salamat sa pagpili ng HabiAral! Nawa’y maging kapaki-pakinabang ito sa inyo gaya ng kasiyahang nadama namin sa paggawa nito" />
+                android:text="Salamat sa pagpili ng HabiAral! Nawa’y maging kapaki-pakinabang ito sa inyo gaya ng kasiyahang nadama namin sa paggawa nito." />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
