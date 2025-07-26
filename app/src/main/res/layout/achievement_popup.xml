@@ -74,14 +74,14 @@
     <!-- Date -->
     <TextView
         android:id="@+id/unlocked_date"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/description"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
-        android:text=""
-        android:textColor="#ffffff"
         android:fontFamily="@font/special"
-        android:textSize="13sp" />
+        android:textColor="#ffffff"
+        android:textSize="14sp"
+        android:gravity="center" />
 
 </RelativeLayout>
