@@ -50,7 +50,7 @@
         private boolean isTimeUp = false;
         private boolean isAnswered = false;
         private int currentQuestionNumber = 1;
-        private int husayScore = 0;
+        private int husayScore = 800;
         private int correctStreak = 0;
         private int remainingHearts = 5;
         private ImageView[] heartIcons;

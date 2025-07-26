@@ -59,7 +59,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private static final String DOCUMENT_ID = "MP1";
     private int correctAnswerCount = 0;
     private int currentErrorCount = 0;
-    private int dalubhasaScore = 0;
+    private int dalubhasaScore = 800;
     private List<String> instructionList = new ArrayList<>();
     private int currentQuestionNumber = 1;
 
