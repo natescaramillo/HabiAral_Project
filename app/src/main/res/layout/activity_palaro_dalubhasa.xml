@@ -191,7 +191,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_button_achievement"
         android:fontFamily="@font/special"
-        android:text="Itala at Umalis"
+        android:text="Umalis"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.107"
