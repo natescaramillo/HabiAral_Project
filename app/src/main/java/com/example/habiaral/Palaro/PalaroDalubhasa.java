@@ -26,18 +26,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.FieldPath;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PalaroDalubhasa extends AppCompatActivity {
@@ -53,17 +52,16 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private long timeLeft = TOTAL_TIME;
 
     private FirebaseFirestore db;
-
     private boolean hasSubmitted = false;
 
-    private static final String DOCUMENT_ID = "MP1";
     private int correctAnswerCount = 0;
     private int currentErrorCount = 0;
-    private int dalubhasaScore = 800;
+    private int dalubhasaScore = 0;
     private List<String> instructionList = new ArrayList<>();
-    private int currentQuestionNumber = 1;
-
-
+    private List<List<String>> keywordList = new ArrayList<>();
+    private int currentQuestionNumber = 0;
+    private List<String> currentKeywords = new ArrayList<>();
+    private String currentDalubhasaID = "";
 
 
     @Override
@@ -92,7 +90,22 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     Toast.makeText(this, "Pakisulat ang iyong pangungusap.", Toast.LENGTH_SHORT).show();
                 } else if (!sentence.endsWith(".")) {
                     Toast.makeText(this, "Siguraduhing nagtatapos ang pangungusap sa tuldok (.)", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
+                    // I-check kung ilang keyword ang nawawala sa sentence
+                    List<String> missingKeywords = new ArrayList<>();
+                    for (String keyword : currentKeywords) {
+                        if (!sentence.toLowerCase().contains(keyword.toLowerCase())) {
+                            missingKeywords.add(keyword);
+                        }
+                    }
+
+                    if (!missingKeywords.isEmpty()) {
+                        Toast.makeText(this, "Kulang ng salitang: " + missingKeywords, Toast.LENGTH_LONG).show();
+                        loadCharacterLine(currentDalubhasaID);
+                        return;
+                    }
+
+
                     GrammarChecker.checkGrammar(this, sentence, new GrammarChecker.GrammarCallback() {
                         @Override
                         public void onResult(String response) {
@@ -136,15 +149,15 @@ public class PalaroDalubhasa extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(response);
             JSONArray matches = jsonObject.getJSONArray("matches");
 
-            currentErrorCount = matches.length(); // <-- I-store ang error count
+            currentErrorCount = matches.length();
 
             if (matches.length() == 0) {
                 loadCharacterLine("MDCL2");
-                dalubhasaScore += 15; // ✅ perfect score
+                dalubhasaScore += 15;
                 new Handler().postDelayed(this::nextQuestion, 4000);
-
             } else {
                 loadCharacterLine("MDCL3");
+
                 new Handler().postDelayed(() -> {
                     try {
                         SpannableString spannable = new SpannableString(originalSentence);
@@ -167,7 +180,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     }
                 }, 2000);
 
-                // Scoring logic based on number of errors
                 if (matches.length() == 1) {
                     dalubhasaScore += 13;
                 } else {
@@ -181,31 +193,28 @@ public class PalaroDalubhasa extends AppCompatActivity {
         }
     }
 
-
-
-
     private void showBackConfirmationDialog() {
-        View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
-        AlertDialog backDialog = new AlertDialog.Builder(this)
-                .setView(backDialogView)
+        View dialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
                 .setCancelable(false)
                 .create();
 
-        if (backDialog.getWindow() != null) {
-            backDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
 
-        Button yesButton = backDialogView.findViewById(R.id.button5);
-        Button noButton = backDialogView.findViewById(R.id.button6);
+        Button yesButton = dialogView.findViewById(R.id.button5);
+        Button noButton = dialogView.findViewById(R.id.button6);
 
         yesButton.setOnClickListener(v -> {
             if (countDownTimer != null) countDownTimer.cancel();
-            backDialog.dismiss();
+            dialog.dismiss();
             finish();
         });
 
-        noButton.setOnClickListener(v -> backDialog.dismiss());
-        backDialog.show();
+        noButton.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
     }
 
     private void loadCharacterLine(String lineId) {
@@ -223,16 +232,22 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private void loadAllDalubhasaInstructions() {
         db.collection("dalubhasa")
-                .orderBy(FieldPath.documentId()) // optional: para maayos ang D1, D2, D3
+                .orderBy(FieldPath.documentId())
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     if (!querySnapshot.isEmpty()) {
                         instructionList.clear();
+                        keywordList.clear();
+
                         for (QueryDocumentSnapshot document : querySnapshot) {
                             String instruction = document.getString("instruction");
+                            List<String> keywords = (List<String>) document.get("keywords");
+
                             instructionList.add(instruction);
+                            keywordList.add(keywords);
                         }
-                        nextQuestion(); // Simulan agad ang unang tanong
+
+                        nextQuestion();
                     } else {
                         Toast.makeText(this, "No Dalubhasa questions found.", Toast.LENGTH_SHORT).show();
                     }
@@ -243,9 +258,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void nextQuestion() {
-        if (currentQuestionNumber <= instructionList.size()) {
-            String currentInstruction = instructionList.get(currentQuestionNumber - 1);
-            dalubhasaInstruction.setText(currentInstruction);
+        if (currentQuestionNumber < instructionList.size()) {
+            dalubhasaInstruction.setText(instructionList.get(currentQuestionNumber));
+            currentKeywords = keywordList.get(currentQuestionNumber);
+            currentDalubhasaID = "D" + (currentQuestionNumber + 1);
+
             userSentenceInput.setText("");
             userSentenceInput.setEnabled(true);
             btnTapos.setEnabled(true);
@@ -254,7 +271,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             currentQuestionNumber++;
         } else {
             if (countDownTimer != null) countDownTimer.cancel();
-            saveDalubhasaScore(); // Done with all instructions
+            saveDalubhasaScore();
         }
     }
 
