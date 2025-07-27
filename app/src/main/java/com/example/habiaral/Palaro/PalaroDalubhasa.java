@@ -1,10 +1,12 @@
 package com.example.habiaral.Palaro;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,12 +21,20 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.GrammarCheckerUtil;
-import com.example.habiaral.GrammarError;
 import com.example.habiaral.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,14 +52,17 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private long timeLeft = TOTAL_TIME;
 
     private FirebaseFirestore db;
-
     private boolean hasSubmitted = false;
-    private static final String DALUBHASA_ID = "D1";
-    private static final String CORRECT_ID = "DCA1";
-    private static final String WRONG_ID = "DWA1";
 
     private int correctAnswerCount = 0;
-    private static final String DOCUMENT_ID = "MP1";
+    private int currentErrorCount = 0;
+    private int dalubhasaScore = 0;
+    private List<String> instructionList = new ArrayList<>();
+    private List<List<String>> keywordList = new ArrayList<>();
+    private int currentQuestionNumber = 0;
+    private List<String> currentKeywords = new ArrayList<>();
+    private String currentDalubhasaID = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +76,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         btnTapos = findViewById(R.id.UnlockButtonPalaro);
 
         db = FirebaseFirestore.getInstance();
-        GrammarCheckerUtil.initChecker();
 
         userSentenceInput.setEnabled(false);
         btnTapos.setEnabled(false);
@@ -76,15 +88,41 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 String sentence = userSentenceInput.getText().toString().trim();
                 if (sentence.isEmpty()) {
                     Toast.makeText(this, "Pakisulat ang iyong pangungusap.", Toast.LENGTH_SHORT).show();
-                } else if (!isValidSentenceStructureOnly(sentence)) {
-                    Toast.makeText(this, "Pakilagyan ng tamang estruktura.", Toast.LENGTH_SHORT).show();
+                } else if (!sentence.endsWith(".")) {
+                    Toast.makeText(this, "Siguraduhing nagtatapos ang pangungusap sa tuldok (.)", Toast.LENGTH_SHORT).show();
                 } else {
-                    grammarFeedbackText.setText("");
-                    saveCorrectAnswer(sentence);
+                    // I-check kung ilang keyword ang nawawala sa sentence
+                    List<String> missingKeywords = new ArrayList<>();
+                    for (String keyword : currentKeywords) {
+                        if (!sentence.toLowerCase().contains(keyword.toLowerCase())) {
+                            missingKeywords.add(keyword);
+                        }
+                    }
+
+                    if (!missingKeywords.isEmpty()) {
+                        Toast.makeText(this, "Kulang ng salitang: " + missingKeywords, Toast.LENGTH_LONG).show();
+                        loadCharacterLine(currentDalubhasaID);
+                        return;
+                    }
+
+                    GrammarChecker.checkGrammar(this, sentence, new GrammarChecker.GrammarCallback() {
+                        @Override
+                        public void onResult(String response) {
+                            runOnUiThread(() -> {
+                                highlightGrammarIssues(response, sentence);
+                                hasSubmitted = true;
+                                userSentenceInput.setEnabled(false);
+                                btnTapos.setEnabled(false);
+                            });
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            runOnUiThread(() ->
+                                    Toast.makeText(PalaroDalubhasa.this, "Grammar Check Failed: " + error, Toast.LENGTH_SHORT).show());
+                        }
+                    });
                 }
-                hasSubmitted = true;
-                userSentenceInput.setEnabled(false);
-                btnTapos.setEnabled(false);
             }
         });
 
@@ -105,33 +143,77 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
     }
 
-    private boolean isValidSentenceStructureOnly(String input) {
-        String[] words = input.trim().split("\\s+");
-        return words.length >= 5 && input.endsWith(".");
+    private void highlightGrammarIssues(String response, String originalSentence) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray matches = jsonObject.getJSONArray("matches");
+
+            currentErrorCount = matches.length();
+
+            if (matches.length() == 0) {
+                loadCharacterLine("MDCL2");
+                dalubhasaScore += 15;
+                new Handler().postDelayed(this::nextQuestion, 4000);
+            } else {
+                loadCharacterLine("MDCL3");
+
+                new Handler().postDelayed(() -> {
+                    try {
+                        SpannableString spannable = new SpannableString(originalSentence);
+
+                        for (int i = 0; i < matches.length(); i++) {
+                            JSONObject match = matches.getJSONObject(i);
+                            int offset = match.getInt("offset");
+                            int length = match.getInt("length");
+
+                            spannable.setSpan(new UnderlineSpan(), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            spannable.setSpan(new ForegroundColorSpan(Color.RED), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        dalubhasaInstruction.setText(spannable);
+                        new Handler().postDelayed(this::nextQuestion, 5000);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        grammarFeedbackText.setText("Error habang hinahati ang mga mali.");
+                    }
+                }, 2000);
+
+                if (matches.length() == 1) {
+                    dalubhasaScore += 13;
+                } else {
+                    dalubhasaScore += 10;
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            grammarFeedbackText.setText("Invalid grammar response format.");
+        }
     }
 
     private void showBackConfirmationDialog() {
-        View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
-        AlertDialog backDialog = new AlertDialog.Builder(this)
-                .setView(backDialogView)
+        View dialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
                 .setCancelable(false)
                 .create();
 
-        if (backDialog.getWindow() != null) {
-            backDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
 
-        Button yesButton = backDialogView.findViewById(R.id.button5);
-        Button noButton = backDialogView.findViewById(R.id.button6);
+        Button yesButton = dialogView.findViewById(R.id.button5);
+        Button noButton = dialogView.findViewById(R.id.button6);
 
         yesButton.setOnClickListener(v -> {
             if (countDownTimer != null) countDownTimer.cancel();
-            backDialog.dismiss();
+            dialog.dismiss();
             finish();
         });
 
-        noButton.setOnClickListener(v -> backDialog.dismiss());
-        backDialog.show();
+        noButton.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
     }
 
     private void loadCharacterLine(String lineId) {
@@ -147,21 +229,49 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 });
     }
 
-    private void loadDalubhasaInstruction() {
-        db.collection("dalubhasa").document(DALUBHASA_ID)
+    private void loadAllDalubhasaInstructions() {
+        db.collection("dalubhasa")
+                .orderBy(FieldPath.documentId())
                 .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        dalubhasaInstruction.setText(documentSnapshot.getString("instruction"));
-                        userSentenceInput.setEnabled(true);
-                        btnTapos.setEnabled(true);
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        instructionList.clear();
+                        keywordList.clear();
+
+                        for (QueryDocumentSnapshot document : querySnapshot) {
+                            String instruction = document.getString("instruction");
+                            List<String> keywords = (List<String>) document.get("keywords");
+
+                            instructionList.add(instruction);
+                            keywordList.add(keywords);
+                        }
+
+                        nextQuestion();
                     } else {
-                        Toast.makeText(this, "Dalubhasa instruction not found.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No Dalubhasa questions found.", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to load Dalubhasa data.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Failed to load Dalubhasa questions.", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    private void nextQuestion() {
+        if (currentQuestionNumber < instructionList.size()) {
+            dalubhasaInstruction.setText(instructionList.get(currentQuestionNumber));
+            currentKeywords = keywordList.get(currentQuestionNumber);
+            currentDalubhasaID = "D" + (currentQuestionNumber + 1);
+
+            userSentenceInput.setText("");
+            userSentenceInput.setEnabled(true);
+            btnTapos.setEnabled(true);
+            hasSubmitted = false;
+            grammarFeedbackText.setText("");
+            currentQuestionNumber++;
+        } else {
+            if (countDownTimer != null) countDownTimer.cancel();
+            saveDalubhasaScore();
+        }
     }
 
     private void showCountdownThenLoadInstruction() {
@@ -176,7 +286,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     countdown[0]--;
                     countdownHandler.postDelayed(this, 1000);
                 } else {
-                    loadDalubhasaInstruction();
+                    loadAllDalubhasaInstructions();
                     startTimer();
                 }
             }
@@ -210,47 +320,66 @@ public class PalaroDalubhasa extends AppCompatActivity {
         }.start();
     }
 
-    private void saveCorrectAnswer(String sentence) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("sentence", sentence);
-        data.put("dalubhasaID", DALUBHASA_ID);
-        data.put("correct_answersID", CORRECT_ID);
-
-        db.collection("dalubhasa_correct_answers").document(CORRECT_ID)
-                .set(data)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Tamang sagot naipasa!", Toast.LENGTH_SHORT).show();
-                    loadCharacterLine("MCL2");
-                    correctAnswerCount++;
-                    nextQuestion();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Hindi naipasa. Subukan muli.", Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private void nextQuestion() {
-        if (countDownTimer != null) countDownTimer.cancel();
-        userSentenceInput.setText("");
-        grammarFeedbackText.setText("");
-        userSentenceInput.setEnabled(false);
-        btnTapos.setEnabled(false);
-        hasSubmitted = false;
-        loadDalubhasaInstruction();
-        startTimer();
-    }
 
     private void saveDalubhasaScore() {
-        int score = correctAnswerCount * 5;
-        DocumentReference docRef = db.collection("minigame_progress").document(DOCUMENT_ID);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null || dalubhasaScore <= 0) return;
 
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("dalubhasa_score", score);
-        updates.put("total_score", score);
 
-        docRef.update(updates)
-                .addOnSuccessListener(aVoid -> Toast.makeText(PalaroDalubhasa.this, "Score saved!", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(PalaroDalubhasa.this, "Failed to save score.", Toast.LENGTH_SHORT).show());
+        String userId = currentUser.getUid();
+
+        // Step 1: Get studentID from 'students' collection
+        db.collection("students").document(userId).get().addOnSuccessListener(studentDoc -> {
+            if (!studentDoc.exists()) {
+                Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String studentID = studentDoc.getString("studentId"); // ✅ Now this is properly fetched
+            DocumentReference docRef = db.collection("minigame_progress").document(userId);
+
+            docRef.get().addOnSuccessListener(snapshot -> {
+                int baguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
+                int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
+                int oldDalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
+                int newDalubhasaTotal = oldDalubhasa + dalubhasaScore;
+
+                if (snapshot.exists() && snapshot.contains("minigame_progressID")) {
+                    // Reuse existing minigame_progressID
+                    String existingProgressId = snapshot.getString("minigame_progressID");
+
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("dalubhasa_score", newDalubhasaTotal);
+                    updates.put("studentID", studentID); // ✅ correct student ID
+                    updates.put("minigame_progressID", existingProgressId);
+                    updates.put("total_score", newDalubhasaTotal + baguhan + husay);
+
+                    docRef.set(updates, SetOptions.merge())
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(PalaroDalubhasa.this, "Natapos na ang buong palaro", Toast.LENGTH_SHORT).show();
+                            });
+                } else {
+                    // No progress doc yet — generate new progress ID
+                    db.collection("minigame_progress").get().addOnSuccessListener(querySnapshot -> {
+                        int nextNumber = querySnapshot.size() + 1;
+                        String newProgressId = "MP" + nextNumber;
+
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("dalubhasa_score", newDalubhasaTotal);
+                        updates.put("studentID", studentID); // ✅ correct student ID
+                        updates.put("minigame_progressID", newProgressId);
+                        updates.put("total_score", newDalubhasaTotal + baguhan + husay);
+
+                        docRef.set(updates, SetOptions.merge())
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(PalaroDalubhasa.this, "Natapos na ang buong palaro", Toast.LENGTH_SHORT).show();
+
+                                });
+                    });
+                }
+            });
+
+        });
     }
 
     @Override

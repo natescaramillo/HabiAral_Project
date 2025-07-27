@@ -7,14 +7,11 @@
         </shape>
     </item>
 
-    <!-- Progress layer (fill) -->
+    <!-- Progress layer (solid green fill) -->
     <item android:id="@android:id/progress">
         <clip android:clipOrientation="horizontal" android:gravity="left">
             <shape android:shape="rectangle">
-                <gradient
-                    android:startColor="#4CAF50"
-                    android:endColor="#F44336"
-                    android:angle="0" />
+                <solid android:color="#4CAF50" /> <!-- Green -->
                 <corners android:radius="20dp" />
             </shape>
         </clip>

@@ -329,7 +329,9 @@ public class PalaroBaguhan extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeft = millisUntilFinished;
-                timerBar.setProgress((int) (timeLeft * 100 / TOTAL_TIME));
+                int percent = (int) (timeLeft * 100 / TOTAL_TIME);
+                timerBar.setProgress(percent);
+
             }
 
             @Override
@@ -341,6 +343,7 @@ public class PalaroBaguhan extends AppCompatActivity {
             }
         }.start();
     }
+
 
     private void resetForNextQuestion() {
         isAnswered = false;
