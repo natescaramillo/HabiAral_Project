@@ -105,7 +105,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                         return;
                     }
 
-
                     GrammarChecker.checkGrammar(this, sentence, new GrammarChecker.GrammarCallback() {
                         @Override
                         public void onResult(String response) {
