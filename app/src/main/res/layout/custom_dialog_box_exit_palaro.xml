@@ -28,7 +28,7 @@
         android:layout_marginTop="4dp"
         android:fontFamily="@font/special"
         android:gravity="center"
-        android:text="Sigurado ka bang gusto mong bumalik?"
+        android:text="Sigurado ka bang gusto mong umalis? Mawawala ang iyong kasalukuyang score."
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"

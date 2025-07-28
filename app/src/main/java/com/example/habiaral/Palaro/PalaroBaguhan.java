@@ -11,6 +11,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.speech.tts.TextToSpeech;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Locale;
 
 
@@ -29,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.core.content.ContextCompat;
+
 
 public class PalaroBaguhan extends AppCompatActivity {
 
@@ -57,6 +62,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     private int remainingHearts = 5;
     private int correctStreak = 0;
     private ImageView[] heartIcons;
+    private List<String> questionIds = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,15 +73,19 @@ public class PalaroBaguhan extends AppCompatActivity {
             if (status == TextToSpeech.SUCCESS) {
                 Locale tagalogLocale = new Locale("fil", "PH");
                 int langResult = tts.setLanguage(tagalogLocale);
-                tts.setSpeechRate(1.3f); // ⏩ Medyo mabilis (default is 1.0f)
+                tts.setSpeechRate(1.3f);
+
                 if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
                     Toast.makeText(this, "❗ TTS: Wikang Tagalog hindi suportado.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // ✅ TTS ready —> Call character line now
+                    loadCharacterLine("MCL1");
+
+                    // ✅ Start countdown after a short delay
+                    new Handler().postDelayed(this::showCountdownThenLoadQuestion, 3000);
                 }
             }
         });
-
-
-        // Reset progress if needed
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -106,9 +116,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         correctAnswerCount = 0;
         baguhanScore = 0;
 
-        loadCharacterLine("MCL1");
-        new Handler().postDelayed(this::showCountdownThenLoadQuestion, 3000);
-
         View.OnClickListener answerClickListener = view -> {
             if (isTimeUp || isAnswered) return;
             resetAnswerBackgrounds();
@@ -129,7 +136,7 @@ public class PalaroBaguhan extends AppCompatActivity {
             if (selectedAnswer != null) {
                 isAnswered = true;
                 String userAnswer = selectedAnswer.getText().toString();
-                String correctDocId = "BCA" + currentQuestionNumber;
+                String correctDocId = questionIds.get(currentQuestionNumber).replace("B", "BCA");
 
                 db.collection("baguhan_correct_answers").document(correctDocId)
                         .get()
@@ -192,6 +199,9 @@ public class PalaroBaguhan extends AppCompatActivity {
                 showBackConfirmationDialog();
             }
         });
+
+        Button umalisButton = findViewById(R.id.UnlockButtonPalaro1); // palitan kung ibang ID
+        umalisButton.setOnClickListener(v -> showExitConfirmationDialog());
     }
 
     private void finishQuiz() {
@@ -304,20 +314,37 @@ public class PalaroBaguhan extends AppCompatActivity {
 
 
     private void showCountdownThenLoadQuestion() {
-        final Handler countdownHandler = new Handler();
-        final int[] countdown = {3};
-
-        countdownHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (countdown[0] > 0) {
-                    baguhanQuestion.setText(String.valueOf(countdown[0]));
-                    countdown[0]--;
-                    countdownHandler.postDelayed(this, 1000);
-                } else {
-                    loadBaguhanQuestion();
-                    startTimer(timeLeft);
+        db.collection("baguhan").get().addOnSuccessListener(querySnapshot -> {
+            if (!querySnapshot.isEmpty()) {
+                for (var doc : querySnapshot.getDocuments()) {
+                    questionIds.add(doc.getId());
                 }
+
+                // Shuffle questions para randomized
+                Collections.shuffle(questionIds);
+
+                // Reset tracker
+                currentQuestionNumber = 0;
+
+                // Mag-countdown muna bago simulan
+                final Handler countdownHandler = new Handler();
+                final int[] countdown = {3};
+
+                countdownHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (countdown[0] > 0) {
+                            baguhanQuestion.setText(String.valueOf(countdown[0]));
+                            countdown[0]--;
+                            countdownHandler.postDelayed(this, 1000);
+                        } else {
+                            loadBaguhanQuestion();
+                            startTimer(timeLeft);
+                        }
+                    }
+                });
+            } else {
+                Toast.makeText(this, "❗ Walang tanong sa database!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -329,9 +356,18 @@ public class PalaroBaguhan extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeft = millisUntilFinished;
+
                 int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(percent);
 
+                // Change color based on time left
+                if (percent <= 25) {
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.custom_progress_drawable_red));
+                } else if (percent <= 50) {
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.custom_progress_drawable_orange));
+                } else {
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.custom_progress_drawable));
+                }
             }
 
             @Override
@@ -386,7 +422,12 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void loadBaguhanQuestion() {
-        String questionDocId = "B" + currentQuestionNumber;
+        if (currentQuestionNumber >= questionIds.size()) {
+            finishQuiz();
+            return;
+        }
+
+        String questionDocId = questionIds.get(currentQuestionNumber);
 
         db.collection("baguhan").document(questionDocId)
                 .get()
@@ -402,8 +443,9 @@ public class PalaroBaguhan extends AppCompatActivity {
                     if (question != null) {
                         baguhanQuestion.setText(question);
                         String spokenVersion = question.replaceAll("_+", "blanko");
-                        speakText(spokenVersion);;
+                        speakText(spokenVersion);
                     }
+
                     if (choices != null && choices.size() >= 6) {
                         answer1.setText(choices.get(0));
                         answer2.setText(choices.get(1));
@@ -478,5 +520,32 @@ public class PalaroBaguhan extends AppCompatActivity {
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
         }
     }
+
+    private void showExitConfirmationDialog() {
+        View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+        AlertDialog backDialog = new AlertDialog.Builder(this)
+                .setView(backDialogView)
+                .setCancelable(false)
+                .create();
+
+        // Para walang puting box
+        if (backDialog.getWindow() != null) {
+            backDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        Button yesButton = backDialogView.findViewById(R.id.button5); // "Oo" button
+        Button noButton = backDialogView.findViewById(R.id.button6);  // "Hindi" button
+
+        yesButton.setOnClickListener(v -> {
+            if (countDownTimer != null) countDownTimer.cancel();
+            backDialog.dismiss();
+            finish(); // close the activity
+        });
+
+        noButton.setOnClickListener(v -> backDialog.dismiss());
+
+        backDialog.show();
+    }
+
 
 }

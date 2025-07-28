@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +40,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import android.speech.tts.TextToSpeech;
+import java.util.Locale;
 
 public class PalaroDalubhasa extends AppCompatActivity {
 
@@ -62,18 +67,47 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private int currentQuestionNumber = 0;
     private List<String> currentKeywords = new ArrayList<>();
     private String currentDalubhasaID = "";
+    private int remainingHearts = 5;
+    private ImageView[] heartIcons;
 
+    private TextToSpeech textToSpeech;
+
+    private boolean isTtsReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_palaro_dalubhasa);
 
+        textToSpeech = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                int langResult = textToSpeech.setLanguage(new Locale("fil", "PH")); // Filipino
+                textToSpeech.setSpeechRate(1.2f); // Optional
+                if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Toast.makeText(this, "Walang suporta ang TTS sa wikang Filipino", Toast.LENGTH_SHORT).show();
+                } else {
+                    isTtsReady = true;
+                }
+            }
+        });
+
         dalubhasaInstruction = findViewById(R.id.dalubhasa_instructionText);
         grammarFeedbackText = findViewById(R.id.grammar_feedback);
         userSentenceInput = findViewById(R.id.dalubhasa_answer);
         timerBar = findViewById(R.id.timerBar);
         btnTapos = findViewById(R.id.UnlockButtonPalaro);
+        Button btnUmalis = findViewById(R.id.UnlockButtonPalaro1);
+
+        btnUmalis.setOnClickListener(v -> showUmalisDialog());
+
+
+        heartIcons = new ImageView[]{
+                findViewById(R.id.imageView8),
+                findViewById(R.id.imageView11),
+                findViewById(R.id.imageView10),
+                findViewById(R.id.imageView9),
+                findViewById(R.id.imageView12)
+        };
 
         db = FirebaseFirestore.getInstance();
 
@@ -143,6 +177,31 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
     }
 
+    private void showUmalisDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PalaroDalubhasa.this);
+        View dialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+
+        Button btnOo = dialogView.findViewById(R.id.button5);    // OO button
+        Button btnHindi = dialogView.findViewById(R.id.button6); // Hindi button
+
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent); // Optional: for no rounded box
+
+        btnOo.setOnClickListener(v -> {
+            if (countDownTimer != null) countDownTimer.cancel();
+            saveDalubhasaScore(); // Optional
+            dialog.dismiss();
+            finish(); // Exit activity
+        });
+
+        btnHindi.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+
     private void highlightGrammarIssues(String response, String originalSentence) {
         try {
             JSONObject jsonObject = new JSONObject(response);
@@ -156,6 +215,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 new Handler().postDelayed(this::nextQuestion, 4000);
             } else {
                 loadCharacterLine("MDCL3");
+
+                if (matches.length() >= 2) {
+                    deductHeart();
+                }
 
                 new Handler().postDelayed(() -> {
                     try {
@@ -221,7 +284,12 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        dalubhasaInstruction.setText(documentSnapshot.getString("line"));
+                        String line = documentSnapshot.getString("line");
+                        dalubhasaInstruction.setText(line);
+
+                        if (line != null && !line.isEmpty()) {
+                            speakLine(line); // 🔊 Speak the line
+                        }
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -302,8 +370,18 @@ public class PalaroDalubhasa extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeft = millisUntilFinished;
-                int progress = (int) (timeLeft * 100 / TOTAL_TIME);
-                timerBar.setProgress(progress);
+                int percent = (int) (timeLeft * 100 / TOTAL_TIME);
+                timerBar.setProgress(percent);
+
+                // 🔴 Change color based on percentage
+                if (percent <= 25) {
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.custom_progress_drawable_red));
+                } else if (percent <= 50) {
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.custom_progress_drawable_orange));
+                } else {
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.custom_progress_drawable));
+                }
+
                 if (millisUntilFinished <= 5000 && millisUntilFinished >= 4900) {
                     loadCharacterLine("MCL5");
                 }
@@ -312,12 +390,36 @@ public class PalaroDalubhasa extends AppCompatActivity {
             @Override
             public void onFinish() {
                 timerBar.setProgress(0);
-                saveDalubhasaScore();
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
-                Toast.makeText(PalaroDalubhasa.this, "Time's up!", Toast.LENGTH_SHORT).show();
+                finishQuiz(); // Tawagin ang custom dialog
             }
+
         }.start();
+    }
+
+    private void finishQuiz() {
+        View showTotalPoints = getLayoutInflater().inflate(R.layout.time_up_dialog, null);
+        AlertDialog dialog = new AlertDialog.Builder(PalaroDalubhasa.this)
+                .setView(showTotalPoints)
+                .setCancelable(false)
+                .create();
+        dialog.show();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        TextView scoreTextDialog = showTotalPoints.findViewById(R.id.scoreText);
+        scoreTextDialog.setText(String.valueOf(dalubhasaScore));
+
+        Button balik = showTotalPoints.findViewById(R.id.btn_balik);
+        balik.setOnClickListener(v -> {
+            dialog.dismiss();
+            finish(); // Wala tayong `setResult()` kasi walang bumabalik na score sa previous activity
+        });
+
+        Toast.makeText(this, "Tapos na ang laro!", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -382,9 +484,34 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
     }
 
+    private void deductHeart() {
+        if (remainingHearts > 0) {
+            remainingHearts--;
+            heartIcons[remainingHearts].setVisibility(View.INVISIBLE);
+
+            if (remainingHearts == 0) {
+                Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
+                if (countDownTimer != null) countDownTimer.cancel();
+                userSentenceInput.setEnabled(false);
+                btnTapos.setEnabled(false);
+                saveDalubhasaScore();
+            }
+        }
+    }
+
+    private void speakLine(String line) {
+        if (isTtsReady && textToSpeech != null && !line.isEmpty()) {
+            textToSpeech.speak(line, TextToSpeech.QUEUE_FLUSH, null, "tts1");
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (countDownTimer != null) countDownTimer.cancel();
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
     }
 }

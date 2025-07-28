@@ -1,5 +1,6 @@
     package com.example.habiaral.Palaro;
 
+    import android.content.Intent;
     import android.os.Bundle;
     import android.os.CountDownTimer;
     import android.os.Handler;
@@ -14,6 +15,8 @@
     import androidx.activity.OnBackPressedCallback;
     import androidx.appcompat.app.AlertDialog;
     import androidx.appcompat.app.AppCompatActivity;
+    import androidx.core.content.ContextCompat;
+
     import android.speech.tts.TextToSpeech;
     import java.util.Locale;
 
@@ -50,12 +53,13 @@
         private boolean isTimeUp = false;
         private boolean isAnswered = false;
         private int currentQuestionNumber = 1;
-        private int husayScore = 800;
+        private int husayScore = 0;
         private int correctStreak = 0;
         private int remainingHearts = 5;
         private ImageView[] heartIcons;
         private TextToSpeech tts;
         private boolean isTtsReady = false;
+
 
 
         @Override
@@ -77,6 +81,9 @@
             timerBar = findViewById(R.id.timerBar);
             unlockButton = findViewById(R.id.UnlockButtonPalaro);
 
+            Button btnUmalis = findViewById(R.id.UnlockButtonPalaro1);
+            btnUmalis.setOnClickListener(v -> showUmalisDialog());
+
             heartIcons = new ImageView[]{
                     findViewById(R.id.imageView8),
                     findViewById(R.id.imageView11),
@@ -95,13 +102,12 @@
                     if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
                         Toast.makeText(this, "❗ TTS: Wikang Tagalog hindi suportado.", Toast.LENGTH_SHORT).show();
                     } else {
-                        isTtsReady = true; // ✅ now ready
+                        isTtsReady = true;
                     }
                 } else {
                     Toast.makeText(this, "❗ TTS Initialization failed.", Toast.LENGTH_SHORT).show();
                 }
             });
-
 
             loadCharacterLine("MHCL1");
             new Handler().postDelayed(this::showCountdownThenLoadWords, 7000);
@@ -110,6 +116,32 @@
             setupBackConfirmation();
             setupUnlockButton();
         }
+
+        private void showUmalisDialog() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(PalaroHusay.this); // 🔁 Use correct activity context
+            View dialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+
+            Button btnOo = dialogView.findViewById(R.id.button5);    // OO button
+            Button btnHindi = dialogView.findViewById(R.id.button6); // Hindi button
+
+            builder.setView(dialogView);
+            AlertDialog dialog = builder.create();
+            dialog.setCancelable(false);
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent); // Optional: transparent background
+
+            btnOo.setOnClickListener(v -> {
+                if (countDownTimer != null) countDownTimer.cancel(); // 🔁 stop timer
+                dialog.dismiss();
+                finish(); // Exit activity
+            });
+
+            btnHindi.setOnClickListener(v -> dialog.dismiss()); // Just close the dialog
+
+            dialog.show();
+        }
+
+
+
 
         private void setupUnlockButton() {
             unlockButton.setOnClickListener(v -> {
@@ -149,7 +181,9 @@
                                 } else {
                                     correctStreak = 0;
                                     deductHeart();
-                                    loadCharacterLine(remainingHearts > 0 ? "MCL6" : "MCL5");
+                                    String lineId = remainingHearts > 0 ? "MCL6" : "MCL5";
+                                    loadCharacterLine(lineId);
+                                    speakText("Mali ang sagot."); // or pull this from Firestore if you want it dynamic
                                     Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
                                 }
 
@@ -336,23 +370,60 @@
         private void restartTimer(long duration) {
             if (countDownTimer != null) countDownTimer.cancel();
 
-            countDownTimer = new CountDownTimer(duration, 100) {
+            countDownTimer = new CountDownTimer(duration, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     timeLeft = millisUntilFinished;
-                    int progress = (int) (timeLeft * 100 / TOTAL_TIME);
-                    timerBar.setProgress(progress);
+
+                    int percent = (int) (timeLeft * 100 / TOTAL_TIME);
+                    timerBar.setProgress(percent);
+
+                    // Change color based on percent remaining
+                    if (percent <= 25) {
+                        timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.custom_progress_drawable_red));
+                    } else if (percent <= 50) {
+                        timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.custom_progress_drawable_orange));
+                    } else {
+                        timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.custom_progress_drawable));
+                    }
                 }
 
                 @Override
                 public void onFinish() {
-                    isTimeUp = true;
                     timerBar.setProgress(0);
-                    saveHusayScore();
-                    Toast.makeText(PalaroHusay.this, "Time's up!", Toast.LENGTH_SHORT).show();
+                    isTimeUp = true;
+                    finishQuiz(); // 👈 Dito tinatawag ang custom dialog
                 }
             }.start();
         }
+
+        private void finishQuiz() {
+            View showTotalPoints = getLayoutInflater().inflate(R.layout.time_up_dialog, null);
+            AlertDialog dialog = new AlertDialog.Builder(PalaroHusay.this)
+                    .setView(showTotalPoints)
+                    .setCancelable(false)
+                    .create();
+            dialog.show();
+
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+
+            TextView scoreTextDialog = showTotalPoints.findViewById(R.id.scoreText);
+            scoreTextDialog.setText(String.valueOf(husayScore)); // palitan kung ibang variable name
+
+            Button balik = showTotalPoints.findViewById(R.id.btn_balik);
+            balik.setOnClickListener(v -> {
+                dialog.dismiss();
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("husayPoints", husayScore);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            });
+
+            Toast.makeText(this, "Tapos na ang laro!", Toast.LENGTH_SHORT).show();
+        }
+
 
         private void saveHusayScore() {
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -448,10 +519,19 @@
             }
         }
         private void speakText(String text) {
-            if (tts != null && isTtsReady && !text.isEmpty()) {
+            if (text == null || text.trim().isEmpty()) return;
+
+            if (isTtsReady && tts != null) {
                 tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
             } else {
-                Toast.makeText(this, "⛔ TTS not ready yet.", Toast.LENGTH_SHORT).show();
+                // Delay and try again in 500ms
+                new Handler().postDelayed(() -> {
+                    if (isTtsReady && tts != null) {
+                        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else {
+                        Toast.makeText(this, "⛔ Hindi pa handa ang Tinig.", Toast.LENGTH_SHORT).show();
+                    }
+                }, 500);
             }
         }
 
@@ -468,6 +548,7 @@
             }
             super.onDestroy();
         }
+
     }
 
 
