@@ -44,10 +44,11 @@ public class PalaroBaguhan extends AppCompatActivity {
     private TextView baguhanQuestion;
     private ProgressBar timerBar;
     private Button unlockButton, unlockButton1;
+    private boolean isGameOver = false;
 
 
     private CountDownTimer countDownTimer;
-    private static final long TOTAL_TIME = 20000;
+    private static final long TOTAL_TIME = 100000;
     private long timeLeft = TOTAL_TIME;
 
     private FirebaseFirestore db;
@@ -145,6 +146,8 @@ public class PalaroBaguhan extends AppCompatActivity {
                         .addOnSuccessListener(documentSnapshot -> {
                             if (documentSnapshot.exists()) {
                                 String correctAnswer = documentSnapshot.getString("correctAnswer");
+                                saveAnsweredQuestion(questionIds.get(currentQuestionNumber), userAnswer);
+
                                 if (userAnswer.equalsIgnoreCase(correctAnswer)) {
                                     correctAnswerCount++;
                                     baguhanScore += 5;
@@ -178,10 +181,11 @@ public class PalaroBaguhan extends AppCompatActivity {
 
 
                             new Handler().postDelayed(() -> {
-
-                                currentQuestionNumber++;
-                                resetForNextQuestion();
-                                loadBaguhanQuestion();
+                                if (!isGameOver) {
+                                    currentQuestionNumber++;
+                                    resetForNextQuestion();
+                                    loadBaguhanQuestion();
+                                }
                             }, 2000);
                         });
             } else {
@@ -208,6 +212,10 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void finishQuiz() {
+        isGameOver = true;  // << IMPORTANT
+        if (tts != null) {
+            tts.stop();  // ← ito ang kulang
+        }
         saveBaguhanScore();
 
         View showTotalPoints = getLayoutInflater().inflate(R.layout.time_up_dialog, null);
@@ -299,9 +307,15 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                     docRef.set(updates, SetOptions.merge())
                             .addOnSuccessListener(aVoid -> {
-                                if (newBaguhanTotal >= 400) unlockHusay(docRef);
-                                baguhanScore = 0; // ✅ Reset after save
-
+                                if (newBaguhanTotal >= 400) {
+                                    docRef.get().addOnSuccessListener(unlockCheckSnapshot -> {
+                                        Boolean isHusayUnlocked = unlockCheckSnapshot.getBoolean("husay_unlocked");
+                                        if (isHusayUnlocked == null || !isHusayUnlocked) {
+                                            unlockHusay(docRef);
+                                        }
+                                        baguhanScore = 0;  // ← RESET after saving
+                                    });
+                                }
                             });
 
                 } else {
@@ -318,7 +332,14 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                         docRef.set(updates, SetOptions.merge())
                                 .addOnSuccessListener(aVoid -> {
-                                    if (newBaguhanTotal >= 400) unlockHusay(docRef);
+                                    if (newBaguhanTotal >= 400) {
+                                        docRef.get().addOnSuccessListener(unlockCheckSnapshot -> {
+                                            Boolean isHusayUnlocked = unlockCheckSnapshot.getBoolean("husay_unlocked");
+                                            if (isHusayUnlocked == null || !isHusayUnlocked) {
+                                                unlockHusay(docRef);
+                                            }
+                                        });
+                                    }
                                 });
                     });
                 }
@@ -328,9 +349,10 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
 
-
     private void unlockHusay(DocumentReference docRef) {
         Map<String, Object> updates = new HashMap<>();
+        updates.put("husay_unlocked", true);
+
         docRef.set(updates, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Nabuksan na ang Husay!", Toast.LENGTH_LONG).show();
@@ -338,6 +360,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                     finish();
                 });
     }
+
 
 
     private void showCountdownThenLoadQuestion() {
@@ -360,6 +383,8 @@ public class PalaroBaguhan extends AppCompatActivity {
                 countdownHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        if (isGameOver) return; // ← Don't continue countdown
+
                         if (countdown[0] > 0) {
                             baguhanQuestion.setText(String.valueOf(countdown[0]));
                             countdown[0]--;
@@ -442,6 +467,7 @@ public class PalaroBaguhan extends AppCompatActivity {
 
             if (remainingHearts == 0) {
                 Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
+                if (tts != null) tts.stop(); // ← importante para tumigil agad ang pagsasalita
                 disableAnswerSelection();
                 finishQuiz();
             }
@@ -449,6 +475,13 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void loadBaguhanQuestion() {
+        if (isGameOver) return; // ← STOP kung tapos na
+
+        if (currentQuestionNumber >= questionIds.size()) {
+            finishQuiz();
+            return;
+        }
+
         String questionDocId = questionIds.get(currentQuestionNumber);
 
         db.collection("baguhan").document(questionDocId)
@@ -459,33 +492,53 @@ public class PalaroBaguhan extends AppCompatActivity {
                         return;
                     }
 
-                    // ✅ Get question and choices
                     String question = documentSnapshot.getString("baguhan_question");
-                    List<String> choices = (List<String>) documentSnapshot.get("choices");
+
+                    List<Object> rawchoices = (List<Object>) documentSnapshot.get("choices");
+                    List<String> choices = new ArrayList<>();
+
+                    if (rawchoices != null) {
+                        for (Object obj : rawchoices) {
+                            if (obj instanceof String) {
+                                choices.add((String) obj);
+                            }
+                        }
+                    }
 
                     if (question != null) {
-                        baguhanQuestion.setText(question);
-                        String spokenVersion = question.replaceAll("_+", "blanko");
-                        speakText(spokenVersion);
+                        runOnUiThread(() -> {
+                            baguhanQuestion.setText(question);
+                            String spokenVersion = question.replaceAll("_+", "blanko");
+                            speakText(spokenVersion);
+                        });
                     }
 
-                    if (choices != null && choices.size() >= 6) {
+                    if (choices.size() >= 6) {
+                        runOnUiThread(() -> {
+                            answer1.setVisibility(View.VISIBLE);
+                            answer2.setVisibility(View.VISIBLE);
+                            answer3.setVisibility(View.VISIBLE);
+                            answer4.setVisibility(View.VISIBLE);
+                            answer5.setVisibility(View.VISIBLE);
+                            answer6.setVisibility(View.VISIBLE);
 
-                        // ✅ Set bagong choices sa buttons
-                        answer1.setText(choices.get(0));
-                        answer2.setText(choices.get(1));
-                        answer3.setText(choices.get(2));
-                        answer4.setText(choices.get(3));
-                        answer5.setText(choices.get(4));
-                        answer6.setText(choices.get(5));
+                            answer1.setText(choices.get(0));
+                            answer2.setText(choices.get(1));
+                            answer3.setText(choices.get(2));
+                            answer4.setText(choices.get(3));
+                            answer5.setText(choices.get(4));
+                            answer6.setText(choices.get(5));
+                        });
+                    } else {
+                        Toast.makeText(this, "Invalid choices sa tanong: " + questionDocId, Toast.LENGTH_SHORT).show();
                     }
 
-                    // ✅ Reset state and UI
                     isAnswered = false;
                     selectedAnswer = null;
-                    resetAnswerBackgrounds(); // dapat meron kang method na 'to
+                    resetAnswerBackgrounds();
                 });
     }
+
 
 
 
