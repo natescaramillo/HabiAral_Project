@@ -73,21 +73,25 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private TextToSpeech textToSpeech;
 
     private boolean isTtsReady = false;
+    private TextToSpeech tts;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_palaro_dalubhasa);
 
-        textToSpeech = new TextToSpeech(this, status -> {
+        tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
-                int langResult = textToSpeech.setLanguage(new Locale("fil", "PH")); // Filipino
-                textToSpeech.setSpeechRate(1.2f); // Optional
-                if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    Toast.makeText(this, "Walang suporta ang TTS sa wikang Filipino", Toast.LENGTH_SHORT).show();
-                } else {
-                    isTtsReady = true;
-                }
+                isTtsReady = true;
+                Locale tagalogLocale = new Locale("fil", "PH");
+                tts.setLanguage(tagalogLocale);
+                tts.setSpeechRate(1.3f);
+
+                // ✅ Proceed regardless of support check
+                new Handler().postDelayed(() -> loadCharacterLine("MDCL1"), 300);
+                new Handler().postDelayed(this::showCountdownThenLoadInstruction, 6000);
             }
         });
 
@@ -114,8 +118,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         userSentenceInput.setEnabled(false);
         btnTapos.setEnabled(false);
 
-        loadCharacterLine("MDCL1");
-        new Handler().postDelayed(this::showCountdownThenLoadInstruction, 7000);
 
         btnTapos.setOnClickListener(v -> {
             if (!hasSubmitted) {
@@ -291,9 +293,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                             speakLine(line); // 🔊 Speak the line
                         }
                     }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to load line: " + lineId, Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -315,20 +314,31 @@ public class PalaroDalubhasa extends AppCompatActivity {
                         }
 
                         nextQuestion();
-                    } else {
-                        Toast.makeText(this, "No Dalubhasa questions found.", Toast.LENGTH_SHORT).show();
                     }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to load Dalubhasa questions.", Toast.LENGTH_SHORT).show();
                 });
     }
+    private void speakLine(String text) {
+        if (text == null || text.trim().isEmpty()) return;
 
+        if (isTtsReady && tts != null) {
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+        } else {
+            // Delay and try again in 500ms
+            new Handler().postDelayed(() -> {
+                if (isTtsReady && tts != null) {
+                    tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+                }
+            }, 500);
+        }
+    }
     private void nextQuestion() {
         if (currentQuestionNumber < instructionList.size()) {
+            String instruction = instructionList.get(currentQuestionNumber); // ✅ ayusin ito
             dalubhasaInstruction.setText(instructionList.get(currentQuestionNumber));
             currentKeywords = keywordList.get(currentQuestionNumber);
             currentDalubhasaID = "D" + (currentQuestionNumber + 1);
+            speakLine(instruction); // ✅ idinagdag ito
+
 
             userSentenceInput.setText("");
             userSentenceInput.setEnabled(true);
@@ -499,19 +509,15 @@ public class PalaroDalubhasa extends AppCompatActivity {
         }
     }
 
-    private void speakLine(String line) {
-        if (isTtsReady && textToSpeech != null && !line.isEmpty()) {
-            textToSpeech.speak(line, TextToSpeech.QUEUE_FLUSH, null, "tts1");
-        }
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (countDownTimer != null) countDownTimer.cancel();
-        if (textToSpeech != null) {
-            textToSpeech.stop();
-            textToSpeech.shutdown();
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
         }
     }
+
 }

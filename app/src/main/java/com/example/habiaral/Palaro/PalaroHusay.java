@@ -96,21 +96,17 @@
 
             tts = new TextToSpeech(this, status -> {
                 if (status == TextToSpeech.SUCCESS) {
+                    isTtsReady = true;
                     Locale tagalogLocale = new Locale("fil", "PH");
-                    int langResult = tts.setLanguage(tagalogLocale);
+                    tts.setLanguage(tagalogLocale);
                     tts.setSpeechRate(1.3f);
-                    if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        Toast.makeText(this, "❗ TTS: Wikang Tagalog hindi suportado.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        isTtsReady = true;
-                    }
-                } else {
-                    Toast.makeText(this, "❗ TTS Initialization failed.", Toast.LENGTH_SHORT).show();
+
+                    // ✅ Proceed regardless of support check
+                    new Handler().postDelayed(() -> loadCharacterLine("MHCL1"), 200);
+                    new Handler().postDelayed(this::showCountdownThenLoadWords, 3000);
                 }
             });
 
-            loadCharacterLine("MHCL1");
-            new Handler().postDelayed(this::showCountdownThenLoadWords, 7000);
 
             setupAnswerSelection();
             setupBackConfirmation();
@@ -459,7 +455,6 @@
 
                         docRef.set(updates, SetOptions.merge())
                                 .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(PalaroHusay.this, "✅ Husay score saved!", Toast.LENGTH_SHORT).show();
                                     if (newHusayTotal >= 800) unlockDalubhasa(docRef);
                                     husayScore = 0; // ✅ Reset after save
 
@@ -478,33 +473,26 @@
 
                             docRef.set(updates, SetOptions.merge())
                                     .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(PalaroHusay.this, "✅ Husay score saved!", Toast.LENGTH_SHORT).show();
                                         if (newHusayTotal >= 800) unlockDalubhasa(docRef);
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(PalaroHusay.this, "❌ Failed to save Husay score.", Toast.LENGTH_SHORT).show();
                                     });
                         });
                     }
                 });
 
-            }).addOnFailureListener(e -> {
-                Toast.makeText(PalaroHusay.this, "❌ Error fetching student info.", Toast.LENGTH_SHORT).show();
             });
         }
 
 
 
         private void unlockDalubhasa(DocumentReference docRef) {
-            Map<String, Object> update = new HashMap<>();
-            update.put("dalubhasa_unlocked", true);
-            docRef.update(update)
-                    .addOnSuccessListener(aVoid ->
-                            Toast.makeText(this, "Dalubhasa Unlocked!", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Failed to unlock Dalubhasa.", Toast.LENGTH_SHORT).show());
+            Map<String, Object> updates = new HashMap<>();
+            docRef.set(updates, SetOptions.merge())
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(this, "Nabuksan na ang Dalubhasa!", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(this, Palaro.class));
+                        finish();
+                    });
         }
-
         private void deductHeart() {
             remainingHearts--;
 
@@ -528,8 +516,6 @@
                 new Handler().postDelayed(() -> {
                     if (isTtsReady && tts != null) {
                         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
-                    } else {
-                        Toast.makeText(this, "⛔ Hindi pa handa ang Tinig.", Toast.LENGTH_SHORT).show();
                     }
                 }, 500);
             }
