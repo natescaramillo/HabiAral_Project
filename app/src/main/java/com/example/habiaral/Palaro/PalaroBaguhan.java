@@ -1,7 +1,6 @@
 package com.example.habiaral.Palaro;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -28,6 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
@@ -40,7 +40,7 @@ import androidx.core.content.ContextCompat;
 
 public class PalaroBaguhan extends AppCompatActivity {
 
-    private Button  answer1, answer2, answer3, answer4, answer5, answer6, selectedAnswer;
+    private Button answer1, answer2, answer3, answer4, answer5, answer6, selectedAnswer;
     private TextView baguhanQuestion;
     private ProgressBar timerBar;
     private Button unlockButton, unlockButton1;
@@ -137,16 +137,14 @@ public class PalaroBaguhan extends AppCompatActivity {
             if (selectedAnswer != null) {
                 isAnswered = true;
                 String userAnswer = selectedAnswer.getText().toString();
-                String correctDocId = questionIds.get(currentQuestionNumber).replace("B", "BCA");
+                String correctDocId = questionIds.get(currentQuestionNumber);
 
 
-
-                db.collection("baguhan_correct_answers").document(correctDocId)
+                db.collection("baguhan").document(correctDocId)
                         .get()
                         .addOnSuccessListener(documentSnapshot -> {
                             if (documentSnapshot.exists()) {
                                 String correctAnswer = documentSnapshot.getString("correctAnswer");
-                                saveAnsweredQuestion(questionIds.get(currentQuestionNumber), userAnswer);
 
                                 if (userAnswer.equalsIgnoreCase(correctAnswer)) {
                                     correctAnswerCount++;
@@ -163,6 +161,10 @@ public class PalaroBaguhan extends AppCompatActivity {
                                     }
 
                                     Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
+                                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                                    saveCorrectBaguhanAnswer(uid, studentID, correctDocId);
+
 
                                     timeLeft = Math.min(timeLeft + 3000, TOTAL_TIME);
                                     startTimer(timeLeft);
@@ -217,6 +219,8 @@ public class PalaroBaguhan extends AppCompatActivity {
             tts.stop();  // ← ito ang kulang
         }
         saveBaguhanScore();
+        unlockAchievementIfEligible(); // ✅ Add this line
+
 
         View showTotalPoints = getLayoutInflater().inflate(R.layout.time_up_dialog, null);
         AlertDialog dialog = new AlertDialog.Builder(PalaroBaguhan.this)
@@ -242,35 +246,122 @@ public class PalaroBaguhan extends AppCompatActivity {
         });
 
         Toast.makeText(this, "Tapos na ang laro!", Toast.LENGTH_SHORT).show();
-        unlockAchievementIfEligible();
 
     }
-    private void saveAnsweredQuestion(String questionId, String selectedAnswer) {
+
+    private void saveCorrectBaguhanAnswer(String uid, String firebaseUID, String questionId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("students").document(firebaseUID).get().addOnSuccessListener(studentDoc -> {
+            if (!studentDoc.exists() || !studentDoc.contains("studentId")) {
+                Toast.makeText(this, "Walang studentId na nahanap.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String studentId = studentDoc.getString("studentId");
+            DocumentReference docRef = db.collection("palaro_answered").document(firebaseUID);
+
+            docRef.get().addOnSuccessListener(answerDoc -> {
+                boolean alreadyAnswered = false;
+
+                if (answerDoc.exists()) {
+                    Map<String, Object> baguhanMap = (Map<String, Object>) answerDoc.get("baguhan");
+                    if (baguhanMap != null && Boolean.TRUE.equals(baguhanMap.get(questionId))) {
+                        alreadyAnswered = true;
+                    }
+                }
+
+                if (!alreadyAnswered) {
+                    Map<String, Object> nestedBaguhan = new HashMap<>();
+                    nestedBaguhan.put(questionId, true);
+
+                    Map<String, Object> update = new HashMap<>();
+                    update.put("studentId", studentId);
+                    update.put("baguhan", nestedBaguhan);  // ✅ Proper nested merge
+
+                    docRef.set(update, SetOptions.merge());
+                }
+            });
+        });
+    }
+
+
+    private void unlockAchievementIfEligible() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String achievementCode = "SA8";
+        String achievementId = "A8";
 
-        // Get studentId from "students" collection
-        db.collection("students")
-                .whereEqualTo("uid", uid)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    if (!querySnapshot.isEmpty()) {
-                        DocumentSnapshot studentDoc = querySnapshot.getDocuments().get(0);
-                        String studentId = studentDoc.getId();
+        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
+            if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
 
-                        Map<String, Object> data = new HashMap<>();
-                        data.put("questionId", questionId);
-                        data.put("selectedAnswer", selectedAnswer);
-                        data.put("answeredAt", Timestamp.now());
+            String studentId = studentDoc.getString("studentId");  // ✅ get actual studentId used in palaro_answered
 
-                        db.collection("baguhan_answers")
-                                .document(studentId)
-                                .collection("answers")
-                                .document(questionId)
-                                .set(data, SetOptions.merge());
+
+            String firebaseUID = studentDoc.getId();  // ✅ same as used in saving
+            db.collection("baguhan").get().addOnSuccessListener(allQuestionsSnapshot -> {
+                List<String> allQuestionIds = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : allQuestionsSnapshot) {
+                    allQuestionIds.add(doc.getId());
+                }
+
+                db.collection("palaro_answered").document(studentId).get().addOnSuccessListener(userDoc -> {
+                    if (!userDoc.exists()) return;
+
+                    Map<String, Object> answeredMap = (Map<String, Object>) userDoc.get("baguhan");
+                    if (answeredMap == null) return;
+
+                    List<String> answeredIds = new ArrayList<>(answeredMap.keySet());
+
+                    if (answeredIds.containsAll(allQuestionIds)) {
+                        continueUnlockingAchievement(firebaseUID, achievementCode, achievementId);  // pass correct UID
                     }
                 });
+            });
+        });
     }
 
+    private void continueUnlockingAchievement(String uid, String saCode, String achievementID) {
+        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
+            if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
+
+            String studentId = studentDoc.getString("studentId");
+
+            db.collection("achievements").document(achievementID).get().addOnSuccessListener(achDoc -> {
+                if (!achDoc.exists()) return;
+
+                String title = achDoc.getString("title");
+
+                Map<String, Object> achievementData = new HashMap<>();
+                achievementData.put("achievementID", achievementID);
+                achievementData.put("title", title);
+                achievementData.put("unlockedAt", Timestamp.now());
+
+                Map<String, Object> achievementMap = new HashMap<>();
+                achievementMap.put(saCode, achievementData);
+
+                Map<String, Object> wrapper = new HashMap<>();
+                wrapper.put(saCode, achievementData);
+                wrapper.put("studentId", studentId);
+                wrapper.put("achievements", achievementMap);  // ✅ wrapped inside "achievements"
+
+
+                db.collection("student_achievements").document(uid)
+                        .set(wrapper, SetOptions.merge())
+                        .addOnSuccessListener(unused -> runOnUiThread(() -> {
+                            showAchievementUnlockedDialog(title);
+                        }));
+            });
+        });
+    }
+
+
+    private void showAchievementUnlockedDialog(String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Achievement Unlocked!")
+                .setMessage("You have unlocked: " + title)
+                .setPositiveButton("OK", null)
+                .show();
+    }
 
     private void saveBaguhanScore() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -360,7 +451,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                     finish();
                 });
     }
-
 
 
     private void showCountdownThenLoadQuestion() {
@@ -540,8 +630,6 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
 
-
-
     private void loadCharacterLine(String lineId) {
         db.collection("minigame_character_lines").document(lineId)
                 .get()
@@ -596,6 +684,7 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         backDialog.show();
     }
+
     private void speakText(String text) {
         if (tts != null && !text.isEmpty()) {
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
@@ -628,115 +717,5 @@ public class PalaroBaguhan extends AppCompatActivity {
         backDialog.show();
     }
 
-    private void unlockAchievementIfEligible() {
-        String achievementCode = "SA8";
-        String achievementId = "A8";
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        // Step 1: Get all baguhan question IDs
-        db.collection("baguhan").get().addOnSuccessListener(allQuestionsSnapshot -> {
-            List<String> allQuestionIds = new ArrayList<>();
-            for (var doc : allQuestionsSnapshot.getDocuments()) {
-                allQuestionIds.add(doc.getId());
-            }
-
-            // Step 2: Get answered question IDs from Firestore
-            db.collection("baguhan_answered_questions")
-                    .document(uid)
-                    .collection("questions")
-                    .get()
-                    .addOnSuccessListener(answeredSnapshot -> {
-                        List<String> answeredIds = new ArrayList<>();
-                        for (var doc : answeredSnapshot.getDocuments()) {
-                            answeredIds.add(doc.getId());
-                        }
-
-                        // Step 3: Check if all questions have been answered
-                        if (answeredIds.containsAll(allQuestionIds)) {
-                            // Proceed with unlock logic
-                            db.collection("student_achievements").document(uid).get().addOnSuccessListener(saSnapshot -> {
-                                boolean alreadyUnlocked = false;
-
-                                if (saSnapshot.exists()) {
-                                    Map<String, Object> achievements = (Map<String, Object>) saSnapshot.get("achievements");
-                                    if (achievements != null && achievements.containsKey(achievementCode)) {
-                                        alreadyUnlocked = true;
-                                    }
-                                } else {
-                                    clearAchievementDialogFlag(achievementCode);
-                                }
-
-                                if (alreadyUnlocked) {
-                                    if (!isAchievementDialogAlreadyShown(achievementCode)) {
-                                        markAchievementDialogAsShown(achievementCode);
-                                    }
-                                    return;
-                                }
-
-                                if (isAchievementDialogAlreadyShown(achievementCode) && saSnapshot.exists()) {
-                                    return;
-                                }
-
-                                continueUnlockingAchievement(db, uid, achievementCode, achievementId);
-                            });
-                        }
-                    });
-        });
-    }
-
-    private void continueUnlockingAchievement(FirebaseFirestore db, String uid, String saCode, String achievementID) {
-        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
-            if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
-            String studentId = studentDoc.getString("studentId");
-
-            db.collection("achievements").document(achievementID).get().addOnSuccessListener(achDoc -> {
-                if (!achDoc.exists() || !achDoc.contains("title")) return;
-                String title = achDoc.getString("title");
-
-                Map<String, Object> achievementData = new HashMap<>();
-                achievementData.put("achievementID", achievementID);
-                achievementData.put("title", title);
-                achievementData.put("unlockedAt", Timestamp.now());
-
-                Map<String, Object> achievementsMap = new HashMap<>();
-                achievementsMap.put(saCode, achievementData); // e.g., "SA11": {...}
-
-                Map<String, Object> wrapper = new HashMap<>();
-                wrapper.put("studentId", studentId);
-                wrapper.put("achievements", achievementsMap); // not achievements.SA11 directly
-
-                db.collection("student_achievements")
-                        .document(uid)
-                        .set(wrapper, SetOptions.merge())
-                        .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            markAchievementDialogAsShown(saCode);
-                            showAchievementUnlockedDialog(title);
-                        }));
-
-            });
-        });
-    }
-    private void showAchievementUnlockedDialog(String title) {
-        new android.app.AlertDialog.Builder(this)
-                .setTitle("Achievement Unlocked!")
-                .setMessage("You unlocked: " + title)
-                .setPositiveButton("OK", null)
-                .show();
-    }
-
-    private boolean isAchievementDialogAlreadyShown(String achievementCode) {
-        SharedPreferences prefs = getSharedPreferences("AchievementDialogs", MODE_PRIVATE);
-        return prefs.getBoolean(achievementCode, false);
-    }
-
-    private void markAchievementDialogAsShown(String achievementCode) {
-        SharedPreferences prefs = getSharedPreferences("AchievementDialogs", MODE_PRIVATE);
-        prefs.edit().putBoolean(achievementCode, true).apply();
-    }
-
-    private void clearAchievementDialogFlag(String achievementCode) {
-        SharedPreferences prefs = getSharedPreferences("AchievementDialogs", MODE_PRIVATE);
-        prefs.edit().remove(achievementCode).apply();
-    }
-
 }
+
