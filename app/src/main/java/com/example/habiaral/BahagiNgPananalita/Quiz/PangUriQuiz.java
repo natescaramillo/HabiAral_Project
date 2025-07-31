@@ -2,7 +2,6 @@ package com.example.habiaral.BahagiNgPananalita.Quiz;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,35 +39,28 @@ public class PangUriQuiz extends AppCompatActivity {
     }
 
     private void unlockNextLesson() {
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putBoolean("PangUriDone", true);
-        editor.apply();
-
-        Toast.makeText(this, "Next Lesson Unlocked: Panghalip!", Toast.LENGTH_SHORT).show();
-    }
-
-    private void saveQuizResultToFirestore() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> pangUriStatus = new HashMap<>();
-        pangUriStatus.put("status", "completed");
-
-        Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("panguri", pangUriStatus);
+        Map<String, Object> progressUpdate = new HashMap<>();
+        progressUpdate.put("panguri", Map.of("status", "completed"));
+        progressUpdate.put("panghalip", Map.of("unlocked", true)); // unlock next lesson
 
         Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "panguri"); // or "panghalip" if you want to reflect next lesson
+        updateMap.put("lessons", progressUpdate);
 
         db.collection("module_progress")
                 .document(uid)
                 .set(Map.of("module_1", updateMap), SetOptions.merge());
+
+        Toast.makeText(this, "Next Lesson Unlocked: Panghalip!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void saveQuizResultToFirestore() {
+        // (Optional) You can track quiz results here if needed, or combine with unlockNextLesson.
     }
 
     private void showResultDialog() {

@@ -1,7 +1,6 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import com.example.habiaral.BahagiNgPananalita.Quiz.PangawingQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -27,6 +27,10 @@ public class PangawingLesson extends AppCompatActivity {
     VideoView videoView;
     MediaController mediaController;
 
+    private FirebaseFirestore db;
+    private FirebaseUser user;
+    private boolean isLessonDone = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,15 +39,14 @@ public class PangawingLesson extends AppCompatActivity {
         unlockButton = findViewById(R.id.UnlockButtonPangawing);
         videoView = findViewById(R.id.videoViewPangawing);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        boolean isLessonDone = sharedPreferences.getBoolean("PangawingDone", false);
+        unlockButton.setEnabled(false);
+        unlockButton.setAlpha(0.5f);
 
-        if (isLessonDone) {
-            unlockButton.setEnabled(true);
-            unlockButton.setAlpha(1f);
-        } else {
-            unlockButton.setEnabled(false);
-            unlockButton.setAlpha(0.5f);
+        db = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            checkLessonProgressFromFirestore();
         }
 
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pangawing_lesson);
@@ -57,13 +60,6 @@ public class PangawingLesson extends AppCompatActivity {
             if (!isLessonDone) {
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
-
-                // ✅ Save to SharedPreferences
-                SharedPreferences.Editor editor = getSharedPreferences("LessonProgress", MODE_PRIVATE).edit();
-                editor.putBoolean("PangawingDone", true);
-                editor.apply();
-
-                // ✅ Save to Firestore
                 saveProgressToFirestore();
             }
         });
@@ -76,12 +72,30 @@ public class PangawingLesson extends AppCompatActivity {
         });
     }
 
-    private void saveProgressToFirestore() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
+    private void checkLessonProgressFromFirestore() {
+        db.collection("module_progress")
+                .document(user.getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Map<String, Object> module1 = (Map<String, Object>) documentSnapshot.get("module_1");
+                        if (module1 != null) {
+                            Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
+                            if (lessons != null) {
+                                Map<String, Object> pangawing = (Map<String, Object>) lessons.get("pangawing");
+                                if (pangawing != null && "in_progress".equals(pangawing.get("status"))) {
+                                    isLessonDone = true;
+                                    unlockButton.setEnabled(true);
+                                    unlockButton.setAlpha(1f);
+                                }
+                            }
+                        }
+                    }
+                });
+    }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = user.getUid();
+    private void saveProgressToFirestore() {
+        if (user == null) return;
 
         Map<String, Object> pangawingStatus = new HashMap<>();
         pangawingStatus.put("status", "in_progress");
@@ -94,7 +108,7 @@ public class PangawingLesson extends AppCompatActivity {
         updateMap.put("current_lesson", "pangawing");
 
         db.collection("module_progress")
-                .document(uid)
+                .document(user.getUid())
                 .set(Map.of("module_1", updateMap), SetOptions.merge());
     }
 }

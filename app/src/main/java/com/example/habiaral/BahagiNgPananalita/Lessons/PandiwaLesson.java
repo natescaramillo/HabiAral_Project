@@ -1,7 +1,6 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import com.example.habiaral.BahagiNgPananalita.Quiz.PandiwaQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -27,6 +27,8 @@ public class PandiwaLesson extends AppCompatActivity {
     VideoView videoView;
     MediaController mediaController;
 
+    private boolean isLessonDone = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,16 +37,10 @@ public class PandiwaLesson extends AppCompatActivity {
         unlockButton = findViewById(R.id.UnlockButtonPandiwa);
         videoView = findViewById(R.id.videoViewPandiwa);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        boolean isLessonDone = sharedPreferences.getBoolean("PandiwaDone", false);
+        unlockButton.setEnabled(false);
+        unlockButton.setAlpha(0.5f);
 
-        if (isLessonDone) {
-            unlockButton.setEnabled(true);
-            unlockButton.setAlpha(1f);
-        } else {
-            unlockButton.setEnabled(false);
-            unlockButton.setAlpha(0.5f);
-        }
+        loadLessonProgress();
 
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pandiwa_lesson);
         videoView.setVideoURI(videoUri);
@@ -59,13 +55,6 @@ public class PandiwaLesson extends AppCompatActivity {
             if (!isLessonDone) {
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
-
-                // ✅ Save to SharedPreferences
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("PandiwaDone", true);
-                editor.apply();
-
-                // ✅ Save to Firestore
                 saveProgressToFirestore();
             }
         });
@@ -76,6 +65,35 @@ public class PandiwaLesson extends AppCompatActivity {
         });
     }
 
+    private void loadLessonProgress() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("module_progress")
+                .document(user.getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Map<String, Object> module1 = (Map<String, Object>) documentSnapshot.get("module_1");
+                        if (module1 != null) {
+                            Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
+                            if (lessons != null) {
+                                Map<String, Object> pandiwa = (Map<String, Object>) lessons.get("pandiwa");
+                                if (pandiwa != null) {
+                                    String status = (String) pandiwa.get("status");
+                                    if ("in_progress".equals(status)) {
+                                        isLessonDone = true;
+                                        unlockButton.setEnabled(true);
+                                        unlockButton.setAlpha(1f);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
     private void saveProgressToFirestore() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -83,7 +101,6 @@ public class PandiwaLesson extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        // Structure: module_progress > module_1 > lessons > pandiwa > status = in_progress
         Map<String, Object> pandiwaStatus = new HashMap<>();
         pandiwaStatus.put("status", "in_progress");
 

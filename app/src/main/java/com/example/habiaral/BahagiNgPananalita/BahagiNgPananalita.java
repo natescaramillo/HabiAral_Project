@@ -1,7 +1,6 @@
 package com.example.habiaral.BahagiNgPananalita;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -22,7 +21,6 @@ public class BahagiNgPananalita extends AppCompatActivity {
 
     LinearLayout btnPangngalan, btnPandiwa, btnPangUri, btnPangHalip, btnPangAbay, btnPangatnig, btnPangukol, btnPangAkop, btnPadamdam, btnPangawing;
     FrameLayout pangngalanLock, pandiwaLock, pangUriLock, pangHalipLock, pangAbayLock, pangatnigLock, pangUkolLock, pangAkopLock, padamdamLock, pangawingLock;
-    SharedPreferences sharedPreferences;
     FirebaseFirestore db;
     String uid;
 
@@ -32,15 +30,12 @@ public class BahagiNgPananalita extends AppCompatActivity {
         setContentView(R.layout.activity_bahagi_ng_pananalita);
 
         initViews();
-        sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
         uid = user.getUid();
         db = FirebaseFirestore.getInstance();
-
-        loadFromCache();
 
         // Step 1: Fetch studentId
         db.collection("students").document(uid).get().addOnSuccessListener(studentSnap -> {
@@ -110,21 +105,7 @@ public class BahagiNgPananalita extends AppCompatActivity {
             unlockButton(btnPadamdam, pangAkopDone, padamdamLock);
             unlockButton(btnPangawing, padamdamDone, pangawingLock);
 
-            // Save to SharedPreferences
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("PangngalanDone", pangngalanDone);
-            editor.putBoolean("PandiwaDone", pandiwaDone);
-            editor.putBoolean("PangUriDone", pangUriDone);
-            editor.putBoolean("PangHalipDone", pangHalipDone);
-            editor.putBoolean("PangAbayDone", pangAbayDone);
-            editor.putBoolean("PangatnigDone", pangatnigDone);
-            editor.putBoolean("PangUkolDone", pangUkolDone);
-            editor.putBoolean("PangAkopDone", pangAkopDone);
-            editor.putBoolean("PadamdamDone", padamdamDone);
-            editor.putBoolean("PangawingDone", pangawingDone);
-            editor.apply();
-
-            checkAndCompleteModule();
+            checkAndCompleteModule(pangngalanDone, pandiwaDone, pangUriDone, pangHalipDone, pangAbayDone, pangatnigDone, pangUkolDone, pangAkopDone, padamdamDone, pangawingDone);
         });
     }
 
@@ -175,23 +156,9 @@ public class BahagiNgPananalita extends AppCompatActivity {
         btnPangawing.setOnClickListener(v -> startActivity(new Intent(this, PangawingLesson.class)));
     }
 
-    private void checkAndCompleteModule() {
-        boolean allDone = sharedPreferences.getBoolean("PangngalanDone", false)
-                && sharedPreferences.getBoolean("PandiwaDone", false)
-                && sharedPreferences.getBoolean("PangUriDone", false)
-                && sharedPreferences.getBoolean("PangHalipDone", false)
-                && sharedPreferences.getBoolean("PangAbayDone", false)
-                && sharedPreferences.getBoolean("PangatnigDone", false)
-                && sharedPreferences.getBoolean("PangUkolDone", false)
-                && sharedPreferences.getBoolean("PangAkopDone", false)
-                && sharedPreferences.getBoolean("PadamdamDone", false)
-                && sharedPreferences.getBoolean("PangawingDone", false);
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
-
-        String uid = user.getUid();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private void checkAndCompleteModule(boolean pangngalanDone, boolean pandiwaDone, boolean pangUriDone, boolean pangHalipDone, boolean pangAbayDone, boolean pangatnigDone, boolean pangUkolDone, boolean pangAkopDone, boolean padamdamDone, boolean pangawingDone) {
+        boolean allDone = pangngalanDone && pandiwaDone && pangUriDone && pangHalipDone && pangAbayDone
+                && pangatnigDone && pangUkolDone && pangAkopDone && padamdamDone && pangawingDone;
 
         Map<String, Object> update = new HashMap<>();
         Map<String, Object> module1Updates = new HashMap<>();
@@ -204,29 +171,4 @@ public class BahagiNgPananalita extends AppCompatActivity {
         db.collection("module_progress").document(uid)
                 .set(update, SetOptions.merge());
     }
-
-    private void loadFromCache() {
-        boolean pangngalanDone = sharedPreferences.getBoolean("PangngalanDone", false);
-        boolean pandiwaDone = sharedPreferences.getBoolean("PandiwaDone", false);
-        boolean pangUriDone = sharedPreferences.getBoolean("PangUriDone", false);
-        boolean pangHalipDone = sharedPreferences.getBoolean("PangHalipDone", false);
-        boolean pangAbayDone = sharedPreferences.getBoolean("PangAbayDone", false);
-        boolean pangatnigDone = sharedPreferences.getBoolean("PangatnigDone", false);
-        boolean pangUkolDone = sharedPreferences.getBoolean("PangUkolDone", false);
-        boolean pangAkopDone = sharedPreferences.getBoolean("PangAkopDone", false);
-        boolean padamdamDone = sharedPreferences.getBoolean("PadamdamDone", false);
-        boolean pangawingDone = sharedPreferences.getBoolean("PangawingDone", false);
-
-        unlockButton(btnPangngalan, true, pangngalanLock);
-        unlockButton(btnPandiwa, pangngalanDone, pandiwaLock);
-        unlockButton(btnPangUri, pandiwaDone, pangUriLock);
-        unlockButton(btnPangHalip, pangUriDone, pangHalipLock);
-        unlockButton(btnPangAbay, pangHalipDone, pangAbayLock);
-        unlockButton(btnPangatnig, pangAbayDone, pangatnigLock);
-        unlockButton(btnPangukol, pangatnigDone, pangUkolLock);
-        unlockButton(btnPangAkop, pangUkolDone, pangAkopLock);
-        unlockButton(btnPadamdam, pangAkopDone, padamdamLock);
-        unlockButton(btnPangawing, padamdamDone, pangawingLock);
-    }
-
 }

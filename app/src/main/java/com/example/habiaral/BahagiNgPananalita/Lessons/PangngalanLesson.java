@@ -1,7 +1,6 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +18,7 @@ import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -35,8 +35,9 @@ public class PangngalanLesson extends AppCompatActivity {
     TextView instructionText;
     private List<String> allLines;
     private List<String> linesAfterVideo;
-    private TextToSpeech textToSpeech;  // 👈 TTS
+    private TextToSpeech textToSpeech;
 
+    private boolean isLessonDone = false;  // ✨ track from Firebase
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +48,9 @@ public class PangngalanLesson extends AppCompatActivity {
         videoView = findViewById(R.id.videoViewPangngalan);
         instructionText = findViewById(R.id.instructionText);
 
-        // 🔊 Initialize TTS
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
-                int langResult = textToSpeech.setLanguage(new Locale("tl", "PH")); // Tagalog
+                int langResult = textToSpeech.setLanguage(new Locale("tl", "PH"));
                 textToSpeech.setSpeechRate(1.1f);
                 if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
                     Log.e("TTS", "❌ Language not supported or missing.");
@@ -60,16 +60,10 @@ public class PangngalanLesson extends AppCompatActivity {
             }
         });
 
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        boolean isLessonDone = sharedPreferences.getBoolean("PangngalanDone", false);
+        unlockButton.setEnabled(false);
+        unlockButton.setAlpha(0.5f);
 
-        if (isLessonDone) {
-            unlockButton.setEnabled(true);
-            unlockButton.setAlpha(1f);
-        } else {
-            unlockButton.setEnabled(false);
-            unlockButton.setAlpha(0.5f);
-        }
+        checkLessonStatus();
 
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pangngalan_lesson);
         videoView.setVideoURI(videoUri);
@@ -80,17 +74,14 @@ public class PangngalanLesson extends AppCompatActivity {
 
         videoView.setOnCompletionListener(mp -> {
             if (!isLessonDone) {
+                isLessonDone = true;
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
-
-                SharedPreferences.Editor editor = getSharedPreferences("LessonProgress", MODE_PRIVATE).edit();
-                editor.putBoolean("PangngalanDone", true);
-                editor.apply();
-
                 saveProgressToFirestore();
             }
+
             if (linesAfterVideo != null && !linesAfterVideo.isEmpty()) {
-                displayLinesAfterVideo(linesAfterVideo); // 👉 Show lines 3+
+                displayLinesAfterVideo(linesAfterVideo);
             }
         });
 
@@ -99,8 +90,36 @@ public class PangngalanLesson extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Start displaying lines from Firestore
         loadCharacterLines();
+    }
+
+    private void checkLessonStatus() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        db.collection("module_progress").document(uid).get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        DocumentSnapshot module = snapshot;
+                        Map<String, Object> module1 = (Map<String, Object>) module.get("module_1");
+
+                        if (module1 != null && module1.containsKey("lessons")) {
+                            Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
+                            if (lessons != null && lessons.containsKey("pangngalan")) {
+                                Map<String, Object> pangngalan = (Map<String, Object>) lessons.get("pangngalan");
+                                if (pangngalan != null && "completed".equals(pangngalan.get("status"))) {
+                                    isLessonDone = true;
+                                    unlockButton.setEnabled(true);
+                                    unlockButton.setAlpha(1f);
+                                }
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to load progress", e));
     }
 
     private void saveProgressToFirestore() {
@@ -110,24 +129,22 @@ public class PangngalanLesson extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> lessonMap = new HashMap<>();
         Map<String, Object> pangngalanStatus = new HashMap<>();
-        pangngalanStatus.put("status", "in_progress");
+        pangngalanStatus.put("status", "completed");
+
+        Map<String, Object> lessonMap = new HashMap<>();
         lessonMap.put("pangngalan", pangngalanStatus);
 
-        BahagiNgPananalitaProgress progress = new BahagiNgPananalitaProgress();
-        progress.setModulename("Bahagi ng Pananalita");
-        progress.setStatus("in_progress");
-        progress.setCurrent_lesson("pangngalan");
-        progress.setLessons(lessonMap);
+        Map<String, Object> moduleMap = new HashMap<>();
+        moduleMap.put("modulename", "Bahagi ng Pananalita");
+        moduleMap.put("status", "in_progress");
+        moduleMap.put("current_lesson", "pangngalan");
+        moduleMap.put("lessons", lessonMap);
 
-        db.collection("module_progress")
-                .document(uid)
-                .set(Map.of("module_1", progress), SetOptions.merge())
-                .addOnSuccessListener(aVoid ->
-                        Log.d("Firestore", "✅ Progress saved for Pangngalan lesson"))
-                .addOnFailureListener(e ->
-                        Log.e("Firestore", "❌ Failed to save progress", e));
+        db.collection("module_progress").document(uid)
+                .set(Map.of("module_1", moduleMap), SetOptions.merge())
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ Progress saved"))
+                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save progress", e));
     }
 
     private void loadCharacterLines() {
@@ -140,8 +157,6 @@ public class PangngalanLesson extends AppCompatActivity {
                         List<String> lines = (List<String>) documentSnapshot.get("line");
                         if (lines != null && lines.size() > 3) {
                             allLines = lines;
-
-                            // Separate intro and post-video lines
                             List<String> introLines = lines.subList(0, 3);
                             linesAfterVideo = lines.subList(3, lines.size());
 
@@ -164,10 +179,7 @@ public class PangngalanLesson extends AppCompatActivity {
                 if (index[0] < introLines.size()) {
                     String line = introLines.get(index[0]);
                     instructionText.setText(line);
-
-                    // 🔊 Speak line
                     speak(line);
-
                     index[0]++;
                     handler.postDelayed(this, 4000);
                 } else {
@@ -190,10 +202,7 @@ public class PangngalanLesson extends AppCompatActivity {
                 if (index[0] < lines.size()) {
                     String line = lines.get(index[0]);
                     instructionText.setText(line);
-
-                    // 🔊 Speak line
                     speak(line);
-
                     index[0]++;
                     handler.postDelayed(this, 5000);
                 } else {
@@ -205,7 +214,6 @@ public class PangngalanLesson extends AppCompatActivity {
         handler.postDelayed(runnable, 1000);
     }
 
-    // 🔊 Speak line
     private void speak(String text) {
         if (textToSpeech != null && !text.isEmpty()) {
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
@@ -220,5 +228,4 @@ public class PangngalanLesson extends AppCompatActivity {
         }
         super.onDestroy();
     }
-
 }
