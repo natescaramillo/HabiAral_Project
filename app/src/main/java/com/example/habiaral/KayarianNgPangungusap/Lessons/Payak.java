@@ -1,18 +1,26 @@
 package com.example.habiaral.KayarianNgPangungusap.Lessons;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-public class Payak extends AppCompatActivity{
+import java.util.HashMap;
+import java.util.Map;
+
+public class Payak extends AppCompatActivity {
 
     Button unlockButton;
 
@@ -32,18 +40,28 @@ public class Payak extends AppCompatActivity{
     }
 
     private void unlockLesson() {
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this, "User not signed in", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        editor.putBoolean("PayakDone", true);
-        editor.apply();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> update = new HashMap<>();
+        update.put("PayakDone", true);
 
-        Toast.makeText(this, "Next Story Unlocked: Tambalan!", Toast.LENGTH_SHORT).show();
-
-        Intent intent = new Intent(Payak.this, KayarianNgPangungusap.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-
-        finish();
+        db.collection("lesson_progress") // <-- Dito ang tamang collection
+                .document(user.getUid())
+                .update(update)
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(Payak.this, "Next Story Unlocked: Tambalan!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Payak.this, KayarianNgPangungusap.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(Payak.this, "Failed to update progress", Toast.LENGTH_SHORT).show();
+                });
     }
 }

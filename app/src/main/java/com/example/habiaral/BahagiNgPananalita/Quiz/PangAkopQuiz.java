@@ -2,7 +2,6 @@ package com.example.habiaral.BahagiNgPananalita.Quiz;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,29 +32,19 @@ public class PangAkopQuiz extends AppCompatActivity {
         nextButton = findViewById(R.id.pangakopNextButton);
 
         nextButton.setOnClickListener(view -> {
-            unlockNextLesson();
-            saveCompletionToFirestore();
+            unlockNextLesson(); // Now using Firebase
             showResultDialog();
         });
     }
 
     private void unlockNextLesson() {
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putBoolean("PangAkopDone", true);
-        editor.apply();
-
-        Toast.makeText(this, "Next Lesson Unlocked: Padamdam!", Toast.LENGTH_SHORT).show();
-    }
-
-    private void saveCompletionToFirestore() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
+        // Mark "pangakop" as done
         Map<String, Object> pangAkopStatus = new HashMap<>();
         pangAkopStatus.put("status", "completed");
 
@@ -68,7 +57,13 @@ public class PangAkopQuiz extends AppCompatActivity {
 
         db.collection("module_progress")
                 .document(uid)
-                .set(Map.of("module_1", updateMap), SetOptions.merge());
+                .set(Map.of("module_1", updateMap), SetOptions.merge())
+                .addOnSuccessListener(unused ->
+                        Toast.makeText(this, "Next Lesson Unlocked: Padamdam!", Toast.LENGTH_SHORT).show()
+                )
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Failed to update progress.", Toast.LENGTH_SHORT).show()
+                );
     }
 
     private void showResultDialog() {

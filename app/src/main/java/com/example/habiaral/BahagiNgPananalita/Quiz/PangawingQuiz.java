@@ -2,7 +2,6 @@ package com.example.habiaral.BahagiNgPananalita.Quiz;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,19 +33,9 @@ public class PangawingQuiz extends AppCompatActivity {
         nextButton = findViewById(R.id.pangawingNextButton);
 
         nextButton.setOnClickListener(view -> {
-            completeLesson();
             updateLessonStatusInFirestore();
             showResultDialog();
         });
-    }
-
-    private void completeLesson() {
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("PangawingDone", true);
-        editor.apply();
-
-        Toast.makeText(this, "Congratulations! You have completed all lessons!", Toast.LENGTH_LONG).show();
     }
 
     private void updateLessonStatusInFirestore() {
@@ -69,7 +58,10 @@ public class PangawingQuiz extends AppCompatActivity {
         db.collection("module_progress")
                 .document(uid)
                 .set(Map.of("module_1", updateMap), SetOptions.merge())
-                .addOnSuccessListener(unused -> checkAndUnlockAchievement());
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(this, "Congratulations! You have completed all lessons!", Toast.LENGTH_LONG).show();
+                    checkAndUnlockAchievement();
+                });
     }
 
     private void checkAndUnlockAchievement() {
@@ -103,29 +95,11 @@ public class PangawingQuiz extends AppCompatActivity {
             }
 
             db.collection("student_achievements").document(uid).get().addOnSuccessListener(saSnapshot -> {
-                boolean alreadyUnlocked = false;
-
                 if (saSnapshot.exists()) {
                     Map<String, Object> achievements = (Map<String, Object>) saSnapshot.get("achievements");
                     if (achievements != null && achievements.containsKey(saCode)) {
-                        alreadyUnlocked = true;
+                        return;
                     }
-                } else {
-                    // 🔁 If doc was deleted manually, reset local flag to allow re-unlock
-                    clearAchievementDialogFlag(saCode);
-                }
-
-                // ✅ Even if already unlocked in Firestore, still mark locally
-                if (alreadyUnlocked) {
-                    if (!isAchievementDialogAlreadyShown(saCode)) {
-                        markAchievementDialogAsShown(saCode);
-                    }
-                    return;
-                }
-
-                // ✅ Skip if already shown locally AND Firestore doc exists
-                if (isAchievementDialogAlreadyShown(saCode) && saSnapshot.exists()) {
-                    return;
                 }
 
                 continueUnlockingAchievement(db, uid, saCode, achievementId);
@@ -148,20 +122,18 @@ public class PangawingQuiz extends AppCompatActivity {
                 achievementData.put("unlockedAt", Timestamp.now());
 
                 Map<String, Object> achievementsMap = new HashMap<>();
-                achievementsMap.put(saCode, achievementData); // e.g., "SA11": {...}
+                achievementsMap.put(saCode, achievementData);
 
                 Map<String, Object> wrapper = new HashMap<>();
                 wrapper.put("studentId", studentId);
-                wrapper.put("achievements", achievementsMap); // not achievements.SA11 directly
+                wrapper.put("achievements", achievementsMap);
 
                 db.collection("student_achievements")
                         .document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            markAchievementDialogAsShown(saCode);
                             showAchievementUnlockedDialog(title);
                         }));
-
             });
         });
     }
@@ -172,21 +144,6 @@ public class PangawingQuiz extends AppCompatActivity {
                 .setMessage("You unlocked: " + title)
                 .setPositiveButton("OK", null)
                 .show();
-    }
-
-    private boolean isAchievementDialogAlreadyShown(String achievementCode) {
-        SharedPreferences prefs = getSharedPreferences("AchievementDialogs", MODE_PRIVATE);
-        return prefs.getBoolean(achievementCode, false);
-    }
-
-    private void markAchievementDialogAsShown(String achievementCode) {
-        SharedPreferences prefs = getSharedPreferences("AchievementDialogs", MODE_PRIVATE);
-        prefs.edit().putBoolean(achievementCode, true).apply();
-    }
-
-    private void clearAchievementDialogFlag(String achievementCode) {
-        SharedPreferences prefs = getSharedPreferences("AchievementDialogs", MODE_PRIVATE);
-        prefs.edit().remove(achievementCode).apply();
     }
 
     private void showResultDialog() {

@@ -1,8 +1,6 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
@@ -15,6 +13,7 @@ import com.example.habiaral.BahagiNgPananalita.Quiz.PangUkolQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -27,6 +26,8 @@ public class PangUkolLesson extends AppCompatActivity {
     VideoView videoView;
     MediaController mediaController;
 
+    private boolean isLessonDone = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,16 +36,10 @@ public class PangUkolLesson extends AppCompatActivity {
         unlockButton = findViewById(R.id.UnlockButtonPangukol);
         videoView = findViewById(R.id.videoViewPangukol);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        boolean isLessonDone = sharedPreferences.getBoolean("PangUkolDone", false);
+        unlockButton.setEnabled(false);
+        unlockButton.setAlpha(0.5f);
 
-        if (isLessonDone) {
-            unlockButton.setEnabled(true);
-            unlockButton.setAlpha(1f);
-        } else {
-            unlockButton.setEnabled(false);
-            unlockButton.setAlpha(0.5f);
-        }
+        loadLessonStatusFromFirestore();
 
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pangukol_lesson);
         videoView.setVideoURI(videoUri);
@@ -59,13 +54,7 @@ public class PangUkolLesson extends AppCompatActivity {
             if (!isLessonDone) {
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
-
-                // ✅ Save to SharedPreferences
-                SharedPreferences.Editor editor = getSharedPreferences("LessonProgress", MODE_PRIVATE).edit();
-                editor.putBoolean("PangUkolDone", true);
-                editor.apply();
-
-                // ✅ Save to Firestore
+                isLessonDone = true;
                 saveProgressToFirestore();
             }
         });
@@ -75,6 +64,35 @@ public class PangUkolLesson extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
+    private void loadLessonStatusFromFirestore() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        db.collection("module_progress")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Map<String, Object> moduleData = (Map<String, Object>) documentSnapshot.get("module_1");
+                        if (moduleData != null) {
+                            Map<String, Object> lessons = (Map<String, Object>) moduleData.get("lessons");
+                            if (lessons != null) {
+                                Map<String, Object> pangukol = (Map<String, Object>) lessons.get("pangukol");
+                                if (pangukol != null && "in_progress".equals(pangukol.get("status"))) {
+                                    isLessonDone = true;
+                                    unlockButton.setEnabled(true);
+                                    unlockButton.setAlpha(1f);
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
 
     private void saveProgressToFirestore() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

@@ -2,7 +2,6 @@ package com.example.habiaral.BahagiNgPananalita.Quiz;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,19 +32,34 @@ public class PandiwaQuiz extends AppCompatActivity {
         nextButton = findViewById(R.id.pandiwaNextButton);
 
         nextButton.setOnClickListener(view -> {
-            unlockNextLesson();      // SharedPreferences
+            unlockNextLesson();      // Firestore
             saveQuizResultToFirestore(); // Firestore
             showResultDialog();     // Result dialog
         });
     }
 
     private void unlockNextLesson() {
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("PandiwaDone", true);
-        editor.apply();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
 
-        Toast.makeText(this, "Next Lesson Unlocked: PangUri!", Toast.LENGTH_SHORT).show();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        Map<String, Object> pangUriStatus = new HashMap<>();
+        pangUriStatus.put("status", "unlocked");
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("pang_uri", pangUriStatus);
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("lessons", lessonsMap);
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_1", updateMap), SetOptions.merge())
+                .addOnSuccessListener(aVoid ->
+                        Toast.makeText(this, "Next Lesson Unlocked: PangUri!", Toast.LENGTH_SHORT).show()
+                );
     }
 
     private void saveQuizResultToFirestore() {

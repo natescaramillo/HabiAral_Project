@@ -1,7 +1,6 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +15,7 @@ import com.example.habiaral.BahagiNgPananalita.Quiz.PangHalipQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -27,6 +27,7 @@ public class PangHalipLesson extends AppCompatActivity {
     Button unlockButton;
     VideoView videoView;
     MediaController mediaController;
+    boolean isLessonDone = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +37,11 @@ public class PangHalipLesson extends AppCompatActivity {
         unlockButton = findViewById(R.id.UnlockButtonPanghalip);
         videoView = findViewById(R.id.videoViewPanghalip);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        boolean isLessonDone = sharedPreferences.getBoolean("PangHalipDone", false);
+        unlockButton.setEnabled(false);
+        unlockButton.setAlpha(0.5f);
 
-        if (isLessonDone) {
-            unlockButton.setEnabled(true);
-            unlockButton.setAlpha(1f);
-        } else {
-            unlockButton.setEnabled(false);
-            unlockButton.setAlpha(0.5f);
-        }
+        // Load progress from Firebase
+        loadProgressFromFirestore();
 
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.panghalip_lesson);
         videoView.setVideoURI(videoUri);
@@ -60,13 +56,7 @@ public class PangHalipLesson extends AppCompatActivity {
             if (!isLessonDone) {
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
-
-                // ✅ Save to SharedPreferences
-                SharedPreferences.Editor editor = getSharedPreferences("LessonProgress", MODE_PRIVATE).edit();
-                editor.putBoolean("PangHalipDone", true);
-                editor.apply();
-
-                // ✅ Save to Firestore
+                isLessonDone = true;
                 saveProgressToFirestore();
             }
         });
@@ -77,6 +67,34 @@ public class PangHalipLesson extends AppCompatActivity {
         });
     }
 
+    private void loadProgressFromFirestore() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("module_progress")
+                .document(user.getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Map<String, Object> module1 = (Map<String, Object>) documentSnapshot.get("module_1");
+                        if (module1 != null) {
+                            Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
+                            if (lessons != null && lessons.containsKey("panghalip")) {
+                                Map<String, Object> panghalip = (Map<String, Object>) lessons.get("panghalip");
+                                if (panghalip != null && "done".equals(panghalip.get("status"))) {
+                                    isLessonDone = true;
+                                    unlockButton.setEnabled(true);
+                                    unlockButton.setAlpha(1f);
+                                }
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to load Panghalip progress", e));
+    }
+
+
     private void saveProgressToFirestore() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -84,24 +102,20 @@ public class PangHalipLesson extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        // Create lessons map for panghalip
         Map<String, Object> lessonMap = new HashMap<>();
         Map<String, Object> pangHalipStatus = new HashMap<>();
-        pangHalipStatus.put("status", "in_progress");
+        pangHalipStatus.put("status", "done");
         lessonMap.put("panghalip", pangHalipStatus);
 
-        Map<String, Object> progress = new HashMap<>();
-        progress.put("modulename", "Bahagi ng Pananalita");
-        progress.put("status", "in_progress");
-        progress.put("current_lesson", "panghalip");
-        progress.put("lessons", lessonMap);
+        Map<String, Object> update = new HashMap<>();
+        update.put("lessons", lessonMap);
 
         db.collection("module_progress")
                 .document(uid)
-                .set(Map.of("module_1", progress), SetOptions.merge())
+                .set(Map.of("module_1", update), SetOptions.merge())
                 .addOnSuccessListener(aVoid ->
-                        Log.d("Firestore", "✅ Progress saved for Panghalip lesson"))
+                        Log.d("Firestore", "✅ Panghalip progress saved"))
                 .addOnFailureListener(e ->
-                        Log.e("Firestore", "❌ Failed to save progress", e));
+                        Log.e("Firestore", "❌ Failed to save Panghalip progress", e));
     }
 }

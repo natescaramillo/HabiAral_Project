@@ -2,7 +2,6 @@ package com.example.habiaral.BahagiNgPananalita.Quiz;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,11 +39,24 @@ public class PangAbayQuiz extends AppCompatActivity {
     }
 
     private void unlockNextLesson() {
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
 
-        editor.putBoolean("PangAbayDone", true);
-        editor.apply();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        Map<String, Object> nextLesson = new HashMap<>();
+        nextLesson.put("unlocked", true);
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("pangatnig", nextLesson); // I-unlock ang "Pangatnig" dahil tapos na ang "Pang-abay"
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("lessons", lessonsMap);
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_1", updateMap), SetOptions.merge());
 
         Toast.makeText(this, "Pwede mo nang simulan ang susunod na aralin!: Pangatnig!", Toast.LENGTH_SHORT).show();
     }

@@ -2,7 +2,6 @@ package com.example.habiaral.BahagiNgPananalita.Quiz;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,15 +41,8 @@ public class PangUkolQuiz extends AppCompatActivity {
     }
 
     private void unlockNextLesson() {
-        // ✅ SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("PangUkolDone", true);
-        editor.apply();
-
-        // ✅ Firestore update
+        // ✅ Firestore update only — removed SharedPreferences
         saveCompletionToFirestore();
-
         Toast.makeText(this, "Next Lesson Unlocked: Pang-angkop!", Toast.LENGTH_SHORT).show();
     }
 

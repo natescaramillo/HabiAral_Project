@@ -1,7 +1,6 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import com.example.habiaral.BahagiNgPananalita.Quiz.PangAbayQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -26,6 +26,7 @@ public class PangAbayLesson extends AppCompatActivity {
     Button unlockButton;
     VideoView videoView;
     MediaController mediaController;
+    boolean isLessonDone = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,16 +36,10 @@ public class PangAbayLesson extends AppCompatActivity {
         unlockButton = findViewById(R.id.UnlockButtonPangabay);
         videoView = findViewById(R.id.videoViewPangabay);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        boolean isLessonDone = sharedPreferences.getBoolean("PangAbayDone", false);
+        unlockButton.setEnabled(false);
+        unlockButton.setAlpha(0.5f);
 
-        if (isLessonDone) {
-            unlockButton.setEnabled(true);
-            unlockButton.setAlpha(1f);
-        } else {
-            unlockButton.setEnabled(false);
-            unlockButton.setAlpha(0.5f);
-        }
+        checkProgressFromFirestore();
 
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pangabay_lesson);
         videoView.setVideoURI(videoUri);
@@ -59,13 +54,6 @@ public class PangAbayLesson extends AppCompatActivity {
             if (!isLessonDone) {
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
-
-                // ✅ Save to SharedPreferences
-                SharedPreferences.Editor editor = getSharedPreferences("LessonProgress", MODE_PRIVATE).edit();
-                editor.putBoolean("PangAbayDone", true);
-                editor.apply();
-
-                // ✅ Save to Firestore
                 saveProgressToFirestore();
             }
         });
@@ -74,6 +62,34 @@ public class PangAbayLesson extends AppCompatActivity {
             Intent intent = new Intent(PangAbayLesson.this, PangAbayQuiz.class);
             startActivity(intent);
         });
+    }
+
+    private void checkProgressFromFirestore() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        db.collection("module_progress")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Map<String, Object> module1 = (Map<String, Object>) documentSnapshot.get("module_1");
+                        if (module1 != null) {
+                            Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
+                            if (lessons != null) {
+                                Map<String, Object> pangabay = (Map<String, Object>) lessons.get("pangabay");
+                                if (pangabay != null && "in_progress".equals(pangabay.get("status"))) {
+                                    isLessonDone = true;
+                                    unlockButton.setEnabled(true);
+                                    unlockButton.setAlpha(1f);
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
     private void saveProgressToFirestore() {

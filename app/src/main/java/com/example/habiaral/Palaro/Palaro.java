@@ -319,7 +319,7 @@ public class Palaro extends AppCompatActivity {
         userPoints = prefs.getInt(KEY_POINTS, 0);
         updateUI();
         loadTotalScoreFromFirestore();
-
+        checkLocks();
     }
 
     private int calculatePercent(int points, int tierStart) {

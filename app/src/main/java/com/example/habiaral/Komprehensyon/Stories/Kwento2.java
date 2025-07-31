@@ -1,7 +1,6 @@
 package com.example.habiaral.Komprehensyon.Stories;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,9 +10,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.Komprehensyon.Komprehensyon;
 import com.example.habiaral.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Kwento2 extends AppCompatActivity {
     Button unlockButton;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +26,7 @@ public class Kwento2 extends AppCompatActivity {
         setContentView(R.layout.activity_kwento2);
 
         unlockButton = findViewById(R.id.UnlockButtonKwento2);
+        db = FirebaseFirestore.getInstance();
 
         unlockButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,18 +37,21 @@ public class Kwento2 extends AppCompatActivity {
     }
 
     private void unlockLesson() {
-        SharedPreferences sharedPreferences = getSharedPreferences("LessonProgress", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Map<String, Object> progress = new HashMap<>();
+        progress.put("Kwento2Done", true);
 
-        editor.putBoolean("Kwento2Done", true);
-        editor.apply();
+        db.collection("module_progress").document(userId)
+                .update(progress)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Next Story Unlocked: Kwento3!", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(this, "Next Story Unlocked: Kwento3!", Toast.LENGTH_SHORT).show();
-
-        Intent intent = new Intent(Kwento2.this, Komprehensyon.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-
-        finish();
+                    Intent intent = new Intent(Kwento2.this, Komprehensyon.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Failed to update progress", Toast.LENGTH_SHORT).show());
     }
 }
