@@ -21,11 +21,13 @@
     import android.speech.tts.TextToSpeech;
 
     import java.util.Arrays;
+    import java.util.HashSet;
     import java.util.Locale;
 
     import com.example.habiaral.R;
     import com.google.firebase.Timestamp;
     import com.google.firebase.firestore.DocumentReference;
+    import com.google.firebase.firestore.DocumentSnapshot;
     import com.google.firebase.firestore.FieldValue;
     import com.google.firebase.firestore.FirebaseFirestore;
     import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +40,7 @@
     import java.util.HashMap;
     import java.util.List;
     import java.util.Map;
+    import java.util.Set;
 
     public class PalaroHusay extends AppCompatActivity {
 
@@ -64,6 +67,8 @@
         private ImageView[] heartIcons;
         private TextToSpeech tts;
         private boolean isTtsReady = false;
+        private int attemptCount = 0;
+
 
 
 
@@ -411,11 +416,13 @@
                     timerBar.setProgress(0);
                     isTimeUp = true;
                     finishQuiz(); // 👈 Dito tinatawag ang custom dialog
+
                 }
             }.start();
         }
 
         private void finishQuiz() {
+
 
             View showTotalPoints = getLayoutInflater().inflate(R.layout.time_up_dialog, null);
             AlertDialog dialog = new AlertDialog.Builder(PalaroHusay.this)
@@ -497,6 +504,7 @@
                             docRef.set(updates, SetOptions.merge())
                                     .addOnSuccessListener(aVoid -> {
                                         if (newHusayTotal >= 800) unlockDalubhasa(docRef);
+
                                     });
                         });
                     }
@@ -677,52 +685,44 @@
                 });
             });
         }
-        private void unlockPerfectGameAchievement() {
+        private void unlockBihasangMagsanayAchievement(String studentId) {
             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             String achievementCode = "SA2";
             String achievementId = "A2";
 
-            db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
-                if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
+            db.collection("student_achievements").document(uid).get().addOnSuccessListener(achSnapshot -> {
+                Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
+                if (achievements != null && achievements.containsKey(achievementCode)) {
+                    return; // Already unlocked
+                }
 
-                String studentId = studentDoc.getString("studentId");
+                db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
+                    if (!achDoc.exists()) return;
 
-                db.collection("student_achievements").document(uid).get().addOnSuccessListener(achSnapshot -> {
-                    Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
-                    if (achievements != null && achievements.containsKey(achievementCode)) {
-                        // Already unlocked
-                        return;
-                    }
+                    String title = achDoc.getString("title");
 
-                    // Not yet unlocked, proceed
-                    db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
-                        if (!achDoc.exists()) return;
+                    Map<String, Object> achievementData = new HashMap<>();
+                    achievementData.put("achievementID", achievementId);
+                    achievementData.put("title", title);
+                    achievementData.put("unlockedAt", Timestamp.now());
 
-                        String title = achDoc.getString("title");
+                    Map<String, Object> achievementMap = new HashMap<>();
+                    achievementMap.put(achievementCode, achievementData);
 
-                        Map<String, Object> achievementData = new HashMap<>();
-                        achievementData.put("achievementID", achievementId);
-                        achievementData.put("title", title);
-                        achievementData.put("unlockedAt", Timestamp.now());
+                    Map<String, Object> wrapper = new HashMap<>();
+                    wrapper.put("studentId", studentId);
+                    wrapper.put("achievements", achievementMap);
 
-
-                        Map<String, Object> achievementMap = new HashMap<>();
-                        achievementMap.put(achievementCode, achievementData);
-
-                        Map<String, Object> wrapper = new HashMap<>();
-                        wrapper.put("studentId", studentId);
-                        wrapper.put("achievements", achievementMap);
-
-
-                        db.collection("student_achievements").document(uid)
-                                .set(wrapper, SetOptions.merge())
-                                .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                    showAchievementUnlockedDialog(title);
-                                }));
-                    });
-                }); // ✅ ← missing closing for .get().addOnSuccessListener(...)
+                    db.collection("student_achievements").document(uid)
+                            .set(wrapper, SetOptions.merge())
+                            .addOnSuccessListener(unused -> runOnUiThread(() -> {
+                                showAchievementUnlockedDialog(title);
+                            }));
+                });
             });
         }
+
+
         private void showAchievementUnlockedDialog(String title) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Achievement Unlocked!")
@@ -730,6 +730,7 @@
                     .setPositiveButton("OK", null)
                     .show();
         }
+
 
         private void unlockFastAnswerAchievement() {
             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();

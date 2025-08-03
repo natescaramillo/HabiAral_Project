@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.R;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -53,7 +54,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private Button btnTapos;
 
     private CountDownTimer countDownTimer;
-    private static final long TOTAL_TIME = 60000;
+    private static final long TOTAL_TIME = 60000000;
     private long timeLeft = TOTAL_TIME;
 
     private FirebaseFirestore db;
@@ -74,6 +75,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private boolean isTtsReady = false;
     private TextToSpeech tts;
+    private int perfectAnswerCount = 0;
+
 
 
 
@@ -81,6 +84,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_palaro_dalubhasa);
+
 
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
@@ -149,6 +153,13 @@ public class PalaroDalubhasa extends AppCompatActivity {
                                 hasSubmitted = true;
                                 userSentenceInput.setEnabled(false);
                                 btnTapos.setEnabled(false);
+
+                                // ✅ Save answered question
+                                // Inside your logic after grammar check
+                                String firebaseUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                String questionId = currentDalubhasaID;
+                                saveDalubhasaAnswer(firebaseUID, questionId);
+
                             });
                         }
 
@@ -210,12 +221,36 @@ public class PalaroDalubhasa extends AppCompatActivity {
             JSONArray matches = jsonObject.getJSONArray("matches");
 
             currentErrorCount = matches.length();
+            int scoreForThisSentence;
 
             if (matches.length() == 0) {
+                scoreForThisSentence = 15;
+                dalubhasaScore += scoreForThisSentence;
+                perfectAnswerCount++; // ✅ count perfect
+
                 loadCharacterLine("MDCL2");
-                dalubhasaScore += 15;
+
                 new Handler().postDelayed(this::nextQuestion, 4000);
             } else {
+                if (matches.length() == 1) {
+                    scoreForThisSentence = 13;
+                } else {
+                    scoreForThisSentence = 10;
+                }
+
+                dalubhasaScore += scoreForThisSentence;
+
+                if (scoreForThisSentence == 13 || scoreForThisSentence == 15) {
+                    perfectAnswerCount++;
+                } else {
+                    perfectAnswerCount = 0; // ❌ Reset kung di perfect
+                }
+
+                if (perfectAnswerCount >= 5) {
+                    unlockSagotBayaniAchievement();
+                }
+
+
                 loadCharacterLine("MDCL3");
 
                 if (matches.length() >= 2) {
@@ -225,7 +260,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 new Handler().postDelayed(() -> {
                     try {
                         SpannableString spannable = new SpannableString(originalSentence);
-
                         for (int i = 0; i < matches.length(); i++) {
                             JSONObject match = matches.getJSONObject(i);
                             int offset = match.getInt("offset");
@@ -243,13 +277,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
                         grammarFeedbackText.setText("Error habang hinahati ang mga mali.");
                     }
                 }, 2000);
-
-                if (matches.length() == 1) {
-                    dalubhasaScore += 13;
-                } else {
-                    dalubhasaScore += 10;
-                }
             }
+
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -469,6 +498,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     docRef.set(updates, SetOptions.merge())
                             .addOnSuccessListener(aVoid -> {
                                 Toast.makeText(PalaroDalubhasa.this, "Natapos na ang buong palaro", Toast.LENGTH_SHORT).show();
+
                             });
                 } else {
                     // No progress doc yet — generate new progress ID
@@ -485,7 +515,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                         docRef.set(updates, SetOptions.merge())
                                 .addOnSuccessListener(aVoid -> {
                                     Toast.makeText(PalaroDalubhasa.this, "Natapos na ang buong palaro", Toast.LENGTH_SHORT).show();
-
                                 });
                     });
                 }
@@ -518,6 +547,170 @@ public class PalaroDalubhasa extends AppCompatActivity {
             tts.stop();
             tts.shutdown();
         }
+    }
+
+    private void saveDalubhasaAnswer(String firebaseUID, String questionId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("students").document(firebaseUID).get().addOnSuccessListener(studentDoc -> {
+            if (!studentDoc.exists() || !studentDoc.contains("studentId")) {
+                Toast.makeText(this, "Walang studentId na nahanap.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String studentId = studentDoc.getString("studentId");
+            DocumentReference docRef = db.collection("palaro_answered").document(firebaseUID);
+
+            docRef.get().addOnSuccessListener(answerDoc -> {
+                boolean alreadyAnswered = false;
+
+                if (answerDoc.exists()) {
+                    Map<String, Object> dalubhasaMap = (Map<String, Object>) answerDoc.get("dalubhasa");
+                    if (dalubhasaMap != null && Boolean.TRUE.equals(dalubhasaMap.get(questionId))) {
+                        alreadyAnswered = true;
+                    }
+                }
+
+                if (!alreadyAnswered) {
+                    Map<String, Object> nestedDalubhasa = new HashMap<>();
+                    nestedDalubhasa.put(questionId, true);
+
+                    Map<String, Object> update = new HashMap<>();
+                    update.put("studentId", studentId);
+                    update.put("dalubhasa", nestedDalubhasa);
+
+                    docRef.set(update, SetOptions.merge());
+                    checkAndUnlockQuestionBankMaster();
+                }
+            });
+        });
+    }
+
+
+
+    private void unlockQuestionBankMasterAchievement() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String achievementCode = "SA10";
+        String achievementId = "A10";
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
+            if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
+
+            String studentId = studentDoc.getString("studentId");
+
+            db.collection("student_achievements").document(uid).get().addOnSuccessListener(achSnapshot -> {
+                Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
+                if (achievements != null && achievements.containsKey(achievementCode)) {
+                    return;
+                }
+
+                db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
+                    if (!achDoc.exists()) return;
+
+                    String title = achDoc.getString("title");
+
+                    Map<String, Object> achievementData = new HashMap<>();
+                    achievementData.put("achievementID", achievementId);
+                    achievementData.put("title", title);
+                    achievementData.put("unlockedAt", Timestamp.now());
+
+                    Map<String, Object> achievementMap = new HashMap<>();
+                    achievementMap.put(achievementCode, achievementData);
+
+                    Map<String, Object> wrapper = new HashMap<>();
+                    wrapper.put("studentId", studentId);
+                    wrapper.put("achievements", achievementMap);
+
+                    db.collection("student_achievements").document(uid)
+                            .set(wrapper, SetOptions.merge())
+                            .addOnSuccessListener(unused -> runOnUiThread(() -> {
+                                showAchievementUnlockedDialog(title);
+                            }));
+                });
+            });
+        });
+    }
+
+    private void checkAndUnlockQuestionBankMaster() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("dalubhasa").get().addOnSuccessListener(questionSnapshot -> {
+            int totalQuestions = questionSnapshot.size();
+            if (totalQuestions == 0) return;
+
+            db.collection("palaro_answered").document(uid).get().addOnSuccessListener(answerDoc -> {
+                if (!answerDoc.exists()) return;
+
+                Map<String, Object> dalubhasaMap = (Map<String, Object>) answerDoc.get("dalubhasa");
+                if (dalubhasaMap == null) return;
+
+                long answeredCount = dalubhasaMap.values().stream()
+                        .filter(val -> val instanceof Boolean && (Boolean) val)
+                        .count();
+
+                if (answeredCount >= totalQuestions) {
+                    unlockQuestionBankMasterAchievement();
+                }
+            });
+        });
+    }
+
+
+    private void unlockSagotBayaniAchievement() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String achievementCode = "SA3"; // A3
+        String achievementId = "A3";
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
+            if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
+
+            String studentId = studentDoc.getString("studentId");
+
+            db.collection("student_achievements").document(uid).get().addOnSuccessListener(achSnapshot -> {
+                Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
+                if (achievements != null && achievements.containsKey(achievementCode)) {
+                    return; // Already unlocked
+                }
+
+                db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
+                    if (!achDoc.exists()) return;
+
+                    String title = achDoc.getString("title");
+
+                    Map<String, Object> achievementData = new HashMap<>();
+                    achievementData.put("achievementID", achievementId);
+                    achievementData.put("title", title);
+                    achievementData.put("unlockedAt", Timestamp.now());
+
+                    Map<String, Object> achievementMap = new HashMap<>();
+                    achievementMap.put(achievementCode, achievementData);
+
+                    Map<String, Object> wrapper = new HashMap<>();
+                    wrapper.put("studentId", studentId);
+                    wrapper.put("achievements", achievementMap);
+
+                    db.collection("student_achievements").document(uid)
+                            .set(wrapper, SetOptions.merge())
+                            .addOnSuccessListener(unused -> runOnUiThread(() -> {
+                                showAchievementUnlockedDialog(title);
+                            }));
+                });
+            });
+        });
+
+    }
+
+    private void showAchievementUnlockedDialog(String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Achievement Unlocked!");
+        builder.setMessage("Nakamit mo ang: " + title);
+        builder.setPositiveButton("OK", null);
+        builder.show();
     }
 
 }

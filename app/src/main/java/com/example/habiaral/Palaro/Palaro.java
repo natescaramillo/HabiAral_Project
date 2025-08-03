@@ -21,8 +21,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class Palaro extends AppCompatActivity {
 
@@ -150,6 +153,10 @@ public class Palaro extends AppCompatActivity {
                 editor.putInt(KEY_POINTS, userPoints).apply();
                 updateUI();
                 checkLocks();
+                unlockGanapNaKaalamanAchievement();
+                unlockBatangHenyoAchievement(totalScore); // ✅ Call this here
+
+
             } else {
                 userPoints = 0;
                 editor.putInt(KEY_POINTS, userPoints).apply();
@@ -160,6 +167,117 @@ public class Palaro extends AppCompatActivity {
             Toast.makeText(this, "Failed to load progress", Toast.LENGTH_SHORT).show();
         });
     }
+    private void unlockGanapNaKaalamanAchievement() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String achievementCode = "SA1"; // Display key
+        String achievementId = "A1";    // Firestore doc ID
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
+            if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
+
+            String studentId = studentDoc.getString("studentId");
+
+            // Check if all palaro questions are answered
+            db.collection("palaro_answered").document(uid).get().addOnSuccessListener(progressDoc -> {
+                if (!progressDoc.exists()) return;
+
+                Map<String, Object> baguhanMap = progressDoc.contains("baguhan") ? (Map<String, Object>) progressDoc.get("baguhan") : new HashMap<>();
+                Map<String, Object> husayMap = progressDoc.contains("husay") ? (Map<String, Object>) progressDoc.get("husay") : new HashMap<>();
+                Map<String, Object> dalubhasaMap = progressDoc.contains("dalubhasa") ? (Map<String, Object>) progressDoc.get("dalubhasa") : new HashMap<>();
+
+                boolean allBaguhanAnswered = baguhanMap.size() >= 20;
+                boolean allHusayAnswered = husayMap.size() >= 5;
+                boolean allDalubhasaAnswered = dalubhasaMap.size() >= 5;
+
+                if (allBaguhanAnswered && allHusayAnswered && allDalubhasaAnswered) {
+                    // Check if already unlocked
+                    db.collection("student_achievements").document(uid).get().addOnSuccessListener(achSnapshot -> {
+                        Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
+                        if (achievements != null && achievements.containsKey(achievementCode)) {
+                            return; // Already unlocked
+                        }
+
+                        // Get data from achievements collection
+                        db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
+                            if (!achDoc.exists()) return;
+
+                            String title = achDoc.getString("title");
+
+                            Map<String, Object> achievementData = new HashMap<>();
+                            achievementData.put("achievementID", achievementId);
+                            achievementData.put("title", title);
+                            achievementData.put("unlockedAt", com.google.firebase.Timestamp.now());
+
+                            Map<String, Object> achievementMap = new HashMap<>();
+                            achievementMap.put(achievementCode, achievementData);
+
+                            Map<String, Object> wrapper = new HashMap<>();
+                            wrapper.put("studentId", studentId);
+                            wrapper.put("achievements", achievementMap);
+
+                            db.collection("student_achievements").document(uid)
+                                    .set(wrapper, SetOptions.merge())
+                                    .addOnSuccessListener(unused -> runOnUiThread(() -> {
+                                        showAchievementUnlockedDialog(title);
+                                    }));
+                        });
+                    });
+                }
+            });
+        });
+    }
+    private void unlockBatangHenyoAchievement(int totalScore) {
+        if (totalScore < 2000) return; // Only unlock if score is 2000+
+
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String achievementCode = "SA7";
+        String achievementId = "A7";
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("student_achievements").document(uid).get().addOnSuccessListener(snapshot -> {
+            Map<String, Object> achievements = (Map<String, Object>) snapshot.get("achievements");
+            if (achievements != null && achievements.containsKey(achievementCode)) {
+                return; // Already unlocked
+            }
+
+            // Get data from achievements collection
+            db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
+                if (!achDoc.exists()) return;
+
+                String title = achDoc.getString("title");
+
+                Map<String, Object> achievementData = new HashMap<>();
+                achievementData.put("achievementID", achievementId);
+                achievementData.put("title", title);
+                achievementData.put("unlockedAt", com.google.firebase.Timestamp.now());
+
+                Map<String, Object> achievementMap = new HashMap<>();
+                achievementMap.put(achievementCode, achievementData);
+
+                Map<String, Object> wrapper = new HashMap<>();
+                wrapper.put("studentId", uid); // Optional kung hindi required
+                wrapper.put("achievements", achievementMap);
+
+                db.collection("student_achievements").document(uid)
+                        .set(wrapper, SetOptions.merge())
+                        .addOnSuccessListener(unused -> runOnUiThread(() -> {
+                            showAchievementUnlockedDialog(title);
+                        }));
+            });
+        });
+    }
+
+    private void showAchievementUnlockedDialog(String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Achievement Unlocked!");
+        builder.setMessage("Nakamit mo ang: " + title);
+        builder.setPositiveButton("OK", null);
+        builder.show();
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
