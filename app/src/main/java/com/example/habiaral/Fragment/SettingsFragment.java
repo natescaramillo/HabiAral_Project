@@ -42,53 +42,16 @@ public class SettingsFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
 
         FrameLayout btnAboutUs = view.findViewById(R.id.about_us);
-        FrameLayout btnExit = view.findViewById(R.id.exit_app);
         FrameLayout btnChangeUsername = view.findViewById(R.id.change_username);
-        FrameLayout btnGuide = view.findViewById(R.id.guide);
         FrameLayout btnLogout = view.findViewById(R.id.logout); // ✅ Add this line
 
 
         btnAboutUs.setOnClickListener(v -> startActivity(new Intent(requireActivity(), AboutUsActivity.class)));
-        btnExit.setOnClickListener(v -> showExitConfirmationDialog());
         btnChangeUsername.setOnClickListener(v -> showChangeNicknameDialog());
-        btnGuide.setOnClickListener(v -> showGuidesDialog());
         btnLogout.setOnClickListener(v -> showLogoutConfirmationDialog()); // ✅ Connect the logout action
 
 
         return view;
-    }
-
-
-    private void showExitConfirmationDialog() {
-        View dialogView = LayoutInflater.from(requireContext())
-                .inflate(R.layout.custom_dialog_box_exit, null);
-
-        AlertDialog dialog = new AlertDialog.Builder(requireContext())
-                .setView(dialogView)
-                .create();
-
-        dialogView.findViewById(R.id.button5).setOnClickListener(v -> {
-            requireActivity().finish();
-        });
-
-        dialogView.findViewById(R.id.button6).setOnClickListener(v -> {
-            dialog.dismiss();
-        });
-
-        dialog.show();
-
-        //  Make dialog appear higher on screen
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            dialog.getWindow().setLayout(
-
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-
-            dialog.getWindow().getAttributes().y = -200;
-            dialog.getWindow().setAttributes(dialog.getWindow().getAttributes());
-        }
     }
 
     private void showChangeNicknameDialog() {
@@ -141,30 +104,6 @@ public class SettingsFragment extends Fragment {
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            dialog.getWindow().getAttributes().y = -200;
-            dialog.getWindow().setAttributes(dialog.getWindow().getAttributes());
-        }
-    }
-
-    private void showGuidesDialog() {
-        LayoutInflater inflater = LayoutInflater.from(requireContext());
-        View dialogView = inflater.inflate(R.layout.gabay_dialog, null);
-        AlertDialog dialog = new AlertDialog.Builder(requireContext())
-                .setView(dialogView)
-                .setCancelable(false)
-                .create();
-        Button back = dialogView.findViewById(R.id.btn_isara_gabay);
-        back.setOnClickListener(v -> dialog.dismiss());
-        dialog.show();
-
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            dialog.getWindow().setLayout(
-
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-
             dialog.getWindow().getAttributes().y = -200;
             dialog.getWindow().setAttributes(dialog.getWindow().getAttributes());
         }

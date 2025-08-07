@@ -70,11 +70,7 @@ public class WelcomeActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Bind UI elements
-        startBtn = findViewById(R.id.button);
         btnGoogleLogin = findViewById(R.id.btnGoogleLogin);
-
-        // Start button (skip login)
-        startBtn.setOnClickListener(view -> goToHomePage());
 
         // Google login
         btnGoogleLogin.setOnClickListener(view -> {

@@ -126,13 +126,6 @@ public class Palaro extends AppCompatActivity {
                 Toast.makeText(this, "Unlock Dalubhasa at 800 points!", Toast.LENGTH_SHORT).show();
             }
         });
-
-        Button debugAddPoints = findViewById(R.id.debug_add_points);
-        debugAddPoints.setOnClickListener(v -> {
-            userPoints += 100;
-            editor.putInt(KEY_POINTS, userPoints).apply();
-            updateUI();
-        });
     }
 
     private void loadTotalScoreFromFirestore() {

@@ -51,24 +51,7 @@
                 android:textColor="#ffffff" />
 
         </FrameLayout>
-        <FrameLayout
-            android:id="@+id/guide"
-            android:layout_width="337dp"
-            android:layout_height="51dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_color"
-            android:clickable="true">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/poppins"
-                android:gravity="center"
-                android:text="Gabay"
-                android:textColor="#ffffff" />
-
-        </FrameLayout>
         <FrameLayout
             android:id="@+id/change_username"
             android:layout_width="337dp"
@@ -86,24 +69,6 @@
                 android:text="Palitan ang Palayaw"
                 android:textColor="#ffffff" />
 
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/exit_app"
-            android:layout_width="338dp"
-            android:layout_height="51dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_color"
-            android:clickable="true">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/poppins"
-                android:gravity="center"
-                android:text="Umalis"
-                android:textColor="#ffffff" />
         </FrameLayout>
 
 

@@ -74,16 +74,4 @@
         </LinearLayout>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="218dp"
-        android:layout_height="62dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="100dp"
-        android:background="@drawable/button_color"
-        android:fontFamily="@font/special"
-        android:text="Magsimula"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp" />
-
 </LinearLayout>

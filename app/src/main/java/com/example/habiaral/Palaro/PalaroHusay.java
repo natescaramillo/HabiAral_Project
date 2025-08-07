@@ -601,6 +601,16 @@
                                     unlockAchievementA9IfEligible();
                                 });
 
+                        docRef.set(update, SetOptions.merge())
+                                .addOnSuccessListener(unused -> {
+                                    unlockAchievementA9IfEligible();
+
+                                    // ✅ Add this check here:
+                                    int wrongAnswers = attemptCount - correctAnswerCount;
+                                    if (correctAnswerCount >= 2 && wrongAnswers <= 3) {
+                                        unlockBihasangMagsanayAchievement(firebaseUID);
+                                    }
+                                });
 
                     }
                 });
@@ -618,7 +628,7 @@
                 if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
 
                 String studentId = studentDoc.getString("studentId");
-                String firebaseUID = studentDoc.getId(); // ← UID as document ID
+                String firebaseUID = studentDoc.getId(); // UID as document ID
 
                 db.collection("husay").get().addOnSuccessListener(allQuestionsSnapshot -> {
                     List<String> allQuestionIds = new ArrayList<>();
@@ -626,7 +636,6 @@
                         allQuestionIds.add(doc.getId());
                     }
 
-                    // ✅ FIXED: Use firebaseUID instead of studentId
                     db.collection("palaro_answered").document(firebaseUID).get().addOnSuccessListener(userDoc -> {
                         if (!userDoc.exists()) return;
 
@@ -638,13 +647,16 @@
                         if (answeredIds.containsAll(allQuestionIds)) {
                             db.collection("student_achievements").document(firebaseUID).get().addOnSuccessListener(achSnapshot -> {
                                 Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
+
                                 if (achievements != null && achievements.containsKey(achievementCode)) {
-                                    // Already unlocked, do nothing
+                                    // Already unlocked SA9, but check if A2 is unlocked
+                                    unlockBihasangMagsanayAchievement(studentId); // 👈 add this
                                     return;
                                 }
 
-                                // Not yet unlocked
+                                // Not yet unlocked SA9
                                 continueUnlockingAchievement(firebaseUID, achievementCode, achievementId);
+                                unlockBihasangMagsanayAchievement(studentId); // 👈 add this too
                             });
                         }
 
@@ -685,41 +697,47 @@
                 });
             });
         }
-        private void unlockBihasangMagsanayAchievement(String studentId) {
-            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        private void unlockBihasangMagsanayAchievement(String firebaseUID) {
             String achievementCode = "SA2";
             String achievementId = "A2";
 
-            db.collection("student_achievements").document(uid).get().addOnSuccessListener(achSnapshot -> {
-                Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
-                if (achievements != null && achievements.containsKey(achievementCode)) {
-                    return; // Already unlocked
-                }
+            db.collection("student_achievements").document(firebaseUID).get()
+                    .addOnSuccessListener(achSnapshot -> {
+                        Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
+                        if (achievements != null && achievements.containsKey(achievementCode)) {
+                            return; // Already unlocked
+                        }
 
-                db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
-                    if (!achDoc.exists()) return;
+                        db.collection("students").document(firebaseUID).get().addOnSuccessListener(studentDoc -> {
+                            if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
 
-                    String title = achDoc.getString("title");
+                            String studentId = studentDoc.getString("studentId");
 
-                    Map<String, Object> achievementData = new HashMap<>();
-                    achievementData.put("achievementID", achievementId);
-                    achievementData.put("title", title);
-                    achievementData.put("unlockedAt", Timestamp.now());
+                            db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
+                                if (!achDoc.exists()) return;
 
-                    Map<String, Object> achievementMap = new HashMap<>();
-                    achievementMap.put(achievementCode, achievementData);
+                                String title = achDoc.getString("title");
 
-                    Map<String, Object> wrapper = new HashMap<>();
-                    wrapper.put("studentId", studentId);
-                    wrapper.put("achievements", achievementMap);
+                                Map<String, Object> achievementData = new HashMap<>();
+                                achievementData.put("achievementID", achievementId);
+                                achievementData.put("title", title);
+                                achievementData.put("unlockedAt", Timestamp.now());
 
-                    db.collection("student_achievements").document(uid)
-                            .set(wrapper, SetOptions.merge())
-                            .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                showAchievementUnlockedDialog(title);
-                            }));
-                });
-            });
+                                Map<String, Object> achievementMap = new HashMap<>();
+                                achievementMap.put(achievementCode, achievementData);
+
+                                Map<String, Object> wrapper = new HashMap<>();
+                                wrapper.put("studentId", studentId);
+                                wrapper.put("achievements", achievementMap);
+
+                                db.collection("student_achievements").document(firebaseUID)
+                                        .set(wrapper, SetOptions.merge())
+                                        .addOnSuccessListener(unused -> runOnUiThread(() -> {
+                                            showAchievementUnlockedDialog(title);
+                                        }));
+                            });
+                        });
+                    });
         }
 
 
