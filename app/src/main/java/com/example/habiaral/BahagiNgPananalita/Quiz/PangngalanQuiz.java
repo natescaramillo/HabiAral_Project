@@ -39,7 +39,7 @@ public class PangngalanQuiz extends AppCompatActivity {
     boolean isAnswered = false;
 
     CountDownTimer countDownTimer;
-    long timeLeftInMillis = 6000;
+    long timeLeftInMillis = 10000;
     private AlertDialog resultDialog;
     boolean quizFinished = false;
 
@@ -117,7 +117,8 @@ public class PangngalanQuiz extends AppCompatActivity {
         answer2.setEnabled(true);
         answer3.setEnabled(true);
 
-        if (countDownTimer != null) countDownTimer.cancel();
+        timerBar.setProgress((int) timeLeftInMillis);
+
     }
 
     private void disableAnswers() {
@@ -216,7 +217,7 @@ public class PangngalanQuiz extends AppCompatActivity {
                 Toast.makeText(PangngalanQuiz.this, "Time's up!", Toast.LENGTH_SHORT).show();
 
                 // Automatically go to next question or finish quiz
-                nextButton.performClick();
+                new Handler().postDelayed(() -> nextButton.performClick(), 500); // 0.5s delay
             }
         }.start();
     }
