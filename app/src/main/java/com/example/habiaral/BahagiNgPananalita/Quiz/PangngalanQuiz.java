@@ -40,6 +40,9 @@ public class PangngalanQuiz extends AppCompatActivity {
 
     CountDownTimer countDownTimer;
     long timeLeftInMillis = 6000;
+    private AlertDialog resultDialog;
+    boolean quizFinished = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +86,14 @@ public class PangngalanQuiz extends AppCompatActivity {
                 return;
             }
 
-            currentIndex++;
+            currentIndex++;  // Increment index here only
+
             if (currentIndex < quizIDs.size()) {
                 resetButtons();
                 loadQuestion(quizIDs.get(currentIndex));
             } else {
+                quizFinished = true;  // SET FLAG HERE
+                if (countDownTimer != null) countDownTimer.cancel();  // Stop timer
                 unlockNextLesson();
                 saveQuizResultToFirestore();
                 showResultDialog();
@@ -185,6 +191,10 @@ public class PangngalanQuiz extends AppCompatActivity {
     // TIMER
     // =========================
     private void startTimer() {
+        if (countDownTimer != null) countDownTimer.cancel();
+
+
+        // Reset timer progress bar
         timerBar.setMax((int) timeLeftInMillis);
         timerBar.setProgress((int) timeLeftInMillis);
 
@@ -196,19 +206,17 @@ public class PangngalanQuiz extends AppCompatActivity {
 
             @Override
             public void onFinish() {
+                if (quizFinished) {
+                    // Do nothing if quiz already finished
+                    return;
+                }
+
                 isAnswered = true;
                 disableAnswers();
                 Toast.makeText(PangngalanQuiz.this, "Time's up!", Toast.LENGTH_SHORT).show();
 
-                if (currentIndex < quizIDs.size() - 1) {
-                    currentIndex++;
-                    resetButtons();
-                    loadQuestion(quizIDs.get(currentIndex));
-                } else {
-                    unlockNextLesson();
-                    saveQuizResultToFirestore();
-                    showResultDialog();
-                }
+                // Automatically go to next question or finish quiz
+                nextButton.performClick();
             }
         }.start();
     }
@@ -217,6 +225,10 @@ public class PangngalanQuiz extends AppCompatActivity {
     // DIALOGS & NAVIGATION
     // =========================
     private void showResultDialog() {
+        if (resultDialog != null && resultDialog.isShowing()) {
+            resultDialog.dismiss();
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_option, null);
         builder.setView(dialogView);
@@ -225,11 +237,17 @@ public class PangngalanQuiz extends AppCompatActivity {
         Button retryButton = dialogView.findViewById(R.id.buttonRetry);
         Button homeButton = dialogView.findViewById(R.id.buttonHome);
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        resultDialog = builder.create();
+        resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        if (!isFinishing()) {
+            resultDialog.show();
+        }
 
         retryButton.setOnClickListener(v -> {
-            dialog.dismiss();
+            if (resultDialog != null && resultDialog.isShowing()) {
+                resultDialog.dismiss();
+            }
             currentIndex = 0;
             Collections.shuffle(quizIDs);
             resetButtons();
@@ -237,7 +255,9 @@ public class PangngalanQuiz extends AppCompatActivity {
         });
 
         homeButton.setOnClickListener(v -> {
-            dialog.dismiss();
+            if (resultDialog != null && resultDialog.isShowing()) {
+                resultDialog.dismiss();
+            }
             Intent intent = new Intent(PangngalanQuiz.this, BahagiNgPananalita.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -291,5 +311,16 @@ public class PangngalanQuiz extends AppCompatActivity {
         db.collection("module_progress")
                 .document(uid)
                 .set(Map.of("module_1", updateMap), SetOptions.merge());
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (resultDialog != null && resultDialog.isShowing()) {
+            resultDialog.dismiss();
+        }
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        super.onDestroy();
     }
 }

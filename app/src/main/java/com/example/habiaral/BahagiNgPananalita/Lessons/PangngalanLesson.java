@@ -95,6 +95,11 @@ public class PangngalanLesson extends AppCompatActivity {
 
         // Unlock button → go to quiz
         unlockButton.setOnClickListener(view -> {
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+                textToSpeech.shutdown();
+                textToSpeech = null;  // prevent further use
+            }
             Intent intent = new Intent(PangngalanLesson.this, PangngalanQuiz.class);
             startActivity(intent);
         });
@@ -254,5 +259,13 @@ public class PangngalanLesson extends AppCompatActivity {
             textToSpeech.shutdown();
         }
         super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+        }
+        super.onPause();
     }
 }
