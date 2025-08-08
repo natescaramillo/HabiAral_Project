@@ -28,7 +28,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -79,7 +78,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_palaro_baguhan);
+        setContentView(R.layout.palaro_baguhan);
 
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
@@ -237,7 +236,7 @@ public class PalaroBaguhan extends AppCompatActivity {
         }
 
 
-        View showTotalPoints = getLayoutInflater().inflate(R.layout.time_up_dialog, null);
+        View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
         AlertDialog dialog = new AlertDialog.Builder(PalaroBaguhan.this)
                 .setView(showTotalPoints)
                 .setCancelable(false)
@@ -810,7 +809,7 @@ public class PalaroBaguhan extends AppCompatActivity {
 
 
     private void showBackConfirmationDialog() {
-        View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+        View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
 
         AlertDialog backDialog = new AlertDialog.Builder(this)
                 .setView(backDialogView)
@@ -842,7 +841,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void showExitConfirmationDialog() {
-        View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+        View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
         AlertDialog backDialog = new AlertDialog.Builder(this)
                 .setView(backDialogView)
                 .setCancelable(false)

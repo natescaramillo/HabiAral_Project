@@ -27,7 +27,7 @@ public class PangHalipQuiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_panghalip_quiz);
+        setContentView(R.layout.bahagi_ng_pananalita_panghalip_quiz);
 
         nextButton = findViewById(R.id.panghalipNextButton);
 

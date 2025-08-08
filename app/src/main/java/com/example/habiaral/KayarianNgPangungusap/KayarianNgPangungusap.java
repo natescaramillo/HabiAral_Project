@@ -6,7 +6,6 @@ import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.KayarianNgPangungusap.Lessons.Payak;
@@ -16,7 +15,6 @@ import com.example.habiaral.KayarianNgPangungusap.Lessons.Langkapan;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class KayarianNgPangungusap extends AppCompatActivity {
@@ -30,7 +28,7 @@ public class KayarianNgPangungusap extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_kayarian_ng_pangungusap);
+        setContentView(R.layout.kayarian_ng_pangungusap);
 
         btnPayak = findViewById(R.id.payak);
         btnTambalan = findViewById(R.id.tambalan);

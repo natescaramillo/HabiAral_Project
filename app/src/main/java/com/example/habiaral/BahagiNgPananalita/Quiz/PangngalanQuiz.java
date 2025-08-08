@@ -44,7 +44,7 @@ public class PangngalanQuiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pangngalan_quiz);
+        setContentView(R.layout.bahagi_ng_pananalita_pangngalan_quiz);
 
         questionTitle = findViewById(R.id.questionTitle);
         questionText = findViewById(R.id.pangngalan_questionText);

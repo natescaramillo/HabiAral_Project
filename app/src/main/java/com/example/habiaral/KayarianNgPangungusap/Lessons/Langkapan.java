@@ -24,7 +24,7 @@ public class Langkapan extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_langkapan_lesson);
+        setContentView(R.layout.kayarian_ng_pangungusap_langkapan_lesson);
 
         // =========================
         // UI INITIALIZATION

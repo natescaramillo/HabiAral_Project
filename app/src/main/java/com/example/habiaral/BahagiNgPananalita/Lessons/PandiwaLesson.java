@@ -30,7 +30,7 @@ public class PandiwaLesson extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pandiwa_lesson);
+        setContentView(R.layout.bahagi_ng_pananalita_pandiwa_lesson);
 
         // =========================
         // UI INITIALIZATION

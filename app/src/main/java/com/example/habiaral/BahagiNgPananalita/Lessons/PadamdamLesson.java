@@ -30,7 +30,7 @@ public class PadamdamLesson extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_padamdam_lesson);
+        setContentView(R.layout.bahagi_ng_pananalita_padamdam_lesson);
 
         // =========================
         // UI INITIALIZATION

@@ -24,7 +24,7 @@ public class Hugnayan extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hugnayan_lesson);
+        setContentView(R.layout.kayarian_ng_pangungusap_hugnayan_lesson);
 
         // =========================
         // UI INITIALIZATION

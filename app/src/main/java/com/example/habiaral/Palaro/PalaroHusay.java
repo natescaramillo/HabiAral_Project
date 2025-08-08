@@ -4,7 +4,6 @@
     import android.os.Bundle;
     import android.os.CountDownTimer;
     import android.os.Handler;
-    import android.util.Log;
     import android.view.MotionEvent;
     import android.view.View;
     import android.widget.Button;
@@ -20,15 +19,11 @@
 
     import android.speech.tts.TextToSpeech;
 
-    import java.util.Arrays;
-    import java.util.HashSet;
     import java.util.Locale;
 
     import com.example.habiaral.R;
     import com.google.firebase.Timestamp;
     import com.google.firebase.firestore.DocumentReference;
-    import com.google.firebase.firestore.DocumentSnapshot;
-    import com.google.firebase.firestore.FieldValue;
     import com.google.firebase.firestore.FirebaseFirestore;
     import com.google.firebase.auth.FirebaseAuth;
     import com.google.firebase.auth.FirebaseUser;
@@ -40,7 +35,6 @@
     import java.util.HashMap;
     import java.util.List;
     import java.util.Map;
-    import java.util.Set;
 
     public class PalaroHusay extends AppCompatActivity {
 
@@ -77,7 +71,7 @@
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_palaro_husay);
+            setContentView(R.layout.palaro_husay);
             husayInstruction = findViewById(R.id.husay_instructionText);
             answer1 = findViewById(R.id.husay_answer1);
             answer2 = findViewById(R.id.husay_answer2);
@@ -127,7 +121,7 @@
 
         private void showUmalisDialog() {
             AlertDialog.Builder builder = new AlertDialog.Builder(PalaroHusay.this); // 🔁 Use correct activity context
-            View dialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
 
             Button btnOo = dialogView.findViewById(R.id.button5);    // OO button
             Button btnHindi = dialogView.findViewById(R.id.button6); // Hindi button
@@ -258,7 +252,7 @@
         }
 
         private void showBackConfirmationDialog() {
-            View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+            View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
             AlertDialog backDialog = new AlertDialog.Builder(this)
                     .setView(backDialogView)
                     .setCancelable(false)
@@ -424,7 +418,7 @@
         private void finishQuiz() {
 
 
-            View showTotalPoints = getLayoutInflater().inflate(R.layout.time_up_dialog, null);
+            View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
             AlertDialog dialog = new AlertDialog.Builder(PalaroHusay.this)
                     .setView(showTotalPoints)
                     .setCancelable(false)

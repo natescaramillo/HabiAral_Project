@@ -35,7 +35,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_settings, container, false);
+        View view = inflater.inflate(R.layout.settings, container, false);
 
         // ✅ FIX: initialize Firebase
         auth = FirebaseAuth.getInstance();
@@ -111,7 +111,7 @@ public class SettingsFragment extends Fragment {
 
     private void showLogoutConfirmationDialog() {
         View dialogView = LayoutInflater.from(requireContext())
-                .inflate(R.layout.custom_dialog_box_logout, null);
+                .inflate(R.layout.dialog_box_logout, null);
 
         AlertDialog dialog = new AlertDialog.Builder(requireContext())
                 .setView(dialogView)

@@ -83,7 +83,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_palaro_dalubhasa);
+        setContentView(R.layout.palaro_dalubhasa);
 
 
         tts = new TextToSpeech(this, status -> {
@@ -192,7 +192,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private void showUmalisDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PalaroDalubhasa.this);
-        View dialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
 
         Button btnOo = dialogView.findViewById(R.id.button5);    // OO button
         Button btnHindi = dialogView.findViewById(R.id.button6); // Hindi button
@@ -287,7 +287,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void showBackConfirmationDialog() {
-        View dialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setCancelable(false)
@@ -438,7 +438,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void finishQuiz() {
-        View showTotalPoints = getLayoutInflater().inflate(R.layout.time_up_dialog, null);
+        View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
         AlertDialog dialog = new AlertDialog.Builder(PalaroDalubhasa.this)
                 .setView(showTotalPoints)
                 .setCancelable(false)

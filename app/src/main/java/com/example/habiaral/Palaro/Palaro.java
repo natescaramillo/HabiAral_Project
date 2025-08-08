@@ -57,7 +57,7 @@ public class Palaro extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_palaro);
+        setContentView(R.layout.palaro);
 
         db = FirebaseFirestore.getInstance();
 
@@ -390,7 +390,7 @@ public class Palaro extends AppCompatActivity {
     }
 
     private void showGameMechanics() {
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.game_mechanics_dialog, null);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_box_game_mechanics, null);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(dialogView)

@@ -24,7 +24,7 @@ public class Payak extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_payak_lesson);
+        setContentView(R.layout.kayarian_ng_pangungusap_payak_lesson);
 
         // =========================
         // UI INITIALIZATION

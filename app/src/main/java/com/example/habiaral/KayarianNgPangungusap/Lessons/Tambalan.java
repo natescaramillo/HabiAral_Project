@@ -24,7 +24,7 @@ public class Tambalan extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tambalan_lesson);
+        setContentView(R.layout.kayarian_ng_pangungusap_tambalan_lesson);
 
         // =========================
         // UI INITIALIZATION

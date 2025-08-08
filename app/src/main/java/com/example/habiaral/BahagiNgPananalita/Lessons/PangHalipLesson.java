@@ -30,7 +30,7 @@ public class PangHalipLesson extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_panghalip_lesson);
+        setContentView(R.layout.bahagi_ng_pananalita_panghalip_lesson);
 
         // =========================
         // UI INITIALIZATION
