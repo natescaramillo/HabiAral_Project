@@ -33,11 +33,55 @@ public class PangawingQuiz extends AppCompatActivity {
         nextButton = findViewById(R.id.pangawingNextButton);
 
         nextButton.setOnClickListener(view -> {
-            updateLessonStatusInFirestore();
-            showResultDialog();
+            updateLessonStatusInFirestore(); // Firestore
+            showResultDialog();              // Result dialog
         });
     }
 
+    // =========================
+    // DIALOGS & NAVIGATION
+    // =========================
+    private void showResultDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_box_option, null);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+
+        Button retryButton = dialogView.findViewById(R.id.buttonRetry);
+        Button homeButton = dialogView.findViewById(R.id.buttonHome);
+
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.show();
+
+        retryButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        });
+
+        homeButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = new Intent(PangawingQuiz.this, BahagiNgPananalita.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    private void showAchievementUnlockedDialog(String title) {
+        new AlertDialog.Builder(this)
+                .setTitle("Achievement Unlocked!")
+                .setMessage("You unlocked: " + title)
+                .setPositiveButton("OK", null)
+                .show();
+    }
+
+    // =========================
+    // FIRESTORE UPDATES
+    // =========================
     private void updateLessonStatusInFirestore() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -64,6 +108,9 @@ public class PangawingQuiz extends AppCompatActivity {
                 });
     }
 
+    // =========================
+    // ACHIEVEMENTS
+    // =========================
     private void checkAndUnlockAchievement() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -135,44 +182,6 @@ public class PangawingQuiz extends AppCompatActivity {
                             showAchievementUnlockedDialog(title);
                         }));
             });
-        });
-    }
-
-    private void showAchievementUnlockedDialog(String title) {
-        new AlertDialog.Builder(this)
-                .setTitle("Achievement Unlocked!")
-                .setMessage("You unlocked: " + title)
-                .setPositiveButton("OK", null)
-                .show();
-    }
-
-    private void showResultDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_box_option, null);
-        builder.setView(dialogView);
-        builder.setCancelable(false);
-
-        Button retryButton = dialogView.findViewById(R.id.buttonRetry);
-        Button homeButton = dialogView.findViewById(R.id.buttonHome);
-
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.show();
-
-        retryButton.setOnClickListener(v -> {
-            dialog.dismiss();
-            Intent intent = getIntent();
-            finish();
-            startActivity(intent);
-        });
-
-        homeButton.setOnClickListener(v -> {
-            dialog.dismiss();
-            Intent intent = new Intent(PangawingQuiz.this, BahagiNgPananalita.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
         });
     }
 }

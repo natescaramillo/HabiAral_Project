@@ -32,57 +32,15 @@ public class PangHalipQuiz extends AppCompatActivity {
         nextButton = findViewById(R.id.panghalipNextButton);
 
         nextButton.setOnClickListener(view -> {
-            unlockNextLessonInFirebase();
-            saveQuizResultToFirestore();
-            showResultDialog();
+            unlockNextLesson();          // Firestore
+            saveQuizResultToFirestore(); // Firestore
+            showResultDialog();          // Result dialog
         });
     }
 
-    private void unlockNextLessonInFirebase() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = user.getUid();
-
-        Map<String, Object> nextLessonStatus = new HashMap<>();
-        nextLessonStatus.put("status", "unlocked");
-
-        Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("pang_abay", nextLessonStatus); // unlock next lesson
-
-        Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("lessons", lessonsMap);
-
-        db.collection("module_progress")
-                .document(uid)
-                .set(Map.of("module_1", updateMap), SetOptions.merge());
-
-        Toast.makeText(this, "Next Lesson Unlocked: Pang-abay!", Toast.LENGTH_SHORT).show();
-    }
-
-    private void saveQuizResultToFirestore() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = user.getUid();
-
-        Map<String, Object> pangHalipStatus = new HashMap<>();
-        pangHalipStatus.put("status", "completed");
-
-        Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("panghalip", pangHalipStatus);
-
-        Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "panghalip");
-
-        db.collection("module_progress")
-                .document(uid)
-                .set(Map.of("module_1", updateMap), SetOptions.merge());
-    }
-
+    // =========================
+    // DIALOGS & NAVIGATION
+    // =========================
     private void showResultDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -110,5 +68,54 @@ public class PangHalipQuiz extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+    }
+
+    // =========================
+    // FIRESTORE UPDATES
+    // =========================
+    private void unlockNextLesson() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        Map<String, Object> pangAbayStatus = new HashMap<>();
+        pangAbayStatus.put("status", "unlocked");
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("pang_abay", pangAbayStatus);
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("lessons", lessonsMap);
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_1", updateMap), SetOptions.merge())
+                .addOnSuccessListener(aVoid ->
+                        Toast.makeText(this, "Next Lesson Unlocked: Pang-abay!", Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    private void saveQuizResultToFirestore() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        Map<String, Object> pangHalipStatus = new HashMap<>();
+        pangHalipStatus.put("status", "completed");
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("panghalip", pangHalipStatus);
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("lessons", lessonsMap);
+        updateMap.put("current_lesson", "panghalip");
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_1", updateMap), SetOptions.merge());
     }
 }

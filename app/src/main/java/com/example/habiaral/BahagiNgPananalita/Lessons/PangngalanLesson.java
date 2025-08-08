@@ -13,7 +13,6 @@ import android.speech.tts.TextToSpeech;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalitaProgress;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,18 +35,23 @@ public class PangngalanLesson extends AppCompatActivity {
     private List<String> allLines;
     private List<String> linesAfterVideo;
     private TextToSpeech textToSpeech;
-
-    private boolean isLessonDone = false;  // ✨ track from Firebase
+    private boolean isLessonDone = false;  // Track from Firebase
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pangngalan_lesson);
 
+        // =========================
+        // UI INITIALIZATION
+        // =========================
         unlockButton = findViewById(R.id.UnlockButtonPangngalan);
         videoView = findViewById(R.id.videoViewPangngalan);
         instructionText = findViewById(R.id.instructionText);
 
+        // =========================
+        // TEXT TO SPEECH SETUP
+        // =========================
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
                 int langResult = textToSpeech.setLanguage(new Locale("tl", "PH"));
@@ -60,11 +64,16 @@ public class PangngalanLesson extends AppCompatActivity {
             }
         });
 
+        // Disable unlock button until lesson is completed
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
+        // Check if lesson is already completed
         checkLessonStatus();
 
+        // =========================
+        // VIDEO SETUP
+        // =========================
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pangngalan_lesson);
         videoView.setVideoURI(videoUri);
 
@@ -85,14 +94,19 @@ public class PangngalanLesson extends AppCompatActivity {
             }
         });
 
+        // Unlock button → go to quiz
         unlockButton.setOnClickListener(view -> {
             Intent intent = new Intent(PangngalanLesson.this, PangngalanQuiz.class);
             startActivity(intent);
         });
 
+        // Load lesson script
         loadCharacterLines();
     }
 
+    // =========================
+    // FIRESTORE - CHECK LESSON STATUS
+    // =========================
     private void checkLessonStatus() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -103,8 +117,7 @@ public class PangngalanLesson extends AppCompatActivity {
         db.collection("module_progress").document(uid).get()
                 .addOnSuccessListener(snapshot -> {
                     if (snapshot.exists()) {
-                        DocumentSnapshot module = snapshot;
-                        Map<String, Object> module1 = (Map<String, Object>) module.get("module_1");
+                        Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
 
                         if (module1 != null && module1.containsKey("lessons")) {
                             Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
@@ -122,6 +135,9 @@ public class PangngalanLesson extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to load progress", e));
     }
 
+    // =========================
+    // FIRESTORE - SAVE PROGRESS
+    // =========================
     private void saveProgressToFirestore() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -147,6 +163,9 @@ public class PangngalanLesson extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save progress", e));
     }
 
+    // =========================
+    // LOAD LESSON SCRIPT
+    // =========================
     private void loadCharacterLines() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -167,6 +186,9 @@ public class PangngalanLesson extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to fetch lines", e));
     }
 
+    // =========================
+    // DISPLAY LINES BEFORE VIDEO
+    // =========================
     private void displayIntroLines(List<String> introLines) {
         Handler handler = new Handler();
         final int[] index = {0};
@@ -192,6 +214,9 @@ public class PangngalanLesson extends AppCompatActivity {
         handler.postDelayed(runnable, 3000);
     }
 
+    // =========================
+    // DISPLAY LINES AFTER VIDEO
+    // =========================
     private void displayLinesAfterVideo(List<String> lines) {
         Handler handler = new Handler();
         final int[] index = {0};
@@ -214,6 +239,9 @@ public class PangngalanLesson extends AppCompatActivity {
         handler.postDelayed(runnable, 1000);
     }
 
+    // =========================
+    // TEXT TO SPEECH
+    // =========================
     private void speak(String text) {
         if (textToSpeech != null && !text.isEmpty()) {
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);

@@ -2,19 +2,14 @@ package com.example.habiaral.KayarianNgPangungusap.Lessons;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -31,40 +26,47 @@ public class Langkapan extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_langkapan_lesson);
 
+        // =========================
+        // UI INITIALIZATION
+        // =========================
         unlockButton = findViewById(R.id.UnlockButtonLangkapan);
-        db = FirebaseFirestore.getInstance();
-        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        unlockButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                unlockLesson();
-            }
-        });
+        // =========================
+        // FIRESTORE INITIALIZATION
+        // =========================
+        db = FirebaseFirestore.getInstance();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
+
+        // Unlock button → save progress & return to main
+        unlockButton.setOnClickListener(view -> unlockLesson());
     }
 
+    // =========================
+    // FIRESTORE - UNLOCK LESSON
+    // =========================
     private void unlockLesson() {
+        if (userId == null) {
+            Toast.makeText(this, "User not signed in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Map<String, Object> data = new HashMap<>();
         data.put("LangkapanDone", true);
 
-        DocumentReference docRef = db.collection("lesson_progress").document(userId); // ✅ Tama na
-        docRef.update(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Toast.makeText(Langkapan.this, "Congratulations! You've completed all lessons!", Toast.LENGTH_SHORT).show();
-
-                        Intent intent = new Intent(Langkapan.this, KayarianNgPangungusap.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
-                    }
+        db.collection("lesson_progress") // ✅ Tamang collection
+                .document(userId)
+                .update(data)
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(Langkapan.this, "Congratulations! You've completed all lessons!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Langkapan.this, KayarianNgPangungusap.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(Langkapan.this, "Failed to save progress.", Toast.LENGTH_SHORT).show();
-                    }
+                .addOnFailureListener(e -> {
+                    Toast.makeText(Langkapan.this, "Failed to save progress.", Toast.LENGTH_SHORT).show();
                 });
     }
 }

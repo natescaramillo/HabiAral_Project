@@ -3,6 +3,7 @@ package com.example.habiaral.BahagiNgPananalita.Lessons;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.VideoView;
@@ -13,7 +14,6 @@ import com.example.habiaral.BahagiNgPananalita.Quiz.PangUkolQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -25,22 +25,29 @@ public class PangUkolLesson extends AppCompatActivity {
     Button unlockButton;
     VideoView videoView;
     MediaController mediaController;
-
-    private boolean isLessonDone = false;
+    private boolean isLessonDone = false; // Track from Firebase
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pangukol_lesson);
 
+        // =========================
+        // UI INITIALIZATION
+        // =========================
         unlockButton = findViewById(R.id.UnlockButtonPangukol);
         videoView = findViewById(R.id.videoViewPangukol);
 
+        // Disable unlock button until lesson is completed
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
-        loadLessonStatusFromFirestore();
+        // Check if lesson is already completed
+        checkLessonStatus();
 
+        // =========================
+        // VIDEO SETUP
+        // =========================
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pangukol_lesson);
         videoView.setVideoURI(videoUri);
 
@@ -48,41 +55,45 @@ public class PangUkolLesson extends AppCompatActivity {
         mediaController.setAnchorView(videoView);
         videoView.setMediaController(mediaController);
 
-        videoView.start();
-
         videoView.setOnCompletionListener(mp -> {
             if (!isLessonDone) {
+                isLessonDone = true;
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
-                isLessonDone = true;
                 saveProgressToFirestore();
             }
         });
 
+        // Unlock button → go to quiz
         unlockButton.setOnClickListener(view -> {
             Intent intent = new Intent(PangUkolLesson.this, PangUkolQuiz.class);
             startActivity(intent);
         });
+
+        // Play video automatically
+        videoView.start();
     }
 
-    private void loadLessonStatusFromFirestore() {
+    // =========================
+    // FIRESTORE - CHECK LESSON STATUS
+    // =========================
+    private void checkLessonStatus() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        db.collection("module_progress")
-                .document(uid)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Map<String, Object> moduleData = (Map<String, Object>) documentSnapshot.get("module_1");
-                        if (moduleData != null) {
-                            Map<String, Object> lessons = (Map<String, Object>) moduleData.get("lessons");
-                            if (lessons != null) {
+        db.collection("module_progress").document(uid).get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
+
+                        if (module1 != null && module1.containsKey("lessons")) {
+                            Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
+                            if (lessons != null && lessons.containsKey("pangukol")) {
                                 Map<String, Object> pangukol = (Map<String, Object>) lessons.get("pangukol");
-                                if (pangukol != null && "in_progress".equals(pangukol.get("status"))) {
+                                if (pangukol != null && "completed".equals(pangukol.get("status"))) {
                                     isLessonDone = true;
                                     unlockButton.setEnabled(true);
                                     unlockButton.setAlpha(1f);
@@ -90,10 +101,13 @@ public class PangUkolLesson extends AppCompatActivity {
                             }
                         }
                     }
-                });
+                })
+                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to load progress", e));
     }
 
-
+    // =========================
+    // FIRESTORE - SAVE PROGRESS
+    // =========================
     private void saveProgressToFirestore() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -102,17 +116,20 @@ public class PangUkolLesson extends AppCompatActivity {
         String uid = user.getUid();
 
         Map<String, Object> pangUkolStatus = new HashMap<>();
-        pangUkolStatus.put("status", "in_progress");
+        pangUkolStatus.put("status", "completed");
 
-        Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("pangukol", pangUkolStatus);
+        Map<String, Object> lessonMap = new HashMap<>();
+        lessonMap.put("pangukol", pangUkolStatus);
 
-        Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "pangukol");
+        Map<String, Object> moduleMap = new HashMap<>();
+        moduleMap.put("modulename", "Bahagi ng Pananalita");
+        moduleMap.put("status", "in_progress");
+        moduleMap.put("current_lesson", "pangukol");
+        moduleMap.put("lessons", lessonMap);
 
-        db.collection("module_progress")
-                .document(uid)
-                .set(Map.of("module_1", updateMap), SetOptions.merge());
+        db.collection("module_progress").document(uid)
+                .set(Map.of("module_1", moduleMap), SetOptions.merge())
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ Progress saved"))
+                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save progress", e));
     }
 }

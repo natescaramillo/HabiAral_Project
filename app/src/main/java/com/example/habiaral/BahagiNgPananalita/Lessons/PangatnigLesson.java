@@ -1,21 +1,19 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.VideoView;
 import android.widget.MediaController;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangatnigQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -27,26 +25,29 @@ public class PangatnigLesson extends AppCompatActivity {
     Button unlockButton;
     VideoView videoView;
     MediaController mediaController;
-    boolean isLessonDone = false;
-    FirebaseUser user;
-    FirebaseFirestore db;
+    private boolean isLessonDone = false; // Track from Firebase
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pangatnig_lesson);
 
+        // =========================
+        // UI INITIALIZATION
+        // =========================
         unlockButton = findViewById(R.id.UnlockButtonPangatnig);
         videoView = findViewById(R.id.videoViewPangatnig);
 
+        // Disable unlock button until lesson is completed
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        db = FirebaseFirestore.getInstance();
+        // Check if lesson is already completed
+        checkLessonStatus();
 
-        loadLessonStatus();
-
+        // =========================
+        // VIDEO SETUP
+        // =========================
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pangatnig_lesson);
         videoView.setVideoURI(videoUri);
 
@@ -54,66 +55,81 @@ public class PangatnigLesson extends AppCompatActivity {
         mediaController.setAnchorView(videoView);
         videoView.setMediaController(mediaController);
 
-        videoView.start();
-
         videoView.setOnCompletionListener(mp -> {
             if (!isLessonDone) {
+                isLessonDone = true;
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
-                saveLessonDoneToFirestore();
+                saveProgressToFirestore();
             }
         });
 
+        // Unlock button → go to quiz
         unlockButton.setOnClickListener(view -> {
             Intent intent = new Intent(PangatnigLesson.this, PangatnigQuiz.class);
             startActivity(intent);
         });
+
+        // Start video immediately
+        videoView.start();
     }
 
-    private void loadLessonStatus() {
+    // =========================
+    // FIRESTORE - CHECK LESSON STATUS
+    // =========================
+    private void checkLessonStatus() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
-        db.collection("module_progress")
-                .document(user.getUid())
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Map<String, Object> module1 = (Map<String, Object>) documentSnapshot.get("module_1");
-                        if (module1 != null) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        db.collection("module_progress").document(uid).get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
+
+                        if (module1 != null && module1.containsKey("lessons")) {
                             Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
-                            if (lessons != null) {
+                            if (lessons != null && lessons.containsKey("pangatnig")) {
                                 Map<String, Object> pangatnig = (Map<String, Object>) lessons.get("pangatnig");
-                                if (pangatnig != null) {
-                                    String status = (String) pangatnig.get("status");
-                                    if ("done".equals(status)) {
-                                        isLessonDone = true;
-                                        unlockButton.setEnabled(true);
-                                        unlockButton.setAlpha(1f);
-                                    }
+                                if (pangatnig != null && "completed".equals(pangatnig.get("status"))) {
+                                    isLessonDone = true;
+                                    unlockButton.setEnabled(true);
+                                    unlockButton.setAlpha(1f);
                                 }
                             }
                         }
                     }
-                });
+                })
+                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to load progress", e));
     }
 
-    private void saveLessonDoneToFirestore() {
+    // =========================
+    // FIRESTORE - SAVE PROGRESS
+    // =========================
+    private void saveProgressToFirestore() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
         Map<String, Object> pangatnigStatus = new HashMap<>();
-        pangatnigStatus.put("status", "done");
+        pangatnigStatus.put("status", "completed");
 
-        Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("pangatnig", pangatnigStatus);
+        Map<String, Object> lessonMap = new HashMap<>();
+        lessonMap.put("pangatnig", pangatnigStatus);
 
-        Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "pangatnig");
+        Map<String, Object> moduleMap = new HashMap<>();
+        moduleMap.put("modulename", "Bahagi ng Pananalita");
+        moduleMap.put("status", "in_progress");
+        moduleMap.put("current_lesson", "pangatnig");
+        moduleMap.put("lessons", lessonMap);
 
-        db.collection("module_progress")
-                .document(uid)
-                .set(Map.of("module_1", updateMap), SetOptions.merge());
+        db.collection("module_progress").document(uid)
+                .set(Map.of("module_1", moduleMap), SetOptions.merge())
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ Progress saved"))
+                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save progress", e));
     }
 }

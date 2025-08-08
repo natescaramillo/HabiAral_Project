@@ -32,12 +32,47 @@ public class PandiwaQuiz extends AppCompatActivity {
         nextButton = findViewById(R.id.pandiwaNextButton);
 
         nextButton.setOnClickListener(view -> {
-            unlockNextLesson();      // Firestore
+            unlockNextLesson();          // Firestore
             saveQuizResultToFirestore(); // Firestore
-            showResultDialog();     // Result dialog
+            showResultDialog();          // Result dialog
         });
     }
 
+    // =========================
+    // DIALOGS & NAVIGATION
+    // =========================
+    private void showResultDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_box_option, null);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+
+        Button retryButton = dialogView.findViewById(R.id.buttonRetry);
+        Button homeButton = dialogView.findViewById(R.id.buttonHome);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        retryButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        });
+
+        homeButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = new Intent(PandiwaQuiz.this, BahagiNgPananalita.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    // =========================
+    // FIRESTORE UPDATES
+    // =========================
     private void unlockNextLesson() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -82,34 +117,5 @@ public class PandiwaQuiz extends AppCompatActivity {
         db.collection("module_progress")
                 .document(uid)
                 .set(Map.of("module_1", updateMap), SetOptions.merge());
-    }
-
-    private void showResultDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_box_option, null);
-        builder.setView(dialogView);
-        builder.setCancelable(false);
-
-        Button retryButton = dialogView.findViewById(R.id.buttonRetry);
-        Button homeButton = dialogView.findViewById(R.id.buttonHome);
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        retryButton.setOnClickListener(v -> {
-            dialog.dismiss();
-            Intent intent = getIntent();
-            finish();
-            startActivity(intent);
-        });
-
-        homeButton.setOnClickListener(v -> {
-            dialog.dismiss();
-            Intent intent = new Intent(PandiwaQuiz.this, BahagiNgPananalita.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
-        });
     }
 }

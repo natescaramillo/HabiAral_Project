@@ -68,8 +68,6 @@ public class PangngalanQuiz extends AppCompatActivity {
 
         View.OnClickListener choiceClickListener = view -> {
             if (isAnswered) return;
-
-            Button selected = (Button) view;
             isAnswered = true;
             nextButton.setEnabled(true);
             disableAnswers();
@@ -90,41 +88,16 @@ public class PangngalanQuiz extends AppCompatActivity {
                 resetButtons();
                 loadQuestion(quizIDs.get(currentIndex));
             } else {
-                unlockNextLesson(); // ✅ Now handled by Firestore
-                saveQuizResultToFirestore(); // ✅ Update Firestore progress to 'completed'
+                unlockNextLesson();
+                saveQuizResultToFirestore();
                 showResultDialog();
             }
         });
     }
 
-    private void showCountdownThenLoadQuestion() {
-        questionText.setText("3");
-        new Handler().postDelayed(() -> {
-            questionText.setText("2");
-            new Handler().postDelayed(() -> {
-                questionText.setText("1");
-                new Handler().postDelayed(() -> {
-                    questionText.setText("");
-                    loadQuestion(quizIDs.get(currentIndex));
-                }, 1000);
-            }, 1000);
-        }, 1000);
-    }
-
-    private void loadCharacterLine(String lineId) {
-        db.collection("quiz_character_lines").document(lineId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String line = documentSnapshot.getString("line");
-                        questionText.setText(line);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to load line: " + lineId, Toast.LENGTH_SHORT).show();
-                });
-    }
-
+    // =========================
+    // UI HELPERS
+    // =========================
     private void resetButtons() {
         isAnswered = false;
         nextButton.setEnabled(false);
@@ -147,33 +120,35 @@ public class PangngalanQuiz extends AppCompatActivity {
         answer3.setEnabled(false);
     }
 
-    private void startTimer() {
-        timerBar.setMax((int) timeLeftInMillis);
-        timerBar.setProgress((int) timeLeftInMillis);
-
-        countDownTimer = new CountDownTimer(timeLeftInMillis, 100) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timerBar.setProgress((int) millisUntilFinished);
-            }
-
-            @Override
-            public void onFinish() {
-                isAnswered = true;
-                disableAnswers();
-                Toast.makeText(PangngalanQuiz.this, "Time's up!", Toast.LENGTH_SHORT).show();
-
-                if (currentIndex < quizIDs.size() - 1) {
-                    currentIndex++;
-                    resetButtons();
+    private void showCountdownThenLoadQuestion() {
+        questionText.setText("3");
+        new Handler().postDelayed(() -> {
+            questionText.setText("2");
+            new Handler().postDelayed(() -> {
+                questionText.setText("1");
+                new Handler().postDelayed(() -> {
+                    questionText.setText("");
                     loadQuestion(quizIDs.get(currentIndex));
-                } else {
-                    unlockNextLesson(); // ✅ Still needed to show toast
-                    saveQuizResultToFirestore(); // ✅ Save even when time's up
-                    showResultDialog();
-                }
-            }
-        }.start();
+                }, 1000);
+            }, 1000);
+        }, 1000);
+    }
+
+    // =========================
+    // DATA LOADING
+    // =========================
+    private void loadCharacterLine(String lineId) {
+        db.collection("quiz_character_lines").document(lineId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String line = documentSnapshot.getString("line");
+                        questionText.setText(line);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to load line: " + lineId, Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void loadQuestion(String documentID) {
@@ -206,10 +181,41 @@ public class PangngalanQuiz extends AppCompatActivity {
                 });
     }
 
-    private void unlockNextLesson() {
-        Toast.makeText(this, "Next Lesson Unlocked: Pandiwa!", Toast.LENGTH_SHORT).show();
+    // =========================
+    // TIMER
+    // =========================
+    private void startTimer() {
+        timerBar.setMax((int) timeLeftInMillis);
+        timerBar.setProgress((int) timeLeftInMillis);
+
+        countDownTimer = new CountDownTimer(timeLeftInMillis, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timerBar.setProgress((int) millisUntilFinished);
+            }
+
+            @Override
+            public void onFinish() {
+                isAnswered = true;
+                disableAnswers();
+                Toast.makeText(PangngalanQuiz.this, "Time's up!", Toast.LENGTH_SHORT).show();
+
+                if (currentIndex < quizIDs.size() - 1) {
+                    currentIndex++;
+                    resetButtons();
+                    loadQuestion(quizIDs.get(currentIndex));
+                } else {
+                    unlockNextLesson();
+                    saveQuizResultToFirestore();
+                    showResultDialog();
+                }
+            }
+        }.start();
     }
 
+    // =========================
+    // DIALOGS & NAVIGATION
+    // =========================
     private void showResultDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_option, null);
@@ -239,6 +245,9 @@ public class PangngalanQuiz extends AppCompatActivity {
         });
     }
 
+    // =========================
+    // UTILITIES
+    // =========================
     private String getQuestionOrdinal(int number) {
         switch (number) {
             case 1: return "Unang tanong";
@@ -253,6 +262,13 @@ public class PangngalanQuiz extends AppCompatActivity {
             case 10: return "Ikasampung tanong";
             default: return "Tanong";
         }
+    }
+
+    // =========================
+    // FIRESTORE UPDATES
+    // =========================
+    private void unlockNextLesson() {
+        Toast.makeText(this, "Next Lesson Unlocked: Pandiwa!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {
