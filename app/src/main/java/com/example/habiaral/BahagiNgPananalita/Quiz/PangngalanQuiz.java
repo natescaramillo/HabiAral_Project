@@ -43,7 +43,6 @@ public class PangngalanQuiz extends AppCompatActivity {
     private AlertDialog resultDialog;
     boolean quizFinished = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,13 +61,14 @@ public class PangngalanQuiz extends AppCompatActivity {
         Collections.addAll(quizIDs, "QQ1", "QQ2", "QQ3", "QQ4", "QQ5", "QQ6", "QQ7", "QQ8", "QQ9", "QQ10");
         Collections.shuffle(quizIDs);
 
+        // Intro
         loadCharacterLine("QCL1");
-
         new Handler().postDelayed(() -> {
             loadCharacterLine("QCL2");
             new Handler().postDelayed(this::showCountdownThenLoadQuestion, 3000);
         }, 5000);
 
+        // Answer click
         View.OnClickListener choiceClickListener = view -> {
             if (isAnswered) return;
             isAnswered = true;
@@ -80,20 +80,20 @@ public class PangngalanQuiz extends AppCompatActivity {
         answer2.setOnClickListener(choiceClickListener);
         answer3.setOnClickListener(choiceClickListener);
 
+        // Next click
         nextButton.setOnClickListener(v -> {
             if (!isAnswered) {
                 Toast.makeText(this, "Pumili muna ng sagot bago mag-next!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            currentIndex++;  // Increment index here only
+            currentIndex++;
 
             if (currentIndex < quizIDs.size()) {
-                resetButtons();
                 loadQuestion(quizIDs.get(currentIndex));
             } else {
-                quizFinished = true;  // SET FLAG HERE
-                if (countDownTimer != null) countDownTimer.cancel();  // Stop timer
+                quizFinished = true;
+                if (countDownTimer != null) countDownTimer.cancel();
                 unlockNextLesson();
                 saveQuizResultToFirestore();
                 showResultDialog();
@@ -101,13 +101,8 @@ public class PangngalanQuiz extends AppCompatActivity {
         });
     }
 
-    // =========================
-    // UI HELPERS
-    // =========================
+    // ===== UI =====
     private void resetButtons() {
-        isAnswered = false;
-        nextButton.setEnabled(false);
-
         int defaultBg = R.drawable.answer_option_bg;
         answer1.setBackgroundResource(defaultBg);
         answer2.setBackgroundResource(defaultBg);
@@ -117,8 +112,8 @@ public class PangngalanQuiz extends AppCompatActivity {
         answer2.setEnabled(true);
         answer3.setEnabled(true);
 
-        timerBar.setProgress((int) timeLeftInMillis);
-
+        isAnswered = false;
+        nextButton.setEnabled(false);
     }
 
     private void disableAnswers() {
@@ -141,9 +136,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         }, 1000);
     }
 
-    // =========================
-    // DATA LOADING
-    // =========================
+    // ===== Data =====
     private void loadCharacterLine(String lineId) {
         db.collection("quiz_character_lines").document(lineId)
                 .get()
@@ -153,9 +146,8 @@ public class PangngalanQuiz extends AppCompatActivity {
                         questionText.setText(line);
                     }
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to load line: " + lineId, Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Failed to load line: " + lineId, Toast.LENGTH_SHORT).show());
     }
 
     private void loadQuestion(String documentID) {
@@ -163,72 +155,62 @@ public class PangngalanQuiz extends AppCompatActivity {
 
         db.collection("quiz_question").document(documentID)
                 .get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
+                    if (task.isSuccessful() && task.getResult().exists()) {
                         DocumentSnapshot doc = task.getResult();
-                        if (doc.exists()) {
-                            String question = doc.getString("question");
-                            ArrayList<String> choices = (ArrayList<String>) doc.get("choices");
-                            correctAnswer = doc.getString("correct_choice");
+                        String question = doc.getString("question");
+                        ArrayList<String> choices = (ArrayList<String>) doc.get("choices");
+                        correctAnswer = doc.getString("correct_choice");
 
-                            if (choices != null && choices.size() >= 3) {
-                                Collections.shuffle(choices);
-                                String ordinal = getQuestionOrdinal(currentIndex + 1);
-                                questionTitle.setText(ordinal);
-                                questionText.setText(question);
-                                answer1.setText(choices.get(0));
-                                answer2.setText(choices.get(1));
-                                answer3.setText(choices.get(2));
+                        if (choices != null && choices.size() >= 3) {
+                            Collections.shuffle(choices);
+                            questionTitle.setText(getQuestionOrdinal(currentIndex + 1));
+                            questionText.setText(question);
+                            answer1.setText(choices.get(0));
+                            answer2.setText(choices.get(1));
+                            answer3.setText(choices.get(2));
 
-                                startTimer();
-                            }
+                            resetButtons();
+                            startTimer();
                         }
                     } else {
-                        Toast.makeText(PangngalanQuiz.this, "Failed to load question.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Failed to load question.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    // =========================
-    // TIMER
-    // =========================
+    // ===== Timer =====
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
+        timeLeftInMillis = 10000;
 
-
-        // Reset timer progress bar
         timerBar.setMax((int) timeLeftInMillis);
         timerBar.setProgress((int) timeLeftInMillis);
 
         countDownTimer = new CountDownTimer(timeLeftInMillis, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
+                timeLeftInMillis = millisUntilFinished;
                 timerBar.setProgress((int) millisUntilFinished);
             }
 
             @Override
             public void onFinish() {
-                if (quizFinished) {
-                    // Do nothing if quiz already finished
-                    return;
-                }
-
+                if (quizFinished) return;
                 isAnswered = true;
                 disableAnswers();
+                nextButton.setEnabled(true); // allow next kahit timeout
                 Toast.makeText(PangngalanQuiz.this, "Time's up!", Toast.LENGTH_SHORT).show();
 
-                // Automatically go to next question or finish quiz
-                new Handler().postDelayed(() -> nextButton.performClick(), 500); // 0.5s delay
+                new Handler().postDelayed(() -> {
+                    if (!quizFinished) nextButton.performClick();
+                }, 500);
             }
         }.start();
     }
 
-    // =========================
-    // DIALOGS & NAVIGATION
-    // =========================
+    // ===== Result Dialog =====
     private void showResultDialog() {
-        if (resultDialog != null && resultDialog.isShowing()) {
-            resultDialog.dismiss();
-        }
+        if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_option, null);
@@ -241,24 +223,17 @@ public class PangngalanQuiz extends AppCompatActivity {
         resultDialog = builder.create();
         resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        if (!isFinishing()) {
-            resultDialog.show();
-        }
+        if (!isFinishing()) resultDialog.show();
 
         retryButton.setOnClickListener(v -> {
-            if (resultDialog != null && resultDialog.isShowing()) {
-                resultDialog.dismiss();
-            }
+            if (resultDialog.isShowing()) resultDialog.dismiss();
             currentIndex = 0;
             Collections.shuffle(quizIDs);
-            resetButtons();
             loadQuestion(quizIDs.get(currentIndex));
         });
 
         homeButton.setOnClickListener(v -> {
-            if (resultDialog != null && resultDialog.isShowing()) {
-                resultDialog.dismiss();
-            }
+            if (resultDialog.isShowing()) resultDialog.dismiss();
             Intent intent = new Intent(PangngalanQuiz.this, BahagiNgPananalita.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -266,9 +241,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         });
     }
 
-    // =========================
-    // UTILITIES
-    // =========================
+    // ===== Utilities =====
     private String getQuestionOrdinal(int number) {
         switch (number) {
             case 1: return "Unang tanong";
@@ -285,9 +258,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         }
     }
 
-    // =========================
-    // FIRESTORE UPDATES
-    // =========================
+    // ===== Firestore Save =====
     private void unlockNextLesson() {
         Toast.makeText(this, "Next Lesson Unlocked: Pandiwa!", Toast.LENGTH_SHORT).show();
     }
@@ -316,12 +287,8 @@ public class PangngalanQuiz extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (resultDialog != null && resultDialog.isShowing()) {
-            resultDialog.dismiss();
-        }
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
+        if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
+        if (countDownTimer != null) countDownTimer.cancel();
         super.onDestroy();
     }
 }

@@ -32,15 +32,35 @@ public class PangAbayQuiz extends AppCompatActivity {
         nextButton = findViewById(R.id.pangabayNextButton);
 
         nextButton.setOnClickListener(view -> {
-            unlockNextLesson();          // Firestore
-            saveQuizResultToFirestore(); // Firestore
-            showResultDialog();          // Result dialog
+            unlockNextLesson();
+            saveQuizResultToFirestore();
+            showResultDialog();
         });
     }
 
-    // =========================
-    // DIALOGS & NAVIGATION
-    // =========================
+    private void unlockNextLesson() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        Map<String, Object> nextLesson = new HashMap<>();
+        nextLesson.put("unlocked", true);
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("pangatnig", nextLesson); // I-unlock ang "Pangatnig" dahil tapos na ang "Pang-abay"
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("lessons", lessonsMap);
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_1", updateMap), SetOptions.merge());
+
+        Toast.makeText(this, "Pwede mo nang simulan ang susunod na aralin!: Pangatnig!", Toast.LENGTH_SHORT).show();
+    }
+
     private void showResultDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -68,33 +88,6 @@ public class PangAbayQuiz extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-    }
-
-    // =========================
-    // FIRESTORE UPDATES
-    // =========================
-    private void unlockNextLesson() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = user.getUid();
-
-        Map<String, Object> pangatnigStatus = new HashMap<>();
-        pangatnigStatus.put("status", "unlocked");
-
-        Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("pangatnig", pangatnigStatus);
-
-        Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("lessons", lessonsMap);
-
-        db.collection("module_progress")
-                .document(uid)
-                .set(Map.of("module_1", updateMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid ->
-                        Toast.makeText(this, "Next Lesson Unlocked: Pangatnig!", Toast.LENGTH_SHORT).show()
-                );
     }
 
     private void saveQuizResultToFirestore() {
