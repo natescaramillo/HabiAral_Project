@@ -703,7 +703,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                     db.collection("student_achievements").document(uid)
                             .set(wrapper, SetOptions.merge())
-                            .addOnSuccessListener(unused -> runOnUiThread(() -> {
+                            .addOnSuccessListener(unused -> runOnUiThread(() ->{
                                 showAchievementUnlockedDialog(title, R.drawable.a3);
                             }));
                 });

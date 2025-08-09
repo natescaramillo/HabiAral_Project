@@ -734,7 +734,7 @@
 
                                 db.collection("student_achievements").document(firebaseUID)
                                         .set(wrapper, SetOptions.merge())
-                                        .addOnSuccessListener(unused -> runOnUiThread(() -> {
+                                        .addOnSuccessListener(unused -> runOnUiThread(() ->{
                                             showAchievementUnlockedDialog(title, R.drawable.a2);
                                         }));
                             });

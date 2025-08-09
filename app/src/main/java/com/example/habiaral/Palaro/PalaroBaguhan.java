@@ -507,7 +507,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
 
-    private void showAchievementUnlockedDialog(String title, int imageRes) {
+    private void showAchievementUnlockedDialog(String title, int imageRes){
         LayoutInflater inflater = LayoutInflater.from(this);
         View toastView = inflater.inflate(R.layout.achievement_unlocked, null);  // palitan ng pangalan ng XML file mo
 
