@@ -116,7 +116,7 @@ public class PandiwaLesson extends AppCompatActivity {
         String uid = user.getUid();
 
         Map<String, Object> pandiwaStatus = new HashMap<>();
-        pandiwaStatus.put("status", "completed");
+        pandiwaStatus.put("status", "in-progress");
 
         Map<String, Object> lessonMap = new HashMap<>();
         lessonMap.put("pandiwa", pandiwaStatus);

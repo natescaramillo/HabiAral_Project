@@ -116,7 +116,7 @@ public class PangawingLesson extends AppCompatActivity {
         String uid = user.getUid();
 
         Map<String, Object> pangawingStatus = new HashMap<>();
-        pangawingStatus.put("status", "completed");
+        pangawingStatus.put("status", "in-progress");
 
         Map<String, Object> lessonMap = new HashMap<>();
         lessonMap.put("pangawing", pangawingStatus);

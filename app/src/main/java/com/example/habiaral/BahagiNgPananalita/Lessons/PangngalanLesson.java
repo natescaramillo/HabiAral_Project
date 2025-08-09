@@ -150,7 +150,7 @@ public class PangngalanLesson extends AppCompatActivity {
         String uid = user.getUid();
 
         Map<String, Object> pangngalanStatus = new HashMap<>();
-        pangngalanStatus.put("status", "completed");
+        pangngalanStatus.put("status", "in-progress");
 
         Map<String, Object> lessonMap = new HashMap<>();
         lessonMap.put("pangngalan", pangngalanStatus);
@@ -163,8 +163,8 @@ public class PangngalanLesson extends AppCompatActivity {
 
         db.collection("module_progress").document(uid)
                 .set(Map.of("module_1", moduleMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ Progress saved"))
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save progress", e));
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ Pangngalan progress saved"))
+                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save Pangngalan progress", e));
     }
 
     // =========================

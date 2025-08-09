@@ -116,7 +116,7 @@ public class PangHalipLesson extends AppCompatActivity {
         String uid = user.getUid();
 
         Map<String, Object> pangHalipStatus = new HashMap<>();
-        pangHalipStatus.put("status", "completed");
+        pangHalipStatus.put("status", "in-progress");
 
         Map<String, Object> lessonMap = new HashMap<>();
         lessonMap.put("panghalip", pangHalipStatus);

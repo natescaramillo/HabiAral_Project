@@ -116,7 +116,7 @@ public class PangUriLesson extends AppCompatActivity {
         String uid = user.getUid();
 
         Map<String, Object> pangUriStatus = new HashMap<>();
-        pangUriStatus.put("status", "completed");
+        pangUriStatus.put("status", "in-progress");
 
         Map<String, Object> lessonMap = new HashMap<>();
         lessonMap.put("pang_uri", pangUriStatus);
@@ -132,4 +132,5 @@ public class PangUriLesson extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ Progress saved"))
                 .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save progress", e));
     }
+
 }

@@ -116,7 +116,7 @@ public class PangAkopLesson extends AppCompatActivity {
         String uid = user.getUid();
 
         Map<String, Object> pangAkopStatus = new HashMap<>();
-        pangAkopStatus.put("status", "completed");
+        pangAkopStatus.put("status", "in-progress");
 
         Map<String, Object> lessonMap = new HashMap<>();
         lessonMap.put("pangakop", pangAkopStatus);

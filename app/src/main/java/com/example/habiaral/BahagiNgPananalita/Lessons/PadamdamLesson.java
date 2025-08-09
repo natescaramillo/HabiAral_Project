@@ -116,7 +116,7 @@ public class PadamdamLesson extends AppCompatActivity {
         String uid = user.getUid();
 
         Map<String, Object> padamdamStatus = new HashMap<>();
-        padamdamStatus.put("status", "completed");
+        padamdamStatus.put("status", "in-progress");
 
         Map<String, Object> lessonMap = new HashMap<>();
         lessonMap.put("padamdam", padamdamStatus);

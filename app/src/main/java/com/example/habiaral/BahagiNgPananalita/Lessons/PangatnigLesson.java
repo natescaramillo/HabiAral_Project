@@ -116,7 +116,7 @@ public class PangatnigLesson extends AppCompatActivity {
         String uid = user.getUid();
 
         Map<String, Object> pangatnigStatus = new HashMap<>();
-        pangatnigStatus.put("status", "completed");
+        pangatnigStatus.put("status", "in-progress");
 
         Map<String, Object> lessonMap = new HashMap<>();
         lessonMap.put("pangatnig", pangatnigStatus);
