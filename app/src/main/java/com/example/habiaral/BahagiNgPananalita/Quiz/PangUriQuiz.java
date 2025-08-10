@@ -32,18 +32,50 @@ public class PangUriQuiz extends AppCompatActivity {
         nextButton = findViewById(R.id.panguriNextButton);
 
         nextButton.setOnClickListener(view -> {
-            unlockNextLesson();           // Firestore updates only
-            saveQuizResultToFirestore(); // Save completed status
+            unlockNextLesson();
+            saveQuizResultToFirestore();
             showResultDialog();
         });
     }
 
-    private void unlockNextLesson() {
-        // Show toast that next lesson unlocked
-        Toast.makeText(this, "Next Lesson Unlocked: Panghalip!", Toast.LENGTH_SHORT).show();
+    // =========================
+    // DIALOGS & NAVIGATION
+    // =========================
+    private void showResultDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_box_option, null);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
 
-        // Optionally you can update the current_lesson here to "panghalip" if you want
-        // This can be combined inside saveQuizResultToFirestore or separately
+        Button retryButton = dialogView.findViewById(R.id.buttonRetry);
+        Button homeButton = dialogView.findViewById(R.id.buttonHome);
+
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.show();
+
+        retryButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        });
+
+        homeButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = new Intent(PangUriQuiz.this, BahagiNgPananalita.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    // =========================
+    // FIRESTORE UPDATES
+    // =========================
+    private void unlockNextLesson() {
+        Toast.makeText(this, "Next Lesson Unlocked: Panghalip!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {
@@ -61,39 +93,10 @@ public class PangUriQuiz extends AppCompatActivity {
 
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "panguri"); // or "panghalip" if you want to reflect next lesson
+        updateMap.put("current_lesson", "panguri");
 
         db.collection("module_progress")
                 .document(uid)
                 .set(Map.of("module_1", updateMap), SetOptions.merge());
-    }
-
-    private void showResultDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_box_option, null);
-        builder.setView(dialogView);
-        builder.setCancelable(false);
-
-        Button retryButton = dialogView.findViewById(R.id.buttonRetry);
-        Button homeButton = dialogView.findViewById(R.id.buttonHome);
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        retryButton.setOnClickListener(v -> {
-            dialog.dismiss();
-            Intent intent = getIntent();
-            finish();
-            startActivity(intent);
-        });
-
-        homeButton.setOnClickListener(v -> {
-            dialog.dismiss();
-            Intent intent = new Intent(PangUriQuiz.this, BahagiNgPananalita.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
-        });
     }
 }
