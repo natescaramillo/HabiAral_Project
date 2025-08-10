@@ -30,7 +30,7 @@ public class PagUnawa extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.komprehensyon);
+        setContentView(R.layout.pag_unawa);
 
         btnKwento1 = findViewById(R.id.kwento1);
         btnKwento2 = findViewById(R.id.kwento2);

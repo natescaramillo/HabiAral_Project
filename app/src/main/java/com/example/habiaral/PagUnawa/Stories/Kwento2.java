@@ -24,7 +24,7 @@ public class Kwento2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.komprehensyon_kwento2);
+        setContentView(R.layout.pag_unawa_kwento2);
 
         // =========================
         // UI INITIALIZATION
