@@ -1,4 +1,4 @@
-package com.example.habiaral.Komprehensyon;
+package com.example.habiaral.PagUnawa;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,9 +9,9 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.Komprehensyon.Stories.Kwento1;
-import com.example.habiaral.Komprehensyon.Stories.Kwento2;
-import com.example.habiaral.Komprehensyon.Stories.Kwento3;
+import com.example.habiaral.PagUnawa.Stories.Kwento1;
+import com.example.habiaral.PagUnawa.Stories.Kwento2;
+import com.example.habiaral.PagUnawa.Stories.Kwento3;
 import com.example.habiaral.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class Komprehensyon extends AppCompatActivity {
+public class PagUnawa extends AppCompatActivity {
 
     LinearLayout btnKwento1, btnKwento2, btnKwento3;
     FrameLayout kwento1Lock, kwento2Lock, kwento3Lock;

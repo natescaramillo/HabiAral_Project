@@ -51,7 +51,7 @@
         android:layout_height="0dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/tarsierpng"
+        android:src="@drawable/tarsier_3d"
         app:layout_constraintTop_toBottomOf="@id/baguhan_instructionText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,11 +80,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp">
 
-        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" app:srcCompat="@drawable/icons8_heart_48" />
-        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:srcCompat="@drawable/icons8_heart_48" />
-        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:srcCompat="@drawable/icons8_heart_48" />
-        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:srcCompat="@drawable/icons8_heart_48" />
-        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:srcCompat="@drawable/icons8_heart_48" />
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" app:srcCompat="@drawable/design_heart" />
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:srcCompat="@drawable/design_heart" />
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:srcCompat="@drawable/design_heart" />
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:srcCompat="@drawable/design_heart" />
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:srcCompat="@drawable/design_heart" />
     </LinearLayout>
 
     <ProgressBar
@@ -97,7 +97,7 @@
         android:indeterminate="false"
         android:max="100"
         android:progress="100"
-        android:progressDrawable="@drawable/custom_progress_drawable"
+        android:progressDrawable="@drawable/timer_color_green"
         app:layout_constraintTop_toBottomOf="@id/heartsRow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

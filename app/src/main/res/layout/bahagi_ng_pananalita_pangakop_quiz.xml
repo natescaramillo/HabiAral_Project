@@ -49,7 +49,7 @@
         android:indeterminate="false"
         android:max="100"
         android:progress="100"
-        android:progressDrawable="@drawable/custom_progress_drawable"
+        android:progressDrawable="@drawable/timer_color_green"
         android:progressTint="#4CAF50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -111,7 +111,7 @@
         android:id="@+id/imageView14"
         android:layout_width="354dp"
         android:layout_height="469dp"
-        android:src="@drawable/tarsierpng"
+        android:src="@drawable/tarsier_3d"
         tools:layout_editor_absoluteX="32dp"
         tools:layout_editor_absoluteY="-23dp" />
 

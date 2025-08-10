@@ -1,4 +1,4 @@
-package com.example.habiaral.Komprehensyon.Stories;
+package com.example.habiaral.PagUnawa.Stories;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,16 +7,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.Komprehensyon.Komprehensyon;
+import com.example.habiaral.PagUnawa.PagUnawa;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Kwento1 extends AppCompatActivity {
+public class Kwento3 extends AppCompatActivity {
 
     Button unlockButton;
     FirebaseFirestore db;
@@ -25,12 +24,12 @@ public class Kwento1 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.komprehensyon_kwento1);
+        setContentView(R.layout.komprehensyon_kwento3);
 
         // =========================
         // UI INITIALIZATION
         // =========================
-        unlockButton = findViewById(R.id.UnlockButtonKwento1);
+        unlockButton = findViewById(R.id.UnlockButtonKwento3);
 
         // =========================
         // FIRESTORE INITIALIZATION
@@ -53,20 +52,22 @@ public class Kwento1 extends AppCompatActivity {
             return;
         }
 
-        DocumentReference docRef = db.collection("module_progress").document(userId);
+        Map<String, Object> progress = new HashMap<>();
+        progress.put("Kwento3Done", true);
 
-        Map<String, Object> update = new HashMap<>();
-        update.put("Kwento1Done", true);
-
-        docRef.update(update)
+        db.collection("module_progress")
+                .document(userId)
+                .update(progress)
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Next Story Unlocked: Kwento2!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Congratulations! You have completed all the stories!", Toast.LENGTH_LONG).show();
 
-                    Intent intent = new Intent(Kwento1.this, Komprehensyon.class);
+                    Intent intent = new Intent(Kwento3.this, PagUnawa.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Failed to unlock story", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to update progress", Toast.LENGTH_SHORT).show();
+                });
     }
 }

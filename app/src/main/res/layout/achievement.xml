@@ -71,7 +71,7 @@
                             android:clipToOutline="true"
                             android:alpha="0.2"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/a1" />
+                            android:src="@drawable/achievement01" />
 
                     </FrameLayout>
 
@@ -109,7 +109,7 @@
                             android:layout_width="78dp"
                             android:layout_height="77dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/a2"
+                            android:src="@drawable/achievement02"
                             android:alpha="0.2"
                             android:background="@drawable/rounded_image"
                             android:clipToOutline="true"
@@ -152,7 +152,7 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/a3" />
+                            android:src="@drawable/achievement03" />
 
                     </FrameLayout>
 
@@ -201,7 +201,7 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/a4" />
+                            android:src="@drawable/achievement04" />
 
                     </FrameLayout>
 
@@ -241,7 +241,7 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/a5" />
+                            android:src="@drawable/achievement05" />
 
                     </FrameLayout>
 
@@ -281,7 +281,7 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/a6" />
+                            android:src="@drawable/achievement06" />
 
                     </FrameLayout>
 
@@ -329,7 +329,7 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/a7" />
+                            android:src="@drawable/achievement07" />
 
                     </FrameLayout>
 
@@ -369,7 +369,7 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/a8" />
+                            android:src="@drawable/achievement08" />
 
                     </FrameLayout>
 
@@ -409,7 +409,7 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/a9" />
+                            android:src="@drawable/achievement09" />
 
                     </FrameLayout>
 
@@ -457,7 +457,7 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/a10" />
+                            android:src="@drawable/achievement10" />
 
                     </FrameLayout>
 
@@ -496,7 +496,7 @@
                             android:background="@drawable/rounded_image"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/a11" />
+                            android:src="@drawable/achievement11" />
 
                     </FrameLayout>
 
@@ -536,7 +536,7 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/a12" />
+                            android:src="@drawable/achievement12" />
 
                     </FrameLayout>
 
@@ -584,7 +584,7 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/a13" />
+                            android:src="@drawable/achievement13" />
 
                     </FrameLayout>
 

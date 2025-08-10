@@ -33,7 +33,6 @@ import com.example.habiaral.R;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -377,7 +376,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                 db.collection("student_achievements").document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            showAchievementUnlockedDialog(title, R.drawable.a8);
+                            showAchievementUnlockedDialog(title, R.drawable.achievement08);
                         }));
             });
         });
@@ -422,7 +421,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                     db.collection("student_achievements").document(uid)
                             .set(wrapper, SetOptions.merge())
                             .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                showAchievementUnlockedDialog(title,R.drawable.a4);
+                                showAchievementUnlockedDialog(title,R.drawable.achievement04);
                             }));
                 });
             });
@@ -616,11 +615,11 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                 // Change color based on time left
                 if (percent <= 25) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.custom_progress_drawable_red));
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.timer_color_red));
                 } else if (percent <= 50) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.custom_progress_drawable_orange));
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.timer_color_orange));
                 } else {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.custom_progress_drawable));
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.timer_color_green));
                 }
             }
 

@@ -61,7 +61,7 @@
                                 android:max="100"
                                 android:progress="0"
                                 android:visibility="visible"
-                                android:progressDrawable="@drawable/custom_progressbar" />
+                                android:progressDrawable="@drawable/design_progress_bar" />
 
                             <TextView
                                 android:id="@+id/progressPercentageBahagi"
@@ -124,7 +124,7 @@
                                 android:max="100"
                                 android:progress="0"
                                 android:visibility="visible"
-                                android:progressDrawable="@drawable/custom_progressbar" />
+                                android:progressDrawable="@drawable/design_progress_bar" />
 
                             <TextView
                                 android:id="@+id/progressPercentageKomprehensyon"
@@ -186,7 +186,7 @@
                                 android:max="100"
                                 android:progress="0"
                                 android:visibility="visible"
-                                android:progressDrawable="@drawable/custom_progressbar" />
+                                android:progressDrawable="@drawable/design_progress_bar" />
 
                             <TextView
                                 android:id="@+id/progressPercentageKayarian"

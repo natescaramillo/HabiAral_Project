@@ -60,7 +60,7 @@
                 android:layout_height="18dp"
                 android:layout_marginEnd="8dp"
                 android:contentDescription="Google Logo"
-                android:src="@drawable/ic_google" />
+                android:src="@drawable/design_google" />
 
             <TextView
                 android:layout_width="wrap_content"

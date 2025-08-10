@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
-import com.example.habiaral.Komprehensyon.Komprehensyon;
+import com.example.habiaral.PagUnawa.PagUnawa;
 import com.example.habiaral.Palaro.Palaro;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,7 +44,7 @@ public class HomeFragment extends Fragment {
         nicknameTextView = view.findViewById(R.id.nickname_id); // Make sure this ID exists in XML
 
         lessonMap.put(R.id.bahagi, BahagiNgPananalita.class);
-        lessonMap.put(R.id.komprehensyon, Komprehensyon.class);
+        lessonMap.put(R.id.komprehensyon, PagUnawa.class);
         lessonMap.put(R.id.kayarian, KayarianNgPangungusap.class);
         lessonMap.put(R.id.palaro, Palaro.class);
 
@@ -129,7 +129,7 @@ public class HomeFragment extends Fragment {
                 db.collection("student_achievements").document(uid)
                         .set(wrapper, com.google.firebase.firestore.SetOptions.merge())
                         .addOnSuccessListener(unused -> requireActivity().runOnUiThread(() -> {
-                            showAchievementUnlockedDialog(title, R.drawable.a6);
+                            showAchievementUnlockedDialog(title, R.drawable.achievement06);
                         }));
             });
         });

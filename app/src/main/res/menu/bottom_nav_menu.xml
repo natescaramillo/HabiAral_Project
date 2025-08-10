@@ -4,27 +4,27 @@
 
     <item
         android:title="Home"
-        android:icon="@drawable/house"
+        android:icon="@drawable/nav_menu_home"
         android:id="@+id/home_nav"
         app:iconSize="15dp"/>
     <item
         android:title="Katayuan"
-        android:icon="@drawable/progress"
+        android:icon="@drawable/nav_menu_progress"
         android:id="@+id/progressbar_nav"
         app:iconSize="15dp"/>
     <item
         android:title="Diksiyonaryo"
-        android:icon="@drawable/book"
+        android:icon="@drawable/nav_menu_dictionary"
         android:id="@+id/dictionary_nav"
         app:iconSize="15dp"/>
     <item
         android:title="Parangal"
-        android:icon="@drawable/achievement"
+        android:icon="@drawable/nav_menu_achievement"
         android:id="@+id/achievement_nav"
         app:iconSize="15dp"/>
     <item
         android:title="Settings"
-        android:icon="@drawable/setting"
+        android:icon="@drawable/nav_menu_settings"
         android:id="@+id/settings_nav"
         app:iconSize="15dp"/>
 

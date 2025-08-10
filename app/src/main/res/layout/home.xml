@@ -51,7 +51,7 @@
         android:layout_gravity="center|top"
         android:layout_marginTop="100dp"
         android:adjustViewBounds="true"
-        android:src="@drawable/hi_tarshier" />
+        android:src="@drawable/tarsier_home" />
 
     <!-- Brown overlay starting halfway down the image -->
     <View
@@ -95,7 +95,7 @@
                     android:background="@drawable/rounded_image"
                     android:clipToOutline="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bahagi_pic" />
+                    android:src="@drawable/home_bahagi" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -128,7 +128,7 @@
                     android:background="@drawable/rounded_image"
                     android:clipToOutline="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/pag_unawa_pic" />
+                    android:src="@drawable/home_pagunawa" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -161,7 +161,7 @@
                     android:background="@drawable/rounded_image"
                     android:clipToOutline="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/kayarian_pic" />
+                    android:src="@drawable/home_kayarian" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -194,7 +194,7 @@
                     android:background="@drawable/rounded_image"
                     android:clipToOutline="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/palaro_pic" />
+                    android:src="@drawable/home_palaro" />
 
                 <TextView
                     android:layout_width="0dp"

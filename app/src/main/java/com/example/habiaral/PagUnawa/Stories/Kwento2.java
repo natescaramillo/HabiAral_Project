@@ -1,4 +1,4 @@
-package com.example.habiaral.Komprehensyon.Stories;
+package com.example.habiaral.PagUnawa.Stories;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.Komprehensyon.Komprehensyon;
+import com.example.habiaral.PagUnawa.PagUnawa;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -15,7 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Kwento3 extends AppCompatActivity {
+public class Kwento2 extends AppCompatActivity {
 
     Button unlockButton;
     FirebaseFirestore db;
@@ -24,12 +24,12 @@ public class Kwento3 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.komprehensyon_kwento3);
+        setContentView(R.layout.komprehensyon_kwento2);
 
         // =========================
         // UI INITIALIZATION
         // =========================
-        unlockButton = findViewById(R.id.UnlockButtonKwento3);
+        unlockButton = findViewById(R.id.UnlockButtonKwento2);
 
         // =========================
         // FIRESTORE INITIALIZATION
@@ -53,15 +53,15 @@ public class Kwento3 extends AppCompatActivity {
         }
 
         Map<String, Object> progress = new HashMap<>();
-        progress.put("Kwento3Done", true);
+        progress.put("Kwento2Done", true);
 
         db.collection("module_progress")
                 .document(userId)
                 .update(progress)
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Congratulations! You have completed all the stories!", Toast.LENGTH_LONG).show();
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Next Story Unlocked: Kwento3!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(Kwento3.this, Komprehensyon.class);
+                    Intent intent = new Intent(Kwento2.this, PagUnawa.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();

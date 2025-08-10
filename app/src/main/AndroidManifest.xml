@@ -47,16 +47,16 @@
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".Komprehensyon.Komprehensyon"
+            android:name=".PagUnawa.PagUnawa"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".BahagiNgPananalita.BahagiNgPananalita"
             android:screenOrientation="portrait"
             android:exported="false" />
-        <activity android:name=".Komprehensyon.KomprehensyonStory"
+        <activity android:name=".PagUnawa.KomprehensyonStory"
             android:screenOrientation="portrait" />
-        <activity android:name=".Komprehensyon.KomprehensyonQuiz"
+        <activity android:name=".PagUnawa.KomprehensyonQuiz"
             android:screenOrientation="portrait" />
         <activity android:name=".KayarianNgPangungusap.KayarianNgPangungusapLesson"
             android:screenOrientation="portrait"/>
@@ -107,11 +107,11 @@
             android:screenOrientation="portrait" />
         <activity android:name=".BahagiNgPananalita.Quiz.PangawingQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".Komprehensyon.Stories.Kwento1"
+        <activity android:name=".PagUnawa.Stories.Kwento1"
             android:screenOrientation="portrait" />
-        <activity android:name=".Komprehensyon.Stories.Kwento2"
+        <activity android:name=".PagUnawa.Stories.Kwento2"
             android:screenOrientation="portrait" />
-        <activity android:name=".Komprehensyon.Stories.Kwento3"
+        <activity android:name=".PagUnawa.Stories.Kwento3"
             android:screenOrientation="portrait" />
         <activity android:name=".KayarianNgPangungusap.Lessons.Payak"
             android:screenOrientation="portrait" />

@@ -48,7 +48,7 @@
         android:indeterminate="false"
         android:max="100"
         android:progress="100"
-        android:progressDrawable="@drawable/custom_progress_drawable"
+        android:progressDrawable="@drawable/timer_color_green"
         android:progressTint="#4CAF50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

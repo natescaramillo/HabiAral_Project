@@ -45,7 +45,7 @@
                 app:layout_constraintStart_toStartOf="@+id/view15"
                 app:layout_constraintTop_toTopOf="@+id/view15"
                 app:layout_constraintVertical_bias="0.562"
-                app:srcCompat="@drawable/bolt" />
+                app:srcCompat="@drawable/design_energy" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -116,7 +116,7 @@
                 android:clickable="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/game_mechanics" />
+                app:srcCompat="@drawable/design_game_mechanics" />
 
             <View
                 android:id="@+id/button"
@@ -219,7 +219,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.175"
-                app:srcCompat="@drawable/unranked_trophy_1" />
+                app:srcCompat="@drawable/trophy_unranked" />
 
             <TextView
                 android:id="@+id/user_point"

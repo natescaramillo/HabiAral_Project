@@ -14,7 +14,7 @@
         android:layout_height="93dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="300dp"
-        android:src="@drawable/new_logo_removed_bg" />
+        android:src="@drawable/tarsier_logo" />
 
     <TextView
         android:id="@+id/textView"

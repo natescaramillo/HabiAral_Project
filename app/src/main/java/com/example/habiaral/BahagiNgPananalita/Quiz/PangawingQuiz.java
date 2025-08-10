@@ -208,7 +208,7 @@ public class PangawingQuiz extends AppCompatActivity {
                         .document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            showAchievementUnlockedDialog(title, R.drawable.a11);
+                            showAchievementUnlockedDialog(title, R.drawable.achievement11);
                         }));
             });
         });

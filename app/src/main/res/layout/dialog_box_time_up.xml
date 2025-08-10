@@ -62,7 +62,7 @@
             android:layout_marginStart="7dp"
             android:layout_marginEnd="200dp"
             android:layout_marginBottom="95dp"
-            app:srcCompat="@drawable/new_logo_removed_bg" />
+            app:srcCompat="@drawable/tarsier_logo" />
 
         <TextView
             android:id="@+id/textView13"

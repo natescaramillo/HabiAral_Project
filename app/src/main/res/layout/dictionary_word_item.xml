@@ -46,7 +46,7 @@
                 android:id="@+id/speakerIcon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/volume"
+                android:src="@drawable/design_volume"
                 android:contentDescription="Speaker"
                 android:layout_marginStart="8dp"/>
         </LinearLayout>

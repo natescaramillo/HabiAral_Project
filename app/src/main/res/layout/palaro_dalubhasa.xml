@@ -32,7 +32,7 @@
         android:layout_width="292dp"
         android:layout_height="260dp"
         android:layout_marginTop="84dp"
-        android:src="@drawable/tarsierpng"
+        android:src="@drawable/tarsier_3d"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +61,7 @@
         app:layout_constraintStart_toStartOf="@+id/bottomBar"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
         app:layout_constraintVertical_bias="0.026"
-        app:srcCompat="@drawable/icons8_heart_48" />
+        app:srcCompat="@drawable/design_heart" />
 
     <ImageView
         android:id="@+id/imageView12"
@@ -71,7 +71,7 @@
         android:layout_marginTop="28dp"
         app:layout_constraintStart_toEndOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:srcCompat="@drawable/icons8_heart_48" />
+        app:srcCompat="@drawable/design_heart" />
 
     <ImageView
         android:id="@+id/imageView9"
@@ -81,7 +81,7 @@
         android:layout_marginTop="28dp"
         app:layout_constraintStart_toEndOf="@+id/imageView10"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:srcCompat="@drawable/icons8_heart_48" />
+        app:srcCompat="@drawable/design_heart" />
 
     <ImageView
         android:id="@+id/imageView10"
@@ -91,7 +91,7 @@
         android:layout_marginTop="28dp"
         app:layout_constraintStart_toEndOf="@+id/imageView11"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:srcCompat="@drawable/icons8_heart_48" />
+        app:srcCompat="@drawable/design_heart" />
 
     <ImageView
         android:id="@+id/imageView11"
@@ -103,7 +103,7 @@
         app:layout_constraintStart_toEndOf="@+id/imageView8"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/icons8_heart_48" />
+        app:srcCompat="@drawable/design_heart" />
 
     <ProgressBar
         android:id="@+id/timerBar"
@@ -119,7 +119,7 @@
         android:indeterminate="false"
         android:max="100"
         android:progress="100"
-        android:progressDrawable="@drawable/custom_progress_drawable"
+        android:progressDrawable="@drawable/timer_color_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

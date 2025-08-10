@@ -221,7 +221,7 @@ public class Palaro extends AppCompatActivity {
                             db.collection("student_achievements").document(uid)
                                     .set(wrapper, SetOptions.merge())
                                     .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                        showAchievementUnlockedDialog(title, R.drawable.a1);
+                                        showAchievementUnlockedDialog(title, R.drawable.achievement01);
                                     }));
                         });
                     });
@@ -269,7 +269,7 @@ public class Palaro extends AppCompatActivity {
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
 
-                            showAchievementUnlockedDialog(title, R.drawable.a7);
+                            showAchievementUnlockedDialog(title, R.drawable.achievement07);
                         }));
             });
         });
@@ -340,19 +340,19 @@ public class Palaro extends AppCompatActivity {
         int progressPercent = 0;
 
         if (userPoints >= 1200) {
-            trophyImage.setImageResource(R.drawable.gold_trophy);
+            trophyImage.setImageResource(R.drawable.trophy_gold);
             tierStart = 800;
             progressPercent = calculatePercent(userPoints, tierStart);
         } else if (userPoints >= 800) {
-            trophyImage.setImageResource(R.drawable.silver_trophy_1);
+            trophyImage.setImageResource(R.drawable.trophy_silver);
             tierStart = 800;
             progressPercent = calculatePercent(userPoints, tierStart);
         } else if (userPoints >= 400) {
-            trophyImage.setImageResource(R.drawable.bronze_trophy);
+            trophyImage.setImageResource(R.drawable.trophy_bronze);
             tierStart = 400;
             progressPercent = calculatePercent(userPoints, tierStart);
         } else {
-            trophyImage.setImageResource(R.drawable.unranked_trophy_1);
+            trophyImage.setImageResource(R.drawable.trophy_unranked);
             progressPercent = calculatePercent(userPoints, tierStart);
         }
 

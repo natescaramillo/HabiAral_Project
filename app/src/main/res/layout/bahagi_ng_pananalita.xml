@@ -73,7 +73,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_lock" />
+                    android:src="@drawable/design_lock" />
             </FrameLayout>
 
         </LinearLayout>
@@ -115,7 +115,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_lock" />
+                    android:src="@drawable/design_lock" />
             </FrameLayout>
         </LinearLayout>
 
@@ -156,7 +156,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_lock" />
+                    android:src="@drawable/design_lock" />
             </FrameLayout>
         </LinearLayout>
 
@@ -197,7 +197,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_lock" />
+                    android:src="@drawable/design_lock" />
             </FrameLayout>
         </LinearLayout>
 
@@ -238,7 +238,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_lock" />
+                    android:src="@drawable/design_lock" />
             </FrameLayout>
         </LinearLayout>
 
@@ -279,7 +279,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_lock" />
+                    android:src="@drawable/design_lock" />
             </FrameLayout>
         </LinearLayout>
 
@@ -320,7 +320,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_lock" />
+                    android:src="@drawable/design_lock" />
             </FrameLayout>
         </LinearLayout>
 
@@ -361,7 +361,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_lock" />
+                    android:src="@drawable/design_lock" />
             </FrameLayout>
         </LinearLayout>
 
@@ -402,7 +402,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_lock" />
+                    android:src="@drawable/design_lock" />
             </FrameLayout>
         </LinearLayout>
 
@@ -443,7 +443,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_lock" />
+                    android:src="@drawable/design_lock" />
             </FrameLayout>
         </LinearLayout>
 

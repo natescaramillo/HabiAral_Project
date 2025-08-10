@@ -421,11 +421,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                 // 🔴 Change color based on percentage
                 if (percent <= 25) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.custom_progress_drawable_red));
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_red));
                 } else if (percent <= 50) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.custom_progress_drawable_orange));
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_orange));
                 } else {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.custom_progress_drawable));
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_green));
                 }
 
                 if (millisUntilFinished <= 5000 && millisUntilFinished >= 4900) {
@@ -633,7 +633,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     db.collection("student_achievements").document(uid)
                             .set(wrapper, SetOptions.merge())
                             .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                showAchievementUnlockedDialog(title, R.drawable.a10);
+                                showAchievementUnlockedDialog(title, R.drawable.achievement10);
                             }));
                 });
             });
@@ -704,7 +704,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     db.collection("student_achievements").document(uid)
                             .set(wrapper, SetOptions.merge())
                             .addOnSuccessListener(unused -> runOnUiThread(() ->{
-                                showAchievementUnlockedDialog(title, R.drawable.a3);
+                                showAchievementUnlockedDialog(title, R.drawable.achievement03);
                             }));
                 });
             });

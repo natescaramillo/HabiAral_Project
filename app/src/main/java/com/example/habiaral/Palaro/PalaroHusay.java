@@ -5,7 +5,6 @@
     import android.os.Bundle;
     import android.os.CountDownTimer;
     import android.os.Handler;
-    import android.text.SpannableString;
     import android.text.SpannableStringBuilder;
     import android.text.Spanned;
     import android.text.style.RelativeSizeSpan;
@@ -405,11 +404,11 @@
 
                     // Change color based on percent remaining
                     if (percent <= 25) {
-                        timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.custom_progress_drawable_red));
+                        timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_red));
                     } else if (percent <= 50) {
-                        timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.custom_progress_drawable_orange));
+                        timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_orange));
                     } else {
-                        timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.custom_progress_drawable));
+                        timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_green));
                     }
                 }
 
@@ -694,7 +693,7 @@
                     db.collection("student_achievements").document(uid)
                             .set(wrapper, SetOptions.merge())
                             .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                showAchievementUnlockedDialog(title, R.drawable.a9);
+                                showAchievementUnlockedDialog(title, R.drawable.achievement09);
                             }));
                 });
             });
@@ -735,7 +734,7 @@
                                 db.collection("student_achievements").document(firebaseUID)
                                         .set(wrapper, SetOptions.merge())
                                         .addOnSuccessListener(unused -> runOnUiThread(() ->{
-                                            showAchievementUnlockedDialog(title, R.drawable.a2);
+                                            showAchievementUnlockedDialog(title, R.drawable.achievement02);
                                         }));
                             });
                         });
@@ -821,7 +820,7 @@
                         db.collection("student_achievements").document(uid)
                                 .set(wrapper, SetOptions.merge())
                                 .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                    showAchievementUnlockedDialog(title, R.drawable.a5);
+                                    showAchievementUnlockedDialog(title, R.drawable.achievement05);
                                 }));
                     });
                 });

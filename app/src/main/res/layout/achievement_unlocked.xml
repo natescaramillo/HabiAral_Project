@@ -31,7 +31,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.495"
-            app:srcCompat="@drawable/a1" />
+            app:srcCompat="@drawable/achievement01" />
 
         <TextView
             android:id="@+id/textView14"

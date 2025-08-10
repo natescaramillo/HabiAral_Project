@@ -47,7 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/viewHeader"
-            app:srcCompat="@drawable/new_logo_removed_bg" />
+            app:srcCompat="@drawable/tarsier_logo" />
 
         <TextView
             android:id="@+id/textView12"

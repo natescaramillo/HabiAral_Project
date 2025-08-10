@@ -58,7 +58,7 @@
         android:layout_height="578dp"
         android:layout_marginStart="104dp"
         android:layout_marginTop="276dp"
-        android:src="@drawable/tarsierpng"
+        android:src="@drawable/tarsier_3d"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
