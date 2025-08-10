@@ -2,10 +2,18 @@ package com.example.habiaral.BahagiNgPananalita.Quiz;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -71,12 +79,36 @@ public class PangawingQuiz extends AppCompatActivity {
         });
     }
 
-    private void showAchievementUnlockedDialog(String title) {
-        new AlertDialog.Builder(this)
-                .setTitle("Achievement Unlocked!")
-                .setMessage("You unlocked: " + title)
-                .setPositiveButton("OK", null)
-                .show();
+    private void showAchievementUnlockedDialog(String title, int imageRes) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View toastView = inflater.inflate(R.layout.achievement_unlocked, null);  // palitan ng pangalan ng XML file mo
+
+        ImageView iv = toastView.findViewById(R.id.imageView19);
+        TextView tv = toastView.findViewById(R.id.textView14);
+
+        iv.setImageResource(imageRes);
+        String line1 = "Nakamit mo na ang parangal:\n";
+        String line2 = title;
+
+        SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
+
+        // Bold line1
+        ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Bold line2 (achievement name)
+        int start = line1.length();
+        int end = line1.length() + line2.length();
+        ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Make achievement name bigger (e.g. 1.3x)
+        ssb.setSpan(new RelativeSizeSpan(1.3f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tv.setText(ssb);
+        Toast toast = new Toast(this);
+        toast.setView(toastView);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100); // 100 px mula sa top
+        toast.show();
     }
 
     // =========================
@@ -179,7 +211,7 @@ public class PangawingQuiz extends AppCompatActivity {
                         .document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            showAchievementUnlockedDialog(title);
+                            showAchievementUnlockedDialog(title, R.drawable.a11);
                         }));
             });
         });

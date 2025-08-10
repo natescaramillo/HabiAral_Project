@@ -59,6 +59,8 @@ public class Palaro extends AppCompatActivity {
     private static final int BAGUHAN_REQUEST_CODE = 1;
 
     private FirebaseFirestore db;
+    private boolean isUnlocking = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,8 +231,9 @@ public class Palaro extends AppCompatActivity {
     }
     private void unlockBatangHenyoAchievement(int totalScore) {
         if (totalScore < 2000) return; // Only unlock if score is 2000+
-        isAchievementUnlocked = true; // Mark na in-progress or done
 
+        if (isUnlocking) return; // Prevent re-entrance
+        isUnlocking = true;
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String achievementCode = "SA7";
         String achievementId = "A7";
@@ -239,6 +242,7 @@ public class Palaro extends AppCompatActivity {
 
         db.collection("student_achievements").document(uid).get().addOnSuccessListener(snapshot -> {
             Map<String, Object> achievements = (Map<String, Object>) snapshot.get("achievements");
+
             if (achievements != null && achievements.containsKey(achievementCode)) {
                 return; // Already unlocked
             }
@@ -264,6 +268,7 @@ public class Palaro extends AppCompatActivity {
                 db.collection("student_achievements").document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
+
                             showAchievementUnlockedDialog(title, R.drawable.a7);
                         }));
             });

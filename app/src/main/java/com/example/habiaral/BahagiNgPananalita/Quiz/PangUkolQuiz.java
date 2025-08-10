@@ -74,27 +74,11 @@ public class PangUkolQuiz extends AppCompatActivity {
     // FIRESTORE UPDATES
     // =========================
     private void unlockNextLesson() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
+        // Show toast that next lesson unlocked
+        Toast.makeText(this, "Next Lesson Unlocked: Pang-Akop!", Toast.LENGTH_SHORT).show();
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = user.getUid();
-
-        Map<String, Object> pangAngkopStatus = new HashMap<>();
-        pangAngkopStatus.put("status", "unlocked");
-
-        Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("pang_angkop", pangAngkopStatus);
-
-        Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("lessons", lessonsMap);
-
-        db.collection("module_progress")
-                .document(uid)
-                .set(Map.of("module_1", updateMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid ->
-                        Toast.makeText(this, "Next Lesson Unlocked: Pang-angkop!", Toast.LENGTH_SHORT).show()
-                );
+        // Optionally you can update the current_lesson here to "panghalip" if you want
+        // This can be combined inside saveQuizResultToFirestore or separately
     }
 
     private void saveQuizResultToFirestore() {

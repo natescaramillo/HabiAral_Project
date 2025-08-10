@@ -74,27 +74,7 @@ public class PandiwaQuiz extends AppCompatActivity {
     // FIRESTORE UPDATES
     // =========================
     private void unlockNextLesson() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = user.getUid();
-
-        Map<String, Object> pangUriStatus = new HashMap<>();
-        pangUriStatus.put("status", "unlocked");
-
-        Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("pang_uri", pangUriStatus);
-
-        Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("lessons", lessonsMap);
-
-        db.collection("module_progress")
-                .document(uid)
-                .set(Map.of("module_1", updateMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid ->
-                        Toast.makeText(this, "Next Lesson Unlocked: PangUri!", Toast.LENGTH_SHORT).show()
-                );
+        Toast.makeText(this, "Next Lesson Unlocked: Pang-uri!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {

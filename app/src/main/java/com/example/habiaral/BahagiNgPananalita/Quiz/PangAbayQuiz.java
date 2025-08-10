@@ -39,27 +39,14 @@ public class PangAbayQuiz extends AppCompatActivity {
     }
 
     private void unlockNextLesson() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
+        // Show toast that next lesson unlocked
+        Toast.makeText(this, "Next Lesson Unlocked: Pangatnig!", Toast.LENGTH_SHORT).show();
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = user.getUid();
-
-        Map<String, Object> nextLesson = new HashMap<>();
-        nextLesson.put("unlocked", true);
-
-        Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("pangatnig", nextLesson); // I-unlock ang "Pangatnig" dahil tapos na ang "Pang-abay"
-
-        Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("lessons", lessonsMap);
-
-        db.collection("module_progress")
-                .document(uid)
-                .set(Map.of("module_1", updateMap), SetOptions.merge());
-
-        Toast.makeText(this, "Pwede mo nang simulan ang susunod na aralin!: Pangatnig!", Toast.LENGTH_SHORT).show();
+        // Optionally you can update the current_lesson here to "panghalip" if you want
+        // This can be combined inside saveQuizResultToFirestore or separately
     }
+
+
 
     private void showResultDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
