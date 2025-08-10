@@ -1,14 +1,21 @@
 package com.example.habiaral.Palaro;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -83,7 +90,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_palaro_dalubhasa);
+        setContentView(R.layout.palaro_dalubhasa);
 
 
         tts = new TextToSpeech(this, status -> {
@@ -192,7 +199,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private void showUmalisDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PalaroDalubhasa.this);
-        View dialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
 
         Button btnOo = dialogView.findViewById(R.id.button5);    // OO button
         Button btnHindi = dialogView.findViewById(R.id.button6); // Hindi button
@@ -287,7 +294,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void showBackConfirmationDialog() {
-        View dialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setCancelable(false)
@@ -438,7 +445,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void finishQuiz() {
-        View showTotalPoints = getLayoutInflater().inflate(R.layout.time_up_dialog, null);
+        View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
         AlertDialog dialog = new AlertDialog.Builder(PalaroDalubhasa.this)
                 .setView(showTotalPoints)
                 .setCancelable(false)
@@ -626,7 +633,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     db.collection("student_achievements").document(uid)
                             .set(wrapper, SetOptions.merge())
                             .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                showAchievementUnlockedDialog(title);
+                                showAchievementUnlockedDialog(title, R.drawable.a10);
                             }));
                 });
             });
@@ -696,8 +703,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                     db.collection("student_achievements").document(uid)
                             .set(wrapper, SetOptions.merge())
-                            .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                showAchievementUnlockedDialog(title);
+                            .addOnSuccessListener(unused -> runOnUiThread(() ->{
+                                showAchievementUnlockedDialog(title, R.drawable.a3);
                             }));
                 });
             });
@@ -705,12 +712,36 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     }
 
-    private void showAchievementUnlockedDialog(String title) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Achievement Unlocked!");
-        builder.setMessage("Nakamit mo ang: " + title);
-        builder.setPositiveButton("OK", null);
-        builder.show();
+    private void showAchievementUnlockedDialog(String title, int imageRes) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View toastView = inflater.inflate(R.layout.achievement_unlocked, null);  // palitan ng pangalan ng XML file mo
+
+        ImageView iv = toastView.findViewById(R.id.imageView19);
+        TextView tv = toastView.findViewById(R.id.textView14);
+
+        iv.setImageResource(imageRes);
+        String line1 = "Nakamit mo na ang parangal:\n";
+        String line2 = title;
+
+        SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
+
+        // Bold line1
+        ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Bold line2 (achievement name)
+        int start = line1.length();
+        int end = line1.length() + line2.length();
+        ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Make achievement name bigger (e.g. 1.3x)
+        ssb.setSpan(new RelativeSizeSpan(1.3f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tv.setText(ssb);
+        Toast toast = new Toast(this);
+        toast.setView(toastView);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100); // 100 px mula sa top
+        toast.show();
     }
 
 }

@@ -61,7 +61,7 @@ public class AchievementFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        root = inflater.inflate(R.layout.fragment_achievement, container, false);
+        root = inflater.inflate(R.layout.achievement, container, false);
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -212,7 +212,7 @@ public class AchievementFragment extends Fragment{
         if (descriptionView != null) descriptionView.setText(description);
         if (imageView != null) imageView.setImageResource(imgID);
         if (dateView != null && unlockedAt != null) {
-            dateView.setText("Nakamit noong " + unlockedAt);
+            dateView.setText(unlockedAt);
         } else if (dateView != null) {
             dateView.setText("");
         }

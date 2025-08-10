@@ -27,7 +27,7 @@ public class BahagiNgPananalita extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bahagi_ng_pananalita);
+        setContentView(R.layout.bahagi_ng_pananalita);
 
         initViews();
 

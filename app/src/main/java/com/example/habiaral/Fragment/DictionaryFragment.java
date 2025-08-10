@@ -1,8 +1,6 @@
 package com.example.habiaral.Fragment;
 
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.example.habiaral.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -45,7 +43,7 @@ public class DictionaryFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_dictionary, container, false); // ✅ initialize first
+        View view = inflater.inflate(R.layout.dictionary, container, false); // ✅ initialize first
 
         wordContainer = view.findViewById(R.id.word_container);
         searchBar = view.findViewById(R.id.searchBarId); // ✅ now this works

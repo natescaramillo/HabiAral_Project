@@ -2,7 +2,6 @@ package com.example.habiaral.Komprehensyon.Stories;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -17,31 +16,47 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Kwento2 extends AppCompatActivity {
+
     Button unlockButton;
-    private FirebaseFirestore db;
+    FirebaseFirestore db;
+    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_kwento2);
+        setContentView(R.layout.komprehensyon_kwento2);
 
+        // =========================
+        // UI INITIALIZATION
+        // =========================
         unlockButton = findViewById(R.id.UnlockButtonKwento2);
-        db = FirebaseFirestore.getInstance();
 
-        unlockButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                unlockLesson();
-            }
-        });
+        // =========================
+        // FIRESTORE INITIALIZATION
+        // =========================
+        db = FirebaseFirestore.getInstance();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
+
+        // Unlock button → save progress & return to main
+        unlockButton.setOnClickListener(view -> unlockLesson());
     }
 
+    // =========================
+    // FIRESTORE - UNLOCK LESSON
+    // =========================
     private void unlockLesson() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if (userId == null) {
+            Toast.makeText(this, "User not signed in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Map<String, Object> progress = new HashMap<>();
         progress.put("Kwento2Done", true);
 
-        db.collection("module_progress").document(userId)
+        db.collection("module_progress")
+                .document(userId)
                 .update(progress)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Next Story Unlocked: Kwento3!", Toast.LENGTH_SHORT).show();
@@ -51,7 +66,8 @@ public class Kwento2 extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to update progress", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to update progress", Toast.LENGTH_SHORT).show();
+                });
     }
 }

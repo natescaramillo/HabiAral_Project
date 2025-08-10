@@ -27,40 +27,45 @@ public class PangUriQuiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_panguri_quiz);
+        setContentView(R.layout.bahagi_ng_pananalita_panguri_quiz);
 
         nextButton = findViewById(R.id.panguriNextButton);
 
         nextButton.setOnClickListener(view -> {
-            unlockNextLesson();
-            saveQuizResultToFirestore();
+            unlockNextLesson();           // Firestore updates only
+            saveQuizResultToFirestore(); // Save completed status
             showResultDialog();
         });
     }
 
     private void unlockNextLesson() {
+        // Show toast that next lesson unlocked
+        Toast.makeText(this, "Next Lesson Unlocked: Panghalip!", Toast.LENGTH_SHORT).show();
+
+        // Optionally you can update the current_lesson here to "panghalip" if you want
+        // This can be combined inside saveQuizResultToFirestore or separately
+    }
+
+    private void saveQuizResultToFirestore() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> progressUpdate = new HashMap<>();
-        progressUpdate.put("panguri", Map.of("status", "completed"));
-        progressUpdate.put("panghalip", Map.of("unlocked", true)); // unlock next lesson
+        Map<String, Object> pangUriStatus = new HashMap<>();
+        pangUriStatus.put("status", "completed");
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("panguri", pangUriStatus);
 
         Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("lessons", progressUpdate);
+        updateMap.put("lessons", lessonsMap);
+        updateMap.put("current_lesson", "panguri"); // or "panghalip" if you want to reflect next lesson
 
         db.collection("module_progress")
                 .document(uid)
                 .set(Map.of("module_1", updateMap), SetOptions.merge());
-
-        Toast.makeText(this, "Next Lesson Unlocked: Panghalip!", Toast.LENGTH_SHORT).show();
-    }
-
-    private void saveQuizResultToFirestore() {
-        // (Optional) You can track quiz results here if needed, or combine with unlockNextLesson.
     }
 
     private void showResultDialog() {

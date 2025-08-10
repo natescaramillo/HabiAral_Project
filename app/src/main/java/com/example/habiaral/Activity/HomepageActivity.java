@@ -1,7 +1,7 @@
 package com.example.habiaral.Activity;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
@@ -13,9 +13,7 @@ import com.example.habiaral.Fragment.ProgressBarFragment;
 import com.example.habiaral.R;
 import com.example.habiaral.Fragment.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
-import android.view.MenuItem;
-import android.view.WindowManager;
+
 import java.util.HashMap;
 import java.util.Map;
 import androidx.core.view.ViewCompat;
@@ -29,7 +27,7 @@ public class HomepageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_homepage);
+        setContentView(R.layout.home_page);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.botnav);

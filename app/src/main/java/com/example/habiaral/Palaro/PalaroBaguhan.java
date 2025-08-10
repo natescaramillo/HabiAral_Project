@@ -1,9 +1,16 @@
 package com.example.habiaral.Palaro;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,7 +35,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -79,7 +85,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_palaro_baguhan);
+        setContentView(R.layout.palaro_baguhan);
 
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
@@ -98,8 +104,6 @@ public class PalaroBaguhan extends AppCompatActivity {
             studentID = currentUser.getUid();
         }
 
-        recordPlayDate(studentID);
-        checkSevenDayStreak(studentID);
 
 
         baguhanQuestion = findViewById(R.id.baguhan_instructionText);
@@ -237,7 +241,7 @@ public class PalaroBaguhan extends AppCompatActivity {
         }
 
 
-        View showTotalPoints = getLayoutInflater().inflate(R.layout.time_up_dialog, null);
+        View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
         AlertDialog dialog = new AlertDialog.Builder(PalaroBaguhan.this)
                 .setView(showTotalPoints)
                 .setCancelable(false)
@@ -373,7 +377,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                 db.collection("student_achievements").document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            showAchievementUnlockedDialog(title);
+                            showAchievementUnlockedDialog(title, R.drawable.a8);
                         }));
             });
         });
@@ -418,7 +422,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                     db.collection("student_achievements").document(uid)
                             .set(wrapper, SetOptions.merge())
                             .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                showAchievementUnlockedDialog(title);
+                                showAchievementUnlockedDialog(title,R.drawable.a4);
                             }));
                 });
             });
@@ -439,76 +443,37 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
 
-    private void checkSevenDayStreak(String studentId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference datesRef = db.collection("daily_play_logs").document(studentId).collection("dates");
+    private void showAchievementUnlockedDialog(String title, int imageRes){
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View toastView = inflater.inflate(R.layout.achievement_unlocked, null);  // palitan ng pangalan ng XML file mo
 
-        datesRef.get().addOnSuccessListener(snapshot -> {
-            int streak = 0;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            Calendar calendar = Calendar.getInstance();
+        ImageView iv = toastView.findViewById(R.id.imageView19);
+        TextView tv = toastView.findViewById(R.id.textView14);
 
-            for (int i = 0; i < 7; i++) {
-                String date = sdf.format(calendar.getTime());
-                if (snapshot.getDocuments().stream().anyMatch(doc -> doc.getId().equals(date))) {
-                    streak++;
-                } else {
-                    break; // ❌ break streak if one day is missing
-                }
-                calendar.add(Calendar.DATE, -1);
-            }
+        iv.setImageResource(imageRes);
+        String line1 = "Nakamit mo na ang parangal:\n";
+        String line2 = title;
 
-            if (streak == 7) {
-                unlockA6Achievement(studentId);
-            }
-        });
+        SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
+
+        // Bold line1
+        ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Bold line2 (achievement name)
+        int start = line1.length();
+        int end = line1.length() + line2.length();
+        ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Make achievement name bigger (e.g. 1.3x)
+        ssb.setSpan(new RelativeSizeSpan(1.3f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tv.setText(ssb);
+        Toast toast = new Toast(this);
+        toast.setView(toastView);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100); // 100 px mula sa top
+        toast.show();
     }
-
-    private void unlockA6Achievement(String studentId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String achievementCode = "SA6";
-        String achievementId = "A6";
-
-        db.collection("student_achievements").document(uid).get().addOnSuccessListener(snapshot -> {
-            Map<String, Object> existing = (Map<String, Object>) snapshot.get("achievements");
-            if (existing != null && existing.containsKey(achievementCode)) return; // already unlocked
-
-            db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
-                if (!achDoc.exists()) return;
-
-                String title = achDoc.getString("title");
-
-                Map<String, Object> achievementData = new HashMap<>();
-                achievementData.put("achievementID", achievementId);
-                achievementData.put("title", title);
-                achievementData.put("unlockedAt", Timestamp.now());
-
-                Map<String, Object> achievementMap = new HashMap<>();
-                achievementMap.put(achievementCode, achievementData);
-
-                Map<String, Object> wrapper = new HashMap<>();
-                wrapper.put("studentId", studentId);
-                wrapper.put("achievements", achievementMap);
-
-                db.collection("student_achievements").document(uid)
-                        .set(wrapper, SetOptions.merge())
-                        .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            showAchievementUnlockedDialog(title);
-                        }));
-            });
-        });
-    }
-
-
-    private void showAchievementUnlockedDialog(String title) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Achievement Unlocked!")
-                .setMessage("You have unlocked: " + title)
-                .setPositiveButton("OK", null)
-                .show();
-    }
-
 
     private void saveBaguhanScore() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -810,7 +775,7 @@ public class PalaroBaguhan extends AppCompatActivity {
 
 
     private void showBackConfirmationDialog() {
-        View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+        View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
 
         AlertDialog backDialog = new AlertDialog.Builder(this)
                 .setView(backDialogView)
@@ -842,7 +807,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void showExitConfirmationDialog() {
-        View backDialogView = getLayoutInflater().inflate(R.layout.custom_dialog_box_exit_palaro, null);
+        View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
         AlertDialog backDialog = new AlertDialog.Builder(this)
                 .setView(backDialogView)
                 .setCancelable(false)

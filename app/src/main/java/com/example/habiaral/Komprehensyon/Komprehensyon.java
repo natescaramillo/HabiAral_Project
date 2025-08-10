@@ -30,7 +30,7 @@ public class Komprehensyon extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_komprehensyon);
+        setContentView(R.layout.komprehensyon);
 
         btnKwento1 = findViewById(R.id.kwento1);
         btnKwento2 = findViewById(R.id.kwento2);

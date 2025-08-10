@@ -16,7 +16,7 @@ public class AboutUsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        setContentView(R.layout.activity_about_us);
+        setContentView(R.layout.settings_about_us);
 
 
 
