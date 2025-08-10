@@ -1,4 +1,4 @@
 package com.example.habiaral.PagUnawa.Quiz;
 
-public class Kwento3_Quiz {
+public class Kwento2Quiz {
 }

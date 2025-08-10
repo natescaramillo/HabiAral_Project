@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.PagUnawa.PagUnawa;
+import com.example.habiaral.PagUnawa.Quiz.Kwento1Quiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -40,8 +41,10 @@ public class Kwento1 extends AppCompatActivity {
             userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
 
-        // Unlock button → save progress & return to main
-        unlockButton.setOnClickListener(view -> unlockLesson());
+        unlockButton.setOnClickListener(view -> {
+            Intent intent = new Intent(Kwento1.this, Kwento1Quiz.class);
+            startActivity(intent);
+        });
     }
 
     // =========================
