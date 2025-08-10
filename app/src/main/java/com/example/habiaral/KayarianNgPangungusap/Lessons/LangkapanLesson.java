@@ -15,7 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Payak extends AppCompatActivity {
+public class LangkapanLesson extends AppCompatActivity {
 
     Button unlockButton;
     FirebaseFirestore db;
@@ -24,12 +24,12 @@ public class Payak extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.kayarian_ng_pangungusap_payak_lesson);
+        setContentView(R.layout.kayarian_ng_pangungusap_langkapan_lesson);
 
         // =========================
         // UI INITIALIZATION
         // =========================
-        unlockButton = findViewById(R.id.UnlockButtonPayak);
+        unlockButton = findViewById(R.id.UnlockButtonLangkapan);
 
         // =========================
         // FIRESTORE INITIALIZATION
@@ -52,21 +52,21 @@ public class Payak extends AppCompatActivity {
             return;
         }
 
-        Map<String, Object> update = new HashMap<>();
-        update.put("PayakDone", true);
+        Map<String, Object> data = new HashMap<>();
+        data.put("LangkapanDone", true);
 
-        db.collection("lesson_progress") // <-- Tamang collection
+        db.collection("lesson_progress") // ✅ Tamang collection
                 .document(userId)
-                .update(update)
+                .update(data)
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(Payak.this, "Next Story Unlocked: Tambalan!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(Payak.this, KayarianNgPangungusap.class);
+                    Toast.makeText(LangkapanLesson.this, "Congratulations! You've completed all lessons!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LangkapanLesson.this, KayarianNgPangungusap.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(Payak.this, "Failed to update progress", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LangkapanLesson.this, "Failed to save progress.", Toast.LENGTH_SHORT).show();
                 });
     }
 }

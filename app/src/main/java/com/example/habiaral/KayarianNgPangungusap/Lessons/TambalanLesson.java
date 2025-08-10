@@ -15,7 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Tambalan extends AppCompatActivity {
+public class TambalanLesson extends AppCompatActivity {
 
     Button unlockButton;
     FirebaseFirestore db;
@@ -59,14 +59,14 @@ public class Tambalan extends AppCompatActivity {
                 .document(userId)
                 .update(update)
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(Tambalan.this, "Next Story Unlocked: Hugnayan!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(Tambalan.this, KayarianNgPangungusap.class);
+                    Toast.makeText(TambalanLesson.this, "Next Story Unlocked: Hugnayan!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(TambalanLesson.this, KayarianNgPangungusap.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(Tambalan.this, "Failed to update progress", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TambalanLesson.this, "Failed to update progress", Toast.LENGTH_SHORT).show();
                 });
     }
 }

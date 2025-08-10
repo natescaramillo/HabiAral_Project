@@ -113,13 +113,13 @@
             android:screenOrientation="portrait" />
         <activity android:name=".PagUnawa.Stories.Kwento3"
             android:screenOrientation="portrait" />
-        <activity android:name=".KayarianNgPangungusap.Lessons.Payak"
+        <activity android:name=".KayarianNgPangungusap.Lessons.PayakLesson"
             android:screenOrientation="portrait" />
-        <activity android:name=".KayarianNgPangungusap.Lessons.Tambalan"
+        <activity android:name=".KayarianNgPangungusap.Lessons.TambalanLesson"
             android:screenOrientation="portrait" />
-        <activity android:name=".KayarianNgPangungusap.Lessons.Hugnayan"
+        <activity android:name=".KayarianNgPangungusap.Lessons.HugnayanLesson"
             android:screenOrientation="portrait" />
-        <activity android:name=".KayarianNgPangungusap.Lessons.Langkapan"
+        <activity android:name=".KayarianNgPangungusap.Lessons.LangkapanLesson"
             android:screenOrientation="portrait" />
     </application>
 

@@ -8,10 +8,10 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.KayarianNgPangungusap.Lessons.Payak;
-import com.example.habiaral.KayarianNgPangungusap.Lessons.Tambalan;
-import com.example.habiaral.KayarianNgPangungusap.Lessons.Hugnayan;
-import com.example.habiaral.KayarianNgPangungusap.Lessons.Langkapan;
+import com.example.habiaral.KayarianNgPangungusap.Lessons.PayakLesson;
+import com.example.habiaral.KayarianNgPangungusap.Lessons.TambalanLesson;
+import com.example.habiaral.KayarianNgPangungusap.Lessons.HugnayanLesson;
+import com.example.habiaral.KayarianNgPangungusap.Lessons.LangkapanLesson;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -64,10 +64,10 @@ public class KayarianNgPangungusap extends AppCompatActivity {
                     unlockButton(btnLangkapan, false, langkapanLock);
                 });
 
-        btnPayak.setOnClickListener(v -> startActivity(new Intent(this, Payak.class)));
-        btnTambalan.setOnClickListener(v -> startActivity(new Intent(this, Tambalan.class)));
-        btnHugnayan.setOnClickListener(v -> startActivity(new Intent(this, Hugnayan.class)));
-        btnLangkapan.setOnClickListener(v -> startActivity(new Intent(this, Langkapan.class)));
+        btnPayak.setOnClickListener(v -> startActivity(new Intent(this, PayakLesson.class)));
+        btnTambalan.setOnClickListener(v -> startActivity(new Intent(this, TambalanLesson.class)));
+        btnHugnayan.setOnClickListener(v -> startActivity(new Intent(this, HugnayanLesson.class)));
+        btnLangkapan.setOnClickListener(v -> startActivity(new Intent(this, LangkapanLesson.class)));
     }
 
     private void unlockButton(LinearLayout layout, boolean isUnlocked, FrameLayout lock) {
