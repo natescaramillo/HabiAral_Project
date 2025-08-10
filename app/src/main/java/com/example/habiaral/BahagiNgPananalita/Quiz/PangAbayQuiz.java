@@ -38,16 +38,9 @@ public class PangAbayQuiz extends AppCompatActivity {
         });
     }
 
-    private void unlockNextLesson() {
-        // Show toast that next lesson unlocked
-        Toast.makeText(this, "Next Lesson Unlocked: Pangatnig!", Toast.LENGTH_SHORT).show();
-
-        // Optionally you can update the current_lesson here to "panghalip" if you want
-        // This can be combined inside saveQuizResultToFirestore or separately
-    }
-
-
-
+    // =========================
+    // DIALOGS & NAVIGATION
+    // =========================
     private void showResultDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -59,6 +52,7 @@ public class PangAbayQuiz extends AppCompatActivity {
         Button homeButton = dialogView.findViewById(R.id.buttonHome);
 
         AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
 
         retryButton.setOnClickListener(v -> {
@@ -75,6 +69,13 @@ public class PangAbayQuiz extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+    }
+
+    // =========================
+    // FIRESTORE UPDATES
+    // =========================
+    private void unlockNextLesson() {
+        Toast.makeText(this, "Next Lesson Unlocked: Pangatnig!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {

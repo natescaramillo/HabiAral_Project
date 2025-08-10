@@ -32,9 +32,9 @@ public class PandiwaQuiz extends AppCompatActivity {
         nextButton = findViewById(R.id.pandiwaNextButton);
 
         nextButton.setOnClickListener(view -> {
-            unlockNextLesson();          // Firestore
-            saveQuizResultToFirestore(); // Firestore
-            showResultDialog();          // Result dialog
+            unlockNextLesson();
+            saveQuizResultToFirestore();
+            showResultDialog();
         });
     }
 
@@ -52,6 +52,7 @@ public class PandiwaQuiz extends AppCompatActivity {
         Button homeButton = dialogView.findViewById(R.id.buttonHome);
 
         AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
 
         retryButton.setOnClickListener(v -> {

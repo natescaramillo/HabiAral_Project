@@ -32,9 +32,9 @@ public class PangatnigQuiz extends AppCompatActivity {
         nextButton = findViewById(R.id.pangatnigNextButton);
 
         nextButton.setOnClickListener(view -> {
-            unlockNextLesson();          // Firestore
-            saveQuizResultToFirestore(); // Firestore
-            showResultDialog();          // Result dialog
+            unlockNextLesson();
+            saveQuizResultToFirestore();
+            showResultDialog();
         });
     }
 
@@ -52,6 +52,7 @@ public class PangatnigQuiz extends AppCompatActivity {
         Button homeButton = dialogView.findViewById(R.id.buttonHome);
 
         AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
 
         retryButton.setOnClickListener(v -> {
@@ -74,11 +75,7 @@ public class PangatnigQuiz extends AppCompatActivity {
     // FIRESTORE UPDATES
     // =========================
     private void unlockNextLesson() {
-        // Show toast that next lesson unlocked
         Toast.makeText(this, "Next Lesson Unlocked: Pang-Ukol!", Toast.LENGTH_SHORT).show();
-
-        // Optionally you can update the current_lesson here to "panghalip" if you want
-        // This can be combined inside saveQuizResultToFirestore or separately
     }
 
     private void saveQuizResultToFirestore() {

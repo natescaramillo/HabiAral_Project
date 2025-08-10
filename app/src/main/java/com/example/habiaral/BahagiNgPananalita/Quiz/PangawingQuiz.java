@@ -41,8 +41,8 @@ public class PangawingQuiz extends AppCompatActivity {
         nextButton = findViewById(R.id.pangawingNextButton);
 
         nextButton.setOnClickListener(view -> {
-            updateLessonStatusInFirestore(); // Firestore
-            showResultDialog();              // Result dialog
+            updateLessonStatusInFirestore();
+            showResultDialog();
         });
     }
 
@@ -92,22 +92,19 @@ public class PangawingQuiz extends AppCompatActivity {
 
         SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
 
-        // Bold line1
         ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Bold line2 (achievement name)
         int start = line1.length();
         int end = line1.length() + line2.length();
         ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Make achievement name bigger (e.g. 1.3x)
         ssb.setSpan(new RelativeSizeSpan(1.3f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tv.setText(ssb);
         Toast toast = new Toast(this);
         toast.setView(toastView);
         toast.setDuration(Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100); // 100 px mula sa top
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
         toast.show();
     }
 

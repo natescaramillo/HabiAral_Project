@@ -32,9 +32,9 @@ public class PadamdamQuiz extends AppCompatActivity {
         nextButton = findViewById(R.id.padamdamNextButton);
 
         nextButton.setOnClickListener(view -> {
-            unlockNextLesson();          // Firestore
-            saveQuizResultToFirestore(); // Firestore
-            showResultDialog();          // Result dialog
+            unlockNextLesson();
+            saveQuizResultToFirestore();
+            showResultDialog();
         });
     }
 
@@ -75,27 +75,7 @@ public class PadamdamQuiz extends AppCompatActivity {
     // FIRESTORE UPDATES
     // =========================
     private void unlockNextLesson() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = user.getUid();
-
-        Map<String, Object> pangawingStatus = new HashMap<>();
-        pangawingStatus.put("status", "unlocked");
-
-        Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("pangawing", pangawingStatus);
-
-        Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("lessons", lessonsMap);
-
-        db.collection("module_progress")
-                .document(uid)
-                .set(Map.of("module_1", updateMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid ->
-                        Toast.makeText(this, "Next Lesson Unlocked: Pangawing!", Toast.LENGTH_SHORT).show()
-                );
+        Toast.makeText(this, "Next Lesson Unlocked: Pangawing!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {
