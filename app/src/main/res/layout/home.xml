@@ -46,17 +46,24 @@
 
     <ImageView
         android:id="@+id/imageView7"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="322dp"
+        android:layout_height="227dp"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="100dp"
         android:adjustViewBounds="true"
-        android:src="@drawable/hi_tarshier"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_marginTop="100dp" />
+        android:src="@drawable/hi_tarshier" />
+
+    <!-- Brown overlay starting halfway down the image -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="240dp"
+        android:background="#EDB586"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="240dp"
         android:scrollbarSize="0dp"
         android:fillViewport="true">
 
@@ -65,7 +72,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:paddingBottom="40dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
             android:paddingHorizontal="16dp">
 
             <!-- BUTTON 1 -->
