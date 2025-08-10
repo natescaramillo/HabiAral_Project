@@ -104,8 +104,6 @@ public class PalaroBaguhan extends AppCompatActivity {
             studentID = currentUser.getUid();
         }
 
-        recordPlayDate(studentID);
-        checkSevenDayStreak(studentID);
 
 
         baguhanQuestion = findViewById(R.id.baguhan_instructionText);
@@ -442,68 +440,6 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         db.collection("daily_play_logs").document(studentId)
                 .set(update, SetOptions.merge()); // merge to keep existing dates
-    }
-
-
-    private void checkSevenDayStreak(String studentId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference datesRef = db.collection("daily_play_logs").document(studentId).collection("dates");
-
-        datesRef.get().addOnSuccessListener(snapshot -> {
-            int streak = 0;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            Calendar calendar = Calendar.getInstance();
-
-            for (int i = 0; i < 7; i++) {
-                String date = sdf.format(calendar.getTime());
-                if (snapshot.getDocuments().stream().anyMatch(doc -> doc.getId().equals(date))) {
-                    streak++;
-                } else {
-                    break; // ❌ break streak if one day is missing
-                }
-                calendar.add(Calendar.DATE, -1);
-            }
-
-            if (streak == 7) {
-                unlockA6Achievement(studentId);
-            }
-        });
-    }
-
-    private void unlockA6Achievement(String studentId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String achievementCode = "SA6";
-        String achievementId = "A6";
-
-        db.collection("student_achievements").document(uid).get().addOnSuccessListener(snapshot -> {
-            Map<String, Object> existing = (Map<String, Object>) snapshot.get("achievements");
-            if (existing != null && existing.containsKey(achievementCode)) return; // already unlocked
-
-            db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
-                if (!achDoc.exists()) return;
-
-                String title = achDoc.getString("title");
-
-                Map<String, Object> achievementData = new HashMap<>();
-                achievementData.put("achievementID", achievementId);
-                achievementData.put("title", title);
-                achievementData.put("unlockedAt", Timestamp.now());
-
-                Map<String, Object> achievementMap = new HashMap<>();
-                achievementMap.put(achievementCode, achievementData);
-
-                Map<String, Object> wrapper = new HashMap<>();
-                wrapper.put("studentId", studentId);
-                wrapper.put("achievements", achievementMap);
-
-                db.collection("student_achievements").document(uid)
-                        .set(wrapper, SetOptions.merge())
-                        .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            showAchievementUnlockedDialog(title, R.drawable.a6);
-                        }));
-            });
-        });
     }
 
 
