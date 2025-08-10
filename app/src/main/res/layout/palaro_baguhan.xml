@@ -9,25 +9,29 @@
     android:background="@drawable/question_bg_drawable"
     tools:context=".Activity.PalaroBaguhan">
 
+    <!-- Top guideline -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
 
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
         android:fontFamily="@font/special"
         android:text="Punan ang mga patlang"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.202"
+        app:layout_constraintTop_toTopOf="@id/topGuide"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/baguhan_instructionText"
-        android:layout_width="319dp"
-        android:layout_height="113dp"
-        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/rounded_rect"
         android:backgroundTint="#FFEFEA"
         android:fontFamily="@font/special"
@@ -35,126 +39,84 @@
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/textView10"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.137" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.85" />
 
     <ImageView
         android:id="@+id/characterIcon"
-        android:layout_width="320dp"
-        android:layout_height="220dp"
-        android:layout_marginTop="140dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:src="@drawable/tarsierpng"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintTop_toBottomOf="@id/baguhan_instructionText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="16:11"
+        app:layout_constraintWidth_percent="0.85" />
 
     <View
         android:id="@+id/bottomBar"
-        android:layout_width="375dp"
-        android:layout_height="380dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@drawable/bottom_bar_bg"
+        app:layout_constraintTop_toBottomOf="@id/characterIcon"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView8"
+    <!-- Hearts Row -->
+    <LinearLayout
+        android:id="@+id/heartsRow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="@id/bottomBar"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.216"
-        app:layout_constraintStart_toStartOf="@+id/bottomBar"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:layout_constraintVertical_bias="0.027"
-        app:srcCompat="@drawable/icons8_heart_48" />
+        android:layout_marginTop="8dp">
 
-    <ImageView
-        android:id="@+id/imageView12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="28dp"
-        app:layout_constraintStart_toEndOf="@+id/imageView9"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:srcCompat="@drawable/icons8_heart_48" />
-
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="28dp"
-        app:layout_constraintStart_toEndOf="@+id/imageView10"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:srcCompat="@drawable/icons8_heart_48" />
-
-    <ImageView
-        android:id="@+id/imageView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="28dp"
-        app:layout_constraintStart_toEndOf="@+id/imageView11"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:srcCompat="@drawable/icons8_heart_48" />
-
-    <ImageView
-        android:id="@+id/imageView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
-        app:layout_constraintStart_toEndOf="@+id/imageView8"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/icons8_heart_48" />
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" app:srcCompat="@drawable/icons8_heart_48" />
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:srcCompat="@drawable/icons8_heart_48" />
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:srcCompat="@drawable/icons8_heart_48" />
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:srcCompat="@drawable/icons8_heart_48" />
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:srcCompat="@drawable/icons8_heart_48" />
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/timerBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="84dp"
-        android:layout_marginEnd="32dp"
+        android:layout_height="40dp"
         android:background="@null"
         android:backgroundTint="#E0E0E0"
-        android:clipToOutline="true"
         android:indeterminate="false"
         android:max="100"
         android:progress="100"
         android:progressDrawable="@drawable/custom_progress_drawable"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@id/heartsRow"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="32dp" />
 
     <TextView
         android:id="@+id/answerLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="144dp"
         android:fontFamily="@font/special"
         android:text="Sagot mo:"
         android:textColor="#000"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.095"
+        app:layout_constraintTop_toBottomOf="@id/timerBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar" />
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp" />
 
-
+    <!-- Your Original Buttons (unchanged) -->
     <Button
         android:id="@+id/baguhan_answer1"
         android:layout_width="85dp"
@@ -163,7 +125,7 @@
         android:layout_marginTop="48dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/answer_option_bg"
-         android:clickable="true"
+        android:clickable="true"
         android:fontFamily="@font/special"
         android:gravity="center"
         android:textSize="20sp"
@@ -255,7 +217,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timerBar" />
 
-
     <Button
         android:id="@+id/UnlockButtonPalaro"
         android:layout_width="85dp"
@@ -283,16 +244,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.963" />
-
-    <LinearLayout
-        android:id="@+id/buttonLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="650dp" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
