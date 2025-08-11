@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/gradient_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5"
         tools:context=".BahagiNgPananalita.BahagiNgPananalita">
 
         <View
@@ -19,9 +21,10 @@
             android:layout_height="80dp"
             android:alpha="0.6"
             android:background="#A27B5C"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/title"
@@ -39,8 +42,8 @@
 
         <LinearLayout
             android:id="@+id/pangngalan"
-            android:layout_width="344dp"
-            android:layout_height="88dp"
+            android:layout_width="333dp"
+            android:layout_height="86dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/button_color"
             android:clickable="true"
@@ -49,8 +52,8 @@
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@id/view1">
 
             <TextView
@@ -80,8 +83,6 @@
 
         <LinearLayout
             android:id="@+id/pandiwa"
-            android:layout_width="342dp"
-            android:layout_height="92dp"
             android:layout_marginTop="10dp"
             android:alpha="0.5"
             android:background="@drawable/button_color"
@@ -91,8 +92,10 @@
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="333dp"
+            android:layout_height="86dp"
+            app:layout_constraintEnd_toEndOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@id/pangngalan">
 
             <TextView
@@ -121,8 +124,10 @@
 
         <LinearLayout
             android:id="@+id/panguri"
-            android:layout_width="342dp"
-            android:layout_height="92dp"
+            android:layout_width="333dp"
+            android:layout_height="86dp"
+            app:layout_constraintEnd_toEndOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="@id/guideline"
             android:layout_marginTop="10dp"
             android:alpha="0.5"
             android:background="@drawable/button_color"
@@ -132,8 +137,6 @@
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pandiwa">
 
             <TextView
@@ -162,8 +165,10 @@
 
         <LinearLayout
             android:id="@+id/panghalip"
-            android:layout_width="342dp"
-            android:layout_height="92dp"
+            android:layout_width="333dp"
+            android:layout_height="86dp"
+            app:layout_constraintEnd_toEndOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="@id/guideline"
             android:layout_marginTop="10dp"
             android:alpha="0.5"
             android:background="@drawable/button_color"
@@ -173,8 +178,6 @@
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/panguri">
 
             <TextView
@@ -203,8 +206,10 @@
 
         <LinearLayout
             android:id="@+id/pangabay"
-            android:layout_width="342dp"
-            android:layout_height="92dp"
+            android:layout_width="333dp"
+            android:layout_height="86dp"
+            app:layout_constraintEnd_toEndOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="@id/guideline"
             android:layout_marginTop="10dp"
             android:alpha="0.5"
             android:background="@drawable/button_color"
@@ -214,8 +219,6 @@
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/panghalip">
 
             <TextView
@@ -244,8 +247,10 @@
 
         <LinearLayout
             android:id="@+id/pangatnig"
-            android:layout_width="342dp"
-            android:layout_height="92dp"
+            android:layout_width="333dp"
+            android:layout_height="86dp"
+            app:layout_constraintEnd_toEndOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="@id/guideline"
             android:layout_marginTop="10dp"
             android:alpha="0.5"
             android:background="@drawable/button_color"
@@ -255,8 +260,6 @@
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pangabay">
 
             <TextView
@@ -285,8 +288,10 @@
 
         <LinearLayout
             android:id="@+id/pangukol"
-            android:layout_width="342dp"
-            android:layout_height="92dp"
+            android:layout_width="333dp"
+            android:layout_height="86dp"
+            app:layout_constraintEnd_toEndOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="@id/guideline"
             android:layout_marginTop="10dp"
             android:alpha="0.5"
             android:background="@drawable/button_color"
@@ -296,8 +301,6 @@
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pangatnig">
 
             <TextView
@@ -326,8 +329,10 @@
 
         <LinearLayout
             android:id="@+id/pangakop"
-            android:layout_width="342dp"
-            android:layout_height="92dp"
+            android:layout_width="333dp"
+            android:layout_height="86dp"
+            app:layout_constraintEnd_toEndOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="@id/guideline"
             android:layout_marginTop="10dp"
             android:alpha="0.5"
             android:background="@drawable/button_color"
@@ -337,8 +342,6 @@
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pangukol">
 
             <TextView
@@ -367,8 +370,10 @@
 
         <LinearLayout
             android:id="@+id/padamdam"
-            android:layout_width="342dp"
-            android:layout_height="92dp"
+            android:layout_width="333dp"
+            android:layout_height="86dp"
+            app:layout_constraintEnd_toEndOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="@id/guideline"
             android:layout_marginTop="10dp"
             android:alpha="0.5"
             android:background="@drawable/button_color"
@@ -378,8 +383,6 @@
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pangakop">
 
             <TextView
@@ -408,8 +411,10 @@
 
         <LinearLayout
             android:id="@+id/pangawing"
-            android:layout_width="342dp"
-            android:layout_height="92dp"
+            android:layout_width="333dp"
+            android:layout_height="86dp"
+            app:layout_constraintEnd_toEndOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="@id/guideline"
             android:layout_marginTop="10dp"
             android:alpha="0.5"
             android:background="@drawable/button_color"
@@ -419,8 +424,6 @@
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/padamdam">
 
             <TextView
@@ -446,6 +449,20 @@
                     android:src="@drawable/design_lock" />
             </FrameLayout>
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.10"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.90"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
