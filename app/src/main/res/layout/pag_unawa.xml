@@ -3,21 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@drawable/gradient_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@drawable/gradient_background"
     tools:context=".PagUnawa.PagUnawa">
 
+    <!-- Top Bar -->
     <View
         android:id="@+id/view1"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:alpha="0.6"
         android:background="#A27B5C"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/title"
@@ -28,44 +28,68 @@
         android:text="Pag-Unawa"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintTop_toTopOf="@id/view1"
         app:layout_constraintBottom_toBottomOf="@id/view1"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/view1" />
 
-    <LinearLayout
+    <!-- First Item -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/kwento1"
         android:layout_width="327dp"
         android:layout_height="162dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/tarsier_kwento1"
+        android:background="@drawable/rounded_rect"
         android:clickable="true"
+        android:clipToOutline="true"
         android:focusable="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view1">
 
-        <TextView
+        <ImageView
+            android:id="@+id/kwento1Image"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/tarsier_kwento1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/kwento1Title"
+            android:layout_width="230dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="16dp"
             android:fontFamily="@font/special"
             android:gravity="center"
             android:text="ANG ALAMAT NG ROSAS"
             android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.494"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/kwento1Image"
+            app:layout_constraintVertical_bias="1.0" />
 
         <FrameLayout
             android:id="@+id/kwento1Lock"
             android:layout_width="49dp"
             android:layout_height="44dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/square">
+            android:background="@drawable/square"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/kwento1Image"
+            app:layout_constraintHorizontal_bias="0.884"
+            app:layout_constraintStart_toStartOf="@+id/kwento1Image"
+            app:layout_constraintTop_toTopOf="@+id/kwento1Image"
+            app:layout_constraintVertical_bias="0.423">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -73,10 +97,10 @@
                 android:layout_gravity="center"
                 android:src="@drawable/design_lock" />
         </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <!-- Second Item -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/kwento2"
         android:layout_width="327dp"
         android:layout_height="146dp"
@@ -85,29 +109,32 @@
         android:background="@drawable/button_color"
         android:clickable="true"
         android:focusable="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/kwento1">
 
         <TextView
+            android:id="@+id/kwento2Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:fontFamily="@font/special"
             android:text="ANG KWENTO NI LINO AT ANG KANIYANG LOBONG PANYO"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/kwento2Lock"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <FrameLayout
             android:id="@+id/kwento2Lock"
             android:layout_width="49dp"
             android:layout_height="44dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/square">
+            android:layout_marginStart="8dp"
+            android:background="@drawable/square"
+            app:layout_constraintBottom_toBottomOf="@id/kwento2Title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/kwento2Title">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -115,9 +142,10 @@
                 android:layout_gravity="center"
                 android:src="@drawable/design_lock" />
         </FrameLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
+    <!-- Third Item -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/kwento3"
         android:layout_width="331dp"
         android:layout_height="138dp"
@@ -126,29 +154,32 @@
         android:background="@drawable/button_color"
         android:clickable="true"
         android:focusable="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/kwento2">
 
         <TextView
+            android:id="@+id/kwento3Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:fontFamily="@font/special"
             android:text="ANG ALAMAT NG PUNONG MANGGA"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/kwento3Lock"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <FrameLayout
             android:id="@+id/kwento3Lock"
             android:layout_width="49dp"
             android:layout_height="44dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/square">
+            android:layout_marginStart="8dp"
+            android:background="@drawable/square"
+            app:layout_constraintBottom_toBottomOf="@id/kwento3Title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/kwento3Title">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -156,6 +187,27 @@
                 android:layout_gravity="center"
                 android:src="@drawable/design_lock" />
         </FrameLayout>
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
