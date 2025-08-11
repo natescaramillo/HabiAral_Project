@@ -4,10 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.habiaral.PagUnawa.Stories.Kwento1;
 import com.example.habiaral.PagUnawa.Stories.Kwento2;
@@ -21,7 +21,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class PagUnawa extends AppCompatActivity {
 
-    LinearLayout btnKwento1, btnKwento2, btnKwento3;
+    // Match Java types with XML (ConstraintLayout)
+    ConstraintLayout btnKwento1, btnKwento2, btnKwento3;
     FrameLayout kwento1Lock, kwento2Lock, kwento3Lock;
 
     FirebaseFirestore db;
@@ -32,6 +33,7 @@ public class PagUnawa extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pag_unawa);
 
+        // Initialize views
         btnKwento1 = findViewById(R.id.kwento1);
         btnKwento2 = findViewById(R.id.kwento2);
         btnKwento3 = findViewById(R.id.kwento3);
@@ -40,9 +42,11 @@ public class PagUnawa extends AppCompatActivity {
         kwento2Lock = findViewById(R.id.kwento2Lock);
         kwento3Lock = findViewById(R.id.kwento3Lock);
 
+        // Initialize Firebase
         db = FirebaseFirestore.getInstance();
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        // Load progress from Firestore
         db.collection("module_progress").document(userId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -69,12 +73,14 @@ public class PagUnawa extends AppCompatActivity {
                     }
                 });
 
+        // Click listeners for stories
         btnKwento1.setOnClickListener(v -> startActivity(new Intent(this, Kwento1.class)));
         btnKwento2.setOnClickListener(v -> startActivity(new Intent(this, Kwento2.class)));
         btnKwento3.setOnClickListener(v -> startActivity(new Intent(this, Kwento3.class)));
     }
 
-    private void unlockButton(LinearLayout layout, boolean isUnlocked, FrameLayout lock) {
+    // Updated to use ConstraintLayout
+    private void unlockButton(ConstraintLayout layout, boolean isUnlocked, FrameLayout lock) {
         layout.setEnabled(isUnlocked);
         layout.setClickable(isUnlocked);
         layout.setAlpha(isUnlocked ? 1.0f : 0.5f);
