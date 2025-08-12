@@ -1,10 +1,8 @@
 package com.example.habiaral.KayarianNgPangungusap.Lessons;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.VideoView;
@@ -15,7 +13,6 @@ import com.example.habiaral.KayarianNgPangungusap.Quiz.LangkapanQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -35,41 +32,49 @@ public class LangkapanLesson extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.kayarian_ng_pangungusap_langkapan_lesson);
 
+        // =========================
+        // UI INITIALIZATION
+        // =========================
         unlockButton = findViewById(R.id.UnlockButtonLangkapan);
         videoView = findViewById(R.id.videoViewLangkapan);
 
+        // Disable unlock button until lesson is completed
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
-        // Check lesson progress from Firestore
-        checkLessonStatusFromFirestore();
+        // Check if lesson is already completed
+        checkLessonStatus();
 
-        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.langkapan_lesson);
+        // =========================
+        // VIDEO SETUP
+        // =========================
+        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_lesson);
         videoView.setVideoURI(videoUri);
 
         mediaController = new MediaController(this);
         mediaController.setAnchorView(videoView);
         videoView.setMediaController(mediaController);
 
-        videoView.start();
-
         videoView.setOnCompletionListener(mp -> {
             if (!isLessonDone) {
                 isLessonDone = true;
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
-
                 saveProgressToFirestore();
             }
         });
 
+        // Unlock button → go to quiz
         unlockButton.setOnClickListener(view -> {
             Intent intent = new Intent(LangkapanLesson.this, LangkapanQuiz.class);
             startActivity(intent);
         });
+
+        // Start video immediately
+        videoView.start();
     }
 
-    private void checkLessonStatusFromFirestore() {
+    private void checkLessonStatus() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
@@ -80,23 +85,20 @@ public class LangkapanLesson extends AppCompatActivity {
                 .addOnSuccessListener(snapshot -> {
                     if (snapshot.exists()) {
                         Map<String, Object> module2 = (Map<String, Object>) snapshot.get("module_2");
-                        if (module2 != null) {
+
+                        if (module2 != null && module2.containsKey("lessons")) {
                             Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
-                            if (lessons != null) {
+                            if (lessons != null && lessons.containsKey("langkapan")) {
                                 Map<String, Object> langkapan = (Map<String, Object>) lessons.get("langkapan");
-                                if (langkapan != null) {
-                                    String status = (String) langkapan.get("status");
-                                    if ("in_progress".equals(status) || "completed".equals(status)) {
-                                        isLessonDone = true;
-                                        unlockButton.setEnabled(true);
-                                        unlockButton.setAlpha(1f);
-                                    }
+                                if (langkapan != null && "completed".equals(langkapan.get("status"))) {
+                                    isLessonDone = true;
+                                    unlockButton.setEnabled(true);
+                                    unlockButton.setAlpha(1f);
                                 }
                             }
                         }
                     }
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to load Langkapan lesson status", e));
+                });
     }
 
     private void saveProgressToFirestore() {
@@ -120,8 +122,6 @@ public class LangkapanLesson extends AppCompatActivity {
 
         db.collection("module_progress")
                 .document(uid)
-                .set(Map.of("module_2", progressMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ PangUri lesson progress saved"))
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save PangUri lesson progress", e));
+                .set(Map.of("module_2", progressMap), SetOptions.merge());
     }
 }

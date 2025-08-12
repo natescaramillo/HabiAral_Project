@@ -48,7 +48,7 @@ public class PangHalipLesson extends AppCompatActivity {
         // =========================
         // VIDEO SETUP
         // =========================
-        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.panghalip_lesson);
+        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_lesson);
         videoView.setVideoURI(videoUri);
 
         mediaController = new MediaController(this);
@@ -101,8 +101,7 @@ public class PangHalipLesson extends AppCompatActivity {
                             }
                         }
                     }
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to load Panghalip progress", e));
+                });
     }
 
     // =========================
@@ -128,8 +127,6 @@ public class PangHalipLesson extends AppCompatActivity {
         moduleMap.put("lessons", lessonMap);
 
         db.collection("module_progress").document(uid)
-                .set(Map.of("module_1", moduleMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ Panghalip progress saved"))
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save Panghalip progress", e));
+                .set(Map.of("module_1", moduleMap), SetOptions.merge());
     }
 }

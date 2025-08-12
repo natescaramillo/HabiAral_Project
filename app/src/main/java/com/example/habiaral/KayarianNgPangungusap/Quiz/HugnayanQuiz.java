@@ -44,12 +44,12 @@ public class HugnayanQuiz extends AppCompatActivity{
     private void showResultDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_box_option, null);
+        View dialogView = inflater.inflate(R.layout.dialog_box_quiz_score, null);
         builder.setView(dialogView);
         builder.setCancelable(false);
 
-        Button retryButton = dialogView.findViewById(R.id.buttonRetry);
-        Button homeButton = dialogView.findViewById(R.id.buttonHome);
+        Button retryButton = dialogView.findViewById(R.id.retryButton);
+        Button homeButton = dialogView.findViewById(R.id.finishButton);
 
         AlertDialog dialog = builder.create();
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
@@ -75,7 +75,7 @@ public class HugnayanQuiz extends AppCompatActivity{
     // FIRESTORE UPDATES
     // =========================
     private void unlockNextLesson() {
-        Toast.makeText(this, "Next Lesson Unlocked: Panghalip!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Next Lesson Unlocked: Langkapan!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {

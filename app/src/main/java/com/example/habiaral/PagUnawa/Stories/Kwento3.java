@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.example.habiaral.PagUnawa.Quiz.Kwento3Quiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,8 +46,6 @@ public class Kwento3 extends AppCompatActivity {
             R.drawable.kwento1_page17,
             R.drawable.kwento1_page18,
             R.drawable.kwento1_page19
-
-
     };
 
     @Override
@@ -56,6 +53,7 @@ public class Kwento3 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pag_unawa_kwento3);
 
+        storyImage = findViewById(R.id.imageViewComic3);
         unlockButton = findViewById(R.id.UnlockButtonKwento3);
 
         unlockButton.setEnabled(false);
@@ -119,8 +117,7 @@ public class Kwento3 extends AppCompatActivity {
                             }
                         }
                     }
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to load kwento3 lesson status", e));
+                });
     }
 
     private void saveProgressToFirestore() {
@@ -144,8 +141,6 @@ public class Kwento3 extends AppCompatActivity {
 
         db.collection("module_progress")
                 .document(uid)
-                .set(Map.of("module_3", progressMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ Kwento3 lesson progress saved"))
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save Kwento3 lesson progress", e));
+                .set(Map.of("module_3", progressMap), SetOptions.merge());
     }
 }

@@ -44,7 +44,7 @@ public class PangUriLesson extends AppCompatActivity {
         // Check lesson progress from Firestore
         checkLessonStatusFromFirestore();
 
-        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.panguri_lesson);
+        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_lesson);
         videoView.setVideoURI(videoUri);
 
         mediaController = new MediaController(this);

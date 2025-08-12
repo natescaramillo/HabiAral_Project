@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.PagUnawa.Quiz.Kwento1Quiz;
 import com.example.habiaral.PagUnawa.Quiz.Kwento2Quiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,8 +46,6 @@ public class Kwento2 extends AppCompatActivity {
             R.drawable.kwento1_page17,
             R.drawable.kwento1_page18,
             R.drawable.kwento1_page19
-
-
     };
 
     @Override
@@ -56,6 +53,7 @@ public class Kwento2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pag_unawa_kwento2);
 
+        storyImage = findViewById(R.id.imageViewComic2);
         unlockButton = findViewById(R.id.UnlockButtonKwento2);
 
         unlockButton.setEnabled(false);
@@ -107,9 +105,9 @@ public class Kwento2 extends AppCompatActivity {
                         if (module3 != null) {
                             Map<String, Object> lessons = (Map<String, Object>) module3.get("lessons");
                             if (lessons != null) {
-                                Map<String, Object> kwento2 = (Map<String, Object>) lessons.get("kwento2");
-                                if (kwento2 != null) {
-                                    String status = (String) kwento2.get("status");
+                                Map<String, Object> kwento1 = (Map<String, Object>) lessons.get("kwento1");
+                                if (kwento1 != null) {
+                                    String status = (String) kwento1.get("status");
                                     if ("in_progress".equals(status) || "completed".equals(status)) {
                                         isLessonDone = true;
                                         unlockButton.setEnabled(true);
@@ -119,8 +117,7 @@ public class Kwento2 extends AppCompatActivity {
                             }
                         }
                     }
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to load Kwento2 lesson status", e));
+                });
     }
 
     private void saveProgressToFirestore() {
@@ -130,11 +127,11 @@ public class Kwento2 extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> kwento2Status = new HashMap<>();
-        kwento2Status.put("status", "in_progress");
+        Map<String, Object> kwento1Status = new HashMap<>();
+        kwento1Status.put("status", "in_progress");
 
         Map<String, Object> lessonMap = new HashMap<>();
-        lessonMap.put("kwento2", kwento2Status);
+        lessonMap.put("kwento2", kwento1Status);
 
         Map<String, Object> progressMap = new HashMap<>();
         progressMap.put("modulename", "Pag-Unawa");
@@ -144,8 +141,6 @@ public class Kwento2 extends AppCompatActivity {
 
         db.collection("module_progress")
                 .document(uid)
-                .set(Map.of("module_3", progressMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ Kwento2 lesson progress saved"))
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save Kwento2 lesson progress", e));
+                .set(Map.of("module_3", progressMap), SetOptions.merge());
     }
 }

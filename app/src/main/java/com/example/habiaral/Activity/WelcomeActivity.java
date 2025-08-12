@@ -4,14 +4,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habiaral.BahagiNgPananalita.LessonProgressCache; // ✅ import cache
 import com.example.habiaral.R;
 import com.google.android.gms.auth.api.signin.*;
 import com.google.android.gms.common.api.ApiException;
@@ -30,7 +29,6 @@ public class WelcomeActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseFirestore db;
 
-    private Button startBtn;
     private LinearLayout btnGoogleLogin;
 
     @Override
@@ -46,15 +44,14 @@ public class WelcomeActivity extends AppCompatActivity {
         boolean firstLaunch = prefs.getBoolean("firstLaunch", true);
 
         if (firstLaunch) {
-            FirebaseAuth.getInstance().signOut(); // Sign out any user
-            prefs.edit().putBoolean("firstLaunch", false).apply(); // Mark as launched
+            FirebaseAuth.getInstance().signOut();
+            prefs.edit().putBoolean("firstLaunch", false).apply();
         } else if (mAuth.getCurrentUser() != null) {
-            // ✅ Check nickname before proceeding
             GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(this);
             if (lastSignedInAccount != null) {
                 saveUserToFirestore(lastSignedInAccount);
             } else {
-                mGoogleSignInClient.signOut(); // fallback cleanup
+                mGoogleSignInClient.signOut();
             }
             return;
         }
@@ -66,10 +63,8 @@ public class WelcomeActivity extends AppCompatActivity {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        // Bind UI elements
+        // Bind UI
         btnGoogleLogin = findViewById(R.id.btnGoogleLogin);
-
-        // Google login
         btnGoogleLogin.setOnClickListener(view -> {
             btnGoogleLogin.setEnabled(false);
             signInWithGoogle();
@@ -119,19 +114,16 @@ public class WelcomeActivity extends AppCompatActivity {
 
         docRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                // Check if nickname exists and is not empty
                 String nickname = documentSnapshot.getString("nickname");
-                Log.d("DEBUG", "Nickname: " + nickname);
 
                 if (nickname != null && !nickname.trim().isEmpty()) {
                     Toast.makeText(this, "Maligayang Pagbalik, " + nickname + "!", Toast.LENGTH_SHORT).show();
-                    goToHomePage();
+                    preloadLessonProgressAndGoHome(uid); // ✅ preload before going home
                 } else {
                     goToIntroduction();
                 }
 
             } else {
-                // New user: generate ID and go to introduction
                 db.collection("students").get().addOnSuccessListener(querySnapshot -> {
                     int count = querySnapshot.size();
                     String generatedId = String.format("STUDENT%03d", count + 1);
@@ -157,6 +149,19 @@ public class WelcomeActivity extends AppCompatActivity {
         }).addOnFailureListener(e -> {
             Toast.makeText(this, "Error checking user data", Toast.LENGTH_SHORT).show();
             Log.e("Firestore", "Check error", e);
+        });
+    }
+
+    // ✅ This fetches all lesson progress and caches it
+    private void preloadLessonProgressAndGoHome(String uid) {
+        db.collection("module_progress").document(uid).get().addOnSuccessListener(snapshot -> {
+            if (snapshot.exists()) {
+                LessonProgressCache.setData(snapshot.getData()); // save in memory
+            }
+            goToHomePage();
+        }).addOnFailureListener(e -> {
+            Log.e("Firestore", "Failed to load lesson progress early", e);
+            goToHomePage(); // still go home even if failed
         });
     }
 

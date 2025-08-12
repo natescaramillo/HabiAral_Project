@@ -46,8 +46,6 @@ public class Kwento1 extends AppCompatActivity {
             R.drawable.kwento1_page17,
             R.drawable.kwento1_page18,
             R.drawable.kwento1_page19
-
-
     };
 
     @Override
@@ -144,8 +142,6 @@ public class Kwento1 extends AppCompatActivity {
 
         db.collection("module_progress")
                 .document(uid)
-                .set(Map.of("module_3", progressMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ Kwento1 lesson progress saved"))
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save Kwento1 lesson progress", e));
+                .set(Map.of("module_3", progressMap), SetOptions.merge());
     }
 }

@@ -122,7 +122,7 @@ public class Kwento3Quiz extends AppCompatActivity {
         db.collection("module_progress").document(uid).get().addOnSuccessListener(snapshot -> {
             if (!snapshot.exists()) return;
 
-            Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_2");
+            Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_3");
             if (module1 == null) return;
 
             Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");

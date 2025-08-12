@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habiaral.BahagiNgPananalita.LessonProgressCache; // ✅ Added
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,7 +32,7 @@ public class Introduction extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.introduction);
 
-        nicknameInput = findViewById(R.id.nickname); // Make sure this ID exists in XML
+        nicknameInput = findViewById(R.id.nickname);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -79,7 +80,7 @@ public class Introduction extends AppCompatActivity {
         studentRef.set(update, SetOptions.merge())
                 .addOnSuccessListener(unused -> {
                     Toast.makeText(this, "Palayaw na-save!", Toast.LENGTH_SHORT).show();
-                    goToHome();
+                    preloadLessonProgressAndGoHome(); // ✅ preload before going home
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "❌ Hindi na-save ang palayaw", Toast.LENGTH_SHORT).show();
@@ -87,6 +88,19 @@ public class Introduction extends AppCompatActivity {
                     isSaving = false;
                     nicknameInput.setEnabled(true);
                 });
+    }
+
+    // ✅ This fetches lesson progress into cache before homepage
+    private void preloadLessonProgressAndGoHome() {
+        db.collection("module_progress").document(userId).get().addOnSuccessListener(snapshot -> {
+            if (snapshot.exists()) {
+                LessonProgressCache.setData(snapshot.getData());
+            }
+            goToHome();
+        }).addOnFailureListener(e -> {
+            e.printStackTrace();
+            goToHome(); // still go home even if progress fetch fails
+        });
     }
 
     private void goToHome() {

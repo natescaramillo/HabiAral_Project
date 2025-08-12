@@ -2,8 +2,8 @@ package com.example.habiaral.PagUnawa;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.FrameLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -11,8 +11,10 @@ import com.example.habiaral.PagUnawa.Stories.Kwento1;
 import com.example.habiaral.PagUnawa.Stories.Kwento2;
 import com.example.habiaral.PagUnawa.Stories.Kwento3;
 import com.example.habiaral.R;
+import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -40,66 +42,62 @@ public class PagUnawa extends AppCompatActivity {
         uid = user.getUid();
         db = FirebaseFirestore.getInstance();
 
-        // Step 1: Fetch studentId
-        db.collection("students").document(uid).get().addOnSuccessListener(studentSnap -> {
-            if (studentSnap.exists()) {
-                if (studentSnap.contains("studentId")) {
-                    String studentID = studentSnap.getString("studentId");
-                    Log.d("STUDENT_ID_FETCHED", "Fetched studentId: " + studentID);
+        // Load from cache first
+        Map<String, Object> cachedData = LessonProgressCache.getData();
+        if (cachedData != null) {
+            updateUIFromProgress(cachedData);
+        }
 
-                    // Step 2: Save to module_progress without overwriting other fields
-                    Map<String, Object> update = new HashMap<>();
-                    update.put("studentId", studentID);
-
-                    db.collection("module_progress").document(uid)
-                            .set(update, SetOptions.merge())
-                            .addOnSuccessListener(unused -> {
-                                Log.d("STUDENT_ID_SAVED", "Saved to module_progress: " + studentID);
-                                loadLessonProgress();
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.e("SAVE_FAIL", "Failed saving studentId", e);
-                                loadLessonProgress();
-                            });
-                } else {
-                    Log.w("MISSING_FIELD", "studentId field missing in students/" + uid);
-                    loadLessonProgress();
-                }
-            } else {
-                Log.w("NO_DOC", "No student document found for uid: " + uid);
-                loadLessonProgress();
-            }
-        }).addOnFailureListener(e -> {
-            Log.e("FETCH_FAIL", "Error fetching student doc", e);
-            loadLessonProgress();
-        });
+        // Always refresh from Firestore
+        loadLessonProgressFromFirestore();
     }
 
-    private void loadLessonProgress() {
-        db.collection("module_progress").document(uid).get().addOnSuccessListener(snapshot -> {
-            if (!snapshot.exists()) return;
+    private void loadLessonProgressFromFirestore() {
+        db.collection("module_progress").document(uid)
+                .get()
+                .addOnSuccessListener(this::handleFirestoreData);
+    }
 
-            Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
-            if (module1 == null) return;
+    private void handleFirestoreData(DocumentSnapshot snapshot) {
+        if (!snapshot.exists()) return;
 
-            Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
-            if (lessons == null) return;
+        Map<String, Object> data = snapshot.getData();
+        if (data == null) return;
 
-            boolean kwento1Done = isCompleted(lessons, "kwento1");
-            boolean kwento2Done = isCompleted(lessons, "kwento2");
-            boolean kwento3Done = isCompleted(lessons, "kwento3");
+        // Update cache
+        LessonProgressCache.setData(data);
 
-            unlockButton(btnKwento1, true, kwento1Lock);
-            unlockButton(btnKwento2, kwento1Done, kwento2Lock);
-            unlockButton(btnKwento3, kwento2Done, kwento3Lock);
+        // Update UI
+        updateUIFromProgress(data);
+    }
 
-            checkAndCompleteModule(kwento1Done, kwento2Done, kwento3Done);
-        });
+    private void updateUIFromProgress(Map<String, Object> data) {
+        if (data == null) return;
+
+        Object module3Obj = data.get("module_3");
+        if (!(module3Obj instanceof Map)) return;
+        Map<String, Object> module3 = (Map<String, Object>) module3Obj;
+
+        Object lessonsObj = module3.get("lessons");
+        if (!(lessonsObj instanceof Map)) return;
+        Map<String, Object> lessons = (Map<String, Object>) lessonsObj;
+
+        boolean kwento1Done = isCompleted(lessons, "kwento1");
+        boolean kwento2Done = isCompleted(lessons, "kwento2");
+        boolean kwento3Done = isCompleted(lessons, "kwento3");
+
+        unlockButton(btnKwento1, true, kwento1Lock);
+        unlockButton(btnKwento2, kwento1Done, kwento2Lock);
+        unlockButton(btnKwento3, kwento2Done, kwento3Lock);
+
+        checkAndCompleteModule(kwento1Done, kwento2Done, kwento3Done);
     }
 
     private boolean isCompleted(Map<String, Object> lessons, String key) {
-        Map<String, Object> data = (Map<String, Object>) lessons.get(key);
-        return data != null && "completed".equals(data.get("status"));
+        Object lessonObj = lessons.get(key);
+        if (!(lessonObj instanceof Map)) return false;
+        Map<String, Object> lessonData = (Map<String, Object>) lessonObj;
+        return "completed".equals(lessonData.get("status"));
     }
 
     private void unlockButton(ConstraintLayout layout, boolean isUnlocked, FrameLayout lock) {
@@ -134,7 +132,6 @@ public class PagUnawa extends AppCompatActivity {
 
         update.put("module_3", module3Updates);
 
-        db.collection("module_progress").document(uid)
-                .set(update, SetOptions.merge());
+        db.collection("module_progress").document(uid).set(update, SetOptions.merge());
     }
 }

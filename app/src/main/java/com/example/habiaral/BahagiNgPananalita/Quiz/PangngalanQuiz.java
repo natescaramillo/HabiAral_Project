@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
+
 public class PangngalanQuiz extends AppCompatActivity {
 
     TextView questionText, questionTitle;
@@ -213,12 +215,12 @@ public class PangngalanQuiz extends AppCompatActivity {
         if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_option, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_quiz_score, null);
         builder.setView(dialogView);
         builder.setCancelable(false);
 
-        Button retryButton = dialogView.findViewById(R.id.buttonRetry);
-        Button homeButton = dialogView.findViewById(R.id.buttonHome);
+        Button retryButton = dialogView.findViewById(R.id.retryButton);
+        Button homeButton = dialogView.findViewById(R.id.finishButton);
 
         resultDialog = builder.create();
         resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
@@ -280,10 +282,30 @@ public class PangngalanQuiz extends AppCompatActivity {
         updateMap.put("lessons", lessonsMap);
         updateMap.put("current_lesson", "pangngalan");
 
+        Map<String, Object> moduleUpdate = Map.of("module_1", updateMap);
+
+        // ✅ 1. Save to Firestore
         db.collection("module_progress")
                 .document(uid)
-                .set(Map.of("module_1", updateMap), SetOptions.merge());
+                .set(moduleUpdate, SetOptions.merge());
+
+        // ✅ 2. Update the in-memory cache immediately
+        if (LessonProgressCache.getData() != null) {
+            Map<String, Object> cachedData = LessonProgressCache.getData();
+
+            // Ensure module_1 exists
+            if (!cachedData.containsKey("module_1")) {
+                cachedData.put("module_1", new HashMap<String, Object>());
+            }
+
+            Map<String, Object> cachedModule1 = (Map<String, Object>) cachedData.get("module_1");
+            cachedModule1.put("lessons", lessonsMap);
+            cachedModule1.put("current_lesson", "pangngalan");
+
+            LessonProgressCache.setData(cachedData);
+        }
     }
+
 
     @Override
     protected void onDestroy() {

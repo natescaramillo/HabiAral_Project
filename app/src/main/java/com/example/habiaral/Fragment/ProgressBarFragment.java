@@ -1,15 +1,14 @@
 package com.example.habiaral.Fragment;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,9 +19,8 @@ import java.util.Map;
 
 public class ProgressBarFragment extends Fragment {
 
-    private ProgressBar progressBarBahagi, progressBarKomprehensyon, progressBarKayarian;
-    private TextView progressPercentageBahagi, progressPercentageKomprehensyon, progressPercentageKayarian;
-    private SharedPreferences sharedPreferences;
+    private ProgressBar progressBarBahagi, progressBarPagUnawa, progressBarKayarian;
+    private TextView progressPercentageBahagi, progressPercentagePagUnawa, progressPercentageKayarian;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -31,13 +29,11 @@ public class ProgressBarFragment extends Fragment {
         progressBarBahagi = view.findViewById(R.id.progressBarBahagi);
         progressPercentageBahagi = view.findViewById(R.id.progressPercentageBahagi);
 
-        progressBarKomprehensyon = view.findViewById(R.id.progressBarKomprehensyon);
-        progressPercentageKomprehensyon = view.findViewById(R.id.progressPercentageKomprehensyon);
+        progressBarPagUnawa = view.findViewById(R.id.progressBarPagUnawa);
+        progressPercentagePagUnawa = view.findViewById(R.id.progressPercentagePagUnawa);
 
         progressBarKayarian = view.findViewById(R.id.progressBarKayarian);
         progressPercentageKayarian = view.findViewById(R.id.progressPercentageKayarian);
-
-        sharedPreferences = getActivity().getSharedPreferences("LessonProgress", getContext().MODE_PRIVATE);
 
         updateProgressFromFirestore();
     }
@@ -55,58 +51,70 @@ public class ProgressBarFragment extends Fragment {
                 .addOnSuccessListener(snapshot -> {
                     if (!snapshot.exists()) return;
 
+                    // ===== Bahagi (Module 1) =====
                     Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
-                    if (module1 == null) return;
-
-                    Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
-                    if (lessons == null) return;
-
-                    int bahagiCompleted = 0;
-                    String[] bahagiKeys = {
-                            "pangngalan", "pandiwa", "panguri", "panghalip", "pangabay",
-                            "pangatnig", "pangukol", "pangakop", "padamdam", "pangawing"
-                    };
-
-                    for (String key : bahagiKeys) {
-                        Map<String, Object> lessonData = (Map<String, Object>) lessons.get(key);
-                        if (lessonData != null && "completed".equals(lessonData.get("status"))) {
-                            bahagiCompleted++;
+                    if (module1 != null) {
+                        Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
+                        if (lessons != null) {
+                            String[] bahagiKeys = {
+                                    "pangngalan", "pandiwa", "panguri", "panghalip", "pangabay",
+                                    "pangatnig", "pangukol", "pangakop", "padamdam", "pangawing"
+                            };
+                            int bahagiCompleted = 0;
+                            for (String key : bahagiKeys) {
+                                Map<String, Object> lessonData = (Map<String, Object>) lessons.get(key);
+                                if (lessonData != null && "completed".equals(lessonData.get("status"))) {
+                                    bahagiCompleted++;
+                                }
+                            }
+                            int bahagiProgress = (bahagiCompleted * 100) / bahagiKeys.length;
+                            progressBarBahagi.setProgress(bahagiProgress);
+                            progressPercentageBahagi.setText(bahagiProgress + "%");
                         }
                     }
 
-                    int bahagiProgress = (bahagiCompleted * 100) / bahagiKeys.length;
-                    progressBarBahagi.setProgress(bahagiProgress);
-                    progressPercentageBahagi.setText(bahagiProgress + "%");
+                    // ===== Pag Unawa (Module 3) =====
+                    Map<String, Object> module2 = (Map<String, Object>) snapshot.get("module_3");
+                    if (module2 != null) {
+                        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
+                        if (lessons != null) {
+                            String[] pagunawaKeys = {
+                                    "kwento1", "kwento2", "kwento3"
+                            };
+                            int pagunawaCompleted = 0;
+                            for (String key : pagunawaKeys) {
+                                Map<String, Object> lessonData = (Map<String, Object>) lessons.get(key);
+                                if (lessonData != null && "completed".equals(lessonData.get("status"))) {
+                                    pagunawaCompleted++;
+                                }
+                            }
+                            int pagunawaProgress = (pagunawaCompleted * 100) / pagunawaKeys.length;
+                            progressBarPagUnawa.setProgress(pagunawaProgress);
+                            progressPercentagePagUnawa.setText(pagunawaProgress + "%");
+                        }
+                    }
 
-                    // Update other progress bars from SharedPreferences
-                    updateKomprehensyonFromSharedPref();
-                    updateKayarianFromSharedPref();
+                    // ===== Kayarian (Module 2) =====
+                    Map<String, Object> module3 = (Map<String, Object>) snapshot.get("module_2");
+                    if (module3 != null) {
+                        Map<String, Object> lessons = (Map<String, Object>) module3.get("lessons");
+                        if (lessons != null) {
+                            String[] kayarianKeys = {
+                                    "payak", "tambalan", "hugnayan", "langkapan"
+                            };
+                            int kayarianCompleted = 0;
+                            for (String key : kayarianKeys) {
+                                Map<String, Object> lessonData = (Map<String, Object>) lessons.get(key);
+                                if (lessonData != null && "completed".equals(lessonData.get("status"))) {
+                                    kayarianCompleted++;
+                                }
+                            }
+                            int kayarianProgress = (kayarianCompleted * 100) / kayarianKeys.length;
+                            progressBarKayarian.setProgress(kayarianProgress);
+                            progressPercentageKayarian.setText(kayarianProgress + "%");
+                        }
+                    }
                 });
-    }
-
-    private void updateKomprehensyonFromSharedPref() {
-        int completed = 0;
-        if (sharedPreferences.getBoolean("Kwento1Done", false)) completed++;
-        if (sharedPreferences.getBoolean("Kwento2Done", false)) completed++;
-        if (sharedPreferences.getBoolean("Kwento3Done", false)) completed++;
-
-        int total = 3;
-        int progress = (completed * 100) / total;
-        progressBarKomprehensyon.setProgress(progress);
-        progressPercentageKomprehensyon.setText(progress + "%");
-    }
-
-    private void updateKayarianFromSharedPref() {
-        int completed = 0;
-        if (sharedPreferences.getBoolean("PayakDone", false)) completed++;
-        if (sharedPreferences.getBoolean("TambalanDone", false)) completed++;
-        if (sharedPreferences.getBoolean("HugnayanDone", false)) completed++;
-        if (sharedPreferences.getBoolean("LangkapanDone", false)) completed++;
-
-        int total = 4;
-        int progress = (completed * 100) / total;
-        progressBarKayarian.setProgress(progress);
-        progressPercentageKayarian.setText(progress + "%");
     }
 
     @Override

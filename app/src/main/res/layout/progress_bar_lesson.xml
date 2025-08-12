@@ -105,7 +105,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
-                            android:text="Komprehensyon"
+                            android:text="Pag Unawa"
                             android:textColor="#FFFFFF"
                             android:textSize="20sp"
                             android:fontFamily="@font/special"
@@ -117,7 +117,7 @@
                             android:layout_marginTop="30dp">
 
                             <ProgressBar
-                                android:id="@+id/progressBarKomprehensyon"
+                                android:id="@+id/progressBarPagUnawa"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:indeterminateOnly="false"
@@ -127,7 +127,7 @@
                                 android:progressDrawable="@drawable/design_progress_bar" />
 
                             <TextView
-                                android:id="@+id/progressPercentageKomprehensyon"
+                                android:id="@+id/progressPercentagePagUnawa"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"

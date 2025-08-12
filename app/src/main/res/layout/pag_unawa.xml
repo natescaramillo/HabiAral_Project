@@ -81,6 +81,7 @@
 
         <FrameLayout
             android:id="@+id/kwento1Lock"
+            android:visibility="gone"
             android:layout_width="49dp"
             android:layout_height="44dp"
             android:background="@drawable/square"

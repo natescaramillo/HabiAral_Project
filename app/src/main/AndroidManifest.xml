@@ -114,11 +114,19 @@
             android:screenOrientation="portrait" />
         <activity android:name=".KayarianNgPangungusap.Lessons.PayakLesson"
             android:screenOrientation="portrait" />
+        <activity android:name=".KayarianNgPangungusap.Quiz.PayakQuiz"
+            android:screenOrientation="portrait" />
         <activity android:name=".KayarianNgPangungusap.Lessons.TambalanLesson"
+            android:screenOrientation="portrait" />
+        <activity android:name=".KayarianNgPangungusap.Quiz.TambalanQuiz"
             android:screenOrientation="portrait" />
         <activity android:name=".KayarianNgPangungusap.Lessons.HugnayanLesson"
             android:screenOrientation="portrait" />
+        <activity android:name=".KayarianNgPangungusap.Quiz.HugnayanQuiz"
+            android:screenOrientation="portrait" />
         <activity android:name=".KayarianNgPangungusap.Lessons.LangkapanLesson"
+            android:screenOrientation="portrait" />
+        <activity android:name=".KayarianNgPangungusap.Quiz.LangkapanQuiz"
             android:screenOrientation="portrait" />
     </application>
 

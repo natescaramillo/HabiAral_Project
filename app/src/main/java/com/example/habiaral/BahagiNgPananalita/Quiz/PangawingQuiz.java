@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
+import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
 import com.example.habiaral.R;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,7 +42,7 @@ public class PangawingQuiz extends AppCompatActivity {
         nextButton = findViewById(R.id.pangawingNextButton);
 
         nextButton.setOnClickListener(view -> {
-            updateLessonStatusInFirestore();
+            saveQuizResultToFirestore();
             showResultDialog();
         });
     }
@@ -52,12 +53,12 @@ public class PangawingQuiz extends AppCompatActivity {
     private void showResultDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_box_option, null);
+        View dialogView = inflater.inflate(R.layout.dialog_box_quiz_score, null);
         builder.setView(dialogView);
         builder.setCancelable(false);
 
-        Button retryButton = dialogView.findViewById(R.id.buttonRetry);
-        Button homeButton = dialogView.findViewById(R.id.buttonHome);
+        Button retryButton = dialogView.findViewById(R.id.retryButton);
+        Button homeButton = dialogView.findViewById(R.id.finishButton);
 
         AlertDialog dialog = builder.create();
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
@@ -111,13 +112,14 @@ public class PangawingQuiz extends AppCompatActivity {
     // =========================
     // FIRESTORE UPDATES
     // =========================
-    private void updateLessonStatusInFirestore() {
+    private void saveQuizResultToFirestore() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
         String uid = user.getUid();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        // ✅ 1. Build lesson progress update
         Map<String, Object> pangawingStatus = new HashMap<>();
         pangawingStatus.put("status", "completed");
 
@@ -128,13 +130,32 @@ public class PangawingQuiz extends AppCompatActivity {
         updateMap.put("lessons", lessonsMap);
         updateMap.put("current_lesson", "pangawing");
 
+        Map<String, Object> moduleUpdate = Map.of("module_1", updateMap);
+
+        // ✅ 2. Save to Firestore
         db.collection("module_progress")
                 .document(uid)
-                .set(Map.of("module_1", updateMap), SetOptions.merge())
+                .set(moduleUpdate, SetOptions.merge())
                 .addOnSuccessListener(unused -> {
                     Toast.makeText(this, "Congratulations! You have completed all lessons!", Toast.LENGTH_LONG).show();
                     checkAndUnlockAchievement();
                 });
+
+        // ✅ 3. Update the in-memory cache immediately
+        if (LessonProgressCache.getData() != null) {
+            Map<String, Object> cachedData = LessonProgressCache.getData();
+
+            // Ensure module_1 exists
+            if (!cachedData.containsKey("module_1")) {
+                cachedData.put("module_1", new HashMap<String, Object>());
+            }
+
+            Map<String, Object> cachedModule1 = (Map<String, Object>) cachedData.get("module_1");
+            cachedModule1.put("lessons", lessonsMap);
+            cachedModule1.put("current_lesson", "pangawing");
+
+            LessonProgressCache.setData(cachedData);
+        }
     }
 
     // =========================

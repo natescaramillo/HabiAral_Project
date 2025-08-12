@@ -48,7 +48,7 @@ public class PangawingLesson extends AppCompatActivity {
         // =========================
         // VIDEO SETUP
         // =========================
-        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pangawing_lesson);
+        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_lesson);
         videoView.setVideoURI(videoUri);
 
         mediaController = new MediaController(this);
