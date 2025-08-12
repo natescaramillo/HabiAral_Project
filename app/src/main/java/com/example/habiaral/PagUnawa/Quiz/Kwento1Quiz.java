@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangAkopQuiz;
+import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.PagUnawa.PagUnawa;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -75,8 +76,26 @@ public class Kwento1Quiz extends AppCompatActivity {
     private void unlockNextLesson() {
         Toast.makeText(this, "Next Lesson Unlocked: Kwento2!", Toast.LENGTH_SHORT).show();
     }
-
     private void saveQuizResultToFirestore() {
-        // wala pang code
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        Map<String, Object> kwento1Status = new HashMap<>();
+        kwento1Status.put("status", "completed");
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("kwento1", kwento1Status);
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("lessons", lessonsMap);
+        updateMap.put("current_lesson", "kwento1");
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_3", updateMap), SetOptions.merge());
     }
 }
+

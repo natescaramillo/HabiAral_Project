@@ -77,6 +77,24 @@ public class Kwento2Quiz extends AppCompatActivity {
     }
 
     private void saveQuizResultToFirestore() {
-        // wala pang code
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        Map<String, Object> kwento1Status = new HashMap<>();
+        kwento1Status.put("status", "completed");
+
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("kwento2", kwento1Status);
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("lessons", lessonsMap);
+        updateMap.put("current_lesson", "kwento2");
+
+        db.collection("module_progress")
+                .document(uid)
+                .set(Map.of("module_3", updateMap), SetOptions.merge());
     }
 }
