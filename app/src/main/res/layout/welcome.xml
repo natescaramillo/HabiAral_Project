@@ -45,68 +45,75 @@
         app:layout_constraintGuide_percent="0.80" />
 
     <!-- First Line -->
+
+    <!-- Second Line -->
+
+    <!-- Google Login Button -->
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
         android:fontFamily="@font/special"
         android:gravity="center"
         android:text="Maligayang Pagdating sa"
         android:textColor="#A27B5C"
-        android:textSize="40sp"
-        app:layout_constraintTop_toTopOf="@id/guidelineTop"
+        android:textSize="@dimen/text_title"
+        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        app:layout_constraintEnd_toEndOf="@id/guidelineEnd" />
+        app:layout_constraintTop_toTopOf="@id/guidelineTop" />
 
-    <!-- Second Line -->
     <TextView
         android:id="@+id/textView3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
         android:fontFamily="@font/special"
         android:gravity="center"
         android:text="HabiAral"
         android:textColor="#A27B5C"
-        android:textSize="50sp"
-        app:layout_constraintTop_toTopOf="@id/guidelineMiddle"
+        android:textSize="@dimen/text_title_large"
+        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        app:layout_constraintEnd_toEndOf="@id/guidelineEnd" />
+        app:layout_constraintTop_toTopOf="@id/textView2" />
 
-    <!-- Google Login Button -->
     <LinearLayout
         android:id="@+id/btnGoogleLogin"
-        android:layout_width="180dp"
-        android:layout_height="41dp"
+        android:layout_width="151dp"
+        android:layout_height="35dp"
         android:background="@drawable/rounded_button_white"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingTop="4dp"
-        android:paddingEnd="12dp"
-        android:paddingBottom="4dp"
+        android:paddingStart="@dimen/padding_medium"
+        android:paddingTop="@dimen/padding_small"
+        android:paddingEnd="@dimen/padding_medium"
+        android:paddingBottom="@dimen/padding_small"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintTop_toTopOf="@id/guidelineBottom">
 
         <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="@dimen/icon_small"
+            android:layout_height="@dimen/icon_small"
+            android:layout_marginEnd="@dimen/margin_small"
             android:contentDescription="Google Logo"
             android:src="@drawable/design_google" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/margin_medium"
             android:fontFamily="@font/special"
             android:gravity="center"
             android:text="Login with Google"
             android:textColor="#5C4033"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
