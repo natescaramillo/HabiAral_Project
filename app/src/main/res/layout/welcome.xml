@@ -45,11 +45,6 @@
         app:layout_constraintGuide_percent="0.80" />
 
     <!-- First Line -->
-
-    <!-- Second Line -->
-
-    <!-- Google Login Button -->
-
     <TextView
         android:id="@+id/textView2"
         android:layout_width="0dp"
@@ -59,11 +54,14 @@
         android:gravity="center"
         android:text="Maligayang Pagdating sa"
         android:textColor="#A27B5C"
-        android:textSize="@dimen/text_title"
+        android:textSize="@dimen/text_title_large"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintTop_toTopOf="@id/guidelineTop" />
+
+    <!-- Second Line -->
+
+    <!-- Google Login Button -->
 
     <TextView
         android:id="@+id/textView3"
@@ -78,12 +76,12 @@
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        app:layout_constraintTop_toTopOf="@id/textView2" />
+        app:layout_constraintTop_toTopOf="@+id/textView2" />
 
     <LinearLayout
         android:id="@+id/btnGoogleLogin"
-        android:layout_width="151dp"
-        android:layout_height="35dp"
+        android:layout_width="182dp"
+        android:layout_height="39dp"
         android:background="@drawable/rounded_button_white"
         android:clickable="true"
         android:focusable="true"
@@ -106,9 +104,9 @@
             android:src="@drawable/design_google" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/margin_medium"
             android:fontFamily="@font/special"
             android:gravity="center"
             android:text="Login with Google"
