@@ -23,6 +23,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -44,8 +46,9 @@ public class SettingsFragment extends Fragment {
         FrameLayout btnAboutUs = view.findViewById(R.id.about_us);
         FrameLayout btnChangeUsername = view.findViewById(R.id.change_username);
         FrameLayout btnLogout = view.findViewById(R.id.logout); // ✅ Add this line
+        FrameLayout btnDeleteAccount = view.findViewById(R.id.delete);
 
-
+        btnDeleteAccount.setOnClickListener(v -> showDeleteAccountDialog());
         btnAboutUs.setOnClickListener(v -> startActivity(new Intent(requireActivity(), AboutUsActivity.class)));
         btnChangeUsername.setOnClickListener(v -> showChangeNicknameDialog());
         btnLogout.setOnClickListener(v -> showLogoutConfirmationDialog()); // ✅ Connect the logout action
@@ -165,4 +168,82 @@ public class SettingsFragment extends Fragment {
             dialog.getWindow().setAttributes(dialog.getWindow().getAttributes());
         }
     }
+    private void showDeleteAccountDialog() {
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_box_delete, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        Button btnYes = dialogView.findViewById(R.id.btnDeleteYes);
+        Button btnNo = dialogView.findViewById(R.id.btnDeleteNo);
+
+        btnYes.setOnClickListener(v -> {
+            FirebaseUser user = auth.getCurrentUser();
+            if (user != null) {
+                String uid = user.getUid();
+                deleteUserData(uid, () -> {
+                    user.delete().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(requireContext(), "Burado na ang account.", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(requireActivity(), WelcomeActivity.class));
+                            requireActivity().finish();
+                        } else {
+                            Toast.makeText(requireContext(), "Hindi mabura ang account.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+            }
+            dialog.dismiss();
+        });
+
+        btnNo.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            dialog.getWindow().getAttributes().y = -200;
+            dialog.getWindow().setAttributes(dialog.getWindow().getAttributes());
+        }
+    }
+    private void deleteUserData(String uid, Runnable onComplete) {
+        String[] collections = {
+                "student_achievements",
+                "palaro_answered",
+                "daily_play_logs",
+                "students",
+                "module_progress",
+                "minigame_progress"
+        };
+
+        final int[] pendingDeletes = {collections.length};
+
+        for (String col : collections) {
+            db.collection(col)
+                    .whereEqualTo("uid", uid)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                            db.collection(col).document(doc.getId()).delete();
+                        }
+                        if (--pendingDeletes[0] == 0) {
+                            onComplete.run();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(requireContext(), "Error deleting from " + col, Toast.LENGTH_SHORT).show();
+                        if (--pendingDeletes[0] == 0) {
+                            onComplete.run();
+                        }
+                    });
+        }
+    }
+
 }

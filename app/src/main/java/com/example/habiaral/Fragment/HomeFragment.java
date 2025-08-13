@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,16 +135,35 @@ public class HomeFragment extends Fragment {
             });
         });
     }
-    private void recordLogDate(String studentId) {
+    private void recordLogDate(String studentDocId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().getTime());
 
-        Map<String, Object> update = new HashMap<>();
-        update.put(today, true); // date as field
+        db.collection("students").document(studentDocId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String studentId = documentSnapshot.getString("studentId");
 
-        db.collection("daily_play_logs").document(studentId)
-                .set(update, SetOptions.merge()); // merge to keep existing dates
+                        if (studentId != null) {
+                            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                    .format(Calendar.getInstance().getTime());
+
+                            Map<String, Object> update = new HashMap<>();
+                            update.put(today, true);
+                            update.put("studentId", studentId);
+
+                            db.collection("daily_play_logs")
+                                    .document(studentDocId) // doc ID same as UID
+                                    .set(update, SetOptions.merge());
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirestoreError", "Failed to get studentId", e);
+                });
     }
+
+
 
     private void showAchievementUnlockedDialog(String title, int imageRes){
         LayoutInflater inflater = LayoutInflater.from(getContext());
