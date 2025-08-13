@@ -1,12 +1,10 @@
 package com.example.habiaral.Activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -32,7 +30,6 @@ public class WelcomeActivity extends AppCompatActivity {
     private FirebaseFirestore db;
 
     private LinearLayout btnGoogleLogin;
-    private boolean isFirstLaunch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +42,6 @@ public class WelcomeActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // SharedPreferences para ma-track kung first time i-open
-        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        isFirstLaunch = prefs.getBoolean("firstLaunch", true);
-
         // Google Sign-In setup
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -59,21 +52,23 @@ public class WelcomeActivity extends AppCompatActivity {
         btnGoogleLogin = findViewById(R.id.btnGoogleLogin);
         btnGoogleLogin.setOnClickListener(v -> {
             btnGoogleLogin.setEnabled(false);
-            signInWithGoogle();
+
+            // Force sign out para lumabas account picker
+            mAuth.signOut();
+            mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
+                mGoogleSignInClient.revokeAccess().addOnCompleteListener(revokeTask -> {
+                    signInWithGoogle();
+                });
+            });
         });
 
-        if (isFirstLaunch) {
-            // First install → logout muna para siguradong pipili ng account
-            mAuth.signOut();
-            prefs.edit().putBoolean("firstLaunch", false).apply();
-            btnGoogleLogin.setEnabled(true);
+        if (mAuth.getCurrentUser() != null) {
+            // May naka-login → greet agad
+            String email = mAuth.getCurrentUser().getEmail();
+            String uid = mAuth.getCurrentUser().getUid();
+            checkAndGreetUser(email, uid);
         } else {
-            // Not first launch → kung may current user, diretso Home
-            if (mAuth.getCurrentUser() != null) {
-                goToHomePage();
-            } else {
-                btnGoogleLogin.setEnabled(true);
-            }
+            btnGoogleLogin.setEnabled(true);
         }
     }
 
@@ -167,6 +162,32 @@ public class WelcomeActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Error checking user", Toast.LENGTH_SHORT).show();
                     Log.e("Firestore", "Check error", e);
+                });
+    }
+
+    private void checkAndGreetUser(String email, String uid) {
+        db.collection("students")
+                .whereEqualTo("email", email)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        String nickname = querySnapshot.getDocuments().get(0).getString("nickname");
+                        if (nickname != null && !nickname.trim().isEmpty()) {
+                            Toast.makeText(this, "Maligayang Pagbalik, " + nickname + "!", Toast.LENGTH_SHORT).show();
+                            preloadLessonProgressAndGoHome(uid);
+                        } else {
+                            goToIntroduction();
+                        }
+                    } else {
+                        // Account exists in FirebaseAuth but not in Firestore → sign out
+                        mAuth.signOut();
+                        btnGoogleLogin.setEnabled(true);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error checking user for greet", e);
+                    btnGoogleLogin.setEnabled(true);
                 });
     }
 
