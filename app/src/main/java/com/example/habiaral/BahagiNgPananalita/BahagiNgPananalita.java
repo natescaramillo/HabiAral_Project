@@ -20,8 +20,10 @@ import java.util.Map;
 
 public class BahagiNgPananalita extends AppCompatActivity {
 
-    private LinearLayout btnPangngalan, btnPandiwa, btnPangUri, btnPangHalip, btnPangAbay, btnPangatnig, btnPangUkol, btnPangAkop, btnPadamdam, btnPangawing;
-    private FrameLayout pangngalanLock, pandiwaLock, pangUriLock, pangHalipLock, pangAbayLock, pangatnigLock, pangUkolLock, pangAkopLock, padamdamLock, pangawingLock;
+    private LinearLayout btnPangngalan, btnPandiwa, btnPangUri, btnPangHalip, btnPangAbay,
+            btnPangatnig, btnPangUkol, btnPangAkop, btnPadamdam, btnPangawing;
+    private FrameLayout pangngalanLock, pandiwaLock, pangUriLock, pangHalipLock, pangAbayLock,
+            pangatnigLock, pangUkolLock, pangAkopLock, padamdamLock, pangawingLock;
     private FirebaseFirestore db;
     private String uid;
 
@@ -37,14 +39,44 @@ public class BahagiNgPananalita extends AppCompatActivity {
         uid = user.getUid();
         db = FirebaseFirestore.getInstance();
 
-        // Load from cache first
+        // Load cached progress if available
         Map<String, Object> cachedData = LessonProgressCache.getData();
         if (cachedData != null) {
             updateUIFromProgress(cachedData);
         }
 
-        // Always refresh from Firestore
-        loadLessonProgressFromFirestore();
+        // Fetch studentId from students collection and save to module_progress collection
+        db.collection("students").document(uid).get().addOnSuccessListener(studentSnap -> {
+            if (studentSnap.exists()) {
+                if (studentSnap.contains("studentId")) {
+                    String studentID = studentSnap.getString("studentId");
+                    android.util.Log.d("STUDENT_ID_FETCHED", "Fetched studentId: " + studentID);
+
+                    Map<String, Object> update = new HashMap<>();
+                    update.put("studentId", studentID);
+
+                    db.collection("module_progress").document(uid)
+                            .set(update, SetOptions.merge())
+                            .addOnSuccessListener(unused -> {
+                                android.util.Log.d("STUDENT_ID_SAVED", "Saved to module_progress: " + studentID);
+                                loadLessonProgressFromFirestore();
+                            })
+                            .addOnFailureListener(e -> {
+                                android.util.Log.e("SAVE_FAIL", "Failed saving studentId", e);
+                                loadLessonProgressFromFirestore();
+                            });
+                } else {
+                    android.util.Log.w("MISSING_FIELD", "studentId field missing in students/" + uid);
+                    loadLessonProgressFromFirestore();
+                }
+            } else {
+                android.util.Log.w("NO_DOC", "No student document found for uid: " + uid);
+                loadLessonProgressFromFirestore();
+            }
+        }).addOnFailureListener(e -> {
+            android.util.Log.e("FETCH_FAIL", "Error fetching student doc", e);
+            loadLessonProgressFromFirestore();
+        });
     }
 
     private void loadLessonProgressFromFirestore() {
@@ -88,7 +120,7 @@ public class BahagiNgPananalita extends AppCompatActivity {
         boolean padamdamDone = isCompleted(lessons, "padamdam");
         boolean pangawingDone = isCompleted(lessons, "pangawing");
 
-        // Unlock buttons
+        // Unlock buttons based on completion
         unlockButton(btnPangngalan, true, pangngalanLock);
         unlockButton(btnPandiwa, pangngalanDone, pandiwaLock);
         unlockButton(btnPangUri, pandiwaDone, pangUriLock);
@@ -100,8 +132,8 @@ public class BahagiNgPananalita extends AppCompatActivity {
         unlockButton(btnPadamdam, pangAkopDone, padamdamLock);
         unlockButton(btnPangawing, padamdamDone, pangawingLock);
 
-        checkAndCompleteModule(pangngalanDone, pandiwaDone, pangUriDone, pangHalipDone, pangAbayDone,
-                pangatnigDone, pangUkolDone, pangAkopDone, padamdamDone, pangawingDone);
+        checkAndCompleteModule(pangngalanDone, pandiwaDone, pangUriDone, pangHalipDone,
+                pangAbayDone, pangatnigDone, pangUkolDone, pangAkopDone, padamdamDone, pangawingDone);
     }
 
     private boolean isCompleted(Map<String, Object> lessons, String key) {

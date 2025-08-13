@@ -47,9 +47,37 @@ public class PagUnawa extends AppCompatActivity {
         if (cachedData != null) {
             updateUIFromProgress(cachedData);
         }
+        db.collection("students").document(uid).get().addOnSuccessListener(studentSnap -> {
+            if (studentSnap.exists()) {
+                if (studentSnap.contains("studentId")) {
+                    String studentID = studentSnap.getString("studentId");
+                    android.util.Log.d("STUDENT_ID_FETCHED", "Fetched studentId: " + studentID);
 
-        // Always refresh from Firestore
-        loadLessonProgressFromFirestore();
+                    Map<String, Object> update = new HashMap<>();
+                    update.put("studentId", studentID);
+
+                    db.collection("module_progress").document(uid)
+                            .set(update, SetOptions.merge())
+                            .addOnSuccessListener(unused -> {
+                                android.util.Log.d("STUDENT_ID_SAVED", "Saved to module_progress: " + studentID);
+                                loadLessonProgressFromFirestore();
+                            })
+                            .addOnFailureListener(e -> {
+                                android.util.Log.e("SAVE_FAIL", "Failed saving studentId", e);
+                                loadLessonProgressFromFirestore();
+                            });
+                } else {
+                    android.util.Log.w("MISSING_FIELD", "studentId field missing in students/" + uid);
+                    loadLessonProgressFromFirestore();
+                }
+            } else {
+                android.util.Log.w("NO_DOC", "No student document found for uid: " + uid);
+                loadLessonProgressFromFirestore();
+            }
+        }).addOnFailureListener(e -> {
+            android.util.Log.e("FETCH_FAIL", "Error fetching student doc", e);
+            loadLessonProgressFromFirestore();
+        });
     }
 
     private void loadLessonProgressFromFirestore() {
