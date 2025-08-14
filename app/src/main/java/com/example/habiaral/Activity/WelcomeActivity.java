@@ -2,7 +2,6 @@ package com.example.habiaral.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -98,14 +97,12 @@ public class WelcomeActivity extends AppCompatActivity {
                             if (authTask.isSuccessful()) {
                                 saveUserToFirestore(account);
                             } else {
-                                Log.e("FirebaseAuth", "Auth error", authTask.getException());
                                 Toast.makeText(this, "Firebase authentication failed", Toast.LENGTH_SHORT).show();
                             }
                         });
 
             } catch (ApiException e) {
                 btnGoogleLogin.setEnabled(true);
-                Log.e("GoogleSignIn", "Error", e);
                 Toast.makeText(this, "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
@@ -148,16 +145,13 @@ public class WelcomeActivity extends AppCompatActivity {
                     docRef.set(student)
                             .addOnSuccessListener(unused -> goToIntroduction())
                             .addOnFailureListener(e -> {
-                                Log.e("Firestore", "Save error", e);
                                 Toast.makeText(this, "Failed to save user", Toast.LENGTH_SHORT).show();
                             });
                 }).addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error fetching students", e);
                     Toast.makeText(this, "Failed to generate student ID", Toast.LENGTH_SHORT).show();
                 });
             }
         }).addOnFailureListener(e -> {
-            Log.e("Firestore", "Check error", e);
             Toast.makeText(this, "Error checking user", Toast.LENGTH_SHORT).show();
         });
     }
@@ -182,7 +176,6 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error checking user for greet", e);
                     btnGoogleLogin.setEnabled(true);
                 });
     }
@@ -194,7 +187,6 @@ public class WelcomeActivity extends AppCompatActivity {
             }
             goToHomePage();
         }).addOnFailureListener(e -> {
-            Log.e("Firestore", "Failed to load lesson progress", e);
             goToHomePage();
         });
     }

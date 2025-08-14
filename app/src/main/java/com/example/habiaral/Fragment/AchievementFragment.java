@@ -2,7 +2,6 @@ package com.example.habiaral.Fragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,7 +92,7 @@ public class AchievementFragment extends Fragment{
             }
 
             loadUnlockedAchievements(uid);
-        }).addOnFailureListener(e -> Log.e("AchievementFragment", "Error loading achievements", e));
+        });
     }
 
     private void loadUnlockedAchievements(String uid) {
@@ -140,7 +139,7 @@ public class AchievementFragment extends Fragment{
                     box.setOnClickListener(v -> Toast.makeText(getContext(), "This achievement is locked.", Toast.LENGTH_SHORT).show());
                 }
             }
-        }).addOnFailureListener(e -> Log.e("AchievementFragment", "Error loading unlocked achievements", e));
+        });
     }
 
     private void addLockIcon(ImageView achievementImage) {

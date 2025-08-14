@@ -1,10 +1,8 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.VideoView;
@@ -15,7 +13,6 @@ import com.example.habiaral.BahagiNgPananalita.Quiz.PangUriQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -95,8 +92,7 @@ public class PangUriLesson extends AppCompatActivity {
                             }
                         }
                     }
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to load PangUri lesson status", e));
+                });
     }
 
     private void saveProgressToFirestore() {
@@ -120,8 +116,6 @@ public class PangUriLesson extends AppCompatActivity {
 
         db.collection("module_progress")
                 .document(uid)
-                .set(Map.of("module_1", progressMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ PangUri lesson progress saved"))
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save PangUri lesson progress", e));
+                .set(Map.of("module_1", progressMap), SetOptions.merge());
     }
 }

@@ -3,7 +3,6 @@ package com.example.habiaral.BahagiNgPananalita.Lessons;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.VideoView;
 import android.widget.MediaController;
@@ -101,8 +100,7 @@ public class PangatnigLesson extends AppCompatActivity {
                             }
                         }
                     }
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to load progress", e));
+                });
     }
 
     // =========================
@@ -127,9 +125,6 @@ public class PangatnigLesson extends AppCompatActivity {
         moduleMap.put("current_lesson", "pangatnig");
         moduleMap.put("lessons", lessonMap);
 
-        db.collection("module_progress").document(uid)
-                .set(Map.of("module_1", moduleMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ Progress saved"))
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save progress", e));
+        db.collection("module_progress").document(uid);
     }
 }

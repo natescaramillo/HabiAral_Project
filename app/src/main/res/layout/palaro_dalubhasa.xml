@@ -61,7 +61,7 @@
         app:layout_constraintStart_toStartOf="@+id/bottomBar"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
         app:layout_constraintVertical_bias="0.026"
-        app:srcCompat="@drawable/design_heart" />
+        app:srcCompat="@drawable/design_heart1" />
 
     <ImageView
         android:id="@+id/imageView12"
@@ -71,7 +71,7 @@
         android:layout_marginTop="28dp"
         app:layout_constraintStart_toEndOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:srcCompat="@drawable/design_heart" />
+        app:srcCompat="@drawable/design_heart2" />
 
     <ImageView
         android:id="@+id/imageView9"
@@ -81,7 +81,7 @@
         android:layout_marginTop="28dp"
         app:layout_constraintStart_toEndOf="@+id/imageView10"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:srcCompat="@drawable/design_heart" />
+        app:srcCompat="@drawable/design_heart3" />
 
     <ImageView
         android:id="@+id/imageView10"
@@ -91,7 +91,7 @@
         android:layout_marginTop="28dp"
         app:layout_constraintStart_toEndOf="@+id/imageView11"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:srcCompat="@drawable/design_heart" />
+        app:srcCompat="@drawable/design_heart4" />
 
     <ImageView
         android:id="@+id/imageView11"
@@ -103,7 +103,7 @@
         app:layout_constraintStart_toEndOf="@+id/imageView8"
         app:layout_constraintTop_toTopOf="@+id/bottomBar"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/design_heart" />
+        app:srcCompat="@drawable/design_heart5" />
 
     <ProgressBar
         android:id="@+id/timerBar"

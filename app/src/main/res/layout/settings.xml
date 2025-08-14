@@ -71,6 +71,24 @@
 
         </FrameLayout>
 
+        <FrameLayout
+            android:id="@+id/delete_progress"
+            android:layout_width="337dp"
+            android:layout_height="51dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_color"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="Reset progress"
+                android:textColor="#ffffff" />
+
+        </FrameLayout>
 
         <FrameLayout
             android:id="@+id/logout"

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -55,11 +54,6 @@ public class PangngalanLesson extends AppCompatActivity {
             if (status == TextToSpeech.SUCCESS) {
                 int langResult = textToSpeech.setLanguage(new Locale("tl", "PH"));
                 textToSpeech.setSpeechRate(1.1f);
-                if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    Log.e("TTS", "❌ Language not supported or missing.");
-                }
-            } else {
-                Log.e("TTS", "❌ Initialization failed.");
             }
         });
 
@@ -135,8 +129,7 @@ public class PangngalanLesson extends AppCompatActivity {
                             }
                         }
                     }
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to load progress", e));
+                });
     }
 
     // =========================
@@ -162,9 +155,7 @@ public class PangngalanLesson extends AppCompatActivity {
         moduleMap.put("lessons", lessonMap);
 
         db.collection("module_progress").document(uid)
-                .set(Map.of("module_1", moduleMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "✅ Pangngalan progress saved"))
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to save Pangngalan progress", e));
+                .set(Map.of("module_1", moduleMap), SetOptions.merge());
     }
 
     // =========================
@@ -186,8 +177,7 @@ public class PangngalanLesson extends AppCompatActivity {
                             displayIntroLines(introLines);
                         }
                     }
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to fetch lines", e));
+                });
     }
 
     // =========================

@@ -2,7 +2,6 @@ package com.example.habiaral.PagUnawa.Stories;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -117,8 +116,7 @@ public class Kwento1 extends AppCompatActivity {
                             }
                         }
                     }
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "❌ Failed to load Kwento1 lesson status", e));
+                });
     }
 
     private void saveProgressToFirestore() {

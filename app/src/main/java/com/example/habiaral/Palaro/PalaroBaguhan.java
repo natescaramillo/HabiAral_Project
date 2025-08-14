@@ -117,11 +117,11 @@ public class PalaroBaguhan extends AppCompatActivity {
         unlockButton1 = findViewById(R.id.UnlockButtonPalaro1);
 
         heartIcons = new ImageView[]{
-                findViewById(R.id.imageView8),
-                findViewById(R.id.imageView11),
-                findViewById(R.id.imageView10),
-                findViewById(R.id.imageView9),
-                findViewById(R.id.imageView12)
+                findViewById(R.id.heart01),
+                findViewById(R.id.heart02),
+                findViewById(R.id.heart03),
+                findViewById(R.id.heart04),
+                findViewById(R.id.heart05)
         };
 
         db = FirebaseFirestore.getInstance();
