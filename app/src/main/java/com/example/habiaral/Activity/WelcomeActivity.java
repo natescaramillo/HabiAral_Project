@@ -53,7 +53,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnGoogleLogin.setOnClickListener(v -> {
             btnGoogleLogin.setEnabled(false);
 
-            // Force sign out para lumabas account picker
+            // Force sign out so account picker appears
             mAuth.signOut();
             mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
                 mGoogleSignInClient.revokeAccess().addOnCompleteListener(revokeTask -> {
@@ -63,10 +63,9 @@ public class WelcomeActivity extends AppCompatActivity {
         });
 
         if (mAuth.getCurrentUser() != null) {
-            // May naka-login → greet agad
-            String email = mAuth.getCurrentUser().getEmail();
+            // Already logged in → greet user
             String uid = mAuth.getCurrentUser().getUid();
-            checkAndGreetUser(email, uid);
+            checkAndGreetUser(uid);
         } else {
             btnGoogleLogin.setEnabled(true);
         }
@@ -85,95 +84,92 @@ public class WelcomeActivity extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account.getIdToken(), account);
+
+                if (account == null || account.getIdToken() == null) {
+                    btnGoogleLogin.setEnabled(true);
+                    Toast.makeText(this, "Google sign-in failed: ID token is null", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                mAuth.signInWithCredential(credential)
+                        .addOnCompleteListener(this, authTask -> {
+                            btnGoogleLogin.setEnabled(true);
+                            if (authTask.isSuccessful()) {
+                                saveUserToFirestore(account);
+                            } else {
+                                Log.e("FirebaseAuth", "Auth error", authTask.getException());
+                                Toast.makeText(this, "Firebase authentication failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
             } catch (ApiException e) {
                 btnGoogleLogin.setEnabled(true);
-                Toast.makeText(this, "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("GoogleSignIn", "Error", e);
+                Toast.makeText(this, "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private void firebaseAuthWithGoogle(String idToken, GoogleSignInAccount account) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, task -> {
-                    btnGoogleLogin.setEnabled(true);
-                    if (task.isSuccessful()) {
-                        saveUserToFirestore(account);
-                    } else {
-                        Toast.makeText(this, "Firebase authentication failed", Toast.LENGTH_SHORT).show();
-                        Log.e("FirebaseAuth", "Auth error", task.getException());
-                    }
-                });
     }
 
     private void saveUserToFirestore(GoogleSignInAccount account) {
         String uid = mAuth.getCurrentUser().getUid();
         String email = account.getEmail();
 
-        db.collection("students")
-                .whereEqualTo("email", email)
-                .limit(1)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    if (!querySnapshot.isEmpty()) {
-                        // Existing user
-                        DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
-                        String nickname = doc.getString("nickname");
-
-                        if (nickname != null && !nickname.trim().isEmpty()) {
-                            Toast.makeText(this, "Maligayang Pagbalik, " + nickname + "!", Toast.LENGTH_SHORT).show();
-                            preloadLessonProgressAndGoHome(uid);
-                        } else {
-                            goToIntroduction();
+        DocumentReference docRef = db.collection("students").document(uid);
+        docRef.get().addOnSuccessListener(snapshot -> {
+            if (snapshot.exists()) {
+                String nickname = snapshot.getString("nickname");
+                if (nickname != null && !nickname.isEmpty()) {
+                    Toast.makeText(this, "Maligayang Pagbalik, " + nickname + "!", Toast.LENGTH_SHORT).show();
+                    preloadLessonProgressAndGoHome(uid);
+                } else {
+                    goToIntroduction();
+                }
+            } else {
+                // Fetch all students to find the last number
+                db.collection("students").get().addOnSuccessListener(allDocs -> {
+                    int maxNumber = 0;
+                    for (DocumentSnapshot document : allDocs) {
+                        String sid = document.getString("studentId");
+                        if (sid != null && sid.startsWith("STUDENT")) {
+                            try {
+                                int num = Integer.parseInt(sid.replace("STUDENT", ""));
+                                if (num > maxNumber) maxNumber = num;
+                            } catch (NumberFormatException ignored) {}
                         }
-                    } else {
-                        // New user → Generate unique studentId
-                        db.collection("students").get().addOnSuccessListener(allDocs -> {
-                            int maxNumber = 0;
-                            for (DocumentSnapshot document : allDocs) {
-                                String sid = document.getString("studentId");
-                                if (sid != null && sid.startsWith("STUDENT")) {
-                                    try {
-                                        int num = Integer.parseInt(sid.replace("STUDENT", ""));
-                                        if (num > maxNumber) {
-                                            maxNumber = num;
-                                        }
-                                    } catch (NumberFormatException ignored) {}
-                                }
-                            }
-                            String generatedId = String.format("STUDENT%03d", maxNumber + 1);
-
-                            Map<String, Object> student = new HashMap<>();
-                            student.put("email", email);
-                            student.put("studentId", generatedId);
-
-                            db.collection("students").document(uid)
-                                    .set(student)
-                                    .addOnSuccessListener(unused -> goToIntroduction())
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(this, "Failed to save user", Toast.LENGTH_SHORT).show();
-                                        Log.e("Firestore", "Save error", e);
-                                    });
-                        });
                     }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error checking user", Toast.LENGTH_SHORT).show();
-                    Log.e("Firestore", "Check error", e);
+
+                    String generatedId = String.format("STUDENT%03d", maxNumber + 1); // STUDENT001, 002, 003…
+
+                    Map<String, Object> student = new HashMap<>();
+                    student.put("email", email);
+                    student.put("studentId", generatedId);
+
+                    docRef.set(student)
+                            .addOnSuccessListener(unused -> goToIntroduction())
+                            .addOnFailureListener(e -> {
+                                Log.e("Firestore", "Save error", e);
+                                Toast.makeText(this, "Failed to save user", Toast.LENGTH_SHORT).show();
+                            });
+                }).addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error fetching students", e);
+                    Toast.makeText(this, "Failed to generate student ID", Toast.LENGTH_SHORT).show();
                 });
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("Firestore", "Check error", e);
+            Toast.makeText(this, "Error checking user", Toast.LENGTH_SHORT).show();
+        });
     }
 
-    private void checkAndGreetUser(String email, String uid) {
-        db.collection("students")
-                .whereEqualTo("email", email)
-                .limit(1)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    if (!querySnapshot.isEmpty()) {
-                        String nickname = querySnapshot.getDocuments().get(0).getString("nickname");
-                        if (nickname != null && !nickname.trim().isEmpty()) {
+
+
+    private void checkAndGreetUser(String uid) {
+        db.collection("students").document(uid).get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        String nickname = snapshot.getString("nickname");
+                        if (nickname != null && !nickname.isEmpty()) {
                             Toast.makeText(this, "Maligayang Pagbalik, " + nickname + "!", Toast.LENGTH_SHORT).show();
                             preloadLessonProgressAndGoHome(uid);
                         } else {
@@ -198,7 +194,7 @@ public class WelcomeActivity extends AppCompatActivity {
             }
             goToHomePage();
         }).addOnFailureListener(e -> {
-            Log.e("Firestore", "Failed to load lesson progress early", e);
+            Log.e("Firestore", "Failed to load lesson progress", e);
             goToHomePage();
         });
     }
