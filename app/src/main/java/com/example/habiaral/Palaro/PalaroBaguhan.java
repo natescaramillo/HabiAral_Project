@@ -9,6 +9,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.ContextCompat;
@@ -430,17 +432,6 @@ public class PalaroBaguhan extends AppCompatActivity {
 
 
 
-    private void recordPlayDate(String studentId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().getTime());
-
-        Map<String, Object> update = new HashMap<>();
-        update.put(today, true); // date as field
-
-        db.collection("daily_play_logs").document(studentId)
-                .set(update, SetOptions.merge()); // merge to keep existing dates
-    }
-
 
     private void showAchievementUnlockedDialog(String title, int imageRes){
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -478,78 +469,47 @@ public class PalaroBaguhan extends AppCompatActivity {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) return;
 
-        String userId = currentUser.getUid(); // Firebase UID
+        String uid = currentUser.getUid();
 
         // Step 1: Get studentId from students collection
-        db.collection("students").document(userId).get().addOnSuccessListener(studentDoc -> {
+        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
             if (!studentDoc.exists()) {
                 Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            String studentID = studentDoc.getString("studentId"); // ✅ Now this is properly fetched
-            DocumentReference docRef = db.collection("minigame_progress").document(userId);
+            String studentId = studentDoc.getString("studentId");
+            if (studentId == null || studentId.isEmpty()) {
+                Toast.makeText(this, "Student ID not found", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            // Step 2: Check if minigame_progress already exists
+            // Step 2: Use UID as document ID para pasado sa Firestore rules
+            DocumentReference docRef = db.collection("minigame_progress").document(uid);
+
             docRef.get().addOnSuccessListener(snapshot -> {
                 int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
                 int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
                 int oldBaguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
                 int newBaguhanTotal = oldBaguhan + baguhanScore;
 
-                if (snapshot.exists() && snapshot.contains("minigame_progressID")) {
-                    // Reuse existing ID
-                    String existingProgressId = snapshot.getString("minigame_progressID");
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("baguhan_score", newBaguhanTotal);
+                updates.put("studentId", studentId);
+                updates.put("total_score", newBaguhanTotal + husay + dalubhasa);
 
-                    Map<String, Object> updates = new HashMap<>();
-                    updates.put("baguhan_score", newBaguhanTotal);
-                    updates.put("studentID", studentID); // ✅ Correct student ID
-                    updates.put("minigame_progressID", existingProgressId);
-                    updates.put("total_score", newBaguhanTotal + husay + dalubhasa);
-
-                    docRef.set(updates, SetOptions.merge())
-                            .addOnSuccessListener(aVoid -> {
-                                if (newBaguhanTotal >= 400) {
-                                    docRef.get().addOnSuccessListener(unlockCheckSnapshot -> {
-                                        Boolean isHusayUnlocked = unlockCheckSnapshot.getBoolean("husay_unlocked");
-                                        if (isHusayUnlocked == null || !isHusayUnlocked) {
-                                            unlockHusay(docRef);
-                                        }
-                                        baguhanScore = 0;  // ← RESET after saving
-                                    });
-                                }
-                            });
-
-                } else {
-                    // Generate new minigame_progressID
-                    db.collection("minigame_progress").get().addOnSuccessListener(querySnapshot -> {
-                        int nextNumber = querySnapshot.size() + 1;
-                        String newProgressId = "MP" + nextNumber;
-
-                        Map<String, Object> updates = new HashMap<>();
-                        updates.put("baguhan_score", newBaguhanTotal);
-                        updates.put("studentID", studentID); // ✅ Correct student ID
-                        updates.put("minigame_progressID", newProgressId);
-                        updates.put("total_score", newBaguhanTotal + husay + dalubhasa);
-
-                        docRef.set(updates, SetOptions.merge())
-                                .addOnSuccessListener(aVoid -> {
-                                    if (newBaguhanTotal >= 400) {
-                                        docRef.get().addOnSuccessListener(unlockCheckSnapshot -> {
-                                            Boolean isHusayUnlocked = unlockCheckSnapshot.getBoolean("husay_unlocked");
-                                            if (isHusayUnlocked == null || !isHusayUnlocked) {
-                                                unlockHusay(docRef);
-                                            }
-                                        });
-                                    }
-                                });
-                    });
-                }
+                docRef.set(updates, SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> {
+                            // Unlock Husay if score threshold met
+                            if (newBaguhanTotal >= 400) {
+                                unlockHusay(docRef);
+                            }
+                            baguhanScore = 0;
+                        })
+                        .addOnFailureListener(e -> Log.e("Firestore", "Error saving score", e));
             });
-
         });
     }
-
 
     private void unlockHusay(DocumentReference docRef) {
         Map<String, Object> updates = new HashMap<>();
@@ -562,6 +522,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                     finish();
                 });
     }
+
 
 
     private void showCountdownThenLoadQuestion() {
