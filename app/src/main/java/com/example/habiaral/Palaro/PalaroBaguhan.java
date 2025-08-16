@@ -411,7 +411,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                     Map<String, Object> achievementData = new HashMap<>();
                     achievementData.put("achievementID", achievementId);
                     achievementData.put("title", title);
-                     achievementData.put("unlockedAt", Timestamp.now());
+                    achievementData.put("unlockedAt", Timestamp.now());
 
                     Map<String, Object> achievementMap = new HashMap<>();
                     achievementMap.put(achievementCode, achievementData);
