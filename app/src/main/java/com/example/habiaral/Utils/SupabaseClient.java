@@ -54,6 +54,7 @@ public class SupabaseClient {
         client.newCall(request).enqueue(callback);
     }
 
+
     // ======================
     // GET SIGNED URL (Storage)
     // ======================

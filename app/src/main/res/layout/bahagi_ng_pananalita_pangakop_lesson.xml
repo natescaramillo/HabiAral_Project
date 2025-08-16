@@ -9,6 +9,7 @@
     android:fitsSystemWindows="false"
     tools:context=".Activity.IntroActivity">
 
+
     <Button
         android:id="@+id/UnlockButtonPangakop"
         android:layout_width="wrap_content"

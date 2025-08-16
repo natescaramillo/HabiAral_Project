@@ -62,6 +62,7 @@ public class PangAkopLesson extends AppCompatActivity {
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
 
+
         // Disable scrolling
         webView.setVerticalScrollBarEnabled(false);
         webView.setHorizontalScrollBarEnabled(false);
@@ -69,7 +70,6 @@ public class PangAkopLesson extends AppCompatActivity {
 
         webView.setWebViewClient(new WebViewClient());
     }
-
     private void loadPPT() {
         try {
             String encoded = URLEncoder.encode(SIGNED_PPT_URL, "UTF-8");
