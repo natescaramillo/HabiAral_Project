@@ -1,11 +1,12 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.VideoView;
-import android.widget.MediaController;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,66 +17,78 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PangAkopLesson extends AppCompatActivity {
 
-    Button unlockButton;
-    VideoView videoView;
-    MediaController mediaController;
-    private boolean isLessonDone = false; // Track from Firebase
+    private WebView webView;
+    private Button unlockButton;
+    private boolean isLessonDone = false;
 
+    private static final String SIGNED_PPT_URL = "https://ubxiwtxuswedwfdcqfja.supabase.co/storage/v1/object/sign/presentations/Business%20Proposal%20PPT.pptx?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8yYjRiYWMwNC1mNjQwLTQ5OTEtODgzNC0zZDhlYzFlNzFmNjMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcmVzZW50YXRpb25zL0J1c2luZXNzIFByb3Bvc2FsIFBQVC5wcHR4IiwiaWF0IjoxNzU1MzI3MjAyLCJleHAiOjE3NTU5MzIwMDJ9.Pyi_W5wiXfKBvXPDtkYallVz6NzQICcwxd-wh8R-E70";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bahagi_ng_pananalita_pangakop_lesson);
 
-        // =========================
-        // UI INITIALIZATION
-        // =========================
+        webView = findViewById(R.id.webViewPangakop);
         unlockButton = findViewById(R.id.UnlockButtonPangakop);
-        videoView = findViewById(R.id.videoViewPangakop);
 
-        // Disable unlock button until lesson is completed
-        unlockButton.setEnabled(false);
+        // Initially disabled visually, but enable so user can tap
+        unlockButton.setEnabled(true);
         unlockButton.setAlpha(0.5f);
 
-        // Check if lesson is already completed
+        setupWebView();
+        loadPPT();
         checkLessonStatus();
 
-        // =========================
-        // VIDEO SETUP
-        // =========================
-        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_lesson);
-        videoView.setVideoURI(videoUri);
-
-        mediaController = new MediaController(this);
-        mediaController.setAnchorView(videoView);
-        videoView.setMediaController(mediaController);
-
-        videoView.setOnCompletionListener(mp -> {
+        unlockButton.setOnClickListener(v -> {
             if (!isLessonDone) {
                 isLessonDone = true;
-                unlockButton.setEnabled(true);
-                unlockButton.setAlpha(1f);
-                saveProgressToFirestore();
+                saveProgressToFirestore(); // mark as in_progress
             }
+            startActivity(new Intent(PangAkopLesson.this, PangAkopQuiz.class));
         });
-
-        // Unlock button → go to quiz
-        unlockButton.setOnClickListener(view -> {
-            Intent intent = new Intent(PangAkopLesson.this, PangAkopQuiz.class);
-            startActivity(intent);
-        });
-
-        // Play video automatically
-        videoView.start();
     }
 
-    // =========================
-    // FIRESTORE - CHECK LESSON STATUS
-    // =========================
+    private void setupWebView() {
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        settings.setBuiltInZoomControls(false);
+        settings.setDisplayZoomControls(false);
+
+        // Disable scrolling
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setHorizontalScrollBarEnabled(false);
+        webView.setOnTouchListener((v, event) -> event.getAction() == MotionEvent.ACTION_MOVE);
+
+        webView.setWebViewClient(new WebViewClient());
+    }
+
+    private void loadPPT() {
+        try {
+            String encoded = URLEncoder.encode(SIGNED_PPT_URL, "UTF-8");
+            String officeUrl = "https://view.officeapps.live.com/op/embed.aspx?src=" + encoded;
+            webView.loadUrl(officeUrl);
+
+            webView.setWebViewClient(new WebViewClient() {
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    // Page loaded → visually indicate user can tap button
+                    unlockButton.setAlpha(1f);
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void checkLessonStatus() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -103,9 +116,6 @@ public class PangAkopLesson extends AppCompatActivity {
                 });
     }
 
-    // =========================
-    // FIRESTORE - SAVE PROGRESS
-    // =========================
     private void saveProgressToFirestore() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -114,18 +124,20 @@ public class PangAkopLesson extends AppCompatActivity {
         String uid = user.getUid();
 
         Map<String, Object> pangAkopStatus = new HashMap<>();
-        pangAkopStatus.put("status", "in-progress");
+        pangAkopStatus.put("status", "in_progress");
 
-        Map<String, Object> lessonMap = new HashMap<>();
-        lessonMap.put("pangakop", pangAkopStatus);
+        Map<String, Object> lessonsMap = new HashMap<>();
+        lessonsMap.put("pangakop", pangAkopStatus);
 
         Map<String, Object> moduleMap = new HashMap<>();
         moduleMap.put("modulename", "Bahagi ng Pananalita");
         moduleMap.put("status", "in_progress");
         moduleMap.put("current_lesson", "pangakop");
-        moduleMap.put("lessons", lessonMap);
+        moduleMap.put("lessons", lessonsMap);
 
         db.collection("module_progress").document(uid)
-                .set(Map.of("module_1", moduleMap), SetOptions.merge());
+                .set(Map.of("module_1", moduleMap), SetOptions.merge())
+                .addOnSuccessListener(aVoid -> System.out.println("Progress saved as in_progress ✅"))
+                .addOnFailureListener(e -> e.printStackTrace());
     }
 }
