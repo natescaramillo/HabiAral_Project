@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -89,8 +90,22 @@ public class PangngalanLesson extends AppCompatActivity {
         // Load first page
         imageView.setImageResource(pangngalanLesson[currentPage]);
 
-        // Pag tap sa imageView, mag-next page
-        imageView.setOnClickListener(v -> nextPage());
+        // Detect left or right tap sa imageView
+        imageView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                float x = event.getX();
+                float width = v.getWidth();
+
+                if (x < width / 2) {
+                    // Tap sa left side → previous page
+                    previousPage();
+                } else {
+                    // Tap sa right side → next page
+                    nextPage();
+                }
+            }
+            return true;
+        });
 
         // Check if lesson is already completed
         checkLessonStatus();
@@ -278,5 +293,12 @@ public class PangngalanLesson extends AppCompatActivity {
             textToSpeech.stop();
         }
         super.onPause();
+    }
+
+    private void previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            imageView.setImageResource(pangngalanLesson[currentPage]);
+        }
     }
 }
