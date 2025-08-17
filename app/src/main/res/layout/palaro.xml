@@ -60,38 +60,36 @@
                 app:layout_constraintStart_toStartOf="@+id/view15"
                 app:layout_constraintTop_toTopOf="@+id/view15" />
 
-
-            <!-- Progress Bar -->
-
-
             <TextView
                 android:id="@+id/total_energy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="52dp"
+                android:layout_marginEnd="56dp"
                 android:fontFamily="@font/special"
                 android:text="/100"
                 android:textColor="#FC4D2B06"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="@+id/view15"
                 app:layout_constraintEnd_toEndOf="@+id/view15"
-                app:layout_constraintTop_toTopOf="@+id/view15"
-                app:layout_constraintVertical_bias="0.464" />
+                app:layout_constraintTop_toTopOf="@+id/view15" />
 
             <TextView
                 android:id="@+id/current_energy2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/special"
-                android:text="100"
+                android:text="38"
                 android:textColor="#FC4D2B06"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="@+id/total_energy"
-                app:layout_constraintEnd_toEndOf="@+id/total_energy"
-                app:layout_constraintHorizontal_bias="0.885"
+                app:layout_constraintBottom_toBottomOf="@+id/view15"
+                app:layout_constraintEnd_toEndOf="@+id/view15"
+                app:layout_constraintHorizontal_bias="0.716"
                 app:layout_constraintStart_toStartOf="@+id/view15"
-                app:layout_constraintTop_toTopOf="@+id/total_energy"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toTopOf="@+id/view15" />
+
+
+            <!-- Progress Bar -->
+
 
             <ProgressBar
                 android:id="@+id/palaro_progress"
@@ -280,11 +278,11 @@
                 android:id="@+id/trophy_image"
                 android:layout_width="256dp"
                 android:layout_height="183dp"
-                android:layout_marginStart="156dp"
+                android:layout_marginStart="160dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline"
                 app:layout_constraintTop_toTopOf="@+id/guideline3"
-                app:layout_constraintVertical_bias="0.034"
+                app:layout_constraintVertical_bias="0.02"
                 app:srcCompat="@drawable/trophy_unranked" />
 
             <androidx.constraintlayout.widget.Guideline
