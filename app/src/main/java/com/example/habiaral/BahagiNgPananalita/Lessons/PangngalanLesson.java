@@ -5,8 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 import android.widget.MediaController;
 import android.speech.tts.TextToSpeech;
 
@@ -27,13 +27,38 @@ import java.util.Map;
 public class PangngalanLesson extends AppCompatActivity {
 
     Button unlockButton;
-    VideoView videoView;
+    ImageView imageView;
     MediaController mediaController;
     TextView instructionText;
     private List<String> allLines;
-    private List<String> linesAfterVideo;
     private TextToSpeech textToSpeech;
     private boolean isLessonDone = false;  // Track from Firebase
+
+    private int currentPage = 0;
+
+    private int[] pangngalanLesson = {
+            R.drawable.pangngalan01,
+            R.drawable.pangngalan02,
+            R.drawable.pangngalan03,
+            R.drawable.pangngalan04,
+            R.drawable.pangngalan05,
+            R.drawable.pangngalan06,
+            R.drawable.pangngalan07,
+            R.drawable.pangngalan08,
+            R.drawable.pangngalan09,
+            R.drawable.pangngalan10,
+            R.drawable.pangngalan21,
+            R.drawable.pangngalan22,
+            R.drawable.pangngalan23,
+            R.drawable.pangngalan24,
+            R.drawable.pangngalan25,
+            R.drawable.pangngalan26,
+            R.drawable.pangngalan27,
+            R.drawable.pangngalan28,
+            R.drawable.pangngalan29,
+            R.drawable.pangngalan30,
+            R.drawable.pangngalan31
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +69,7 @@ public class PangngalanLesson extends AppCompatActivity {
         // UI INITIALIZATION
         // =========================
         unlockButton = findViewById(R.id.UnlockButtonPangngalan);
-        videoView = findViewById(R.id.videoViewPangngalan);
+        imageView = findViewById(R.id.imageViewPangngalan);
         instructionText = findViewById(R.id.instructionText);
 
         // =========================
@@ -61,45 +86,43 @@ public class PangngalanLesson extends AppCompatActivity {
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
+        // Load first page
+        imageView.setImageResource(pangngalanLesson[currentPage]);
+
+        // Pag tap sa imageView, mag-next page
+        imageView.setOnClickListener(v -> nextPage());
+
         // Check if lesson is already completed
         checkLessonStatus();
-
-        // =========================
-        // VIDEO SETUP
-        // =========================
-        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_lesson);
-        videoView.setVideoURI(videoUri);
-
-        mediaController = new MediaController(this);
-        mediaController.setAnchorView(videoView);
-        videoView.setMediaController(mediaController);
-
-        videoView.setOnCompletionListener(mp -> {
-            if (!isLessonDone) {
-                isLessonDone = true;
-                unlockButton.setEnabled(true);
-                unlockButton.setAlpha(1f);
-                saveProgressToFirestore();
-            }
-
-            if (linesAfterVideo != null && !linesAfterVideo.isEmpty()) {
-                displayLinesAfterVideo(linesAfterVideo);
-            }
-        });
 
         // Unlock button → go to quiz
         unlockButton.setOnClickListener(view -> {
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
-                textToSpeech = null;  // prevent further use
+                textToSpeech = null;
             }
+
             Intent intent = new Intent(PangngalanLesson.this, PangngalanQuiz.class);
             startActivity(intent);
         });
 
         // Load lesson script
         loadCharacterLines();
+    }
+
+    private void nextPage() {
+        if (currentPage < pangngalanLesson.length - 1) {
+            currentPage++;
+            imageView.setImageResource(pangngalanLesson[currentPage]);
+
+            if (currentPage == pangngalanLesson.length - 1) {
+                isLessonDone = true;
+                unlockButton.setEnabled(true);
+                unlockButton.setAlpha(1f);
+                saveProgressToFirestore();
+            }
+        }
     }
 
     // =========================
@@ -172,7 +195,6 @@ public class PangngalanLesson extends AppCompatActivity {
                         if (lines != null && lines.size() > 3) {
                             allLines = lines;
                             List<String> introLines = lines.subList(0, 3);
-                            linesAfterVideo = lines.subList(3, lines.size());
 
                             displayIntroLines(introLines);
                         }
@@ -200,7 +222,6 @@ public class PangngalanLesson extends AppCompatActivity {
                     handler.postDelayed(this, 4000);
                 } else {
                     instructionText.setText("");
-                    videoView.start();
                 }
             }
         };
