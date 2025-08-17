@@ -102,7 +102,7 @@
         <ProgressBar
             android:id="@+id/timerBar"
             style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="349dp"
+            android:layout_width="0dp"
             android:layout_height="41dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
