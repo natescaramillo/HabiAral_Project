@@ -1,12 +1,11 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,76 +16,61 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PangAkopLesson extends AppCompatActivity {
 
-    private WebView webView;
+    private VideoView videoView;
+    private MediaController mediaController;
     private Button unlockButton;
     private boolean isLessonDone = false;
 
-    private static final String SIGNED_PPT_URL = "https://ubxiwtxuswedwfdcqfja.supabase.co/storage/v1/object/sign/presentations/Business%20Proposal%20PPT.pptx?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8yYjRiYWMwNC1mNjQwLTQ5OTEtODgzNC0zZDhlYzFlNzFmNjMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcmVzZW50YXRpb25zL0J1c2luZXNzIFByb3Bvc2FsIFBQVC5wcHR4IiwiaWF0IjoxNzU1MzI3MjAyLCJleHAiOjE3NTU5MzIwMDJ9.Pyi_W5wiXfKBvXPDtkYallVz6NzQICcwxd-wh8R-E70";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bahagi_ng_pananalita_pangakop_lesson);
+        setContentView(R.layout.bahagi_ng_pananalita_pangakop_lesson); // ensure this layout exists
 
-        webView = findViewById(R.id.webViewPangakop);
+        // =========================
+        // UI INITIALIZATION
+        // =========================
         unlockButton = findViewById(R.id.UnlockButtonPangakop);
+        videoView = findViewById(R.id.videoViewPangakop);
 
-        // Initially disabled visually, but enable so user can tap
-        unlockButton.setEnabled(true);
+        // Disable unlock button until lesson is completed
+        unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
-        setupWebView();
-        loadPPT();
+        // Check if lesson is already completed
         checkLessonStatus();
 
-        unlockButton.setOnClickListener(v -> {
+        // =========================
+        // VIDEO SETUP
+        // =========================
+        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_lesson);
+        videoView.setVideoURI(videoUri);
+
+        mediaController = new MediaController(this);
+        mediaController.setAnchorView(videoView);
+        videoView.setMediaController(mediaController);
+
+        videoView.setOnCompletionListener(mp -> {
             if (!isLessonDone) {
                 isLessonDone = true;
-                saveProgressToFirestore(); // mark as in_progress
+                unlockButton.setEnabled(true);
+                unlockButton.setAlpha(1f);
+                saveProgressToFirestore();
             }
-            startActivity(new Intent(PangAkopLesson.this, PangAkopQuiz.class));
         });
-    }
 
-    private void setupWebView() {
-        WebSettings settings = webView.getSettings();
-        settings.setJavaScriptEnabled(true);
-        settings.setDomStorageEnabled(true);
-        settings.setLoadWithOverviewMode(true);
-        settings.setUseWideViewPort(true);
-        settings.setBuiltInZoomControls(false);
-        settings.setDisplayZoomControls(false);
+        // Unlock button → go to quiz
+        unlockButton.setOnClickListener(view -> {
+            Intent intent = new Intent(PangAkopLesson.this, PangAkopQuiz.class);
+            startActivity(intent);
+        });
 
-
-        // Disable scrolling
-        webView.setVerticalScrollBarEnabled(false);
-        webView.setHorizontalScrollBarEnabled(false);
-        webView.setOnTouchListener((v, event) -> event.getAction() == MotionEvent.ACTION_MOVE);
-
-        webView.setWebViewClient(new WebViewClient());
-    }
-    private void loadPPT() {
-        try {
-            String encoded = URLEncoder.encode(SIGNED_PPT_URL, "UTF-8");
-            String officeUrl = "https://view.officeapps.live.com/op/embed.aspx?src=" + encoded;
-            webView.loadUrl(officeUrl);
-
-            webView.setWebViewClient(new WebViewClient() {
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    // Page loaded → visually indicate user can tap button
-                    unlockButton.setAlpha(1f);
-                }
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Start video immediately
+        videoView.start();
     }
 
     private void checkLessonStatus() {
