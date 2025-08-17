@@ -28,9 +28,8 @@
         app:layout_constraintVertical_bias="0.611" />
 
 
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPagerSlides"
+    <VideoView
+        android:id="@+id/videoViewPangngalan"
         android:layout_width="358dp"
         android:layout_height="278dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -39,6 +38,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.103" />
+
 
 
     <Button
@@ -64,6 +64,8 @@
         android:src="@drawable/tarsier_3d"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
