@@ -5,7 +5,7 @@
     android:id="@+id/questionBaguhan"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false"
+    android:fitsSystemWindows="true"
     android:background="@drawable/question_bg_drawable"
     tools:context=".Activity.PalaroBaguhan">
 
@@ -60,8 +60,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomBar"
-        android:layout_width="362dp"
-        android:layout_height="367dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
