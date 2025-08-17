@@ -120,7 +120,7 @@
 
         <TextView
             android:id="@+id/whole_answer"
-            android:layout_width="347dp"
+            android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginStart="38dp"
             android:layout_marginTop="56dp"
@@ -135,10 +135,10 @@
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/bottomBar"
-            app:layout_constraintHorizontal_bias="0.455"
+            app:layout_constraintHorizontal_bias="0.431"
             app:layout_constraintStart_toStartOf="@+id/bottomBar"
             app:layout_constraintTop_toTopOf="@+id/bottomBar"
-            app:layout_constraintVertical_bias="0.049" />
+            app:layout_constraintVertical_bias="0.032" />
 
         <GridLayout
             android:id="@+id/husay_grid"
