@@ -30,19 +30,19 @@
 
     <TextView
         android:id="@+id/baguhan_instructionText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="350dp"
+        android:layout_height="74dp"
         android:background="@drawable/rounded_rect"
         android:backgroundTint="#FFEFEA"
         android:fontFamily="@font/special"
         android:gravity="center"
+        android:padding="12dp"
         android:textAlignment="center"
         android:textColor="#000000"
-        android:textSize="20sp"
-        android:padding="12dp"
-        app:layout_constraintTop_toBottomOf="@id/textView10"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView10"
         app:layout_constraintWidth_percent="0.85" />
 
     <ImageView
@@ -192,7 +192,7 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="1"
+                    android:text=""
                     android:textSize="20sp" />
 
                 <Button
@@ -203,7 +203,7 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="2"
+                    android:text=""
                     android:textSize="20sp" />
 
                 <Button
@@ -214,7 +214,7 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="3"
+                    android:text=""
                     android:textSize="20sp" />
 
                 <Button
@@ -225,7 +225,7 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="4"
+                    android:text=""
                     android:textSize="20sp" />
 
                 <Button
@@ -236,7 +236,7 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="5"
+                    android:text=""
                     android:textSize="20sp" />
 
                 <Button
@@ -247,7 +247,7 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="6"
+                    android:text=""
                     android:textSize="20sp" />
 
             </GridLayout>

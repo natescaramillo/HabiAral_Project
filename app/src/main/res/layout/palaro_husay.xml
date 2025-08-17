@@ -1,349 +1,289 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/questionHusay"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="false"
-    android:background="@drawable/question_bg_drawable"
-    tools:context=".Activity.PalaroHusay">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/questionHusay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="false"
+        android:background="@drawable/question_bg_drawable"
+        tools:context=".Activity.PalaroHusay">
 
 
-    <TextView
-        android:id="@+id/husay_instructionText"
-        android:layout_width="324dp"
-        android:layout_height="118dp"
-        android:layout_marginTop="48dp"
-        android:layout_weight="1"
-        android:background="@drawable/rounded_rect"
-        android:backgroundTint="#FFEFEA"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/husay_instructionText"
+            android:layout_width="324dp"
+            android:layout_height="118dp"
+            android:layout_marginTop="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_rect"
+            android:backgroundTint="#FFEFEA"
+            android:fontFamily="@font/special"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/characterIcon"
-        android:layout_width="293dp"
-        android:layout_height="299dp"
-        android:layout_marginTop="48dp"
-        android:src="@drawable/tarsier_3d"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/characterIcon"
+            android:layout_width="287dp"
+            android:layout_height="264dp"
+            android:layout_marginTop="48dp"
+            android:src="@drawable/tarsier_3d"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <View
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomBar"
-        android:layout_width="398dp"
-        android:layout_height="470dp"
+        android:layout_width="514dp"
+        android:layout_height="482dp"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.461"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.996" />
+        app:layout_constraintVertical_bias="0.996">
 
-    <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.189"
-        app:layout_constraintStart_toStartOf="@+id/bottomBar"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/design_heart" />
+        <LinearLayout
+            android:id="@+id/heartsRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/bottomBar">
 
-    <ImageView
-        android:id="@+id/imageView12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toEndOf="@+id/imageView9"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:srcCompat="@drawable/design_heart" />
+            <ImageView
+                android:id="@+id/heart01"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/design_heart" />
 
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toEndOf="@+id/imageView10"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:srcCompat="@drawable/design_heart" />
+            <ImageView
+                android:id="@+id/heart02"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="4dp"
+                app:srcCompat="@drawable/design_heart" />
 
-    <ImageView
-        android:id="@+id/imageView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toEndOf="@+id/imageView11"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:srcCompat="@drawable/design_heart" />
+            <ImageView
+                android:id="@+id/heart03"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="4dp"
+                app:srcCompat="@drawable/design_heart" />
 
-    <ImageView
-        android:id="@+id/imageView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
-        app:layout_constraintStart_toEndOf="@+id/imageView8"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/design_heart" />
+            <ImageView
+                android:id="@+id/heart04"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="4dp"
+                app:srcCompat="@drawable/design_heart" />
+
+            <ImageView
+                android:id="@+id/heart05"
+                android:layout_width="44dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="4dp"
+                app:srcCompat="@drawable/design_heart" />
+
+        </LinearLayout>
 
 
-    <ProgressBar
-        android:id="@+id/timerBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="339dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="32dp"
-        android:background="@null"
-        android:backgroundTint="#E0E0E0"
-        android:clipToOutline="true"
-        android:indeterminate="false"
-        android:max="100"
-        android:progress="100"
-        android:progressDrawable="@drawable/timer_color_green"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.538"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar" />
+        <ProgressBar
+            android:id="@+id/timerBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="372dp"
+            android:layout_height="43dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:background="@null"
+            android:backgroundTint="#E0E0E0"
+            android:clipToOutline="true"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="100"
+            android:progressDrawable="@drawable/timer_color_green"
+            app:layout_constraintEnd_toEndOf="@+id/whole_answer"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/whole_answer"
+            app:layout_constraintTop_toBottomOf="@+id/whole_answer" />
 
-    <TextView
-        android:id="@+id/whole_answer"
-        android:layout_width="351dp"
-        android:layout_height="51dp"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="136dp"
-        android:layout_marginEnd="24dp"
-        android:layout_weight="1"
-        android:background="@drawable/rounded_rect"
-        android:backgroundTint="#FFEFEA"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/bottomBar"
-        app:layout_constraintHorizontal_bias="0.933"
-        app:layout_constraintStart_toStartOf="@+id/bottomBar"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar" />
+        <TextView
+            android:id="@+id/whole_answer"
+            android:layout_width="373dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="38dp"
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="24dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_rect"
+            android:backgroundTint="#FFEFEA"
+            android:fontFamily="@font/special"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/bottomBar"
+            app:layout_constraintHorizontal_bias="0.397"
+            app:layout_constraintStart_toStartOf="@+id/bottomBar"
+            app:layout_constraintTop_toTopOf="@+id/bottomBar"
+            app:layout_constraintVertical_bias="0.006" />
 
-    <Button
-        android:id="@+id/husay_answer1"
-        android:layout_width="87dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="72dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/answer_option_bg"
-        android:clickable="true"
-        android:enabled="true"
-        android:focusable="true"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.023"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timerBar" />
-
-    <Button
-        android:id="@+id/husay_answer2"
-        android:layout_width="87dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="128dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/answer_option_bg"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:clickable="true"
-        android:focusable="true"
-        android:enabled="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timerBar" />
-
-    <Button
-        android:id="@+id/husay_answer3"
-        android:layout_width="87dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="128dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/answer_option_bg"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:clickable="true"
-        android:focusable="true"
-        android:enabled="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.972"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timerBar" />
-
-    <Button
-        android:id="@+id/husay_answer4"
-        android:layout_width="87dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="128dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/answer_option_bg"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:clickable="true"
-        android:focusable="true"
-        android:enabled="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.023"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timerBar" />
-
-    <Button
-        android:id="@+id/husay_answer5"
-        android:layout_width="87dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="184dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/answer_option_bg"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:clickable="true"
-        android:focusable="true"
-        android:enabled="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.023"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timerBar" />
-
-    <Button
-        android:id="@+id/husay_answer6"
-        android:layout_width="87dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="184dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/answer_option_bg"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:clickable="true"
-        android:focusable="true"
-        android:enabled="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timerBar" />
+        <GridLayout
+            android:id="@+id/husay_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alignmentMode="alignMargins"
+            android:columnCount="3"
+            android:rowCount="3"
+            android:useDefaultMargins="true"
+            app:layout_constraintBottom_toTopOf="@id/UnlockButtonPalaro"
+            app:layout_constraintEnd_toEndOf="@id/guideline8"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@id/guideline8"
+            app:layout_constraintTop_toBottomOf="@id/timerBar"
+            app:layout_constraintVertical_bias="0.5">
 
 
-    <Button
-        android:id="@+id/husay_answer7"
-        android:layout_width="87dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="184dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/answer_option_bg"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:clickable="true"
-        android:focusable="true"
-        android:enabled="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.971"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timerBar" />
+            <Button
+                android:id="@+id/husay_answer1"
+                android:layout_width="106dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/husay_answer8"
-        android:layout_width="87dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="72dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/answer_option_bg"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:clickable="true"
-        android:focusable="true"
-        android:enabled="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timerBar" />
+            <Button
+                android:id="@+id/husay_answer2"
+                android:layout_width="106dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/husay_answer9"
-        android:layout_width="87dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="72dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/answer_option_bg"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:clickable="true"
-        android:focusable="true"
-        android:enabled="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.972"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timerBar" />
+            <Button
+                android:id="@+id/husay_answer3"
+                android:layout_width="106dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/UnlockButtonPalaro"
-        android:layout_width="121dp"
-        android:layout_height="52dp"
-        android:background="@drawable/rounded_button_achievement"
-        android:fontFamily="@font/special"
-        android:text="Tapos"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.871"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.96" />
+            <Button
+                android:id="@+id/husay_answer4"
+                android:layout_width="106dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/UnlockButtonPalaro1"
-        android:layout_width="121dp"
-        android:layout_height="52dp"
-        android:background="@drawable/rounded_button_achievement"
-        android:fontFamily="@font/special"
-        android:text="Umalis"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.103"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.96" />
+            <Button
+                android:id="@+id/husay_answer5"
+                android:layout_width="106dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/husay_answer6"
+                android:layout_width="106dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/husay_answer7"
+                android:layout_width="106dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/husay_answer8"
+                android:layout_width="106dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/husay_answer9"
+                android:layout_width="106dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/special"
+                android:gravity="center"
+                android:textSize="20sp" />
+
+        </GridLayout>
+
+        <Button
+            android:id="@+id/UnlockButtonPalaro"
+            android:layout_width="121dp"
+            android:layout_height="52dp"
+            android:background="@drawable/rounded_button_achievement"
+            android:fontFamily="@font/special"
+            android:text="Tapos"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.178"
+            app:layout_constraintStart_toStartOf="@+id/guideline8"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.958" />
+
+        <Button
+            android:id="@+id/UnlockButtonPalaro1"
+            android:layout_width="121dp"
+            android:layout_height="52dp"
+            android:background="@drawable/rounded_button_achievement"
+            android:fontFamily="@font/special"
+            android:text="Umalis"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline8"
+            app:layout_constraintHorizontal_bias="0.815"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.956" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
