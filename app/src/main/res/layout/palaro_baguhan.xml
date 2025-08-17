@@ -177,7 +177,7 @@
                 android:id="@+id/answerGrid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginBottom="32dp"
                 android:alignmentMode="alignMargins"
                 android:columnCount="3"
@@ -219,7 +219,7 @@
 
                 <Button
                     android:id="@+id/baguhan_answer4"
-                    android:layout_width="100dp"
+                    android:layout_width="98dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:background="@drawable/answer_option_bg"

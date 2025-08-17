@@ -28,7 +28,6 @@ public class HomepageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.botnav);
 
