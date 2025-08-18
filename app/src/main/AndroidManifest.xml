@@ -88,13 +88,13 @@
             android:screenOrientation="portrait" />
         <activity android:name=".BahagiNgPananalita.Quiz.PangUkolQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangAkopLesson"
+        <activity android:name=".BahagiNgPananalita.Lessons.PangAngkopLesson"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangAkopQuiz"
+        <activity android:name=".BahagiNgPananalita.Quiz.PangAngkopQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PadamdamLesson"
+        <activity android:name=".BahagiNgPananalita.Lessons.PandamdamLesson"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PadamdamQuiz"
+        <activity android:name=".BahagiNgPananalita.Quiz.PandamdamQuiz"
             android:screenOrientation="portrait" />
         <activity android:name=".BahagiNgPananalita.Lessons.PangawingLesson"
             android:screenOrientation="portrait" />

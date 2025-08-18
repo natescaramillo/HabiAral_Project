@@ -9,8 +9,8 @@
     android:fitsSystemWindows="false"
     tools:context=".Activity.IntroActivity">
 
-    <VideoView
-        android:id="@+id/videoViewPangatnig"
+    <ImageView
+        android:id="@+id/imageViewPangatnig"
         android:layout_width="358dp"
         android:layout_height="278dp"
         app:layout_constraintBottom_toBottomOf="parent"

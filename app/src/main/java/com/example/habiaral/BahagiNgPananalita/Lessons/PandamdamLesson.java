@@ -1,15 +1,14 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.widget.Button;
-import android.widget.MediaController;
-import android.widget.VideoView;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.BahagiNgPananalita.Quiz.PadamdamQuiz;
+import com.example.habiaral.BahagiNgPananalita.Quiz.PandamdamQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,58 +18,86 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PadamdamLesson extends AppCompatActivity {
+public class PandamdamLesson extends AppCompatActivity {
 
     Button unlockButton;
-    VideoView videoView;
-    MediaController mediaController;
+    ImageView imageView;
     private boolean isLessonDone = false; // Track from Firebase
+
+    private int currentPage = 0;
+    private int[] pandamdamLesson = {
+            R.drawable.pandamdam01,
+            R.drawable.pandamdam02,
+            R.drawable.pandamdam03,
+            R.drawable.pandamdam04,
+            R.drawable.pandamdam05,
+            R.drawable.pandamdam06
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bahagi_ng_pananalita_padamdam_lesson);
+        setContentView(R.layout.bahagi_ng_pananalita_pandamdam_lesson);
 
         // =========================
         // UI INITIALIZATION
         // =========================
         unlockButton = findViewById(R.id.UnlockButtonPadamdam);
-        videoView = findViewById(R.id.videoViewPadamdam);
+        imageView = findViewById(R.id.imageViewPadamdam);
 
         // Disable unlock button until lesson is completed
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
+        // Load first page
+        imageView.setImageResource(pandamdamLesson[currentPage]);
+
+        // Detect left or right tap sa imageView
+        imageView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                float x = event.getX();
+                float width = v.getWidth();
+
+                if (x < width / 2) {
+                    // Tap sa left side → previous page
+                    previousPage();
+                } else {
+                    // Tap sa right side → next page
+                    nextPage();
+                }
+            }
+            return true;
+        });
+
         // Check if lesson is already completed
         checkLessonStatus();
 
-        // =========================
-        // VIDEO SETUP
-        // =========================
-        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_lesson);
-        videoView.setVideoURI(videoUri);
+        // Unlock button → go to quiz
+        unlockButton.setOnClickListener(view -> {
+            Intent intent = new Intent(PandamdamLesson.this, PandamdamQuiz.class);
+            startActivity(intent);
+        });
+    }
 
-        mediaController = new MediaController(this);
-        mediaController.setAnchorView(videoView);
-        videoView.setMediaController(mediaController);
+    private void nextPage() {
+        if (currentPage < pandamdamLesson.length - 1) {
+            currentPage++;
+            imageView.setImageResource(pandamdamLesson[currentPage]);
 
-        videoView.setOnCompletionListener(mp -> {
-            if (!isLessonDone) {
+            if (currentPage == pandamdamLesson.length - 1) {
                 isLessonDone = true;
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
                 saveProgressToFirestore();
             }
-        });
+        }
+    }
 
-        // Unlock button → go to quiz
-        unlockButton.setOnClickListener(view -> {
-            Intent intent = new Intent(PadamdamLesson.this, PadamdamQuiz.class);
-            startActivity(intent);
-        });
-
-        // Play video automatically
-        videoView.start();
+    private void previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            imageView.setImageResource(pandamdamLesson[currentPage]);
+        }
     }
 
     // =========================

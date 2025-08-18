@@ -1,14 +1,12 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.MediaController;
 import android.speech.tts.TextToSpeech;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,7 +27,6 @@ public class PangngalanLesson extends AppCompatActivity {
 
     Button unlockButton;
     ImageView imageView;
-    MediaController mediaController;
     TextView instructionText;
     private List<String> allLines;
     private TextToSpeech textToSpeech;
@@ -48,6 +45,16 @@ public class PangngalanLesson extends AppCompatActivity {
             R.drawable.pangngalan08,
             R.drawable.pangngalan09,
             R.drawable.pangngalan10,
+            R.drawable.pangngalan11,
+            R.drawable.pangngalan12,
+            R.drawable.pangngalan13,
+            R.drawable.pangngalan14,
+            R.drawable.pangngalan15,
+            R.drawable.pangngalan16,
+            R.drawable.pangngalan17,
+            R.drawable.pangngalan18,
+            R.drawable.pangngalan19,
+            R.drawable.pangngalan20,
             R.drawable.pangngalan21,
             R.drawable.pangngalan22,
             R.drawable.pangngalan23,

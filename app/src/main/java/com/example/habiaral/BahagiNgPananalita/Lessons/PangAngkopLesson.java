@@ -1,15 +1,14 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.widget.Button;
-import android.widget.MediaController;
-import android.widget.VideoView;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.BahagiNgPananalita.Quiz.PangAkopQuiz;
+import com.example.habiaral.BahagiNgPananalita.Quiz.PangAngkopQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,58 +18,85 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PangAkopLesson extends AppCompatActivity {
+public class PangAngkopLesson extends AppCompatActivity {
 
-    private VideoView videoView;
-    private MediaController mediaController;
-    private Button unlockButton;
+    ImageView imageView;
+    Button unlockButton;
     private boolean isLessonDone = false;
+
+    private int currentPage = 0;
+    private int[] pangAngkopLesson = {
+            R.drawable.pangangkop01,
+            R.drawable.pangangkop02,
+            R.drawable.pangangkop03,
+            R.drawable.pangangkop04,
+            R.drawable.pangangkop05
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bahagi_ng_pananalita_pangakop_lesson); // ensure this layout exists
+        setContentView(R.layout.bahagi_ng_pananalita_pangangkop_lesson); // ensure this layout exists
 
         // =========================
         // UI INITIALIZATION
         // =========================
         unlockButton = findViewById(R.id.UnlockButtonPangakop);
-        videoView = findViewById(R.id.videoViewPangakop);
+        imageView = findViewById(R.id.imageViewPangakop);
 
         // Disable unlock button until lesson is completed
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
+        // Load first page
+        imageView.setImageResource(pangAngkopLesson[currentPage]);
+
+        // Detect left or right tap sa imageView
+        imageView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                float x = event.getX();
+                float width = v.getWidth();
+
+                if (x < width / 2) {
+                    // Tap sa left side → previous page
+                    previousPage();
+                } else {
+                    // Tap sa right side → next page
+                    nextPage();
+                }
+            }
+            return true;
+        });
+
         // Check if lesson is already completed
         checkLessonStatus();
 
-        // =========================
-        // VIDEO SETUP
-        // =========================
-        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_lesson);
-        videoView.setVideoURI(videoUri);
+        // Unlock button → go to quiz
+        unlockButton.setOnClickListener(view -> {
+            Intent intent = new Intent(PangAngkopLesson.this, PangAngkopQuiz.class);
+            startActivity(intent);
+        });
+    }
 
-        mediaController = new MediaController(this);
-        mediaController.setAnchorView(videoView);
-        videoView.setMediaController(mediaController);
+    private void nextPage() {
+        if (currentPage < pangAngkopLesson.length - 1) {
+            currentPage++;
+            imageView.setImageResource(pangAngkopLesson[currentPage]);
 
-        videoView.setOnCompletionListener(mp -> {
-            if (!isLessonDone) {
+            if (currentPage == pangAngkopLesson.length - 1) {
                 isLessonDone = true;
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
                 saveProgressToFirestore();
             }
-        });
+        }
+    }
 
-        // Unlock button → go to quiz
-        unlockButton.setOnClickListener(view -> {
-            Intent intent = new Intent(PangAkopLesson.this, PangAkopQuiz.class);
-            startActivity(intent);
-        });
-
-        // Start video immediately
-        videoView.start();
+    private void previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            imageView.setImageResource(pangAngkopLesson[currentPage]);
+        }
     }
 
     private void checkLessonStatus() {
@@ -120,8 +146,6 @@ public class PangAkopLesson extends AppCompatActivity {
         moduleMap.put("lessons", lessonsMap);
 
         db.collection("module_progress").document(uid)
-                .set(Map.of("module_1", moduleMap), SetOptions.merge())
-                .addOnSuccessListener(aVoid -> System.out.println("Progress saved as in_progress ✅"))
-                .addOnFailureListener(e -> e.printStackTrace());
+                .set(Map.of("module_1", moduleMap), SetOptions.merge());
     }
 }

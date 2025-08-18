@@ -174,8 +174,8 @@ public class BahagiNgPananalita extends AppCompatActivity {
         btnPangAbay.setOnClickListener(v -> startActivity(new Intent(this, PangAbayLesson.class)));
         btnPangatnig.setOnClickListener(v -> startActivity(new Intent(this, PangatnigLesson.class)));
         btnPangUkol.setOnClickListener(v -> startActivity(new Intent(this, PangUkolLesson.class)));
-        btnPangAkop.setOnClickListener(v -> startActivity(new Intent(this, PangAkopLesson.class)));
-        btnPadamdam.setOnClickListener(v -> startActivity(new Intent(this, PadamdamLesson.class)));
+        btnPangAkop.setOnClickListener(v -> startActivity(new Intent(this, PangAngkopLesson.class)));
+        btnPadamdam.setOnClickListener(v -> startActivity(new Intent(this, PandamdamLesson.class)));
         btnPangawing.setOnClickListener(v -> startActivity(new Intent(this, PangawingLesson.class)));
     }
 

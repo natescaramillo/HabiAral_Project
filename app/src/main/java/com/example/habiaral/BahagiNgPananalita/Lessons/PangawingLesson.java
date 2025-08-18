@@ -1,11 +1,10 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.widget.Button;
-import android.widget.MediaController;
-import android.widget.VideoView;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,9 +21,14 @@ import java.util.Map;
 public class PangawingLesson extends AppCompatActivity {
 
     Button unlockButton;
-    VideoView videoView;
-    MediaController mediaController;
+    ImageView imageView;
     private boolean isLessonDone = false; // Track from Firebase
+
+    private int currentPage = 0;
+    private int[] pangawingLesson = {
+            R.drawable.pangawing01,
+            R.drawable.pangawing02
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,42 +39,61 @@ public class PangawingLesson extends AppCompatActivity {
         // UI INITIALIZATION
         // =========================
         unlockButton = findViewById(R.id.UnlockButtonPangawing);
-        videoView = findViewById(R.id.videoViewPangawing);
+        imageView = findViewById(R.id.imageViewPangawing);
 
         // Disable unlock button until lesson is completed
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
+        // Load first page
+        imageView.setImageResource(pangawingLesson[currentPage]);
+
+        // Detect left or right tap sa imageView
+        imageView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                float x = event.getX();
+                float width = v.getWidth();
+
+                if (x < width / 2) {
+                    // Tap sa left side → previous page
+                    previousPage();
+                } else {
+                    // Tap sa right side → next page
+                    nextPage();
+                }
+            }
+            return true;
+        });
+
         // Check lesson status from Firestore
         checkLessonStatus();
-
-        // =========================
-        // VIDEO SETUP
-        // =========================
-        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_lesson);
-        videoView.setVideoURI(videoUri);
-
-        mediaController = new MediaController(this);
-        mediaController.setAnchorView(videoView);
-        videoView.setMediaController(mediaController);
-
-        videoView.setOnCompletionListener(mp -> {
-            if (!isLessonDone) {
-                isLessonDone = true;
-                unlockButton.setEnabled(true);
-                unlockButton.setAlpha(1f);
-                saveProgressToFirestore();
-            }
-        });
 
         // Unlock button → go to quiz
         unlockButton.setOnClickListener(view -> {
             Intent intent = new Intent(PangawingLesson.this, PangawingQuiz.class);
             startActivity(intent);
         });
+    }
 
-        // Play video automatically
-        videoView.start();
+    private void nextPage() {
+        if (currentPage < pangawingLesson.length - 1) {
+            currentPage++;
+            imageView.setImageResource(pangawingLesson[currentPage]);
+
+            if (currentPage == pangawingLesson.length - 1) {
+                isLessonDone = true;
+                unlockButton.setEnabled(true);
+                unlockButton.setAlpha(1f);
+                saveProgressToFirestore();
+            }
+        }
+    }
+
+    private void previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            imageView.setImageResource(pangawingLesson[currentPage]);
+        }
     }
 
     // =========================

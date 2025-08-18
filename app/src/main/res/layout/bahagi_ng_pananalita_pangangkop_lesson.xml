@@ -24,8 +24,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.937" />
 
-    <VideoView
-        android:id="@+id/videoViewPangakop"
+    <ImageView
+        android:id="@+id/imageViewPangakop"
         android:layout_width="358dp"
         android:layout_height="278dp"
         app:layout_constraintBottom_toBottomOf="parent"
