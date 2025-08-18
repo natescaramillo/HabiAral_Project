@@ -1,11 +1,10 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.widget.Button;
-import android.widget.VideoView;
-import android.widget.MediaController;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,9 +21,19 @@ import java.util.Map;
 public class PangAbayLesson extends AppCompatActivity {
 
     Button unlockButton;
-    VideoView videoView;
-    MediaController mediaController;
+    ImageView imageView;
     private boolean isLessonDone = false; // Track from Firebase
+
+    private int currentPage = 0;
+    private int[] pangAbayLesson = {
+            R.drawable.pangabay01,
+            R.drawable.pangabay02,
+            R.drawable.pangabay03,
+            R.drawable.pangabay04,
+            R.drawable.pangabay05,
+            R.drawable.pangabay06,
+            R.drawable.pangabay07
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,42 +44,61 @@ public class PangAbayLesson extends AppCompatActivity {
         // UI INITIALIZATION
         // =========================
         unlockButton = findViewById(R.id.UnlockButtonPangabay);
-        videoView = findViewById(R.id.videoViewPangabay);
+        imageView = findViewById(R.id.imageViewPangabay);
 
         // Disable unlock button until lesson is completed
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
+        // Load first page
+        imageView.setImageResource(pangAbayLesson[currentPage]);
+
+        // Detect left or right tap sa imageView
+        imageView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                float x = event.getX();
+                float width = v.getWidth();
+
+                if (x < width / 2) {
+                    // Tap sa left side → previous page
+                    previousPage();
+                } else {
+                    // Tap sa right side → next page
+                    nextPage();
+                }
+            }
+            return true;
+        });
+
         // Check if lesson is already completed
         checkLessonStatus();
-
-        // =========================
-        // VIDEO SETUP
-        // =========================
-        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_lesson);
-        videoView.setVideoURI(videoUri);
-
-        mediaController = new MediaController(this);
-        mediaController.setAnchorView(videoView);
-        videoView.setMediaController(mediaController);
-
-        videoView.setOnCompletionListener(mp -> {
-            if (!isLessonDone) {
-                isLessonDone = true;
-                unlockButton.setEnabled(true);
-                unlockButton.setAlpha(1f);
-                saveProgressToFirestore();
-            }
-        });
 
         // Unlock button → go to quiz
         unlockButton.setOnClickListener(view -> {
             Intent intent = new Intent(PangAbayLesson.this, PangAbayQuiz.class);
             startActivity(intent);
         });
+    }
 
-        // Start video automatically
-        videoView.start();
+    private void nextPage() {
+        if (currentPage < pangAbayLesson.length - 1) {
+            currentPage++;
+            imageView.setImageResource(pangAbayLesson[currentPage]);
+
+            if (currentPage == pangAbayLesson.length - 1) {
+                isLessonDone = true;
+                unlockButton.setEnabled(true);
+                unlockButton.setAlpha(1f);
+                saveProgressToFirestore();
+            }
+        }
+    }
+
+    private void previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            imageView.setImageResource(pangAbayLesson[currentPage]);
+        }
     }
 
     // =========================

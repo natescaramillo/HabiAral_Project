@@ -20,16 +20,16 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PadamdamQuiz extends AppCompatActivity {
+public class PangAngkopQuiz extends AppCompatActivity {
 
     Button nextButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bahagi_ng_pananalita_padamdam_quiz);
+        setContentView(R.layout.bahagi_ng_pananalita_pangangkop_quiz);
 
-        nextButton = findViewById(R.id.padamdamNextButton);
+        nextButton = findViewById(R.id.pangakopNextButton);
 
         nextButton.setOnClickListener(view -> {
             unlockNextLesson();
@@ -64,7 +64,7 @@ public class PadamdamQuiz extends AppCompatActivity {
 
         homeButton.setOnClickListener(v -> {
             dialog.dismiss();
-            Intent intent = new Intent(PadamdamQuiz.this, BahagiNgPananalita.class);
+            Intent intent = new Intent(PangAngkopQuiz.this, BahagiNgPananalita.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
@@ -75,7 +75,7 @@ public class PadamdamQuiz extends AppCompatActivity {
     // FIRESTORE UPDATES
     // =========================
     private void unlockNextLesson() {
-        Toast.makeText(this, "Next Lesson Unlocked: Pangawing!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Next Lesson Unlocked: Padamdam!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {
@@ -85,15 +85,15 @@ public class PadamdamQuiz extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> padamdamStatus = new HashMap<>();
-        padamdamStatus.put("status", "completed");
+        Map<String, Object> pangAkopStatus = new HashMap<>();
+        pangAkopStatus.put("status", "completed");
 
         Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("padamdam", padamdamStatus);
+        lessonsMap.put("pangakop", pangAkopStatus);
 
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "padamdam");
+        updateMap.put("current_lesson", "pangakop");
 
         db.collection("module_progress")
                 .document(uid)

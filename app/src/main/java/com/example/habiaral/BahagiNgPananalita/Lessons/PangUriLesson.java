@@ -1,11 +1,10 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.widget.Button;
-import android.widget.MediaController;
-import android.widget.VideoView;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,10 +21,20 @@ import java.util.Map;
 public class PangUriLesson extends AppCompatActivity {
 
     Button unlockButton;
-    VideoView videoView;
-    MediaController mediaController;
-
+    ImageView imageView;
     private boolean isLessonDone = false;
+
+    private int currentPage = 0;
+    private int[] pangUriLesson = {
+            R.drawable.panguri01,
+            R.drawable.panguri02,
+            R.drawable.panguri03,
+            R.drawable.panguri04,
+            R.drawable.panguri05,
+            R.drawable.panguri06,
+            R.drawable.panguri07,
+            R.drawable.panguri08
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,37 +42,59 @@ public class PangUriLesson extends AppCompatActivity {
         setContentView(R.layout.bahagi_ng_pananalita_panguri_lesson);
 
         unlockButton = findViewById(R.id.UnlockButtonPanguri);
-        videoView = findViewById(R.id.videoViewPanguri);
+        imageView = findViewById(R.id.imageViewPanguri);
 
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
+        // Load first page
+        imageView.setImageResource(pangUriLesson[currentPage]);
+
+        // Detect left or right tap sa imageView
+        imageView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                float x = event.getX();
+                float width = v.getWidth();
+
+                if (x < width / 2) {
+                    // Tap sa left side → previous page
+                    previousPage();
+                } else {
+                    // Tap sa right side → next page
+                    nextPage();
+                }
+            }
+            return true;
+        });
+
         // Check lesson progress from Firestore
         checkLessonStatusFromFirestore();
-
-        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_lesson);
-        videoView.setVideoURI(videoUri);
-
-        mediaController = new MediaController(this);
-        mediaController.setAnchorView(videoView);
-        videoView.setMediaController(mediaController);
-
-        videoView.start();
-
-        videoView.setOnCompletionListener(mp -> {
-            if (!isLessonDone) {
-                isLessonDone = true;
-                unlockButton.setEnabled(true);
-                unlockButton.setAlpha(1f);
-
-                saveProgressToFirestore();
-            }
-        });
 
         unlockButton.setOnClickListener(view -> {
             Intent intent = new Intent(PangUriLesson.this, PangUriQuiz.class);
             startActivity(intent);
         });
+    }
+
+    private void nextPage() {
+        if (currentPage < pangUriLesson.length - 1) {
+            currentPage++;
+            imageView.setImageResource(pangUriLesson[currentPage]);
+
+            if (currentPage == pangUriLesson.length - 1) {
+                isLessonDone = true;
+                unlockButton.setEnabled(true);
+                unlockButton.setAlpha(1f);
+                saveProgressToFirestore();
+            }
+        }
+    }
+
+    private void previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            imageView.setImageResource(pangUriLesson[currentPage]);
+        }
     }
 
     private void checkLessonStatusFromFirestore() {

@@ -18,8 +18,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.BahagiNgPananalita.Quiz.PangAkopQuiz;
 import com.example.habiaral.PagUnawa.PagUnawa;
 import com.example.habiaral.R;
 import com.google.firebase.Timestamp;

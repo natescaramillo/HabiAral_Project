@@ -8,8 +8,8 @@
     android:layout_height="match_parent"
     tools:context=".Activity.IntroActivity">
 
-    <VideoView
-        android:id="@+id/videoViewPadamdam"
+    <ImageView
+        android:id="@+id/imageViewPadamdam"
         android:layout_width="358dp"
         android:layout_height="278dp"
         app:layout_constraintBottom_toBottomOf="parent"

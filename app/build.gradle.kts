@@ -51,6 +51,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore:24.10.1")
     implementation("com.google.android.gms:play-services-auth:21.0.0")
 
+    implementation ("com.android.volley:volley:1.2.1")
+
 
 
 

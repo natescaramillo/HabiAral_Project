@@ -28,8 +28,8 @@
         app:layout_constraintVertical_bias="0.611" />
 
 
-    <VideoView
-        android:id="@+id/videoViewPangngalan"
+    <ImageView
+        android:id="@+id/imageViewPangngalan"
         android:layout_width="358dp"
         android:layout_height="278dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -1,13 +1,12 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
-import android.widget.MediaController;
 import android.speech.tts.TextToSpeech;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,84 +26,126 @@ import java.util.Map;
 public class PangngalanLesson extends AppCompatActivity {
 
     Button unlockButton;
-    VideoView videoView;
-    MediaController mediaController;
+    ImageView imageView;
     TextView instructionText;
     private List<String> allLines;
-    private List<String> linesAfterVideo;
     private TextToSpeech textToSpeech;
     private boolean isLessonDone = false;  // Track from Firebase
+
+    private int currentPage = 0;
+    private boolean isFirstTime = true;
+
+
+    private int[] pangngalanLesson = {
+            R.drawable.pangngalan01,
+            R.drawable.pangngalan02,
+            R.drawable.pangngalan03,
+            R.drawable.pangngalan04,
+            R.drawable.pangngalan05,
+            R.drawable.pangngalan06,
+            R.drawable.pangngalan07,
+            R.drawable.pangngalan08,
+            R.drawable.pangngalan09,
+            R.drawable.pangngalan10,
+            R.drawable.pangngalan11,
+            R.drawable.pangngalan12,
+            R.drawable.pangngalan13,
+            R.drawable.pangngalan14,
+            R.drawable.pangngalan15,
+            R.drawable.pangngalan16,
+            R.drawable.pangngalan17,
+            R.drawable.pangngalan18,
+            R.drawable.pangngalan19,
+            R.drawable.pangngalan20,
+            R.drawable.pangngalan21,
+            R.drawable.pangngalan22,
+            R.drawable.pangngalan23,
+            R.drawable.pangngalan24,
+            R.drawable.pangngalan25,
+            R.drawable.pangngalan26,
+            R.drawable.pangngalan27,
+            R.drawable.pangngalan28,
+            R.drawable.pangngalan29,
+            R.drawable.pangngalan30,
+            R.drawable.pangngalan31
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bahagi_ng_pananalita_pangngalan_lesson);
 
-        // =========================
-        // UI INITIALIZATION
-        // =========================
         unlockButton = findViewById(R.id.UnlockButtonPangngalan);
-        videoView = findViewById(R.id.videoViewPangngalan);
+        imageView = findViewById(R.id.imageViewPangngalan);
         instructionText = findViewById(R.id.instructionText);
 
-        // =========================
-        // TEXT TO SPEECH SETUP
-        // =========================
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
-                int langResult = textToSpeech.setLanguage(new Locale("tl", "PH"));
+                textToSpeech.setLanguage(new Locale("tl", "PH"));
                 textToSpeech.setSpeechRate(1.1f);
             }
         });
 
-        // Disable unlock button until lesson is completed
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
-        // Check if lesson is already completed
+        // ✅ Load progress (status + checkpoint)
         checkLessonStatus();
 
-        // =========================
-        // VIDEO SETUP
-        // =========================
-        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_lesson);
-        videoView.setVideoURI(videoUri);
+        // Tap left/right
+        imageView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                float x = event.getX();
+                float width = v.getWidth();
 
-        mediaController = new MediaController(this);
-        mediaController.setAnchorView(videoView);
-        videoView.setMediaController(mediaController);
-
-        videoView.setOnCompletionListener(mp -> {
-            if (!isLessonDone) {
-                isLessonDone = true;
-                unlockButton.setEnabled(true);
-                unlockButton.setAlpha(1f);
-                saveProgressToFirestore();
+                if (x < width / 2) {
+                    previousPage();
+                } else {
+                    nextPage();
+                }
             }
-
-            if (linesAfterVideo != null && !linesAfterVideo.isEmpty()) {
-                displayLinesAfterVideo(linesAfterVideo);
-            }
+            return true;
         });
 
-        // Unlock button → go to quiz
         unlockButton.setOnClickListener(view -> {
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
-                textToSpeech = null;  // prevent further use
             }
             Intent intent = new Intent(PangngalanLesson.this, PangngalanQuiz.class);
             startActivity(intent);
         });
 
-        // Load lesson script
         loadCharacterLines();
+
+    }
+
+    private void nextPage() {
+        if (currentPage < pangngalanLesson.length - 1) {
+            currentPage++;
+            imageView.setImageResource(pangngalanLesson[currentPage]);
+            saveProgressToFirestore(false); // ✅ Always in-progress
+        }
+
+        // ✅ Last slide: enable button pero HINDI pa completed
+        if (currentPage == pangngalanLesson.length - 1) {
+            unlockButton.setEnabled(true);
+            unlockButton.setAlpha(1f);
+        }
+    }
+
+
+    private void previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            imageView.setImageResource(pangngalanLesson[currentPage]);
+            saveProgressToFirestore(false); // ✅ Update checkpoint kapag nag-back
+        }
     }
 
     // =========================
-    // FIRESTORE - CHECK LESSON STATUS
-    // =========================
+// FIRESTORE - CHECK LESSON STATUS + LOAD CHECKPOINT
+// =========================
     private void checkLessonStatus() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -116,47 +157,86 @@ public class PangngalanLesson extends AppCompatActivity {
                 .addOnSuccessListener(snapshot -> {
                     if (snapshot.exists()) {
                         Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
-
-                        if (module1 != null && module1.containsKey("lessons")) {
+                        if (module1 != null) {
                             Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
                             if (lessons != null && lessons.containsKey("pangngalan")) {
                                 Map<String, Object> pangngalan = (Map<String, Object>) lessons.get("pangngalan");
-                                if (pangngalan != null && "completed".equals(pangngalan.get("status"))) {
-                                    isLessonDone = true;
-                                    unlockButton.setEnabled(true);
-                                    unlockButton.setAlpha(1f);
+
+                                if (pangngalan != null) {
+                                    Long checkpoint = (Long) pangngalan.get("checkpoint");
+
+                                    if (checkpoint != null) {
+                                        currentPage = checkpoint.intValue();
+                                        isFirstTime = false; // ✅ skip intro kasi may progress
+                                    } else {
+                                        currentPage = 0;
+                                        isFirstTime = true;
+                                    }
+
+                                    imageView.setImageResource(pangngalanLesson[currentPage]);
+
+                                    if ("completed".equals(pangngalan.get("status"))) {
+                                        isLessonDone = true;
+                                        unlockButton.setEnabled(true);
+                                        unlockButton.setAlpha(1f);
+
+                                        currentPage = 0;
+                                        imageView.setImageResource(pangngalanLesson[currentPage]);
+                                        // ✅ Kapag completed na, pwede ulit mag intro
+                                        isFirstTime = false;
+                                    }
                                 }
                             }
                         }
+                    } else {
+                        // First time ever
+                        currentPage = 0;
+                        imageView.setImageResource(pangngalanLesson[currentPage]);
+                        isFirstTime = true;
                     }
+
+                    // ✅ Save na in-progress + checkpoint after loading
+                    saveProgressToFirestore(false);
                 });
     }
 
+
     // =========================
-    // FIRESTORE - SAVE PROGRESS
-    // =========================
-    private void saveProgressToFirestore() {
+// FIRESTORE - SAVE PROGRESS + CHECKPOINT
+// =========================
+    private void saveProgressToFirestore(boolean completed) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
+        // ✅ Kung completed na dati, huwag nang i-overwrite
+        if (isLessonDone && !completed) {
+            return; // Skip update para hindi bumalik sa in-progress
+        }
+
         Map<String, Object> pangngalanStatus = new HashMap<>();
         pangngalanStatus.put("status", "in-progress");
+        pangngalanStatus.put("checkpoint", currentPage); // ✅ Save current slide
 
         Map<String, Object> lessonMap = new HashMap<>();
         lessonMap.put("pangngalan", pangngalanStatus);
 
         Map<String, Object> moduleMap = new HashMap<>();
         moduleMap.put("modulename", "Bahagi ng Pananalita");
-        moduleMap.put("status", "in_progress");
+        moduleMap.put("status","in_progress");
         moduleMap.put("current_lesson", "pangngalan");
         moduleMap.put("lessons", lessonMap);
 
         db.collection("module_progress").document(uid)
-                .set(Map.of("module_1", moduleMap), SetOptions.merge());
+                .set(Map.of("module_1", moduleMap), SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                if (completed) isLessonDone = true; // ✅ update local flag
+            });
+
     }
+
 
     // =========================
     // LOAD LESSON SCRIPT
@@ -172,9 +252,10 @@ public class PangngalanLesson extends AppCompatActivity {
                         if (lines != null && lines.size() > 3) {
                             allLines = lines;
                             List<String> introLines = lines.subList(0, 3);
-                            linesAfterVideo = lines.subList(3, lines.size());
 
-                            displayIntroLines(introLines);
+                            if (isFirstTime) { // ✅ Only play intro on first time
+                                displayIntroLines(introLines);
+                            }
                         }
                     }
                 });
@@ -200,7 +281,6 @@ public class PangngalanLesson extends AppCompatActivity {
                     handler.postDelayed(this, 4000);
                 } else {
                     instructionText.setText("");
-                    videoView.start();
                 }
             }
         };
@@ -258,4 +338,5 @@ public class PangngalanLesson extends AppCompatActivity {
         }
         super.onPause();
     }
+
 }
