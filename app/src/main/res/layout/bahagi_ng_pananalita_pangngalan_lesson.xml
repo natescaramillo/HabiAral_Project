@@ -33,11 +33,11 @@
         android:id="@+id/imageViewPangngalan"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline12"
+        app:layout_constraintBottom_toTopOf="@+id/guidelinehorizontal"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/guideline13"
+        app:layout_constraintTop_toTopOf="@+id/guidelinehorizontal2"
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
