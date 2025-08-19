@@ -287,7 +287,7 @@
                 android:id="@+id/trophy_image"
                 android:layout_width="256dp"
                 android:layout_height="183dp"
-                android:layout_marginStart="180dp"
+                android:layout_marginStart="172dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline"
                 app:layout_constraintTop_toTopOf="@+id/guideline3"
