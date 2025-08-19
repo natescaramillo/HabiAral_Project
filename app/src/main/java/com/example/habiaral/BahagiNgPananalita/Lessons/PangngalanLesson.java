@@ -1,5 +1,6 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -32,6 +33,9 @@ public class PangngalanLesson extends AppCompatActivity {
     private boolean isLessonDone = false;
     private boolean isFirstTime = true;
     private int currentPage = 0;
+    private AlertDialog dialogOption;
+    private boolean waitForResumeChoice = false;
+
 
     private Map<Integer, List<String>> pageLines = new HashMap<>();
 
@@ -95,8 +99,15 @@ public class PangngalanLesson extends AppCompatActivity {
             imageView.setImageResource(pangngalanLesson[currentPage]);
             saveProgressToFirestore(false);
 
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+            }
+
             if (pageLines.containsKey(currentPage)) {
-                speakLines(pageLines.get(currentPage));
+                instructionText.setText("");
+                new android.os.Handler().postDelayed(() -> {
+                    speakLines(pageLines.get(currentPage));
+                }, 500); // Ito yung babagohin na timing
             } else {
                 instructionText.setText("");
             }
@@ -114,8 +125,15 @@ public class PangngalanLesson extends AppCompatActivity {
             imageView.setImageResource(pangngalanLesson[currentPage]);
             saveProgressToFirestore(false);
 
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+            }
+
             if (pageLines.containsKey(currentPage)) {
-                speakLines(pageLines.get(currentPage));
+                instructionText.setText("");
+                new android.os.Handler().postDelayed(() -> {
+                    speakLines(pageLines.get(currentPage));
+                }, 500); // Ito yung babagohin na timing
             } else {
                 instructionText.setText("");
             }
@@ -147,8 +165,8 @@ public class PangngalanLesson extends AppCompatActivity {
                                         unlockButton.setEnabled(true);
                                         unlockButton.setAlpha(1f);
                                     }
-
                                     showResumeDialog(currentPage);
+                                    waitForResumeChoice = true;
                                 }
                             }
                         }
@@ -168,7 +186,6 @@ public class PangngalanLesson extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        // Panatilihin ang status na "completed" kung dati nang completed
         String statusToSave = isLessonDone ? "completed" : "in-progress";
 
         Map<String, Object> pangngalanStatus = new HashMap<>();
@@ -200,39 +217,40 @@ public class PangngalanLesson extends AppCompatActivity {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
 
-                        // Load pages (convert 1-based → 0-based)
                         List<Map<String, Object>> pages = (List<Map<String, Object>>) documentSnapshot.get("pages");
                         if (pages != null) {
                             for (Map<String, Object> page : pages) {
-                                Long pageNum = (Long) page.get("page"); // 1-based
+                                Long pageNum = (Long) page.get("page");
                                 List<String> lines = (List<String>) page.get("line");
                                 if (pageNum != null && lines != null) {
-                                    pageLines.put(pageNum.intValue() - 1, lines); // 0-based
+                                    pageLines.put(pageNum.intValue() - 1, lines);
                                 }
                             }
                         }
 
                         List<String> introLines = (List<String>) documentSnapshot.get("intro");
 
-                        if (introLines != null && isFirstTime && !introLines.isEmpty()) {
-                            isFirstTime = false;
+                        if (!waitForResumeChoice) {
+                            if (introLines != null && isFirstTime && !introLines.isEmpty()) {
+                                isFirstTime = false;
 
-                            // Speak intro lines first
-                            speakSequentialLines(introLines, () -> {
-                                // After intro finishes, show checkpoint page and speak its lines
+                                speakSequentialLines(introLines, () -> {
+                                    new android.os.Handler().postDelayed(() -> {
+                                        imageView.setImageResource(pangngalanLesson[currentPage]);
+                                        if (pageLines.containsKey(currentPage)) {
+                                            speakLines(pageLines.get(currentPage));
+                                        }
+                                    }, 500); // Ito yung babagohin na timing
+                                });
+
+                            } else {
                                 imageView.setImageResource(pangngalanLesson[currentPage]);
                                 if (pageLines.containsKey(currentPage)) {
                                     speakLines(pageLines.get(currentPage));
                                 }
-                            });
-
-                        } else {
-                            // Not first time → directly show checkpoint page and speak lines
-                            imageView.setImageResource(pangngalanLesson[currentPage]);
-                            if (pageLines.containsKey(currentPage)) {
-                                speakLines(pageLines.get(currentPage));
                             }
                         }
+
                     }
                 });
     }
@@ -241,7 +259,7 @@ public class PangngalanLesson extends AppCompatActivity {
         if (lines == null || lines.isEmpty()) return;
 
         final int[] index = {0};
-        instructionText.setText(lines.get(0));
+        animateText(lines.get(0));
 
         textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
@@ -252,7 +270,7 @@ public class PangngalanLesson extends AppCompatActivity {
                 runOnUiThread(() -> {
                     index[0]++;
                     if (index[0] < lines.size()) {
-                        instructionText.setText(lines.get(index[0]));
+                        animateText(lines.get(index[0])); // type animation
                         speak(lines.get(index[0]), String.valueOf(index[0]));
                     } else {
                         onComplete.run();
@@ -293,41 +311,59 @@ public class PangngalanLesson extends AppCompatActivity {
     }
 
     private void showResumeDialog(int checkpoint) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
 
-        // Inflate the custom layout
         android.view.View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_ppt_option, null);
         builder.setView(dialogView);
 
-        android.app.AlertDialog dialog = builder.create();
+        dialogOption = builder.create();
+        dialogOption.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         Button buttonResume = dialogView.findViewById(R.id.button_resume);
         Button buttonBumalik = dialogView.findViewById(R.id.button_bumalik);
 
-        // "Ipagpatuloy" button
         buttonResume.setOnClickListener(v -> {
-            currentPage = checkpoint; // go to saved checkpoint
+            currentPage = checkpoint;
             imageView.setImageResource(pangngalanLesson[currentPage]);
 
             if (pageLines.containsKey(currentPage)) {
                 speakLines(pageLines.get(currentPage));
             }
-            dialog.dismiss();
+            waitForResumeChoice = false;
+            dialogOption.dismiss();
         });
 
-        // "Bumalik" button
         buttonBumalik.setOnClickListener(v -> {
-            currentPage = 0; // start from first page
+            currentPage = 0;
             imageView.setImageResource(pangngalanLesson[currentPage]);
 
             if (pageLines.containsKey(currentPage)) {
                 speakLines(pageLines.get(currentPage));
             }
-            dialog.dismiss();
+            waitForResumeChoice = false;
+            dialogOption.dismiss();
         });
 
-        dialog.show();
+        dialogOption.show();
     }
 
+    private void animateText(String text) {
+        instructionText.setText("");
+        final int[] index = {0};
+        final int delay = 50; // Ito yung babagohin na timing
+
+        android.os.Handler handler = new android.os.Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (index[0] < text.length()) {
+                    instructionText.append(String.valueOf(text.charAt(index[0])));
+                    index[0]++;
+                    handler.postDelayed(this, delay);
+                }
+            }
+        };
+        handler.post(runnable);
+    }
 }
