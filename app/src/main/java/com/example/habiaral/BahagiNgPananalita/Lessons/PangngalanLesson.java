@@ -36,8 +36,12 @@ public class PangngalanLesson extends AppCompatActivity {
     private AlertDialog dialogOption;
     private boolean waitForResumeChoice = false;
 
-
     private Map<Integer, List<String>> pageLines = new HashMap<>();
+
+    // Handler and runnable for text animation
+    private android.os.Handler textHandler = new android.os.Handler();
+    private Runnable textRunnable;
+    private String currentUtterancePage = "";
 
     private final int[] pangngalanLesson = {
             R.drawable.pangngalan01, R.drawable.pangngalan02, R.drawable.pangngalan03,
@@ -99,15 +103,13 @@ public class PangngalanLesson extends AppCompatActivity {
             imageView.setImageResource(pangngalanLesson[currentPage]);
             saveProgressToFirestore(false);
 
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-            }
+            stopSpeakingAndAnimation();
 
             if (pageLines.containsKey(currentPage)) {
                 instructionText.setText("");
                 new android.os.Handler().postDelayed(() -> {
                     speakLines(pageLines.get(currentPage));
-                }, 500); // Ito yung babagohin na timing
+                }, 200);
             } else {
                 instructionText.setText("");
             }
@@ -125,18 +127,25 @@ public class PangngalanLesson extends AppCompatActivity {
             imageView.setImageResource(pangngalanLesson[currentPage]);
             saveProgressToFirestore(false);
 
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-            }
+            stopSpeakingAndAnimation();
 
             if (pageLines.containsKey(currentPage)) {
                 instructionText.setText("");
                 new android.os.Handler().postDelayed(() -> {
                     speakLines(pageLines.get(currentPage));
-                }, 500); // Ito yung babagohin na timing
+                }, 200);
             } else {
                 instructionText.setText("");
             }
+        }
+    }
+
+    private void stopSpeakingAndAnimation() {
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+        }
+        if (textRunnable != null) {
+            textHandler.removeCallbacks(textRunnable);
         }
     }
 
@@ -181,7 +190,7 @@ public class PangngalanLesson extends AppCompatActivity {
 
     private void saveProgressToFirestore(boolean completed) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return; // alisin na ang isLessonDone check
+        if (user == null) return;
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
@@ -207,7 +216,6 @@ public class PangngalanLesson extends AppCompatActivity {
                     if (completed) isLessonDone = true;
                 });
     }
-
 
     private void loadCharacterLines() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -240,7 +248,7 @@ public class PangngalanLesson extends AppCompatActivity {
                                         if (pageLines.containsKey(currentPage)) {
                                             speakLines(pageLines.get(currentPage));
                                         }
-                                    }, 500); // Ito yung babagohin na timing
+                                    }, 500);
                                 });
 
                             } else {
@@ -250,7 +258,6 @@ public class PangngalanLesson extends AppCompatActivity {
                                 }
                             }
                         }
-
                     }
                 });
     }
@@ -259,19 +266,23 @@ public class PangngalanLesson extends AppCompatActivity {
         if (lines == null || lines.isEmpty()) return;
 
         final int[] index = {0};
+        currentUtterancePage = "page_" + currentPage; // unique per page
+
         animateText(lines.get(0));
 
         textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
-            public void onStart(String utteranceId) { }
+            public void onStart(String utteranceId) {}
 
             @Override
             public void onDone(String utteranceId) {
                 runOnUiThread(() -> {
+                    if (!utteranceId.startsWith(currentUtterancePage)) return;
+
                     index[0]++;
                     if (index[0] < lines.size()) {
-                        animateText(lines.get(index[0])); // type animation
-                        speak(lines.get(index[0]), String.valueOf(index[0]));
+                        animateText(lines.get(index[0]));
+                        speak(lines.get(index[0]), currentUtterancePage + "_" + index[0]);
                     } else {
                         onComplete.run();
                     }
@@ -279,10 +290,10 @@ public class PangngalanLesson extends AppCompatActivity {
             }
 
             @Override
-            public void onError(String utteranceId) { }
+            public void onError(String utteranceId) {}
         });
 
-        speak(lines.get(0), "0");
+        speak(lines.get(0), currentUtterancePage + "_0");
     }
 
     private void speakLines(List<String> lines) {
@@ -301,12 +312,15 @@ public class PangngalanLesson extends AppCompatActivity {
             textToSpeech.stop();
             textToSpeech.shutdown();
         }
+        if (textRunnable != null) {
+            textHandler.removeCallbacks(textRunnable);
+        }
         super.onDestroy();
     }
 
     @Override
     protected void onPause() {
-        if (textToSpeech != null) textToSpeech.stop();
+        stopSpeakingAndAnimation();
         super.onPause();
     }
 
@@ -351,19 +365,22 @@ public class PangngalanLesson extends AppCompatActivity {
     private void animateText(String text) {
         instructionText.setText("");
         final int[] index = {0};
-        final int delay = 50; // Ito yung babagohin na timing
+        final int delay = 50;
 
-        android.os.Handler handler = new android.os.Handler();
-        Runnable runnable = new Runnable() {
+        if (textRunnable != null) {
+            textHandler.removeCallbacks(textRunnable);
+        }
+
+        textRunnable = new Runnable() {
             @Override
             public void run() {
                 if (index[0] < text.length()) {
                     instructionText.append(String.valueOf(text.charAt(index[0])));
                     index[0]++;
-                    handler.postDelayed(this, delay);
+                    textHandler.postDelayed(this, delay);
                 }
             }
         };
-        handler.post(runnable);
+        textHandler.post(textRunnable);
     }
 }
