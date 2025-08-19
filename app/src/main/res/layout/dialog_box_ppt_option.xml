@@ -8,15 +8,15 @@
     tools:layout_editor_absoluteY="7dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="330dp"
-        android:layout_height="217dp"
+        android:layout_width="0dp"
+        android:layout_height="219dp"
         android:background="@drawable/pop_up_main_color"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:layout_constraintVertical_bias="0.314">
+        app:layout_constraintVertical_bias="0.0">
 
         <ImageView
             android:id="@+id/imageView8"
@@ -64,14 +64,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.2" />
+            app:layout_constraintGuide_percent="0.15" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.8" />
+            app:layout_constraintGuide_percent="0.85" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -88,8 +88,8 @@
 
             <Button
                 android:id="@+id/button_resume"
-                android:layout_width="35dp"
-                android:layout_height="32dp"
+                android:layout_width="42dp"
+                android:layout_height="30dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_color"
@@ -100,8 +100,8 @@
 
             <Button
                 android:id="@+id/button_bumalik"
-                android:layout_width="35dp"
-                android:layout_height="32dp"
+                android:layout_width="42dp"
+                android:layout_height="30dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_color"
                 android:fontFamily="@font/special"
@@ -116,14 +116,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.2" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.9" />
+        app:layout_constraintGuide_percent="0.8" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
