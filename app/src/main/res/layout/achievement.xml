@@ -62,7 +62,7 @@
                         android:layout_height="87dp"
                         android:background="@drawable/rounded_button_achievement">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/achievement_image1"
                             android:layout_width="78dp"
                             android:layout_height="77dp"
@@ -71,7 +71,8 @@
                             android:clipToOutline="true"
                             android:alpha="0.2"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/achievement01" />
+                            android:src="@drawable/achievement01"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     </FrameLayout>
 
@@ -141,7 +142,7 @@
                         android:layout_height="87dp"
                         android:background="@drawable/rounded_button_achievement">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/achievement_image3"
                             android:layout_width="78dp"
                             android:layout_height="77dp"
@@ -150,7 +151,8 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/achievement03" />
+                            android:src="@drawable/achievement03"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     </FrameLayout>
 
@@ -190,7 +192,7 @@
                         android:layout_height="87dp"
                         android:background="@drawable/rounded_button_achievement">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/achievement_image4"
                             android:layout_width="78dp"
                             android:layout_height="77dp"
@@ -199,7 +201,8 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/achievement04" />
+                            android:src="@drawable/achievement04"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     </FrameLayout>
 
@@ -230,7 +233,7 @@
                         android:layout_height="87dp"
                         android:background="@drawable/rounded_button_achievement">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/achievement_image5"
                             android:layout_width="78dp"
                             android:layout_height="77dp"
@@ -239,7 +242,8 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/achievement05" />
+                            android:src="@drawable/achievement05"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     </FrameLayout>
 
@@ -270,7 +274,7 @@
                         android:layout_height="87dp"
                         android:background="@drawable/rounded_button_achievement">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/achievement_image6"
                             android:layout_width="78dp"
                             android:layout_height="77dp"
@@ -279,7 +283,8 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/achievement06" />
+                            android:src="@drawable/achievement06"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     </FrameLayout>
 
@@ -318,7 +323,7 @@
                         android:layout_height="87dp"
                         android:background="@drawable/rounded_button_achievement">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/achievement_image7"
                             android:layout_width="78dp"
                             android:layout_height="77dp"
@@ -327,7 +332,8 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/achievement07" />
+                            android:src="@drawable/achievement07"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     </FrameLayout>
 
@@ -358,7 +364,7 @@
                         android:layout_height="87dp"
                         android:background="@drawable/rounded_button_achievement">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/achievement_image8"
                             android:layout_width="78dp"
                             android:layout_height="77dp"
@@ -367,7 +373,8 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/achievement08" />
+                            android:src="@drawable/achievement08"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     </FrameLayout>
 
@@ -398,7 +405,7 @@
                         android:layout_height="87dp"
                         android:background="@drawable/rounded_button_achievement">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/achievement_image9"
                             android:layout_width="78dp"
                             android:layout_height="77dp"
@@ -407,7 +414,8 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/achievement09" />
+                            android:src="@drawable/achievement09"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     </FrameLayout>
 
@@ -446,7 +454,7 @@
                         android:layout_height="87dp"
                         android:background="@drawable/rounded_button_achievement">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/achievement_image10"
                             android:layout_width="78dp"
                             android:layout_height="77dp"
@@ -455,7 +463,8 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/achievement10" />
+                            android:src="@drawable/achievement10"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     </FrameLayout>
 
@@ -486,7 +495,7 @@
                         android:layout_height="87dp"
                         android:background="@drawable/rounded_button_achievement">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/achievement_image11"
                             android:layout_width="78dp"
                             android:layout_height="77dp"
@@ -494,7 +503,8 @@
                             android:background="@drawable/rounded_image"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/achievement11" />
+                            android:src="@drawable/achievement11"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     </FrameLayout>
 
@@ -525,7 +535,7 @@
                         android:layout_height="87dp"
                         android:background="@drawable/rounded_button_achievement">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/achievement_image12"
                             android:layout_width="78dp"
                             android:layout_height="77dp"
@@ -534,7 +544,8 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/achievement12" />
+                            android:src="@drawable/achievement12"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     </FrameLayout>
 
@@ -573,7 +584,7 @@
                         android:layout_height="87dp"
                         android:background="@drawable/rounded_button_achievement">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/achievement_image13"
                             android:layout_width="78dp"
                             android:layout_height="77dp"
@@ -582,7 +593,8 @@
                             android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/achievement13" />
+                            android:src="@drawable/achievement13"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     </FrameLayout>
 
