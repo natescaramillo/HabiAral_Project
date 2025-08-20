@@ -32,7 +32,12 @@ public class PangAbayLesson extends AppCompatActivity {
             R.drawable.pangabay04,
             R.drawable.pangabay05,
             R.drawable.pangabay06,
-            R.drawable.pangabay07
+            R.drawable.pangabay07,
+            R.drawable.pangabay08,
+            R.drawable.pangabay09,
+            R.drawable.pangabay10,
+            R.drawable.pangabay11,
+            R.drawable.pangabay12
     };
 
     @Override
