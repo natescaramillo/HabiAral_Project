@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/pop_up_main_color"
     android:padding="16dp"
     android:layout_gravity="center">
@@ -24,14 +25,15 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imagepop_up"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:background="@drawable/rounded_image"
             android:src="@drawable/achievement01"
-            android:clipToOutline="true" />
+            android:clipToOutline="true"
+            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
         <ImageView
             android:id="@+id/lock_overlay"
