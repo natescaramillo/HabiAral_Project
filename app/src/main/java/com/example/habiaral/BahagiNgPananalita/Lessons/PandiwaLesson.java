@@ -38,7 +38,13 @@ public class PandiwaLesson extends AppCompatActivity {
             R.drawable.pandiwa09,
             R.drawable.pandiwa10,
             R.drawable.pandiwa11,
-            R.drawable.pandiwa12
+            R.drawable.pandiwa12,
+            R.drawable.pandiwa13,
+            R.drawable.pandiwa14,
+            R.drawable.pandiwa15,
+            R.drawable.pandiwa16,
+            R.drawable.pandiwa17,
+            R.drawable.pandiwa18
     };
 
     @Override
