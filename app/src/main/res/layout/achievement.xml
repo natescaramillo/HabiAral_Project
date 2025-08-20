@@ -98,24 +98,22 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-
                     <FrameLayout
                         android:layout_width="94dp"
                         android:layout_height="87dp"
                         android:background="@drawable/rounded_button_achievement">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/achievement_image2"
                             android:layout_width="78dp"
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:src="@drawable/achievement02"
                             android:alpha="0.2"
-                            android:background="@drawable/rounded_image"
-                            android:clipToOutline="true"
-                            android:scaleType="centerCrop" />
-
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
                     </FrameLayout>
+
                     <TextView
                         android:id="@+id/achievement2text"
                         android:layout_width="94dp"
