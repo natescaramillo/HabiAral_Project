@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/questionHusay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="false"
-        android:background="@drawable/question_bg_drawable"
-        tools:context=".Activity.PalaroHusay">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/questionHusay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/question_bg_drawable"
+    android:fitsSystemWindows="false"
+    tools:context=".Activity.PalaroHusay">
 
 
     <TextView
@@ -29,27 +29,27 @@
 
     <ImageView
         android:id="@+id/characterIcon"
-        android:layout_width="287dp"
-        android:layout_height="264dp"
+        android:layout_width="270dp"
+        android:layout_height="163dp"
         android:layout_marginTop="4dp"
         android:src="@drawable/tarsier_3d"
-        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintBottom_toTopOf="@+id/guideline22"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.878" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomBar"
         android:layout_width="0dp"
-        android:layout_height="482dp"
+        android:layout_height="0dp"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.461"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.996">
+        app:layout_constraintTop_toTopOf="@+id/guideline22">
 
         <LinearLayout
             android:id="@+id/heartsRow"
@@ -102,10 +102,9 @@
         <ProgressBar
             android:id="@+id/timerBar"
             style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="393dp"
+            android:layout_width="0dp"
             android:layout_height="40dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginTop="8dp"
             android:background="@null"
             android:backgroundTint="#E0E0E0"
             android:clipToOutline="true"
@@ -113,18 +112,16 @@
             android:max="100"
             android:progress="100"
             android:progressDrawable="@drawable/timer_color_green"
-            app:layout_constraintEnd_toEndOf="@+id/whole_answer"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/whole_answer"
+            app:layout_constraintEnd_toStartOf="@+id/guidelinehorizontal4"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guidelinehorizontal3"
             app:layout_constraintTop_toBottomOf="@+id/whole_answer" />
 
         <TextView
             android:id="@+id/whole_answer"
             android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="38dp"
+            android:layout_height="71dp"
             android:layout_marginTop="56dp"
-            android:layout_marginEnd="24dp"
             android:layout_weight="1"
             android:background="@drawable/rounded_rect"
             android:backgroundTint="#FFEFEA"
@@ -134,11 +131,10 @@
             android:textColor="#000000"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/bottomBar"
-            app:layout_constraintHorizontal_bias="0.431"
-            app:layout_constraintStart_toStartOf="@+id/bottomBar"
+            app:layout_constraintEnd_toStartOf="@+id/guidelinehorizontal4"
+            app:layout_constraintStart_toStartOf="@+id/guidelinehorizontal3"
             app:layout_constraintTop_toTopOf="@+id/bottomBar"
-            app:layout_constraintVertical_bias="0.032" />
+            app:layout_constraintVertical_bias="0.056" />
 
         <GridLayout
             android:id="@+id/husay_grid"
@@ -250,31 +246,31 @@
 
         <Button
             android:id="@+id/UnlockButtonPalaro"
-            android:layout_width="121dp"
+            android:layout_width="120dp"
             android:layout_height="52dp"
             android:background="@drawable/rounded_button_achievement"
             android:fontFamily="@font/special"
             android:text="Tapos"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.178"
+            app:layout_constraintEnd_toStartOf="@+id/guidelinehorizontal4"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/guideline8"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.958" />
+            app:layout_constraintVertical_bias="0.962" />
 
         <Button
             android:id="@+id/UnlockButtonPalaro1"
-            android:layout_width="121dp"
+            android:layout_width="120dp"
             android:layout_height="52dp"
             android:background="@drawable/rounded_button_achievement"
             android:fontFamily="@font/special"
             android:text="Umalis"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline8"
-            app:layout_constraintHorizontal_bias="0.815"
+            app:layout_constraintHorizontal_bias="0.244"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.956" />
+            app:layout_constraintVertical_bias="0.962" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline8"
@@ -283,9 +279,29 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelinehorizontal3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelinehorizontal4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.34" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
