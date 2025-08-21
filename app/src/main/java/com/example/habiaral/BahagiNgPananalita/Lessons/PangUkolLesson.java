@@ -30,7 +30,14 @@ public class PangUkolLesson extends AppCompatActivity {
             R.drawable.pangukol02,
             R.drawable.pangukol03,
             R.drawable.pangukol04,
-            R.drawable.pangukol05
+            R.drawable.pangukol05,
+            R.drawable.pangukol06,
+            R.drawable.pangukol07,
+            R.drawable.pangukol08,
+            R.drawable.pangukol09,
+            R.drawable.pangukol10,
+            R.drawable.pangukol11,
+            R.drawable.pangukol12
     };
 
     @Override
