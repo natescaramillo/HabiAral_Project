@@ -1,10 +1,14 @@
 package com.example.habiaral.BahagiNgPananalita.Lessons;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,72 +20,69 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class PangUkolLesson extends AppCompatActivity {
 
-    Button unlockButton;
-    ImageView imageView;
-    private boolean isLessonDone = false; // Track from Firebase
-
-    private int currentPage = 0;
-    private int[] pangUkolLesson = {
-            R.drawable.pangukol01,
-            R.drawable.pangukol02,
-            R.drawable.pangukol03,
-            R.drawable.pangukol04,
-            R.drawable.pangukol05,
-            R.drawable.pangukol06,
-            R.drawable.pangukol07,
-            R.drawable.pangukol08,
-            R.drawable.pangukol09,
-            R.drawable.pangukol10,
-            R.drawable.pangukol11,
-            R.drawable.pangukol12
+    private final int[] pangUkolLesson = {
+            R.drawable.pangukol01, R.drawable.pangukol02, R.drawable.pangukol03,
+            R.drawable.pangukol04, R.drawable.pangukol05, R.drawable.pangukol06,
+            R.drawable.pangukol07, R.drawable.pangukol08, R.drawable.pangukol09,
+            R.drawable.pangukol10, R.drawable.pangukol11, R.drawable.pangukol12
     };
+    private android.os.Handler textHandler = new android.os.Handler();
+    private Map<Integer, List<String>> pageLines = new HashMap<>();
+    private boolean waitForResumeChoice = false;
+    private String currentUtterancePage = "";
+    private boolean isLessonDone = false;
+    private boolean isFirstTime = true;
+    private TextToSpeech textToSpeech;
+    private AlertDialog dialogOption;
+    private TextView instructionText;
+    private Runnable textRunnable;
+    private Button unlockButton;
+    private ImageView imageView;
+    private int currentPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bahagi_ng_pananalita_pangukol_lesson);
 
-        // =========================
-        // UI INITIALIZATION
-        // =========================
         unlockButton = findViewById(R.id.UnlockButtonPangukol);
         imageView = findViewById(R.id.imageViewPangukol);
+        instructionText = findViewById(R.id.instructionText);
 
-        // Disable unlock button until lesson is completed
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
-        // Load first page
-        imageView.setImageResource(pangUkolLesson[currentPage]);
+        textToSpeech = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                textToSpeech.setLanguage(new Locale("tl", "PH"));
+                textToSpeech.setSpeechRate(1.0f);
+                loadCharacterLines();
+            }
+        });
 
-        // Detect left or right tap sa imageView
+        checkLessonStatus();
+
         imageView.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 float x = event.getX();
-                float width = v.getWidth();
-
-                if (x < width / 2) {
-                    // Tap sa left side → previous page
-                    previousPage();
-                } else {
-                    // Tap sa right side → next page
-                    nextPage();
-                }
+                if (x < v.getWidth() / 2) previousPage();
+                else nextPage();
             }
             return true;
         });
 
-        // Check if lesson is already completed
-        checkLessonStatus();
-
-        // Unlock button → go to quiz
         unlockButton.setOnClickListener(view -> {
-            Intent intent = new Intent(PangUkolLesson.this, PangUkolQuiz.class);
-            startActivity(intent);
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+                textToSpeech.shutdown();
+            }
+            startActivity(new Intent(PangUkolLesson.this, PangUkolQuiz.class));
         });
     }
 
@@ -89,13 +90,23 @@ public class PangUkolLesson extends AppCompatActivity {
         if (currentPage < pangUkolLesson.length - 1) {
             currentPage++;
             imageView.setImageResource(pangUkolLesson[currentPage]);
+            saveProgressToFirestore(false);
 
-            if (currentPage == pangUkolLesson.length - 1) {
-                isLessonDone = true;
-                unlockButton.setEnabled(true);
-                unlockButton.setAlpha(1f);
-                saveProgressToFirestore();
+            stopSpeakingAndAnimation();
+
+            if (pageLines.containsKey(currentPage)) {
+                instructionText.setText("");
+                new android.os.Handler().postDelayed(() -> {
+                    speakLines(pageLines.get(currentPage));
+                }, 500);
+            } else {
+                instructionText.setText("");
             }
+        }
+
+        if (currentPage == pangUkolLesson.length - 1) {
+            unlockButton.setEnabled(true);
+            unlockButton.setAlpha(1f);
         }
     }
 
@@ -103,12 +114,30 @@ public class PangUkolLesson extends AppCompatActivity {
         if (currentPage > 0) {
             currentPage--;
             imageView.setImageResource(pangUkolLesson[currentPage]);
+            saveProgressToFirestore(false);
+
+            stopSpeakingAndAnimation();
+
+            if (pageLines.containsKey(currentPage)) {
+                instructionText.setText("");
+                new android.os.Handler().postDelayed(() -> {
+                    speakLines(pageLines.get(currentPage));
+                }, 500);
+            } else {
+                instructionText.setText("");
+            }
         }
     }
 
-    // =========================
-    // FIRESTORE - CHECK LESSON STATUS
-    // =========================
+    private void stopSpeakingAndAnimation() {
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+        }
+        if (textRunnable != null) {
+            textHandler.removeCallbacks(textRunnable);
+        }
+    }
+
     private void checkLessonStatus() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -120,15 +149,103 @@ public class PangUkolLesson extends AppCompatActivity {
                 .addOnSuccessListener(snapshot -> {
                     if (snapshot.exists()) {
                         Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
-
-                        if (module1 != null && module1.containsKey("lessons")) {
+                        if (module1 != null) {
                             Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
                             if (lessons != null && lessons.containsKey("pangukol")) {
                                 Map<String, Object> pangukol = (Map<String, Object>) lessons.get("pangukol");
-                                if (pangukol != null && "completed".equals(pangukol.get("status"))) {
-                                    isLessonDone = true;
-                                    unlockButton.setEnabled(true);
-                                    unlockButton.setAlpha(1f);
+                                if (pangukol != null) {
+                                    Long checkpoint = (Long) pangukol.get("checkpoint");
+                                    currentPage = (checkpoint != null) ? checkpoint.intValue() : 0;
+                                    isFirstTime = false;
+
+                                    if ("completed".equals(pangukol.get("status"))) {
+                                        isLessonDone = true;
+                                        unlockButton.setEnabled(true);
+                                        unlockButton.setAlpha(1f);
+                                    }
+                                    showResumeDialog(currentPage);
+                                    waitForResumeChoice = true;
+                                }
+                            }
+                        }
+                    } else {
+                        currentPage = 0;
+                        imageView.setImageResource(pangUkolLesson[currentPage]);
+                        isFirstTime = true;
+                    }
+                    saveProgressToFirestore(false);
+                });
+    }
+
+    private void saveProgressToFirestore(boolean completed) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
+
+        String statusToSave = isLessonDone ? "completed" : "in-progress";
+
+        Map<String, Object> pangukolStatus = new HashMap<>();
+        pangukolStatus.put("status", statusToSave);
+        pangukolStatus.put("checkpoint", currentPage);
+
+        Map<String, Object> lessonMap = new HashMap<>();
+        lessonMap.put("pangukol", pangukolStatus);
+
+        Map<String, Object> moduleMap = new HashMap<>();
+        moduleMap.put("modulename", "Bahagi ng Pananalita");
+        moduleMap.put("status","in_progress");
+        moduleMap.put("current_lesson", "pangukol");
+        moduleMap.put("lessons", lessonMap);
+
+        db.collection("module_progress").document(uid)
+                .set(Map.of("module_1", moduleMap), SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    if (completed) isLessonDone = true;
+                });
+    }
+
+    private void loadCharacterLines() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("lesson_character_lines").document("LCL7")
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+
+                        List<Map<String, Object>> pages = (List<Map<String, Object>>) documentSnapshot.get("pages");
+                        if (pages != null) {
+                            for (Map<String, Object> page : pages) {
+                                Long pageNum = (Long) page.get("page");
+                                List<String> lines = (List<String>) page.get("line");
+                                if (pageNum != null && lines != null) {
+                                    pageLines.put(pageNum.intValue() - 1, lines);
+                                }
+                            }
+                        }
+
+                        List<String> introLines = (List<String>) documentSnapshot.get("intro");
+
+                        if (!waitForResumeChoice) {
+                            if (introLines != null && isFirstTime && !introLines.isEmpty()) {
+                                isFirstTime = false;
+
+                                speakSequentialLines(introLines, () -> {
+                                    new android.os.Handler().postDelayed(() -> {
+                                        imageView.setImageResource(pangUkolLesson[currentPage]);
+                                        if (pageLines.containsKey(currentPage)) {
+                                            speakLines(pageLines.get(currentPage));
+                                        }
+                                    }, 1500);
+                                });
+
+                            } else {
+                                imageView.setImageResource(pangUkolLesson[currentPage]);
+                                if (pageLines.containsKey(currentPage)) {
+                                    new android.os.Handler().postDelayed(() -> {
+                                        speakLines(pageLines.get(currentPage));
+                                    }, 1500);
                                 }
                             }
                         }
@@ -136,29 +253,129 @@ public class PangUkolLesson extends AppCompatActivity {
                 });
     }
 
-    // =========================
-    // FIRESTORE - SAVE PROGRESS
-    // =========================
-    private void saveProgressToFirestore() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
+    private void speakSequentialLines(List<String> lines, Runnable onComplete) {
+        if (lines == null || lines.isEmpty()) return;
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = user.getUid();
+        final int[] index = {0};
+        currentUtterancePage = "page_" + currentPage;
 
-        Map<String, Object> pangUkolStatus = new HashMap<>();
-        pangUkolStatus.put("status", "in-progress");
+        animateText(lines.get(0));
 
-        Map<String, Object> lessonMap = new HashMap<>();
-        lessonMap.put("pangukol", pangUkolStatus);
+        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) {}
 
-        Map<String, Object> moduleMap = new HashMap<>();
-        moduleMap.put("modulename", "Bahagi ng Pananalita");
-        moduleMap.put("status", "in_progress");
-        moduleMap.put("current_lesson", "pangukol");
-        moduleMap.put("lessons", lessonMap);
+            @Override
+            public void onDone(String utteranceId) {
+                runOnUiThread(() -> {
+                    if (!utteranceId.startsWith(currentUtterancePage)) return;
 
-        db.collection("module_progress").document(uid)
-                .set(Map.of("module_1", moduleMap), SetOptions.merge());
+                    index[0]++;
+                    if (index[0] < lines.size()) {
+                        animateText(lines.get(index[0]));
+                        speak(lines.get(index[0]), currentUtterancePage + "_" + index[0]);
+                    } else {
+                        onComplete.run();
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String utteranceId) {}
+        });
+
+        speak(lines.get(0), currentUtterancePage + "_0");
+    }
+
+    private void speakLines(List<String> lines) {
+        speakSequentialLines(lines, () -> instructionText.setText(""));
+    }
+
+    private void speak(String text, String utteranceId) {
+        if (textToSpeech != null && !text.isEmpty()) {
+            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
+        if (textRunnable != null) {
+            textHandler.removeCallbacks(textRunnable);
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        stopSpeakingAndAnimation();
+        super.onPause();
+    }
+
+    private void showResumeDialog(int checkpoint) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+
+        android.view.View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_ppt_option, null);
+        builder.setView(dialogView);
+
+        dialogOption = builder.create();
+        dialogOption.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        Button buttonResume = dialogView.findViewById(R.id.button_resume);
+        Button buttonBumalik = dialogView.findViewById(R.id.button_bumalik);
+
+        buttonResume.setOnClickListener(v -> {
+            currentPage = checkpoint;
+            imageView.setImageResource(pangUkolLesson[currentPage]);
+
+            if (pageLines.containsKey(currentPage)) {
+                new android.os.Handler().postDelayed(() -> {
+                    speakLines(pageLines.get(currentPage));
+                }, 1500);
+            }
+            waitForResumeChoice = false;
+            dialogOption.dismiss();
+        });
+
+        buttonBumalik.setOnClickListener(v -> {
+            currentPage = 0;
+            imageView.setImageResource(pangUkolLesson[currentPage]);
+
+            if (pageLines.containsKey(currentPage)) {
+                new android.os.Handler().postDelayed(() -> {
+                    speakLines(pageLines.get(currentPage));
+                }, 1500);
+            }
+            waitForResumeChoice = false;
+            dialogOption.dismiss();
+        });
+
+        dialogOption.show();
+    }
+
+    private void animateText(String text) {
+        instructionText.setText("");
+        final int[] index = {0};
+        final int delay = 50;
+
+        if (textRunnable != null) {
+            textHandler.removeCallbacks(textRunnable);
+        }
+
+        textRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (index[0] < text.length()) {
+                    instructionText.append(String.valueOf(text.charAt(index[0])));
+                    index[0]++;
+                    textHandler.postDelayed(this, delay);
+                }
+            }
+        };
+        textHandler.post(textRunnable);
     }
 }

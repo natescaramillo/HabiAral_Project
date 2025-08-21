@@ -26,23 +26,6 @@ import java.util.Map;
 
 public class PangngalanLesson extends AppCompatActivity {
 
-    private Button unlockButton;
-    private ImageView imageView;
-    private TextView instructionText;
-    private TextToSpeech textToSpeech;
-    private boolean isLessonDone = false;
-    private boolean isFirstTime = true;
-    private int currentPage = 0;
-    private AlertDialog dialogOption;
-    private boolean waitForResumeChoice = false;
-
-    private Map<Integer, List<String>> pageLines = new HashMap<>();
-
-    // Handler and runnable for text animation
-    private android.os.Handler textHandler = new android.os.Handler();
-    private Runnable textRunnable;
-    private String currentUtterancePage = "";
-
     private final int[] pangngalanLesson = {
             R.drawable.pangngalan01, R.drawable.pangngalan02, R.drawable.pangngalan03,
             R.drawable.pangngalan04, R.drawable.pangngalan05, R.drawable.pangngalan06,
@@ -56,6 +39,19 @@ public class PangngalanLesson extends AppCompatActivity {
             R.drawable.pangngalan28, R.drawable.pangngalan29, R.drawable.pangngalan30,
             R.drawable.pangngalan31
     };
+    private android.os.Handler textHandler = new android.os.Handler();
+    private Map<Integer, List<String>> pageLines = new HashMap<>();
+    private boolean waitForResumeChoice = false;
+    private String currentUtterancePage = "";
+    private boolean isLessonDone = false;
+    private boolean isFirstTime = true;
+    private TextToSpeech textToSpeech;
+    private AlertDialog dialogOption;
+    private TextView instructionText;
+    private Runnable textRunnable;
+    private Button unlockButton;
+    private ImageView imageView;
+    private int currentPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +105,7 @@ public class PangngalanLesson extends AppCompatActivity {
                 instructionText.setText("");
                 new android.os.Handler().postDelayed(() -> {
                     speakLines(pageLines.get(currentPage));
-                }, 200);
+                }, 500);
             } else {
                 instructionText.setText("");
             }
@@ -133,7 +129,7 @@ public class PangngalanLesson extends AppCompatActivity {
                 instructionText.setText("");
                 new android.os.Handler().postDelayed(() -> {
                     speakLines(pageLines.get(currentPage));
-                }, 200);
+                }, 500);
             } else {
                 instructionText.setText("");
             }
@@ -268,7 +264,7 @@ public class PangngalanLesson extends AppCompatActivity {
         if (lines == null || lines.isEmpty()) return;
 
         final int[] index = {0};
-        currentUtterancePage = "page_" + currentPage; // unique per page
+        currentUtterancePage = "page_" + currentPage;
 
         animateText(lines.get(0));
 
