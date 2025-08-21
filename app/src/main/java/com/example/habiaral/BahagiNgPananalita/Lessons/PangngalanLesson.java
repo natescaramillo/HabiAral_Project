@@ -248,13 +248,15 @@ public class PangngalanLesson extends AppCompatActivity {
                                         if (pageLines.containsKey(currentPage)) {
                                             speakLines(pageLines.get(currentPage));
                                         }
-                                    }, 500);
+                                    }, 1500);
                                 });
 
                             } else {
                                 imageView.setImageResource(pangngalanLesson[currentPage]);
                                 if (pageLines.containsKey(currentPage)) {
-                                    speakLines(pageLines.get(currentPage));
+                                    new android.os.Handler().postDelayed(() -> {
+                                        speakLines(pageLines.get(currentPage));
+                                    }, 1500);
                                 }
                             }
                         }
@@ -342,7 +344,9 @@ public class PangngalanLesson extends AppCompatActivity {
             imageView.setImageResource(pangngalanLesson[currentPage]);
 
             if (pageLines.containsKey(currentPage)) {
-                speakLines(pageLines.get(currentPage));
+                new android.os.Handler().postDelayed(() -> {
+                    speakLines(pageLines.get(currentPage));
+                }, 1500);
             }
             waitForResumeChoice = false;
             dialogOption.dismiss();
@@ -353,7 +357,9 @@ public class PangngalanLesson extends AppCompatActivity {
             imageView.setImageResource(pangngalanLesson[currentPage]);
 
             if (pageLines.containsKey(currentPage)) {
-                speakLines(pageLines.get(currentPage));
+                new android.os.Handler().postDelayed(() -> {
+                    speakLines(pageLines.get(currentPage));
+                }, 1500);
             }
             waitForResumeChoice = false;
             dialogOption.dismiss();
