@@ -24,6 +24,7 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
@@ -35,8 +36,9 @@ public class PangngalanQuiz extends AppCompatActivity {
     ProgressBar timerBar;
 
     FirebaseFirestore db;
-    ArrayList<String> quizIDs;
-    int currentIndex = 0;
+
+    List<Map<String, Object>> quizList = new ArrayList<>();
+    int currentIndex = -1; // magsisimula sa intro
     String correctAnswer = "";
     boolean isAnswered = false;
 
@@ -44,6 +46,9 @@ public class PangngalanQuiz extends AppCompatActivity {
     long timeLeftInMillis = 10000;
     private AlertDialog resultDialog;
     boolean quizFinished = false;
+
+    String introText = "";
+    String lessonName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +64,8 @@ public class PangngalanQuiz extends AppCompatActivity {
         timerBar = findViewById(R.id.timerBar);
 
         db = FirebaseFirestore.getInstance();
-        quizIDs = new ArrayList<>();
-        Collections.addAll(quizIDs, "QQ1", "QQ2", "QQ3", "QQ4", "QQ5", "QQ6", "QQ7", "QQ8", "QQ9", "QQ10");
-        Collections.shuffle(quizIDs);
 
-        // Intro
-        loadCharacterLine("QCL1");
-        new Handler().postDelayed(() -> {
-            loadCharacterLine("QCL2");
-            new Handler().postDelayed(this::showCountdownThenLoadQuestion, 3000);
-        }, 5000);
+        loadQuizDocument();
 
         // Answer click
         View.OnClickListener choiceClickListener = view -> {
@@ -76,6 +73,8 @@ public class PangngalanQuiz extends AppCompatActivity {
             isAnswered = true;
             nextButton.setEnabled(true);
             disableAnswers();
+
+            Button selected = (Button) view;
         };
 
         answer1.setOnClickListener(choiceClickListener);
@@ -84,6 +83,12 @@ public class PangngalanQuiz extends AppCompatActivity {
 
         // Next click
         nextButton.setOnClickListener(v -> {
+            if (currentIndex == -1) {
+                // nasa intro, simulan quiz
+                showCountdownThenLoadQuestion();
+                return;
+            }
+
             if (!isAnswered) {
                 Toast.makeText(this, "Pumili muna ng sagot bago mag-next!", Toast.LENGTH_SHORT).show();
                 return;
@@ -91,8 +96,8 @@ public class PangngalanQuiz extends AppCompatActivity {
 
             currentIndex++;
 
-            if (currentIndex < quizIDs.size()) {
-                loadQuestion(quizIDs.get(currentIndex));
+            if (currentIndex < quizList.size()) {
+                loadQuestion(currentIndex);
             } else {
                 quizFinished = true;
                 if (countDownTimer != null) countDownTimer.cancel();
@@ -132,52 +137,62 @@ public class PangngalanQuiz extends AppCompatActivity {
                 questionText.setText("1");
                 new Handler().postDelayed(() -> {
                     questionText.setText("");
-                    loadQuestion(quizIDs.get(currentIndex));
+                    currentIndex = 0;
+                    loadQuestion(currentIndex);
                 }, 1000);
             }, 1000);
         }, 1000);
     }
 
-    // ===== Data =====
-    private void loadCharacterLine(String lineId) {
-        db.collection("quiz_character_lines").document(lineId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String line = documentSnapshot.getString("line");
-                        questionText.setText(line);
+    // ===== Firestore =====
+    private void loadQuizDocument() {
+        db.collection("quiz").document("Q1")
+                .get().addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        introText = doc.getString("intro");
+                        lessonName = doc.getString("lesson");
+                        quizList = (List<Map<String, Object>>) doc.get("Quizzes");
+
+                        if (introText != null) {
+                            questionTitle.setText("Simula");
+                            questionText.setText(introText);
+                            answer1.setVisibility(View.GONE);
+                            answer2.setVisibility(View.GONE);
+                            answer3.setVisibility(View.GONE);
+                            nextButton.setEnabled(true);
+                        }
                     }
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to load line: " + lineId, Toast.LENGTH_SHORT).show());
+                }).addOnFailureListener(e ->
+                        Toast.makeText(this, "Failed to load quiz data.", Toast.LENGTH_SHORT).show());
     }
 
-    private void loadQuestion(String documentID) {
+    private void loadQuestion(int index) {
         if (countDownTimer != null) countDownTimer.cancel();
 
-        db.collection("quiz_question").document(documentID)
-                .get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult().exists()) {
-                        DocumentSnapshot doc = task.getResult();
-                        String question = doc.getString("question");
-                        ArrayList<String> choices = (ArrayList<String>) doc.get("choices");
-                        correctAnswer = doc.getString("correct_choice");
+        if (quizList == null || quizList.isEmpty()) return;
 
-                        if (choices != null && choices.size() >= 3) {
-                            Collections.shuffle(choices);
-                            questionTitle.setText(getQuestionOrdinal(currentIndex + 1));
-                            questionText.setText(question);
-                            answer1.setText(choices.get(0));
-                            answer2.setText(choices.get(1));
-                            answer3.setText(choices.get(2));
+        Map<String, Object> qData = quizList.get(index);
 
-                            resetButtons();
-                            startTimer();
-                        }
-                    } else {
-                        Toast.makeText(this, "Failed to load question.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        String question = (String) qData.get("question");
+        List<String> choices = (List<String>) qData.get("choices");
+        correctAnswer = (String) qData.get("correct_choice");
+
+        if (choices != null && choices.size() >= 3) {
+            Collections.shuffle(choices);
+            questionTitle.setText(getQuestionOrdinal(index + 1));
+            questionText.setText(question);
+
+            answer1.setVisibility(View.VISIBLE);
+            answer2.setVisibility(View.VISIBLE);
+            answer3.setVisibility(View.VISIBLE);
+
+            answer1.setText(choices.get(0));
+            answer2.setText(choices.get(1));
+            answer3.setText(choices.get(2));
+
+            resetButtons();
+            startTimer();
+        }
     }
 
     // ===== Timer =====
@@ -230,8 +245,8 @@ public class PangngalanQuiz extends AppCompatActivity {
         retryButton.setOnClickListener(v -> {
             if (resultDialog.isShowing()) resultDialog.dismiss();
             currentIndex = 0;
-            Collections.shuffle(quizIDs);
-            loadQuestion(quizIDs.get(currentIndex));
+            Collections.shuffle(quizList);
+            loadQuestion(currentIndex);
         });
 
         homeButton.setOnClickListener(v -> {
@@ -284,16 +299,13 @@ public class PangngalanQuiz extends AppCompatActivity {
 
         Map<String, Object> moduleUpdate = Map.of("module_1", updateMap);
 
-        // ✅ 1. Save to Firestore
         db.collection("module_progress")
                 .document(uid)
                 .set(moduleUpdate, SetOptions.merge());
 
-        // ✅ 2. Update the in-memory cache immediately
         if (LessonProgressCache.getData() != null) {
             Map<String, Object> cachedData = LessonProgressCache.getData();
 
-            // Ensure module_1 exists
             if (!cachedData.containsKey("module_1")) {
                 cachedData.put("module_1", new HashMap<String, Object>());
             }
@@ -305,7 +317,6 @@ public class PangngalanQuiz extends AppCompatActivity {
             LessonProgressCache.setData(cachedData);
         }
     }
-
 
     @Override
     protected void onDestroy() {
