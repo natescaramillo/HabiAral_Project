@@ -100,8 +100,12 @@ public class PangngalanQuiz extends AppCompatActivity {
             } else {
                 quizFinished = true;
                 if (countDownTimer != null) countDownTimer.cancel();
-                unlockNextLesson();
-                saveQuizResultToFirestore();
+
+                if (correctAnswers >= 6) {
+                    unlockNextLesson();
+                    saveQuizResultToFirestore();
+                }
+
                 showResultDialog();
             }
         });

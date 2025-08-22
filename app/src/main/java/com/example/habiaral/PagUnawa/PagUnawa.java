@@ -86,10 +86,7 @@ public class PagUnawa extends AppCompatActivity {
         Map<String, Object> data = snapshot.getData();
         if (data == null) return;
 
-        // Update cache
         LessonProgressCache.setData(data);
-
-        // Update UI
         updateUIFromProgress(data);
     }
 
@@ -108,9 +105,9 @@ public class PagUnawa extends AppCompatActivity {
         boolean kwento2Done = isCompleted(lessons, "kwento2");
         boolean kwento3Done = isCompleted(lessons, "kwento3");
 
-        unlockButton(btnKwento1, true, kwento1Lock);
-        unlockButton(btnKwento2, kwento1Done, kwento2Lock);
-        unlockButton(btnKwento3, kwento2Done, kwento3Lock);
+        unlockButton(btnKwento1, true, kwento1Lock, new Intent(this, Kwento1.class));
+        unlockButton(btnKwento2, kwento1Done, kwento2Lock, new Intent(this, Kwento2.class));
+        unlockButton(btnKwento3, kwento2Done, kwento3Lock, new Intent(this, Kwento3.class));
 
         checkAndCompleteModule(kwento1Done, kwento2Done, kwento3Done);
     }
@@ -122,11 +119,17 @@ public class PagUnawa extends AppCompatActivity {
         return "completed".equals(lessonData.get("status"));
     }
 
-    private void unlockButton(ConstraintLayout layout, boolean isUnlocked, FrameLayout lock) {
+    private void unlockButton(ConstraintLayout layout, boolean isUnlocked, FrameLayout lock, Intent intent) {
         layout.setEnabled(isUnlocked);
         layout.setClickable(isUnlocked);
         layout.setAlpha(isUnlocked ? 1.0f : 0.5f);
         lock.setVisibility(isUnlocked ? FrameLayout.GONE : FrameLayout.VISIBLE);
+
+        if (isUnlocked) {
+            layout.setOnClickListener(v -> startActivity(intent));
+        } else {
+            layout.setOnClickListener(null);
+        }
     }
 
     private void initViews() {
@@ -137,10 +140,6 @@ public class PagUnawa extends AppCompatActivity {
         kwento1Lock = findViewById(R.id.kwento1Lock);
         kwento2Lock = findViewById(R.id.kwento2Lock);
         kwento3Lock = findViewById(R.id.kwento3Lock);
-
-        btnKwento1.setOnClickListener(v -> startActivity(new Intent(this, Kwento1.class)));
-        btnKwento2.setOnClickListener(v -> startActivity(new Intent(this, Kwento2.class)));
-        btnKwento3.setOnClickListener(v -> startActivity(new Intent(this, Kwento3.class)));
     }
 
     private void checkAndCompleteModule(boolean kwento1Done, boolean kwento2Done, boolean kwento3Done) {
@@ -148,10 +147,8 @@ public class PagUnawa extends AppCompatActivity {
 
         Map<String, Object> update = new HashMap<>();
         Map<String, Object> module3Updates = new HashMap<>();
-
         module3Updates.put("modulename", "Pag-unawa");
         module3Updates.put("status", allDone ? "completed" : "in_progress");
-
         update.put("module_3", module3Updates);
 
         db.collection("module_progress").document(uid).set(update, SetOptions.merge());

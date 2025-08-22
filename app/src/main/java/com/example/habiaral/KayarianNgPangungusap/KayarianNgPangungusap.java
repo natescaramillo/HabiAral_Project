@@ -92,10 +92,7 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         Map<String, Object> data = snapshot.getData();
         if (data == null) return;
 
-        // Update cache
         LessonProgressCache.setData(data);
-
-        // Update UI
         updateUIFromProgress(data);
     }
 
@@ -115,11 +112,10 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         boolean hugnayanDone = isCompleted(lessons, "hugnayan");
         boolean langkapanDone = isCompleted(lessons, "langkapan");
 
-        // Unlock logic
-        unlockButton(btnPayak, true, payakLock);
-        unlockButton(btnTambalan, payakDone, tambalanLock);
-        unlockButton(btnHugnayan, tambalanDone, hugnayanLock);
-        unlockButton(btnLangkapan, hugnayanDone, langkapanLock);
+        unlockButton(btnPayak, true, payakLock, new Intent(this, PayakLesson.class));
+        unlockButton(btnTambalan, payakDone, tambalanLock, new Intent(this, TambalanLesson.class));
+        unlockButton(btnHugnayan, tambalanDone, hugnayanLock, new Intent(this, HugnayanLesson.class));
+        unlockButton(btnLangkapan, hugnayanDone, langkapanLock, new Intent(this, LangkapanLesson.class));
 
         checkAndCompleteModule(payakDone, tambalanDone, hugnayanDone, langkapanDone);
     }
@@ -131,11 +127,17 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         return "completed".equals(lessonData.get("status"));
     }
 
-    private void unlockButton(LinearLayout layout, boolean isUnlocked, FrameLayout lock) {
+    private void unlockButton(LinearLayout layout, boolean isUnlocked, FrameLayout lock, Intent intent) {
         layout.setEnabled(isUnlocked);
         layout.setClickable(isUnlocked);
         layout.setAlpha(isUnlocked ? 1.0f : 0.5f);
         lock.setVisibility(isUnlocked ? FrameLayout.GONE : FrameLayout.VISIBLE);
+
+        if (isUnlocked) {
+            layout.setOnClickListener(v -> startActivity(intent));
+        } else {
+            layout.setOnClickListener(null);
+        }
     }
 
     private void initViews() {
@@ -148,11 +150,6 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         tambalanLock = findViewById(R.id.tambalanLock);
         hugnayanLock = findViewById(R.id.hugnayanLock);
         langkapanLock = findViewById(R.id.langkapanLock);
-
-        btnPayak.setOnClickListener(v -> startActivity(new Intent(this, PayakLesson.class)));
-        btnTambalan.setOnClickListener(v -> startActivity(new Intent(this, TambalanLesson.class)));
-        btnHugnayan.setOnClickListener(v -> startActivity(new Intent(this, HugnayanLesson.class)));
-        btnLangkapan.setOnClickListener(v -> startActivity(new Intent(this, LangkapanLesson.class)));
     }
 
     private void checkAndCompleteModule(boolean payakDone, boolean tambalanDone, boolean hugnayanDone, boolean langkapanDone) {
@@ -160,10 +157,8 @@ public class KayarianNgPangungusap extends AppCompatActivity {
 
         Map<String, Object> update = new HashMap<>();
         Map<String, Object> module2Updates = new HashMap<>();
-
         module2Updates.put("modulename", "Kayarian ng Pangungusap");
         module2Updates.put("status", allDone ? "completed" : "in_progress");
-
         update.put("module_2", module2Updates);
 
         db.collection("module_progress").document(uid).set(update, SetOptions.merge());
