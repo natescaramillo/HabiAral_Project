@@ -17,7 +17,6 @@ import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -31,24 +30,22 @@ import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
 
 public class PangngalanQuiz extends AppCompatActivity {
 
-    TextView questionText, questionTitle;
-    Button answer1, answer2, answer3, nextButton;
-    ProgressBar timerBar;
-
-    FirebaseFirestore db;
-
-    List<Map<String, Object>> quizList = new ArrayList<>();
-    int currentIndex = -1; // magsisimula sa intro
-    String correctAnswer = "";
-    boolean isAnswered = false;
-
-    CountDownTimer countDownTimer;
-    long timeLeftInMillis = 10000;
+    private List<Map<String, Object>> quizList = new ArrayList<>();
+    private Button answer1, answer2, answer3, nextButton;
+    private TextView questionText, questionTitle;
+    private CountDownTimer countDownTimer;
+    private long timeLeftInMillis = 10000;
+    private boolean quizFinished = false;
+    private boolean isAnswered = false;
+    private String correctAnswer = "";
     private AlertDialog resultDialog;
-    boolean quizFinished = false;
-
-    String introText = "";
-    String lessonName = "";
+    private String lessonName = "";
+    private int correctAnswers = 0;
+    private int totalQuestions = 0;
+    private String introText = "";
+    private int currentIndex = -1;
+    private ProgressBar timerBar;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +64,6 @@ public class PangngalanQuiz extends AppCompatActivity {
 
         loadQuizDocument();
 
-        // Answer click
         View.OnClickListener choiceClickListener = view -> {
             if (isAnswered) return;
             isAnswered = true;
@@ -75,16 +71,19 @@ public class PangngalanQuiz extends AppCompatActivity {
             disableAnswers();
 
             Button selected = (Button) view;
+            String selectedAnswer = selected.getText().toString();
+
+            if (selectedAnswer.equals(correctAnswer)) {
+                correctAnswers++;
+            }
         };
 
         answer1.setOnClickListener(choiceClickListener);
         answer2.setOnClickListener(choiceClickListener);
         answer3.setOnClickListener(choiceClickListener);
 
-        // Next click
         nextButton.setOnClickListener(v -> {
             if (currentIndex == -1) {
-                // nasa intro, simulan quiz
                 showCountdownThenLoadQuestion();
                 return;
             }
@@ -108,7 +107,6 @@ public class PangngalanQuiz extends AppCompatActivity {
         });
     }
 
-    // ===== UI =====
     private void resetButtons() {
         int defaultBg = R.drawable.answer_option_bg;
         answer1.setBackgroundResource(defaultBg);
@@ -144,7 +142,6 @@ public class PangngalanQuiz extends AppCompatActivity {
         }, 1000);
     }
 
-    // ===== Firestore =====
     private void loadQuizDocument() {
         db.collection("quiz").document("Q1")
                 .get().addOnSuccessListener(doc -> {
@@ -152,6 +149,10 @@ public class PangngalanQuiz extends AppCompatActivity {
                         introText = doc.getString("intro");
                         lessonName = doc.getString("lesson");
                         quizList = (List<Map<String, Object>>) doc.get("Quizzes");
+
+                        if (quizList != null && !quizList.isEmpty()) {
+                            Collections.shuffle(quizList);
+                        }
 
                         if (introText != null) {
                             questionTitle.setText("Simula");
@@ -168,7 +169,6 @@ public class PangngalanQuiz extends AppCompatActivity {
 
     private void loadQuestion(int index) {
         if (countDownTimer != null) countDownTimer.cancel();
-
         if (quizList == null || quizList.isEmpty()) return;
 
         Map<String, Object> qData = quizList.get(index);
@@ -178,7 +178,8 @@ public class PangngalanQuiz extends AppCompatActivity {
         correctAnswer = (String) qData.get("correct_choice");
 
         if (choices != null && choices.size() >= 3) {
-            Collections.shuffle(choices);
+            List<String> shuffledChoices = new ArrayList<>(choices);
+            Collections.shuffle(shuffledChoices);
             questionTitle.setText(getQuestionOrdinal(index + 1));
             questionText.setText(question);
 
@@ -186,16 +187,17 @@ public class PangngalanQuiz extends AppCompatActivity {
             answer2.setVisibility(View.VISIBLE);
             answer3.setVisibility(View.VISIBLE);
 
-            answer1.setText(choices.get(0));
-            answer2.setText(choices.get(1));
-            answer3.setText(choices.get(2));
+            answer1.setText(shuffledChoices.get(0));
+            answer2.setText(shuffledChoices.get(1));
+            answer3.setText(shuffledChoices.get(2));
 
             resetButtons();
             startTimer();
+
+            totalQuestions = quizList.size();
         }
     }
 
-    // ===== Timer =====
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
         timeLeftInMillis = 10000;
@@ -215,7 +217,7 @@ public class PangngalanQuiz extends AppCompatActivity {
                 if (quizFinished) return;
                 isAnswered = true;
                 disableAnswers();
-                nextButton.setEnabled(true); // allow next kahit timeout
+                nextButton.setEnabled(true);
                 Toast.makeText(PangngalanQuiz.this, "Time's up!", Toast.LENGTH_SHORT).show();
 
                 new Handler().postDelayed(() -> {
@@ -225,7 +227,6 @@ public class PangngalanQuiz extends AppCompatActivity {
         }.start();
     }
 
-    // ===== Result Dialog =====
     private void showResultDialog() {
         if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
 
@@ -237,6 +238,23 @@ public class PangngalanQuiz extends AppCompatActivity {
         Button retryButton = dialogView.findViewById(R.id.retryButton);
         Button homeButton = dialogView.findViewById(R.id.finishButton);
 
+        ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
+        TextView scoreNumber = dialogView.findViewById(R.id.textView6);
+        TextView resultText = dialogView.findViewById(R.id.textView7);
+
+        progressBar.setMax(totalQuestions);
+        progressBar.setProgress(correctAnswers);
+        scoreNumber.setText(correctAnswers + "/" + totalQuestions);
+
+        if (correctAnswers >= 6) {
+            resultText.setText("Ikaw ay nakapasa!");
+            homeButton.setEnabled(true);
+        } else {
+            resultText.setText("Ikaw ay nabigo, subukan muli!");
+            homeButton.setEnabled(false);
+            homeButton.setAlpha(0.5f);
+        }
+
         resultDialog = builder.create();
         resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
@@ -245,6 +263,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         retryButton.setOnClickListener(v -> {
             if (resultDialog.isShowing()) resultDialog.dismiss();
             currentIndex = 0;
+            correctAnswers = 0; // reset score
             Collections.shuffle(quizList);
             loadQuestion(currentIndex);
         });
@@ -258,7 +277,6 @@ public class PangngalanQuiz extends AppCompatActivity {
         });
     }
 
-    // ===== Utilities =====
     private String getQuestionOrdinal(int number) {
         switch (number) {
             case 1: return "Unang tanong";
@@ -275,7 +293,6 @@ public class PangngalanQuiz extends AppCompatActivity {
         }
     }
 
-    // ===== Firestore Save =====
     private void unlockNextLesson() {
         Toast.makeText(this, "Next Lesson Unlocked: Pandiwa!", Toast.LENGTH_SHORT).show();
     }

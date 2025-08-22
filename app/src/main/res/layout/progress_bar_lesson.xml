@@ -61,6 +61,7 @@
                                 android:max="100"
                                 android:progress="0"
                                 android:visibility="visible"
+                                android:rotation="270"
                                 android:progressDrawable="@drawable/design_progress_bar" />
 
                             <TextView
@@ -124,6 +125,7 @@
                                 android:max="100"
                                 android:progress="0"
                                 android:visibility="visible"
+                                android:rotation="270"
                                 android:progressDrawable="@drawable/design_progress_bar" />
 
                             <TextView
@@ -186,6 +188,7 @@
                                 android:max="100"
                                 android:progress="0"
                                 android:visibility="visible"
+                                android:rotation="270"
                                 android:progressDrawable="@drawable/design_progress_bar" />
 
                             <TextView
