@@ -27,13 +27,15 @@
 
     <View
         android:id="@+id/bottomBar"
-        android:layout_width="391dp"
-        android:layout_height="421dp"
-        android:layout_marginBottom="4dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline21"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ProgressBar
         android:id="@+id/timerBar"
@@ -41,7 +43,7 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="332dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:background="@null"
         android:backgroundTint="#E0E0E0"
@@ -51,17 +53,19 @@
         android:progress="100"
         android:progressDrawable="@drawable/timer_color_green"
         android:progressTint="#4CAF50"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/questionTitle" />
+        app:layout_constraintTop_toTopOf="@+id/guideline21"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/answer1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="44dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/answer_option_bg"
         android:text="Answer 1"
@@ -95,18 +99,23 @@
         app:layout_constraintTop_toBottomOf="@id/answer2" />
 
     <Button
-        android:id="@+id/panguriNextButton"
+        android:id="@+id/padamdamNextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/rounded_button_achievement"
+        android:fontFamily="@font/special"
         android:text="Sunod"
         android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/answer3"
-        android:fontFamily="@font/special"/>
+        app:layout_constraintTop_toBottomOf="@id/answer3" />
 
-
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.45" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
