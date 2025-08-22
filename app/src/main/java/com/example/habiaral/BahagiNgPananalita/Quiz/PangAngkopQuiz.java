@@ -29,7 +29,7 @@ public class PangAngkopQuiz extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bahagi_ng_pananalita_pangangkop_quiz);
 
-        nextButton = findViewById(R.id.pangakopNextButton);
+        nextButton = findViewById(R.id.pangangkopNextButton);
 
         nextButton.setOnClickListener(view -> {
             unlockNextLesson();
