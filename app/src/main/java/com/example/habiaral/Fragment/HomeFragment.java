@@ -25,8 +25,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -74,34 +78,73 @@ public class HomeFragment extends Fragment {
             checkSevenDayStreak(studentId);
         }
     }
-    public void checkSevenDayStreak(String studentId) {
+    private void checkSevenDayStreak(String uid) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference datesRef = db.collection("daily_play_logs").document(studentId).collection("dates");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
-        datesRef.get().addOnSuccessListener(snapshot -> {
-            int streak = 0;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            Calendar calendar = Calendar.getInstance();
+        db.collection("daily_play_logs").document(uid).get()
+                .addOnSuccessListener(snapshot -> {
+                    if (!snapshot.exists()) return;
 
-            for (int i = 0; i < 7; i++) {
-                String date = sdf.format(calendar.getTime());
-                if (snapshot.getDocuments().stream().anyMatch(doc -> doc.getId().equals(date))) {
-                    streak++;
-                } else {
-                    break; // break streak if a day is missing
-                }
-                calendar.add(Calendar.DATE, -1);
-            }
+                    Map<String, Object> data = snapshot.getData();
+                    if (data == null) return;
 
-            if (streak == 7) {
-                unlockA6Achievement(studentId);
-            }
-        });
+                    List<String> playedDates = new ArrayList<>();
+                    for (Map.Entry<String, Object> entry : data.entrySet()) {
+                        if (entry.getValue() instanceof Boolean && (Boolean) entry.getValue()) {
+                            // Validate date format before adding
+                            if (entry.getKey().matches("\\d{4}-\\d{2}-\\d{2}")) {
+                                playedDates.add(entry.getKey());
+                            }
+                        }
+                    }
+
+                    if (playedDates.isEmpty()) return;
+
+                    // Sort dates
+                    Collections.sort(playedDates);
+
+                    int maxStreak = 1;
+                    int currentStreak = 1;
+
+                    for (int i = 1; i < playedDates.size(); i++) {
+                        try {
+                            Date prevDate = sdf.parse(playedDates.get(i - 1));
+                            Date currentDate = sdf.parse(playedDates.get(i));
+
+                            Calendar calPrev = Calendar.getInstance();
+                            calPrev.setTime(prevDate);
+
+                            Calendar calCurrent = Calendar.getInstance();
+                            calCurrent.setTime(currentDate);
+
+                            calPrev.add(Calendar.DAY_OF_YEAR, 1);
+
+                            if (sdf.format(calPrev.getTime()).equals(playedDates.get(i))) {
+                                currentStreak++;
+                                maxStreak = Math.max(maxStreak, currentStreak);
+                            } else {
+                                currentStreak = 1;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    if (maxStreak >= 7) {
+                        String studentId = snapshot.getString("studentId");
+                        if (studentId != null) {
+                            unlockA6Achievement(uid, studentId);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(requireContext(),
+                        "Error checking streak: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    private void unlockA6Achievement(String studentId) {
+
+    private void unlockA6Achievement(String uid, String studentId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String achievementCode = "SA6";
         String achievementId = "A6";
 
@@ -127,7 +170,7 @@ public class HomeFragment extends Fragment {
                 wrapper.put("achievements", achievementMap);
 
                 db.collection("student_achievements").document(uid)
-                        .set(wrapper, com.google.firebase.firestore.SetOptions.merge())
+                        .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> requireActivity().runOnUiThread(() -> {
                             showAchievementUnlockedDialog(title, R.drawable.achievement06);
                         }));
