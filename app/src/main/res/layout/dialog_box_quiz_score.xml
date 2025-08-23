@@ -20,7 +20,7 @@
         app:layout_constraintGuide_percent="0.90" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="327dp"
+        android:layout_width="0dp"
         android:layout_height="402dp"
         android:background="@drawable/pop_up_main_color"
         app:layout_constraintBottom_toBottomOf="parent"
