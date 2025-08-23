@@ -240,7 +240,8 @@ public class PangngalanQuiz extends AppCompatActivity {
         builder.setCancelable(false);
 
         Button retryButton = dialogView.findViewById(R.id.retryButton);
-        Button homeButton = dialogView.findViewById(R.id.finishButton);
+        Button taposButton = dialogView.findViewById(R.id.finishButton);
+        Button homeButton = dialogView.findViewById(R.id.returnButton);
 
         ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
         TextView scoreNumber = dialogView.findViewById(R.id.textView6);
@@ -252,11 +253,11 @@ public class PangngalanQuiz extends AppCompatActivity {
 
         if (correctAnswers >= 6) {
             resultText.setText("Ikaw ay nakapasa!");
-            homeButton.setEnabled(true);
+            taposButton.setEnabled(true);
         } else {
             resultText.setText("Ikaw ay nabigo, subukan muli!");
-            homeButton.setEnabled(false);
-            homeButton.setAlpha(0.5f);
+            taposButton.setEnabled(false);
+            taposButton.setAlpha(0.5f);
         }
 
         resultDialog = builder.create();
@@ -270,6 +271,14 @@ public class PangngalanQuiz extends AppCompatActivity {
             correctAnswers = 0; // reset score
             Collections.shuffle(quizList);
             loadQuestion(currentIndex);
+        });
+
+        taposButton.setOnClickListener(v -> {
+            if (resultDialog.isShowing()) resultDialog.dismiss();
+            Intent intent = new Intent(PangngalanQuiz.this, BahagiNgPananalita.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
         });
 
         homeButton.setOnClickListener(v -> {
