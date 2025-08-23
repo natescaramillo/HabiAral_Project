@@ -35,6 +35,7 @@ public class BahagiNgPananalita extends AppCompatActivity {
         setContentView(R.layout.bahagi_ng_pananalita);
 
         initViews();
+        lockAllButtons();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -201,5 +202,22 @@ public class BahagiNgPananalita extends AppCompatActivity {
         update.put("module_1", module1Updates);
 
         db.collection("module_progress").document(uid).set(update, SetOptions.merge());
+    }
+
+    private void lockAllButtons() {
+        lockButton(btnPandiwa);
+        lockButton(btnPangUri);
+        lockButton(btnPangHalip);
+        lockButton(btnPangAbay);
+        lockButton(btnPangatnig);
+        lockButton(btnPangUkol);
+        lockButton(btnPangAkop);
+        lockButton(btnPadamdam);
+        lockButton(btnPangawing);
+    }
+
+    private void lockButton(LinearLayout button) {
+        button.setClickable(false);
+        button.setAlpha(0.5f);
     }
 }
