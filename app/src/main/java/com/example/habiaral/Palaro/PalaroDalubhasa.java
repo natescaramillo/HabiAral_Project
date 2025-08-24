@@ -85,7 +85,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private TextToSpeech tts;
     private int perfectAnswerCount = 0;
 
-
+    private boolean isGameOver = false;
 
 
     @Override
@@ -350,26 +350,23 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 });
     }
     private void speakLine(String text) {
+        if (isGameOver) return;
         if (text == null || text.trim().isEmpty()) return;
 
         if (isTtsReady && tts != null) {
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
-        } else {
-            new Handler().postDelayed(() -> {
-                if (isTtsReady && tts != null) {
-                    tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
-                }
-            }, 500);
         }
     }
+
     private void nextQuestion() {
+        if (isGameOver) return;
+
         if (currentQuestionNumber < instructionList.size()) {
             String instruction = instructionList.get(currentQuestionNumber);
             dalubhasaInstruction.setText(instructionList.get(currentQuestionNumber));
             currentKeywords = keywordList.get(currentQuestionNumber);
             currentDalubhasaID = "D" + (currentQuestionNumber + 1);
             speakLine(instruction);
-
 
             userSentenceInput.setText("");
             userSentenceInput.setEnabled(true);
@@ -380,6 +377,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         } else {
             if (countDownTimer != null) countDownTimer.cancel();
             saveDalubhasaScore();
+            finishQuiz();
         }
     }
 
@@ -440,6 +438,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void finishQuiz() {
+        if (isGameOver) return;
+        isGameOver = true;
+
         View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
         AlertDialog dialog = new AlertDialog.Builder(PalaroDalubhasa.this)
                 .setView(showTotalPoints)
@@ -462,6 +463,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         Toast.makeText(this, "Tapos na ang laro!", Toast.LENGTH_SHORT).show();
     }
+
 
 
     private void saveDalubhasaScore() {

@@ -71,6 +71,7 @@
         private boolean isTtsReady = false;
         private int attemptCount = 0;
 
+        private boolean isGameOver = false;
 
 
 
@@ -207,18 +208,19 @@
                                 }
 
                                 currentQuestionNumber++;
-                                if (currentQuestionNumber <= 10) {
+                                if (currentQuestionNumber <= 10 && !isGameOver) {
                                     new Handler().postDelayed(() -> {
-                                        loadHusayWords("H" + currentQuestionNumber);
-                                        fullAnswerView.setText("");
-                                        isAnswered = false;
-                                        isTimeUp = false;
-                                        startTimer();
+                                        if (!isGameOver) {
+                                            loadHusayWords("H" + currentQuestionNumber);
+                                            fullAnswerView.setText("");
+                                            isAnswered = false;
+                                            isTimeUp = false;
+                                            startTimer();
+                                        }
                                     }, 3000);
                                 } else {
                                     if (countDownTimer != null) countDownTimer.cancel();
-                                    saveHusayScore();
-
+                                    finishQuiz();
                                 }
 
                             }
@@ -418,6 +420,9 @@
         }
 
         private void finishQuiz() {
+            if (isGameOver) return;
+            isGameOver = true;
+
             saveHusayScore();
 
             View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
@@ -514,6 +519,7 @@
 
             if (remainingHearts <= 0) {
                 if (countDownTimer != null) countDownTimer.cancel();
+                isGameOver = true;
                 Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
                 loadCharacterLine("MCL5");
 

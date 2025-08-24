@@ -199,7 +199,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         unlockButton1.setOnLongClickListener(v -> {
             saveBaguhanScore();
             Toast.makeText(this, "Naitala na ang progreso. Paalam muna!", Toast.LENGTH_SHORT).show();
-            finish();
             return true;
         });
 
