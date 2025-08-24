@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:alpha="0.6"
-        android:background="@drawable/homepage_design" />
+        android:background="@drawable/homepage_design"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -58,12 +58,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="240dp"
-        android:background="#EDB586"/>
+        android:background="@drawable/homepage_design_2"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="240dp"
+        android:layout_marginTop="245dp"
         android:scrollbarSize="0dp"
         android:fillViewport="true">
 
