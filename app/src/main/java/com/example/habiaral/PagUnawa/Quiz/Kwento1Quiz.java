@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.PagUnawa.PagUnawa;
+import com.example.habiaral.PagUnawa.Stories.Kwento2;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,7 +46,8 @@ public class Kwento1Quiz extends AppCompatActivity {
         builder.setCancelable(false);
 
         Button retryButton = dialogView.findViewById(R.id.retryButton);
-        Button homeButton = dialogView.findViewById(R.id.finishButton);
+        Button taposButton = dialogView.findViewById(R.id.finishButton);
+        Button homeButton = dialogView.findViewById(R.id.returnButton);
 
         AlertDialog dialog = builder.create();
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
@@ -58,6 +60,14 @@ public class Kwento1Quiz extends AppCompatActivity {
             startActivity(intent);
         });
 
+        taposButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = new Intent(Kwento1Quiz.this, Kwento2.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+
         homeButton.setOnClickListener(v -> {
             dialog.dismiss();
             Intent intent = new Intent(Kwento1Quiz.this, PagUnawa.class);
@@ -67,9 +77,6 @@ public class Kwento1Quiz extends AppCompatActivity {
         });
     }
 
-    // =========================
-    // FIRESTORE UPDATES
-    // =========================
     private void unlockNextLesson() {
         Toast.makeText(this, "Next Lesson Unlocked: Kwento2!", Toast.LENGTH_SHORT).show();
     }
@@ -93,12 +100,10 @@ public class Kwento1Quiz extends AppCompatActivity {
 
         Map<String, Object> moduleUpdate = Map.of("module_3", updateMap);
 
-        // ✅ 1. Save sa Firestore
         db.collection("module_progress")
                 .document(uid)
                 .set(moduleUpdate, SetOptions.merge());
 
-        // ✅ 2. Update LessonProgressCache agad
         if (com.example.habiaral.BahagiNgPananalita.LessonProgressCache.getData() != null) {
             Map<String, Object> cachedData = com.example.habiaral.BahagiNgPananalita.LessonProgressCache.getData();
 
@@ -114,4 +119,3 @@ public class Kwento1Quiz extends AppCompatActivity {
         }
     }
 }
-

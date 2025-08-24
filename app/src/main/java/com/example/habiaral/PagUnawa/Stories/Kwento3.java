@@ -19,33 +19,19 @@ import java.util.Map;
 
 public class Kwento3 extends AppCompatActivity {
 
-    private ImageView storyImage;
-    private Button unlockButton;
-    private boolean isLessonDone = false;
-    private int currentPage = 0;
-
-    // List ng comic pages
-    private int[] comicPages = {
-            R.drawable.kwento1_page01,
-            R.drawable.kwento1_page02,
-            R.drawable.kwento1_page03,
-            R.drawable.kwento1_page04,
-            R.drawable.kwento1_page05,
-            R.drawable.kwento1_page06,
-            R.drawable.kwento1_page07,
-            R.drawable.kwento1_page08,
-            R.drawable.kwento1_page09,
-            R.drawable.kwento1_page10,
-            R.drawable.kwento1_page11,
-            R.drawable.kwento1_page12,
-            R.drawable.kwento1_page13,
-            R.drawable.kwento1_page14,
-            R.drawable.kwento1_page15,
-            R.drawable.kwento1_page16,
-            R.drawable.kwento1_page17,
-            R.drawable.kwento1_page18,
+    private final int[] comicPages = {
+            R.drawable.kwento1_page01, R.drawable.kwento1_page02, R.drawable.kwento1_page03,
+            R.drawable.kwento1_page04, R.drawable.kwento1_page05, R.drawable.kwento1_page06,
+            R.drawable.kwento1_page07, R.drawable.kwento1_page08, R.drawable.kwento1_page09,
+            R.drawable.kwento1_page10, R.drawable.kwento1_page11, R.drawable.kwento1_page12,
+            R.drawable.kwento1_page13, R.drawable.kwento1_page14, R.drawable.kwento1_page15,
+            R.drawable.kwento1_page16, R.drawable.kwento1_page17, R.drawable.kwento1_page18,
             R.drawable.kwento1_page19
     };
+    private boolean isLessonDone = false;
+    private ImageView storyImage;
+    private Button unlockButton;
+    private int currentPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,16 +44,11 @@ public class Kwento3 extends AppCompatActivity {
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
-        // Load first page
         storyImage.setImageResource(comicPages[currentPage]);
-
-        // Pag tap sa imageView, mag-next page
         storyImage.setOnClickListener(v -> nextPage());
 
-        // Check status from Firestore
         checkLessonStatusFromFirestore();
 
-        // Unlock button click
         unlockButton.setOnClickListener(v -> {
             if (isLessonDone) {
                 Intent intent = new Intent(Kwento3.this, Kwento3Quiz.class);

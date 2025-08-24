@@ -90,11 +90,11 @@ public class Kwento3Quiz extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> kwento1Status = new HashMap<>();
-        kwento1Status.put("status", "completed");
+        Map<String, Object> kwento3Status = new HashMap<>();
+        kwento3Status.put("status", "completed");
 
         Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("kwento3", kwento1Status);
+        lessonsMap.put("kwento3", kwento3Status);
 
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put("lessons", lessonsMap);

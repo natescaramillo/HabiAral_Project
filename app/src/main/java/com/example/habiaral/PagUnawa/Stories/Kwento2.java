@@ -19,33 +19,19 @@ import java.util.Map;
 
 public class Kwento2 extends AppCompatActivity {
 
-    private ImageView storyImage;
-    private Button unlockButton;
-    private boolean isLessonDone = false;
-    private int currentPage = 0;
-
-    // List ng comic pages
-    private int[] comicPages = {
-            R.drawable.kwento1_page01,
-            R.drawable.kwento1_page02,
-            R.drawable.kwento1_page03,
-            R.drawable.kwento1_page04,
-            R.drawable.kwento1_page05,
-            R.drawable.kwento1_page06,
-            R.drawable.kwento1_page07,
-            R.drawable.kwento1_page08,
-            R.drawable.kwento1_page09,
-            R.drawable.kwento1_page10,
-            R.drawable.kwento1_page11,
-            R.drawable.kwento1_page12,
-            R.drawable.kwento1_page13,
-            R.drawable.kwento1_page14,
-            R.drawable.kwento1_page15,
-            R.drawable.kwento1_page16,
-            R.drawable.kwento1_page17,
-            R.drawable.kwento1_page18,
+    private final int[] comicPages = {
+            R.drawable.kwento1_page01, R.drawable.kwento1_page02, R.drawable.kwento1_page03,
+            R.drawable.kwento1_page04, R.drawable.kwento1_page05, R.drawable.kwento1_page06,
+            R.drawable.kwento1_page07, R.drawable.kwento1_page08, R.drawable.kwento1_page09,
+            R.drawable.kwento1_page10, R.drawable.kwento1_page11, R.drawable.kwento1_page12,
+            R.drawable.kwento1_page13, R.drawable.kwento1_page14, R.drawable.kwento1_page15,
+            R.drawable.kwento1_page16, R.drawable.kwento1_page17, R.drawable.kwento1_page18,
             R.drawable.kwento1_page19
     };
+    private boolean isLessonDone = false;
+    private ImageView storyImage;
+    private Button unlockButton;
+    private int currentPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,16 +44,11 @@ public class Kwento2 extends AppCompatActivity {
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
-        // Load first page
         storyImage.setImageResource(comicPages[currentPage]);
-
-        // Pag tap sa imageView, mag-next page
         storyImage.setOnClickListener(v -> nextPage());
 
-        // Check status from Firestore
         checkLessonStatusFromFirestore();
 
-        // Unlock button click
         unlockButton.setOnClickListener(v -> {
             if (isLessonDone) {
                 Intent intent = new Intent(Kwento2.this, Kwento2Quiz.class);
@@ -104,9 +85,9 @@ public class Kwento2 extends AppCompatActivity {
                         if (module3 != null) {
                             Map<String, Object> lessons = (Map<String, Object>) module3.get("lessons");
                             if (lessons != null) {
-                                Map<String, Object> kwento1 = (Map<String, Object>) lessons.get("kwento1");
-                                if (kwento1 != null) {
-                                    String status = (String) kwento1.get("status");
+                                Map<String, Object> kwento2 = (Map<String, Object>) lessons.get("kwento2");
+                                if (kwento2 != null) {
+                                    String status = (String) kwento2.get("status");
                                     if ("in_progress".equals(status) || "completed".equals(status)) {
                                         isLessonDone = true;
                                         unlockButton.setEnabled(true);
@@ -126,11 +107,11 @@ public class Kwento2 extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> kwento1Status = new HashMap<>();
-        kwento1Status.put("status", "in_progress");
+        Map<String, Object> kwento2Status = new HashMap<>();
+        kwento2Status.put("status", "in_progress");
 
         Map<String, Object> lessonMap = new HashMap<>();
-        lessonMap.put("kwento2", kwento1Status);
+        lessonMap.put("kwento2", kwento2Status);
 
         Map<String, Object> progressMap = new HashMap<>();
         progressMap.put("modulename", "Pag-Unawa");

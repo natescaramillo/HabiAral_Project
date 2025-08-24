@@ -156,7 +156,6 @@ public class PagUnawa extends AppCompatActivity {
     }
 
     private void lockAllButtons() {
-        lockButton(btnKwento1);
         lockButton(btnKwento2);
         lockButton(btnKwento3);
     }
