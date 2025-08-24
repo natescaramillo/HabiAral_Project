@@ -501,10 +501,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                 docRef.set(updates, SetOptions.merge())
                         .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(this, "Natapos na ang buong palaro", Toast.LENGTH_SHORT).show();
                             dalubhasaScore = 0;
-                        })
-                        .addOnFailureListener(e -> Log.e("Firestore", "Error saving dalubhasa score", e));
+                        });
             });
         });
     }

@@ -423,6 +423,13 @@
             if (isGameOver) return;
             isGameOver = true;
 
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
+            }
+            if (tts != null) {
+                tts.stop();
+            }
+
             saveHusayScore();
 
             View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
@@ -436,18 +443,27 @@
                 dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             }
 
+            TextView titleText = showTotalPoints.findViewById(R.id.textView11);
             TextView scoreTextDialog = showTotalPoints.findViewById(R.id.scoreText);
             scoreTextDialog.setText(String.valueOf(husayScore));
+
+            if (isTimeUp) {
+                titleText.setText("Ubos na ang iyong oras");
+            } else if (remainingHearts <= 0) {
+                titleText.setText("Ubos na ang iyong buhay");
+            } else {
+                titleText.setText("Natapos na ang palaro");
+            }
 
             Button balik = showTotalPoints.findViewById(R.id.btn_balik);
             balik.setOnClickListener(v -> {
                 dialog.dismiss();
+                husayScore = 0;
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("husayPoints", husayScore);
                 setResult(RESULT_OK, resultIntent);
                 finish();
             });
-
             Toast.makeText(this, "Tapos na ang laro!", Toast.LENGTH_SHORT).show();
         }
 
@@ -492,9 +508,7 @@
                                 if (newHusayTotal >= 800) {
                                     unlockDalubhasa(docRef);
                                 }
-                                husayScore = 0;
-                            })
-                            .addOnFailureListener(e -> Log.e("Firestore", "Error saving husay score", e));
+                            });
                 });
             });
         }
@@ -505,9 +519,13 @@
             Map<String, Object> updates = new HashMap<>();
             docRef.set(updates, SetOptions.merge())
                     .addOnSuccessListener(aVoid -> {
+                        if (countDownTimer != null) {
+                            countDownTimer.cancel();
+                        }
+                        if (tts != null) {
+                            tts.stop();
+                        }
                         Toast.makeText(this, "Nabuksan na ang Dalubhasa!", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(this, Palaro.class));
-                        finish();
                     });
         }
         private void deductHeart() {
@@ -519,7 +537,6 @@
 
             if (remainingHearts <= 0) {
                 if (countDownTimer != null) countDownTimer.cancel();
-                isGameOver = true;
                 Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
                 loadCharacterLine("MCL5");
 

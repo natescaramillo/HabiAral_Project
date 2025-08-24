@@ -52,7 +52,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     private Button unlockButton, unlockButton1;
     private boolean isGameOver = false;
     private CountDownTimer countDownTimer;
-    private static final long TOTAL_TIME = 100000;
+    private static final long TOTAL_TIME = 30000;
     private long timeLeft = TOTAL_TIME;
     private FirebaseFirestore db;
     private int correctAnswerCount = 0;
@@ -237,8 +237,17 @@ public class PalaroBaguhan extends AppCompatActivity {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
 
+        TextView titleText = showTotalPoints.findViewById(R.id.textView11);
         TextView scoreTextDialog = showTotalPoints.findViewById(R.id.scoreText);
         scoreTextDialog.setText(String.valueOf(baguhanScore));
+
+        if (isTimeUp) {
+            titleText.setText("Ubos na ang iyong oras");
+        } else if (remainingHearts <= 0) {
+            titleText.setText("Ubos na ang iyong buhay");
+        } else {
+            titleText.setText("Natapos na ang palaro");
+        }
 
         Button balik = showTotalPoints.findViewById(R.id.btn_balik);
         balik.setOnClickListener(v -> {
@@ -409,9 +418,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         });
     }
 
-
-
-
     private void showAchievementUnlockedDialog(String title, int imageRes){
         LayoutInflater inflater = LayoutInflater.from(this);
         View toastView = inflater.inflate(R.layout.achievement_unlocked, null);
@@ -478,8 +484,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                                 unlockHusay(docRef);
                             }
                             baguhanScore = 0;
-                        })
-                        .addOnFailureListener(e -> Log.e("Firestore", "Error saving score", e));
+                        });
             });
         });
     }
@@ -491,9 +496,14 @@ public class PalaroBaguhan extends AppCompatActivity {
         Map<String, Object> updates = new HashMap<>();
         docRef.set(updates, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
+                    if (countDownTimer != null) {
+                        countDownTimer.cancel();
+                    }
+                    if (tts != null) {
+                        tts.stop();
+                    }
+
                     Toast.makeText(this, "Nabuksan na ang Husay!", Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(this, Palaro.class));
-                    finish();
                 });
     }
 
