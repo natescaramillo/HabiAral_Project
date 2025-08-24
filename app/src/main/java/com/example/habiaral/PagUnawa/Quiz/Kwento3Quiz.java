@@ -199,7 +199,7 @@ public class Kwento3Quiz extends AppCompatActivity {
         int end = line1.length() + line2.length();
         ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        ssb.setSpan(new RelativeSizeSpan(0.8f), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.setSpan(new RelativeSizeSpan(1.1f), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tv.setText(ssb);
         Toast toast = new Toast(this);

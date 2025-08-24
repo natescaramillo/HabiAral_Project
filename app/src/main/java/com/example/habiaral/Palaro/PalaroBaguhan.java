@@ -513,7 +513,6 @@ public class PalaroBaguhan extends AppCompatActivity {
 
     private void unlockHusay(DocumentReference docRef) {
         Map<String, Object> updates = new HashMap<>();
-        updates.put("husay_unlocked", true);
 
         docRef.set(updates, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {

@@ -13,6 +13,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -473,60 +474,44 @@ public class PalaroDalubhasa extends AppCompatActivity {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null || dalubhasaScore <= 0) return;
 
+        String uid = currentUser.getUid();
 
-        String userId = currentUser.getUid();
-
-        // Step 1: Get studentID from 'students' collection
-        db.collection("students").document(userId).get().addOnSuccessListener(studentDoc -> {
+        // Step 1: Get studentId from students collection
+        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
             if (!studentDoc.exists()) {
                 Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            String studentID = studentDoc.getString("studentId"); // ✅ Now this is properly fetched
-            DocumentReference docRef = db.collection("minigame_progress").document(userId);
+            String studentId = studentDoc.getString("studentId");
+            if (studentId == null || studentId.isEmpty()) {
+                Toast.makeText(this, "Student ID not found", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Step 2: Use UID as document ID para pasado sa Firestore rules
+            DocumentReference docRef = db.collection("minigame_progress").document(uid);
 
             docRef.get().addOnSuccessListener(snapshot -> {
                 int baguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
                 int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
                 int oldDalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
+
                 int newDalubhasaTotal = oldDalubhasa + dalubhasaScore;
+                int totalScore = baguhan + husay + newDalubhasaTotal;
 
-                if (snapshot.exists() && snapshot.contains("minigame_progressID")) {
-                    // Reuse existing minigame_progressID
-                    String existingProgressId = snapshot.getString("minigame_progressID");
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("dalubhasa_score", newDalubhasaTotal);
+                updates.put("studentId", studentId);
+                updates.put("total_score", totalScore);
 
-                    Map<String, Object> updates = new HashMap<>();
-                    updates.put("dalubhasa_score", newDalubhasaTotal);
-                    updates.put("studentID", studentID); // ✅ correct student ID
-                    updates.put("minigame_progressID", existingProgressId);
-                    updates.put("total_score", newDalubhasaTotal + baguhan + husay);
-
-                    docRef.set(updates, SetOptions.merge())
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(PalaroDalubhasa.this, "Natapos na ang buong palaro", Toast.LENGTH_SHORT).show();
-
-                            });
-                } else {
-                    // No progress doc yet — generate new progress ID
-                    db.collection("minigame_progress").get().addOnSuccessListener(querySnapshot -> {
-                        int nextNumber = querySnapshot.size() + 1;
-                        String newProgressId = "MP" + nextNumber;
-
-                        Map<String, Object> updates = new HashMap<>();
-                        updates.put("dalubhasa_score", newDalubhasaTotal);
-                        updates.put("studentID", studentID); // ✅ correct student ID
-                        updates.put("minigame_progressID", newProgressId);
-                        updates.put("total_score", newDalubhasaTotal + baguhan + husay);
-
-                        docRef.set(updates, SetOptions.merge())
-                                .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(PalaroDalubhasa.this, "Natapos na ang buong palaro", Toast.LENGTH_SHORT).show();
-                                });
-                    });
-                }
+                docRef.set(updates, SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(this, "Natapos na ang buong palaro", Toast.LENGTH_SHORT).show();
+                            dalubhasaScore = 0; // reset after save
+                        })
+                        .addOnFailureListener(e -> Log.e("Firestore", "Error saving dalubhasa score", e));
             });
-
         });
     }
 
