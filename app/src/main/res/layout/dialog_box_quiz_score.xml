@@ -124,7 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:background="@drawable/button_color"
-            android:text="Tapos"
+            android:text="Sunod na \naralin"
             android:textColor="#fff"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline5"
