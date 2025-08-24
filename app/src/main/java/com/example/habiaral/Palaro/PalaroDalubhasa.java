@@ -212,7 +212,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         btnOo.setOnClickListener(v -> {
             if (countDownTimer != null) countDownTimer.cancel();
-            saveDalubhasaScore(); // Optional
             dialog.dismiss();
             finish(); // Exit activity
         });
@@ -439,7 +438,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 timerBar.setProgress(0);
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
-                finishQuiz(); // Tawagin ang custom dialog
+                saveDalubhasaScore(); // ✅ Save score pag ubos na oras
+                finishQuiz();
             }
 
         }.start();
@@ -526,6 +526,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
                 saveDalubhasaScore();
+                finishQuiz(); // ✅ show overall score dialog
             }
         }
     }

@@ -20,12 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.speech.tts.TextToSpeech;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Locale;
-
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,7 +39,6 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.ContextCompat;
@@ -55,24 +51,18 @@ public class PalaroBaguhan extends AppCompatActivity {
     private ProgressBar timerBar;
     private Button unlockButton, unlockButton1;
     private boolean isGameOver = false;
-
-
     private CountDownTimer countDownTimer;
     private static final long TOTAL_TIME = 100000;
     private long timeLeft = TOTAL_TIME;
-
     private FirebaseFirestore db;
     private int correctAnswerCount = 0;
     private int baguhanScore = 0;
     private int currentQuestionNumber = 1;
     private static final String DOCUMENT_ID = "MP1";
-
     private boolean isAnswered = false;
     private boolean isTimeUp = false;
-
     private String studentID;
     private TextToSpeech tts;
-
     private int remainingHearts = 5;
     private int correctStreak = 0;
     private ImageView[] heartIcons;
@@ -80,6 +70,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     private List<Map<String, Object>> questions = new ArrayList<>();
     private int currentQuestionIndex = 0;
     private long startTime;
+    private boolean husayUnlocked = false;
 
 
 
@@ -104,8 +95,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         if (currentUser != null) {
             studentID = currentUser.getUid();
         }
-
-
 
         baguhanQuestion = findViewById(R.id.baguhan_instructionText);
         answer1 = findViewById(R.id.baguhan_answer1);
@@ -512,8 +501,10 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void unlockHusay(DocumentReference docRef) {
-        Map<String, Object> updates = new HashMap<>();
+        if (husayUnlocked) return;  // ✅ para di maulit
+        husayUnlocked = true;
 
+        Map<String, Object> updates = new HashMap<>();
         docRef.set(updates, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Nabuksan na ang Husay!", Toast.LENGTH_LONG).show();
@@ -720,10 +711,6 @@ public class PalaroBaguhan extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (baguhanScore > 0) {
-            saveBaguhanScore();
-        }
-
         if (countDownTimer != null) countDownTimer.cancel();
         if (tts != null) {
             tts.stop();
@@ -731,7 +718,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         }
         super.onDestroy();
     }
-
 
     private void showBackConfirmationDialog() {
         View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);

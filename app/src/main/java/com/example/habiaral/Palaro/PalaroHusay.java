@@ -150,9 +150,6 @@
             dialog.show();
         }
 
-
-
-
         private void setupUnlockButton() {
             unlockButton.setOnClickListener(v -> {
                 if (isTimeUp || isAnswered) return;
@@ -424,7 +421,8 @@
         }
 
         private void finishQuiz() {
-
+            // ✅ Save score dito lang
+            saveHusayScore();
 
             View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
             AlertDialog dialog = new AlertDialog.Builder(PalaroHusay.this)
@@ -438,7 +436,7 @@
             }
 
             TextView scoreTextDialog = showTotalPoints.findViewById(R.id.scoreText);
-            scoreTextDialog.setText(String.valueOf(husayScore)); // palitan kung ibang variable name
+            scoreTextDialog.setText(String.valueOf(husayScore));
 
             Button balik = showTotalPoints.findViewById(R.id.btn_balik);
             balik.setOnClickListener(v -> {
@@ -451,6 +449,7 @@
 
             Toast.makeText(this, "Tapos na ang laro!", Toast.LENGTH_SHORT).show();
         }
+
 
 
         private void saveHusayScore() {
@@ -526,6 +525,9 @@
                 if (countDownTimer != null) countDownTimer.cancel();
                 Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
                 loadCharacterLine("MCL5");
+
+                // ✅ End game properly
+                finishQuiz();
             }
         }
         private void speakText(String text) {
@@ -545,10 +547,6 @@
 
         @Override
         protected void onDestroy() {
-            if (husayScore > 0) {
-                saveHusayScore();
-            }
-
             if (countDownTimer != null) countDownTimer.cancel();
             if (tts != null) {
                 tts.stop();
