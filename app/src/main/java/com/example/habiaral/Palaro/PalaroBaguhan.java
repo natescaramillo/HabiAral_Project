@@ -85,7 +85,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                 tts.setLanguage(tagalogLocale);
                 tts.setSpeechRate(1.3f);
 
-                // ✅ Proceed regardless of support check
                 new Handler().postDelayed(() -> loadCharacterLine("MCL1"), 300);
                 new Handler().postDelayed(this::showCountdownThenLoadQuestion, 3000);
             }
@@ -154,9 +153,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                                     baguhanScore += 5;
                                     correctStreak++;
 
-
-
-                                    // Set MCL based on streak
                                     if (correctStreak == 1) {
                                         loadCharacterLine("MCL2");
                                     } else if (correctStreak == 2) {
@@ -214,20 +210,20 @@ public class PalaroBaguhan extends AppCompatActivity {
             }
         });
 
-        Button umalisButton = findViewById(R.id.UnlockButtonPalaro1); // palitan kung ibang ID
+        Button umalisButton = findViewById(R.id.UnlockButtonPalaro1);
         umalisButton.setOnClickListener(v -> showExitConfirmationDialog());
     }
 
     private void finishQuiz() {
-        isGameOver = true;  // << IMPORTANT
+        isGameOver = true;
         if (tts != null) {
-            tts.stop();  // ← ito ang kulang
+            tts.stop();
         }
         saveBaguhanScore();
-        unlockAchievementA8IfEligible(); // ✅ Add this line
+        unlockAchievementA8IfEligible();
 
         if (correctAnswerCount >= 20) {
-            unlockPerfectStreakAchievement(); // A4
+            unlockPerfectStreakAchievement();
         }
 
 
@@ -286,7 +282,7 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                     Map<String, Object> update = new HashMap<>();
                     update.put("studentId", studentId);
-                    update.put("baguhan", nestedBaguhan);  // ✅ Proper nested merge
+                    update.put("baguhan", nestedBaguhan);
 
                     docRef.set(update, SetOptions.merge());
                 }
@@ -305,7 +301,7 @@ public class PalaroBaguhan extends AppCompatActivity {
             if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
 
             String studentId = studentDoc.getString("studentId");
-            String firebaseUID = studentDoc.getId(); // ← UID as document ID
+            String firebaseUID = studentDoc.getId();
 
             db.collection("baguhan").get().addOnSuccessListener(allQuestionsSnapshot -> {
                 List<String> allQuestionIds = new ArrayList<>();
@@ -313,7 +309,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                     allQuestionIds.add(doc.getId());
                 }
 
-                // ✅ FIXED: Use firebaseUID instead of studentId
                 db.collection("palaro_answered").document(firebaseUID).get().addOnSuccessListener(userDoc -> {
                     if (!userDoc.exists()) return;
 
@@ -326,11 +321,9 @@ public class PalaroBaguhan extends AppCompatActivity {
                         db.collection("student_achievements").document(firebaseUID).get().addOnSuccessListener(achSnapshot -> {
                             Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
                             if (achievements != null && achievements.containsKey(achievementCode)) {
-                                // Already unlocked, do nothing
                                 return;
                             }
 
-                            // Not yet unlocked
                             continueUnlockingAchievement(firebaseUID, achievementCode, achievementId);
                         });
                     }
@@ -361,7 +354,7 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                 Map<String, Object> wrapper = new HashMap<>();
                 wrapper.put("studentId", studentId);
-                wrapper.put("achievements", achievementMap);  // ✅ wrapped inside "achievements"
+                wrapper.put("achievements", achievementMap);
 
 
                 db.collection("student_achievements").document(uid)
@@ -387,11 +380,9 @@ public class PalaroBaguhan extends AppCompatActivity {
             db.collection("student_achievements").document(uid).get().addOnSuccessListener(achSnapshot -> {
                 Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
                 if (achievements != null && achievements.containsKey(achievementCode)) {
-                    // Already unlocked
                     return;
                 }
 
-                // Not yet unlocked, proceed
                 db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
                     if (!achDoc.exists()) return;
 
@@ -424,7 +415,7 @@ public class PalaroBaguhan extends AppCompatActivity {
 
     private void showAchievementUnlockedDialog(String title, int imageRes){
         LayoutInflater inflater = LayoutInflater.from(this);
-        View toastView = inflater.inflate(R.layout.achievement_unlocked, null);  // palitan ng pangalan ng XML file mo
+        View toastView = inflater.inflate(R.layout.achievement_unlocked, null);
 
         ImageView iv = toastView.findViewById(R.id.imageView19);
         TextView tv = toastView.findViewById(R.id.textView14);
@@ -435,22 +426,19 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
 
-        // Bold line1
         ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Bold line2 (achievement name)
         int start = line1.length();
         int end = line1.length() + line2.length();
         ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Make achievement name bigger (e.g. 1.3x)
         ssb.setSpan(new RelativeSizeSpan(1.3f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tv.setText(ssb);
         Toast toast = new Toast(this);
         toast.setView(toastView);
         toast.setDuration(Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100); // 100 px mula sa top
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
         toast.show();
     }
 
@@ -460,7 +448,6 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         String uid = currentUser.getUid();
 
-        // Step 1: Get studentId from students collection
         db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
             if (!studentDoc.exists()) {
                 Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
@@ -473,7 +460,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                 return;
             }
 
-            // Step 2: Use UID as document ID para pasado sa Firestore rules
             DocumentReference docRef = db.collection("minigame_progress").document(uid);
 
             docRef.get().addOnSuccessListener(snapshot -> {
@@ -489,7 +475,6 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                 docRef.set(updates, SetOptions.merge())
                         .addOnSuccessListener(aVoid -> {
-                            // Unlock Husay if score threshold met
                             if (newBaguhanTotal >= 400) {
                                 unlockHusay(docRef);
                             }
@@ -501,7 +486,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void unlockHusay(DocumentReference docRef) {
-        if (husayUnlocked) return;  // ✅ para di maulit
+        if (husayUnlocked) return;
         husayUnlocked = true;
 
         Map<String, Object> updates = new HashMap<>();
@@ -522,20 +507,17 @@ public class PalaroBaguhan extends AppCompatActivity {
                     questionIds.add(doc.getId());
                 }
 
-                // Shuffle questions para randomized
                 Collections.shuffle(questionIds);
 
-                // Reset tracker
                 currentQuestionNumber = 0;
 
-                // Mag-countdown muna bago simulan
                 final Handler countdownHandler = new Handler();
                 final int[] countdown = {3};
 
                 countdownHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (isGameOver) return; // ← Don't continue countdown
+                        if (isGameOver) return;
 
                         if (countdown[0] > 0) {
                             baguhanQuestion.setText(String.valueOf(countdown[0]));
@@ -564,7 +546,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                 int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(percent);
 
-                // Change color based on time left
                 if (percent <= 25) {
                     timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.timer_color_red));
                 } else if (percent <= 50) {
@@ -619,7 +600,7 @@ public class PalaroBaguhan extends AppCompatActivity {
 
             if (remainingHearts == 0) {
                 Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
-                if (tts != null) tts.stop(); // ← importante para tumigil agad ang pagsasalita
+                if (tts != null) tts.stop();
                 disableAnswerSelection();
                 finishQuiz();
             }
@@ -627,7 +608,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void loadBaguhanQuestion() {
-        if (isGameOver) return; // ← STOP kung tapos na
+        if (isGameOver) return;
         startTime = System.currentTimeMillis();
 
         if (currentQuestionNumber >= questionIds.size()) {
@@ -758,18 +739,17 @@ public class PalaroBaguhan extends AppCompatActivity {
                 .setCancelable(false)
                 .create();
 
-        // Para walang puting box
         if (backDialog.getWindow() != null) {
             backDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
 
-        Button yesButton = backDialogView.findViewById(R.id.button5); // "Oo" button
-        Button noButton = backDialogView.findViewById(R.id.button6);  // "Hindi" button
+        Button yesButton = backDialogView.findViewById(R.id.button5);
+        Button noButton = backDialogView.findViewById(R.id.button6);
 
         yesButton.setOnClickListener(v -> {
             if (countDownTimer != null) countDownTimer.cancel();
             backDialog.dismiss();
-            finish(); // close the activity
+            finish();
         });
 
         noButton.setOnClickListener(v -> backDialog.dismiss());

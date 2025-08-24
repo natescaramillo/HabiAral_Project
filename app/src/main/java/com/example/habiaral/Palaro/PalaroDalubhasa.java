@@ -101,7 +101,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 tts.setLanguage(tagalogLocale);
                 tts.setSpeechRate(1.3f);
 
-                // ✅ Proceed regardless of support check
                 new Handler().postDelayed(() -> loadCharacterLine("MDCL1"), 300);
                 new Handler().postDelayed(this::showCountdownThenLoadInstruction, 6000);
             }
@@ -139,7 +138,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 } else if (!sentence.endsWith(".")) {
                     Toast.makeText(this, "Siguraduhing nagtatapos ang pangungusap sa tuldok (.)", Toast.LENGTH_SHORT).show();
                 } else {
-                    // I-check kung ilang keyword ang nawawala sa sentence
                     List<String> missingKeywords = new ArrayList<>();
                     for (String keyword : currentKeywords) {
                         if (!sentence.toLowerCase().contains(keyword.toLowerCase())) {
@@ -162,8 +160,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                                 userSentenceInput.setEnabled(false);
                                 btnTapos.setEnabled(false);
 
-                                // ✅ Save answered question
-                                // Inside your logic after grammar check
                                 String firebaseUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                 String questionId = currentDalubhasaID;
                                 saveDalubhasaAnswer(firebaseUID, questionId);
@@ -202,18 +198,18 @@ public class PalaroDalubhasa extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(PalaroDalubhasa.this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
 
-        Button btnOo = dialogView.findViewById(R.id.button5);    // OO button
-        Button btnHindi = dialogView.findViewById(R.id.button6); // Hindi button
+        Button btnOo = dialogView.findViewById(R.id.button5);
+        Button btnHindi = dialogView.findViewById(R.id.button6);
 
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
         dialog.setCancelable(false);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent); // Optional: for no rounded box
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         btnOo.setOnClickListener(v -> {
             if (countDownTimer != null) countDownTimer.cancel();
             dialog.dismiss();
-            finish(); // Exit activity
+            finish();
         });
 
         btnHindi.setOnClickListener(v -> dialog.dismiss());
@@ -233,7 +229,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             if (matches.length() == 0) {
                 scoreForThisSentence = 15;
                 dalubhasaScore += scoreForThisSentence;
-                perfectAnswerCount++; // ✅ count perfect
+                perfectAnswerCount++;
 
                 loadCharacterLine("MDCL2");
 
@@ -250,7 +246,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 if (scoreForThisSentence == 13 || scoreForThisSentence == 15) {
                     perfectAnswerCount++;
                 } else {
-                    perfectAnswerCount = 0; // ❌ Reset kung di perfect
+                    perfectAnswerCount = 0;
                 }
 
                 if (perfectAnswerCount >= 5) {
@@ -326,7 +322,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                         dalubhasaInstruction.setText(line);
 
                         if (line != null && !line.isEmpty()) {
-                            speakLine(line); // 🔊 Speak the line
+                            speakLine(line);
                         }
                     }
                 });
@@ -359,7 +355,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         if (isTtsReady && tts != null) {
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
         } else {
-            // Delay and try again in 500ms
             new Handler().postDelayed(() -> {
                 if (isTtsReady && tts != null) {
                     tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
@@ -369,11 +364,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
     private void nextQuestion() {
         if (currentQuestionNumber < instructionList.size()) {
-            String instruction = instructionList.get(currentQuestionNumber); // ✅ ayusin ito
+            String instruction = instructionList.get(currentQuestionNumber);
             dalubhasaInstruction.setText(instructionList.get(currentQuestionNumber));
             currentKeywords = keywordList.get(currentQuestionNumber);
             currentDalubhasaID = "D" + (currentQuestionNumber + 1);
-            speakLine(instruction); // ✅ idinagdag ito
+            speakLine(instruction);
 
 
             userSentenceInput.setText("");
@@ -419,7 +414,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(percent);
 
-                // 🔴 Change color based on percentage
                 if (percent <= 25) {
                     timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_red));
                 } else if (percent <= 50) {
@@ -438,7 +432,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 timerBar.setProgress(0);
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
-                saveDalubhasaScore(); // ✅ Save score pag ubos na oras
+                saveDalubhasaScore();
                 finishQuiz();
             }
 
@@ -463,7 +457,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         Button balik = showTotalPoints.findViewById(R.id.btn_balik);
         balik.setOnClickListener(v -> {
             dialog.dismiss();
-            finish(); // Wala tayong `setResult()` kasi walang bumabalik na score sa previous activity
+            finish();
         });
 
         Toast.makeText(this, "Tapos na ang laro!", Toast.LENGTH_SHORT).show();
@@ -476,7 +470,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         String uid = currentUser.getUid();
 
-        // Step 1: Get studentId from students collection
         db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
             if (!studentDoc.exists()) {
                 Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
@@ -489,7 +482,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 return;
             }
 
-            // Step 2: Use UID as document ID para pasado sa Firestore rules
             DocumentReference docRef = db.collection("minigame_progress").document(uid);
 
             docRef.get().addOnSuccessListener(snapshot -> {
@@ -508,7 +500,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 docRef.set(updates, SetOptions.merge())
                         .addOnSuccessListener(aVoid -> {
                             Toast.makeText(this, "Natapos na ang buong palaro", Toast.LENGTH_SHORT).show();
-                            dalubhasaScore = 0; // reset after save
+                            dalubhasaScore = 0;
                         })
                         .addOnFailureListener(e -> Log.e("Firestore", "Error saving dalubhasa score", e));
             });
@@ -526,7 +518,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
                 saveDalubhasaScore();
-                finishQuiz(); // ✅ show overall score dialog
+                finishQuiz();
             }
         }
     }
@@ -654,7 +646,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private void unlockSagotBayaniAchievement() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String achievementCode = "SA3"; // A3
+        String achievementCode = "SA3";
         String achievementId = "A3";
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -667,7 +659,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             db.collection("student_achievements").document(uid).get().addOnSuccessListener(achSnapshot -> {
                 Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
                 if (achievements != null && achievements.containsKey(achievementCode)) {
-                    return; // Already unlocked
+                    return;
                 }
 
                 db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
@@ -700,7 +692,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private void showAchievementUnlockedDialog(String title, int imageRes) {
         LayoutInflater inflater = LayoutInflater.from(this);
-        View toastView = inflater.inflate(R.layout.achievement_unlocked, null);  // palitan ng pangalan ng XML file mo
+        View toastView = inflater.inflate(R.layout.achievement_unlocked, null);
 
         ImageView iv = toastView.findViewById(R.id.imageView19);
         TextView tv = toastView.findViewById(R.id.textView14);
@@ -711,22 +703,19 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
 
-        // Bold line1
         ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Bold line2 (achievement name)
         int start = line1.length();
         int end = line1.length() + line2.length();
         ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Make achievement name bigger (e.g. 1.3x)
         ssb.setSpan(new RelativeSizeSpan(1.3f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tv.setText(ssb);
         Toast toast = new Toast(this);
         toast.setView(toastView);
         toast.setDuration(Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100); // 100 px mula sa top
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
         toast.show();
     }
 

@@ -114,7 +114,6 @@
                     tts.setLanguage(tagalogLocale);
                     tts.setSpeechRate(1.3f);
 
-                    // ✅ Proceed regardless of support check
                     new Handler().postDelayed(() -> loadCharacterLine("MHCL1"), 200);
                     new Handler().postDelayed(this::showCountdownThenLoadWords, 3000);
                 }
@@ -128,24 +127,24 @@
 
 
         private void showUmalisDialog() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(PalaroHusay.this); // 🔁 Use correct activity context
+            AlertDialog.Builder builder = new AlertDialog.Builder(PalaroHusay.this);
             View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
 
-            Button btnOo = dialogView.findViewById(R.id.button5);    // OO button
-            Button btnHindi = dialogView.findViewById(R.id.button6); // Hindi button
+            Button btnOo = dialogView.findViewById(R.id.button5);
+            Button btnHindi = dialogView.findViewById(R.id.button6);
 
             builder.setView(dialogView);
             AlertDialog dialog = builder.create();
             dialog.setCancelable(false);
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent); // Optional: transparent background
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
             btnOo.setOnClickListener(v -> {
-                if (countDownTimer != null) countDownTimer.cancel(); // 🔁 stop timer
+                if (countDownTimer != null) countDownTimer.cancel();
                 dialog.dismiss();
-                finish(); // Exit activity
+                finish();
             });
 
-            btnHindi.setOnClickListener(v -> dialog.dismiss()); // Just close the dialog
+            btnHindi.setOnClickListener(v -> dialog.dismiss());
 
             dialog.show();
         }
@@ -161,7 +160,7 @@
                 }
 
                 isAnswered = true;
-                long startTime = System.currentTimeMillis(); // ✅ Record start
+                long startTime = System.currentTimeMillis();
 
 
                 String husayDocId = "H" + currentQuestionNumber;
@@ -172,7 +171,7 @@
                                 String correctAnswer = documentSnapshot.getString("correctAnswer");
 
 
-                                long endTime = System.currentTimeMillis(); // ✅ Record end
+                                long endTime = System.currentTimeMillis();
                                 long elapsedTimeInSeconds = (endTime - startTime) / 1000;
 
                                 if (userAnswer.equalsIgnoreCase(correctAnswer)) {
@@ -182,7 +181,7 @@
 
 
                                     if (elapsedTimeInSeconds <= 5) {
-                                        unlockFastAnswerAchievement(); // ✅ Unlock A5
+                                        unlockFastAnswerAchievement();
                                     }
                                     if (correctStreak == 1) {
                                         loadCharacterLine("MCL2");
@@ -202,7 +201,7 @@
                                     deductHeart();
                                     String lineId = remainingHearts > 0 ? "MCL6" : "MCL5";
                                     loadCharacterLine(lineId);
-                                    speakText("Mali ang sagot."); // or pull this from Firestore if you want it dynamic
+                                    speakText("Mali ang sagot.");
                                     Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
 
                                 }
@@ -252,7 +251,7 @@
         private void resetAnswerBackgrounds() {
             TextView[] allAnswers = {answer1, answer2, answer3, answer4, answer5, answer6};
             for (TextView answer : allAnswers) {
-                answer.setBackgroundResource(R.drawable.answer_option_bg); // assuming this is your default bg
+                answer.setBackgroundResource(R.drawable.answer_option_bg);
             }
         }
 
@@ -325,9 +324,8 @@
                                                 String currentText = fullAnswerView.getText().toString();
                                                 if (!currentText.endsWith(".")) {
                                                     fullAnswerView.append(".");
-                                                    currentText = fullAnswerView.getText().toString(); // update text after appending
+                                                    currentText = fullAnswerView.getText().toString();
                                                 }
-                                                // ✅ Speak sentence automatically
                                                 speakText(currentText.trim());
                                             }
 
@@ -385,7 +383,7 @@
         }
 
         private void startTimer() {
-            restartTimer(timeLeft); // gamitin ang natitirang oras, HINDI TOTAL_TIME
+            restartTimer(timeLeft);
         }
 
 
@@ -400,7 +398,6 @@
                     int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                     timerBar.setProgress(percent);
 
-                    // Change color based on percent remaining
                     if (percent <= 25) {
                         timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_red));
                     } else if (percent <= 50) {
@@ -414,14 +411,13 @@
                 public void onFinish() {
                     timerBar.setProgress(0);
                     isTimeUp = true;
-                    finishQuiz(); // 👈 Dito tinatawag ang custom dialog
+                    finishQuiz();
 
                 }
             }.start();
         }
 
         private void finishQuiz() {
-            // ✅ Save score dito lang
             saveHusayScore();
 
             View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
@@ -458,7 +454,6 @@
 
             String uid = currentUser.getUid();
 
-            // Step 1: Get studentId from students collection
             db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
                 if (!studentDoc.exists()) {
                     Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
@@ -471,7 +466,6 @@
                     return;
                 }
 
-                // Step 2: Progress doc reference
                 DocumentReference docRef = db.collection("minigame_progress").document(uid);
 
                 docRef.get().addOnSuccessListener(snapshot -> {
@@ -479,10 +473,8 @@
                     int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
                     int oldHusay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
 
-                    // Add new husay score to old husay score
                     int newHusayTotal = oldHusay + husayScore;
 
-                    // Always recompute total score
                     int totalScore = baguhan + newHusayTotal + dalubhasa;
 
                     Map<String, Object> updates = new HashMap<>();
@@ -492,11 +484,10 @@
 
                     docRef.set(updates, SetOptions.merge())
                             .addOnSuccessListener(aVoid -> {
-                                // Unlock Dalubhasa if score threshold met
                                 if (newHusayTotal >= 800) {
                                     unlockDalubhasa(docRef);
                                 }
-                                husayScore = 0; // reset after save
+                                husayScore = 0;
                             })
                             .addOnFailureListener(e -> Log.e("Firestore", "Error saving husay score", e));
                 });
@@ -526,7 +517,6 @@
                 Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
                 loadCharacterLine("MCL5");
 
-                // ✅ End game properly
                 finishQuiz();
             }
         }
@@ -536,7 +526,6 @@
             if (isTtsReady && tts != null) {
                 tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
             } else {
-                // Delay and try again in 500ms
                 new Handler().postDelayed(() -> {
                     if (isTtsReady && tts != null) {
                         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
@@ -586,7 +575,6 @@
 
                         docRef.set(update, SetOptions.merge())
                                 .addOnSuccessListener(unused -> {
-                                    // ✅ Check if all Husay questions answered correctly
                                     unlockAchievementA9IfEligible();
                                 });
 
@@ -594,7 +582,6 @@
                                 .addOnSuccessListener(unused -> {
                                     unlockAchievementA9IfEligible();
 
-                                    // ✅ Add this check here:
                                     int wrongAnswers = attemptCount - correctAnswerCount;
                                     if (correctAnswerCount >= 2 && wrongAnswers <= 3) {
                                         unlockBihasangMagsanayAchievement(firebaseUID);
@@ -617,7 +604,7 @@
                 if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
 
                 String studentId = studentDoc.getString("studentId");
-                String firebaseUID = studentDoc.getId(); // UID as document ID
+                String firebaseUID = studentDoc.getId();
 
                 db.collection("husay").get().addOnSuccessListener(allQuestionsSnapshot -> {
                     List<String> allQuestionIds = new ArrayList<>();
@@ -638,14 +625,12 @@
                                 Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
 
                                 if (achievements != null && achievements.containsKey(achievementCode)) {
-                                    // Already unlocked SA9, but check if A2 is unlocked
-                                    unlockBihasangMagsanayAchievement(studentId); // 👈 add this
+                                    unlockBihasangMagsanayAchievement(studentId);
                                     return;
                                 }
 
-                                // Not yet unlocked SA9
                                 continueUnlockingAchievement(firebaseUID, achievementCode, achievementId);
-                                unlockBihasangMagsanayAchievement(studentId); // 👈 add this too
+                                unlockBihasangMagsanayAchievement(studentId);
                             });
                         }
 
@@ -675,7 +660,7 @@
 
                     Map<String, Object> wrapper = new HashMap<>();
                     wrapper.put("studentId", studentId);
-                    wrapper.put("achievements", achievementMap);  // ✅ wrapped inside "achievements"
+                    wrapper.put("achievements", achievementMap);
 
 
                     db.collection("student_achievements").document(uid)
@@ -694,7 +679,7 @@
                     .addOnSuccessListener(achSnapshot -> {
                         Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
                         if (achievements != null && achievements.containsKey(achievementCode)) {
-                            return; // Already unlocked
+                            return;
                         }
 
                         db.collection("students").document(firebaseUID).get().addOnSuccessListener(studentDoc -> {
@@ -732,7 +717,7 @@
 
         private void showAchievementUnlockedDialog(String title, int imageRes) {
             LayoutInflater inflater = LayoutInflater.from(this);
-            View toastView = inflater.inflate(R.layout.achievement_unlocked, null);  // palitan ng pangalan ng XML file mo
+            View toastView = inflater.inflate(R.layout.achievement_unlocked, null);
 
             ImageView iv = toastView.findViewById(R.id.imageView19);
             TextView tv = toastView.findViewById(R.id.textView14);
@@ -743,22 +728,19 @@
 
             SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
 
-            // Bold line1
             ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            // Bold line2 (achievement name)
             int start = line1.length();
             int end = line1.length() + line2.length();
             ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            // Make achievement name bigger (e.g. 1.3x)
             ssb.setSpan(new RelativeSizeSpan(1.3f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             tv.setText(ssb);
             Toast toast = new Toast(this);
             toast.setView(toastView);
             toast.setDuration(Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100); // 100 px mula sa top
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
             toast.show();
         }
 
