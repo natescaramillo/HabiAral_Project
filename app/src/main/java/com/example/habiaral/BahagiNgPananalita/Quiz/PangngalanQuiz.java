@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -275,7 +276,7 @@ public class PangngalanQuiz extends AppCompatActivity {
 
         taposButton.setOnClickListener(v -> {
             if (resultDialog.isShowing()) resultDialog.dismiss();
-            Intent intent = new Intent(PangngalanQuiz.this, BahagiNgPananalita.class);
+            Intent intent = new Intent(PangngalanQuiz.this, PandiwaLesson.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();

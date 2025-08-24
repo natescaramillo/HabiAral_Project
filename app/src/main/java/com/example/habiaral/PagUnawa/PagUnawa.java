@@ -25,7 +25,6 @@ public class PagUnawa extends AppCompatActivity {
 
     ConstraintLayout btnKwento1, btnKwento2, btnKwento3;
     FrameLayout kwento1Lock, kwento2Lock, kwento3Lock;
-
     FirebaseFirestore db;
     String uid;
 
@@ -35,6 +34,7 @@ public class PagUnawa extends AppCompatActivity {
         setContentView(R.layout.pag_unawa);
 
         initViews();
+        lockAllButtons();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -47,31 +47,27 @@ public class PagUnawa extends AppCompatActivity {
         if (cachedData != null) {
             updateUIFromProgress(cachedData);
         }
-        db.collection("students").document(uid).get().addOnSuccessListener(studentSnap -> {
-            if (studentSnap.exists()) {
-                if (studentSnap.contains("studentId")) {
-                    String studentID = studentSnap.getString("studentId");
 
-                    Map<String, Object> update = new HashMap<>();
-                    update.put("studentId", studentID);
+        db.collection("students").document(uid).get()
+                .addOnSuccessListener(studentSnap -> {
+                    if (studentSnap.exists()) {
+                        if (studentSnap.contains("studentId")) {
+                            String studentID = studentSnap.getString("studentId");
+                            Map<String, Object> update = new HashMap<>();
+                            update.put("studentId", studentID);
 
-                    db.collection("module_progress").document(uid)
-                            .set(update, SetOptions.merge())
-                            .addOnSuccessListener(unused -> {
-                                loadLessonProgressFromFirestore();
-                            })
-                            .addOnFailureListener(e -> {
-                                loadLessonProgressFromFirestore();
-                            });
-                } else {
-                    loadLessonProgressFromFirestore();
-                }
-            } else {
-                loadLessonProgressFromFirestore();
-            }
-        }).addOnFailureListener(e -> {
-            loadLessonProgressFromFirestore();
-        });
+                            db.collection("module_progress").document(uid)
+                                    .set(update, SetOptions.merge())
+                                    .addOnSuccessListener(unused -> loadLessonProgressFromFirestore())
+                                    .addOnFailureListener(e -> loadLessonProgressFromFirestore());
+                        } else {
+                            loadLessonProgressFromFirestore();
+                        }
+                    } else {
+                        loadLessonProgressFromFirestore();
+                    }
+                })
+                .addOnFailureListener(e -> loadLessonProgressFromFirestore());
     }
 
     private void loadLessonProgressFromFirestore() {
@@ -86,7 +82,10 @@ public class PagUnawa extends AppCompatActivity {
         Map<String, Object> data = snapshot.getData();
         if (data == null) return;
 
+        // Update cache
         LessonProgressCache.setData(data);
+
+        // Update UI
         updateUIFromProgress(data);
     }
 
@@ -95,19 +94,20 @@ public class PagUnawa extends AppCompatActivity {
 
         Object module3Obj = data.get("module_3");
         if (!(module3Obj instanceof Map)) return;
-        Map<String, Object> module3 = (Map<String, Object>) module3Obj;
 
+        Map<String, Object> module3 = (Map<String, Object>) module3Obj;
         Object lessonsObj = module3.get("lessons");
         if (!(lessonsObj instanceof Map)) return;
+
         Map<String, Object> lessons = (Map<String, Object>) lessonsObj;
 
         boolean kwento1Done = isCompleted(lessons, "kwento1");
         boolean kwento2Done = isCompleted(lessons, "kwento2");
         boolean kwento3Done = isCompleted(lessons, "kwento3");
 
-        unlockButton(btnKwento1, true, kwento1Lock, new Intent(this, Kwento1.class));
-        unlockButton(btnKwento2, kwento1Done, kwento2Lock, new Intent(this, Kwento2.class));
-        unlockButton(btnKwento3, kwento2Done, kwento3Lock, new Intent(this, Kwento3.class));
+        unlockButton(btnKwento1, true, kwento1Lock);
+        unlockButton(btnKwento2, kwento1Done, kwento2Lock);
+        unlockButton(btnKwento3, kwento2Done, kwento3Lock);
 
         checkAndCompleteModule(kwento1Done, kwento2Done, kwento3Done);
     }
@@ -115,21 +115,16 @@ public class PagUnawa extends AppCompatActivity {
     private boolean isCompleted(Map<String, Object> lessons, String key) {
         Object lessonObj = lessons.get(key);
         if (!(lessonObj instanceof Map)) return false;
+
         Map<String, Object> lessonData = (Map<String, Object>) lessonObj;
         return "completed".equals(lessonData.get("status"));
     }
 
-    private void unlockButton(ConstraintLayout layout, boolean isUnlocked, FrameLayout lock, Intent intent) {
+    private void unlockButton(ConstraintLayout layout, boolean isUnlocked, FrameLayout lock) {
         layout.setEnabled(isUnlocked);
         layout.setClickable(isUnlocked);
         layout.setAlpha(isUnlocked ? 1.0f : 0.5f);
         lock.setVisibility(isUnlocked ? FrameLayout.GONE : FrameLayout.VISIBLE);
-
-        if (isUnlocked) {
-            layout.setOnClickListener(v -> startActivity(intent));
-        } else {
-            layout.setOnClickListener(null);
-        }
     }
 
     private void initViews() {
@@ -140,6 +135,10 @@ public class PagUnawa extends AppCompatActivity {
         kwento1Lock = findViewById(R.id.kwento1Lock);
         kwento2Lock = findViewById(R.id.kwento2Lock);
         kwento3Lock = findViewById(R.id.kwento3Lock);
+
+        btnKwento1.setOnClickListener(v -> startActivity(new Intent(this, Kwento1.class)));
+        btnKwento2.setOnClickListener(v -> startActivity(new Intent(this, Kwento2.class)));
+        btnKwento3.setOnClickListener(v -> startActivity(new Intent(this, Kwento3.class)));
     }
 
     private void checkAndCompleteModule(boolean kwento1Done, boolean kwento2Done, boolean kwento3Done) {
@@ -147,10 +146,23 @@ public class PagUnawa extends AppCompatActivity {
 
         Map<String, Object> update = new HashMap<>();
         Map<String, Object> module3Updates = new HashMap<>();
+
         module3Updates.put("modulename", "Pag-unawa");
         module3Updates.put("status", allDone ? "completed" : "in_progress");
+
         update.put("module_3", module3Updates);
 
         db.collection("module_progress").document(uid).set(update, SetOptions.merge());
+    }
+
+    private void lockAllButtons() {
+        lockButton(btnKwento1);
+        lockButton(btnKwento2);
+        lockButton(btnKwento3);
+    }
+
+    private void lockButton(ConstraintLayout button) {
+        button.setClickable(false);
+        button.setAlpha(0.5f);
     }
 }

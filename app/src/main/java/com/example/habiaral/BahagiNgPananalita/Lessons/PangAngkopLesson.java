@@ -28,7 +28,7 @@ public class PangAngkopLesson extends AppCompatActivity {
 
     private final int[] pangAngkopLesson = {
             R.drawable.pangangkop01, R.drawable.pangangkop02, R.drawable.pangangkop03,
-            R.drawable.pangangkop04, R.drawable.pangangkop05
+            R.drawable.pangangkop04
     };
     private android.os.Handler textHandler = new android.os.Handler();
     private Map<Integer, List<String>> pageLines = new HashMap<>();
