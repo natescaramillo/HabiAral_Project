@@ -191,20 +191,20 @@ public class PalaroBaguhan extends AppCompatActivity {
 
     private void finishQuiz() {
         isGameOver = true;
-        if (tts != null) {
-            tts.stop();
-        }
+
+        if (tts != null) tts.stop();
+
         saveBaguhanScore();
         unlockAchievementA8IfEligible();
+        if (correctAnswerCount >= 20) unlockPerfectStreakAchievement();
 
-        if (correctAnswerCount >= 20) {
-            unlockPerfectStreakAchievement();
-        }
+        showFinishDialog();
+    }
 
-
-        View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
+    private void showFinishDialog() {
+        View view = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
         AlertDialog dialog = new AlertDialog.Builder(PalaroBaguhan.this)
-                .setView(showTotalPoints)
+                .setView(view)
                 .setCancelable(false)
                 .create();
         dialog.show();
@@ -213,19 +213,13 @@ public class PalaroBaguhan extends AppCompatActivity {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
 
-        TextView titleText = showTotalPoints.findViewById(R.id.textView11);
-        TextView scoreTextDialog = showTotalPoints.findViewById(R.id.scoreText);
-        scoreTextDialog.setText(String.valueOf(baguhanScore));
+        TextView titleText = view.findViewById(R.id.textView11);
+        TextView scoreText = view.findViewById(R.id.scoreText);
+        scoreText.setText(String.valueOf(baguhanScore));
 
-        if (isTimeUp) {
-            titleText.setText("Ubos na ang iyong oras");
-        } else if (remainingHearts <= 0) {
-            titleText.setText("Ubos na ang iyong buhay");
-        } else {
-            titleText.setText("Natapos na ang palaro");
-        }
+        titleText.setText(getFinishMessage());
 
-        Button balik = showTotalPoints.findViewById(R.id.btn_balik);
+        Button balik = view.findViewById(R.id.btn_balik);
         balik.setOnClickListener(v -> {
             dialog.dismiss();
             Intent resultIntent = new Intent();
@@ -233,7 +227,12 @@ public class PalaroBaguhan extends AppCompatActivity {
             setResult(RESULT_OK, resultIntent);
             finish();
         });
+    }
 
+    private String getFinishMessage() {
+        if (isTimeUp) return "Ubos na ang iyong oras";
+        if (remainingHearts <= 0) return "Ubos na ang iyong buhay";
+        return "Natapos na ang palaro";
     }
 
     private void saveCorrectBaguhanAnswer(String uid, String firebaseUID, String questionId) {
@@ -271,7 +270,6 @@ public class PalaroBaguhan extends AppCompatActivity {
             });
         });
     }
-
 
     private void unlockAchievementA8IfEligible() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -464,20 +462,26 @@ public class PalaroBaguhan extends AppCompatActivity {
         if (husayUnlocked) return;
         husayUnlocked = true;
 
-        Map<String, Object> updates = new HashMap<>();
-        docRef.set(updates, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    if (countDownTimer != null) {
-                        countDownTimer.cancel();
-                    }
-                    if (tts != null) {
-                        tts.stop();
-                    }
-                    Toast.makeText(this, "Nabuksan na ang Husay!", Toast.LENGTH_LONG).show();
-                });
+        docRef.get().addOnSuccessListener(snapshot -> {
+            boolean alreadyUnlocked = snapshot.contains("husay_unlocked") && snapshot.getBoolean("husay_unlocked");
+
+            if (!alreadyUnlocked) {
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("husay_unlocked", true);
+
+                docRef.set(updates, SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> {
+                            if (countDownTimer != null) {
+                                countDownTimer.cancel();
+                            }
+                            if (tts != null) {
+                                tts.stop();
+                            }
+                            Toast.makeText(this, "Nabuksan na ang Husay!", Toast.LENGTH_LONG).show();
+                        });
+            }
+        });
     }
-
-
 
     private void showCountdownThenLoadQuestion() {
         db.collection("baguhan").get().addOnSuccessListener(querySnapshot -> {
