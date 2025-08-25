@@ -4,15 +4,16 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,52 +28,260 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PangawingQuiz extends AppCompatActivity {
 
-    Button nextButton;
+    private List<Map<String, Object>> quizList = new ArrayList<>();
+    private Button answer1, answer2, answer3, nextButton;
+    private TextView questionText, questionTitle;
+    private CountDownTimer countDownTimer;
+    private long timeLeftInMillis = 10000;
+    private boolean quizFinished = false;
+    private boolean isAnswered = false;
+    private String correctAnswer = "";
+    private AlertDialog resultDialog;
+    private String lessonName = "";
+    private int correctAnswers = 0;
+    private int totalQuestions = 0;
+    private int currentIndex = -1;
+    private ProgressBar timerBar;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bahagi_ng_pananalita_pangawing_quiz);
 
+        questionTitle = findViewById(R.id.questionTitle);
+        questionText = findViewById(R.id.pangawing_questionText);
+        answer1 = findViewById(R.id.answer1);
+        answer2 = findViewById(R.id.answer2);
+        answer3 = findViewById(R.id.answer3);
         nextButton = findViewById(R.id.pangawingNextButton);
+        timerBar = findViewById(R.id.timerBar);
 
-        nextButton.setOnClickListener(view -> {
-            saveQuizResultToFirestore();
-            showResultDialog();
+        db = FirebaseFirestore.getInstance();
+
+        loadQuizDocument();
+
+        View.OnClickListener choiceClickListener = view -> {
+            if (isAnswered) return;
+            isAnswered = true;
+            nextButton.setEnabled(true);
+            disableAnswers();
+
+            Button selected = (Button) view;
+            String selectedAnswer = selected.getText().toString();
+
+            if (selectedAnswer.equals(correctAnswer)) {
+                correctAnswers++;
+            }
+        };
+
+        answer1.setOnClickListener(choiceClickListener);
+        answer2.setOnClickListener(choiceClickListener);
+        answer3.setOnClickListener(choiceClickListener);
+
+        nextButton.setOnClickListener(v -> {
+            if (currentIndex == -1) {
+                showCountdownThenLoadQuestion();
+                return;
+            }
+
+            if (!isAnswered) {
+                Toast.makeText(this, "Pumili muna ng sagot bago mag-next!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            currentIndex++;
+
+            if (currentIndex < quizList.size()) {
+                loadQuestion(currentIndex);
+            } else {
+                quizFinished = true;
+                if (countDownTimer != null) countDownTimer.cancel();
+
+                // Save lesson and unlock achievements
+                saveQuizResultToFirestore();
+                showResultDialog();
+            }
         });
     }
 
-    // =========================
-    // DIALOGS & NAVIGATION
-    // =========================
+    private void resetButtons() {
+        int defaultBg = R.drawable.answer_option_bg;
+        answer1.setBackgroundResource(defaultBg);
+        answer2.setBackgroundResource(defaultBg);
+        answer3.setBackgroundResource(defaultBg);
+
+        answer1.setEnabled(true);
+        answer2.setEnabled(true);
+        answer3.setEnabled(true);
+
+        isAnswered = false;
+        nextButton.setEnabled(false);
+    }
+
+    private void disableAnswers() {
+        answer1.setEnabled(false);
+        answer2.setEnabled(false);
+        answer3.setEnabled(false);
+    }
+
+    private void showCountdownThenLoadQuestion() {
+        questionText.setText("3");
+        new Handler().postDelayed(() -> {
+            questionText.setText("2");
+            new Handler().postDelayed(() -> {
+                questionText.setText("1");
+                new Handler().postDelayed(() -> {
+                    questionText.setText("");
+                    currentIndex = 0;
+                    loadQuestion(currentIndex);
+                }, 1000);
+            }, 1000);
+        }, 1000);
+    }
+
+    private void loadQuizDocument() {
+        db.collection("quiz").document("Pangawing")
+                .get().addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        lessonName = doc.getString("lesson");
+                        quizList = (List<Map<String, Object>>) doc.get("Quizzes");
+
+                        if (quizList != null && !quizList.isEmpty()) {
+                            Collections.shuffle(quizList);
+                        }
+
+                        if (quizList != null && !quizList.isEmpty()) {
+                            nextButton.setEnabled(true);
+                            questionTitle.setText("Simula");
+                            questionText.setText("Pumindot sa 'Next' para simulan ang quiz.");
+                            answer1.setVisibility(View.GONE);
+                            answer2.setVisibility(View.GONE);
+                            answer3.setVisibility(View.GONE);
+                        }
+                    }
+                }).addOnFailureListener(e ->
+                        Toast.makeText(this, "Failed to load quiz data.", Toast.LENGTH_SHORT).show());
+    }
+
+    private void loadQuestion(int index) {
+        if (countDownTimer != null) countDownTimer.cancel();
+        if (quizList == null || quizList.isEmpty()) return;
+
+        Map<String, Object> qData = quizList.get(index);
+
+        String question = (String) qData.get("question");
+        List<String> choices = (List<String>) qData.get("choices");
+        correctAnswer = (String) qData.get("correct_choice");
+
+        if (choices != null && choices.size() >= 3) {
+            List<String> shuffledChoices = new ArrayList<>(choices);
+            Collections.shuffle(shuffledChoices);
+            questionTitle.setText("Tanong " + (index + 1));
+            questionText.setText(question);
+
+            answer1.setVisibility(View.VISIBLE);
+            answer2.setVisibility(View.VISIBLE);
+            answer3.setVisibility(View.VISIBLE);
+
+            answer1.setText(shuffledChoices.get(0));
+            answer2.setText(shuffledChoices.get(1));
+            answer3.setText(shuffledChoices.get(2));
+
+            resetButtons();
+            startTimer();
+
+            totalQuestions = quizList.size();
+        }
+    }
+
+    private void startTimer() {
+        if (countDownTimer != null) countDownTimer.cancel();
+        timeLeftInMillis = 10000;
+
+        timerBar.setMax((int) timeLeftInMillis);
+        timerBar.setProgress((int) timeLeftInMillis);
+
+        countDownTimer = new CountDownTimer(timeLeftInMillis, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftInMillis = millisUntilFinished;
+                timerBar.setProgress((int) millisUntilFinished);
+            }
+
+            @Override
+            public void onFinish() {
+                if (quizFinished) return;
+                isAnswered = true;
+                disableAnswers();
+                nextButton.setEnabled(true);
+
+                new Handler().postDelayed(() -> {
+                    if (!quizFinished) nextButton.performClick();
+                }, 500);
+            }
+        }.start();
+    }
+
     private void showResultDialog() {
+        if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_box_quiz_score, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_quiz_score, null);
         builder.setView(dialogView);
         builder.setCancelable(false);
 
         Button retryButton = dialogView.findViewById(R.id.retryButton);
-        Button homeButton = dialogView.findViewById(R.id.finishButton);
+        Button finishButton = dialogView.findViewById(R.id.finishButton);
+        Button homeButton = dialogView.findViewById(R.id.returnButton);
 
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.show();
+        ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
+        TextView scoreNumber = dialogView.findViewById(R.id.textView6);
+        TextView resultText = dialogView.findViewById(R.id.textView7);
+
+        progressBar.setMax(totalQuestions);
+        progressBar.setProgress(correctAnswers);
+        scoreNumber.setText(correctAnswers + "/" + totalQuestions);
+
+        if (correctAnswers >= 6) {
+            resultText.setText("Ikaw ay nakapasa!");
+            finishButton.setEnabled(true);
+        } else {
+            resultText.setText("Ikaw ay nabigo, subukan muli!");
+            finishButton.setEnabled(false);
+            finishButton.setAlpha(0.5f);
+        }
+
+        resultDialog = builder.create();
+        resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if (!isFinishing()) resultDialog.show();
 
         retryButton.setOnClickListener(v -> {
-            dialog.dismiss();
-            Intent intent = getIntent();
-            finish();
+            if (resultDialog.isShowing()) resultDialog.dismiss();
+            currentIndex = 0;
+            correctAnswers = 0;
+            Collections.shuffle(quizList);
+            loadQuestion(currentIndex);
+        });
+
+        finishButton.setOnClickListener(v -> {
+            if (resultDialog.isShowing()) resultDialog.dismiss();
+            Intent intent = new Intent(PangawingQuiz.this, BahagiNgPananalita.class); // or next lesson
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+            finish();
         });
 
         homeButton.setOnClickListener(v -> {
-            dialog.dismiss();
+            if (resultDialog.isShowing()) resultDialog.dismiss();
             Intent intent = new Intent(PangawingQuiz.this, BahagiNgPananalita.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -80,46 +289,12 @@ public class PangawingQuiz extends AppCompatActivity {
         });
     }
 
-    private void showAchievementUnlockedDialog(String title, int imageRes) {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View toastView = inflater.inflate(R.layout.achievement_unlocked, null);  // palitan ng pangalan ng XML file mo
-
-        ImageView iv = toastView.findViewById(R.id.imageView19);
-        TextView tv = toastView.findViewById(R.id.textView14);
-
-        iv.setImageResource(imageRes);
-        String line1 = "Nakamit mo na ang parangal:\n";
-        String line2 = title;
-
-        SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
-
-        ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        int start = line1.length();
-        int end = line1.length() + line2.length();
-        ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        ssb.setSpan(new RelativeSizeSpan(1.3f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        tv.setText(ssb);
-        Toast toast = new Toast(this);
-        toast.setView(toastView);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
-        toast.show();
-    }
-
-    // =========================
-    // FIRESTORE UPDATES
-    // =========================
     private void saveQuizResultToFirestore() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
         String uid = user.getUid();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // ✅ 1. Build lesson progress update
         Map<String, Object> pangawingStatus = new HashMap<>();
         pangawingStatus.put("status", "completed");
 
@@ -132,43 +307,51 @@ public class PangawingQuiz extends AppCompatActivity {
 
         Map<String, Object> moduleUpdate = Map.of("module_1", updateMap);
 
-        // ✅ 2. Save to Firestore
         db.collection("module_progress")
                 .document(uid)
                 .set(moduleUpdate, SetOptions.merge())
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Congratulations! You have completed all lessons!", Toast.LENGTH_LONG).show();
                     checkAndUnlockAchievement();
                 });
 
-        // ✅ 3. Update the in-memory cache immediately
         if (LessonProgressCache.getData() != null) {
             Map<String, Object> cachedData = LessonProgressCache.getData();
-
-            // Ensure module_1 exists
-            if (!cachedData.containsKey("module_1")) {
-                cachedData.put("module_1", new HashMap<String, Object>());
-            }
-
+            if (!cachedData.containsKey("module_1")) cachedData.put("module_1", new HashMap<String, Object>());
             Map<String, Object> cachedModule1 = (Map<String, Object>) cachedData.get("module_1");
             cachedModule1.put("lessons", lessonsMap);
             cachedModule1.put("current_lesson", "pangawing");
-
             LessonProgressCache.setData(cachedData);
         }
     }
 
-    // =========================
-    // ACHIEVEMENTS
-    // =========================
+    private void showAchievementUnlockedDialog(String title, int imageRes) {
+        View toastView = getLayoutInflater().inflate(R.layout.achievement_unlocked, null);
+        ImageView iv = toastView.findViewById(R.id.imageView19);
+        TextView tv = toastView.findViewById(R.id.textView14);
+
+        iv.setImageResource(imageRes);
+        String line1 = "Nakamit mo na ang parangal:\n";
+        String line2 = title;
+
+        SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
+        ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.setSpan(new StyleSpan(Typeface.BOLD), line1.length(), line1.length() + line2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.setSpan(new android.text.style.RelativeSizeSpan(1.3f), line1.length(), line1.length() + line2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tv.setText(ssb);
+        Toast toast = new Toast(this);
+        toast.setView(toastView);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
+        toast.show();
+    }
+
     private void checkAndUnlockAchievement() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
-
         String uid = user.getUid();
         String saCode = "SA11";
         String achievementId = "A11";
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("module_progress").document(uid).get().addOnSuccessListener(snapshot -> {
             if (!snapshot.exists()) return;
@@ -194,11 +377,8 @@ public class PangawingQuiz extends AppCompatActivity {
             db.collection("student_achievements").document(uid).get().addOnSuccessListener(saSnapshot -> {
                 if (saSnapshot.exists()) {
                     Map<String, Object> achievements = (Map<String, Object>) saSnapshot.get("achievements");
-                    if (achievements != null && achievements.containsKey(saCode)) {
-                        return;
-                    }
+                    if (achievements != null && achievements.containsKey(saCode)) return;
                 }
-
                 continueUnlockingAchievement(db, uid, saCode, achievementId);
             });
         });
@@ -233,5 +413,12 @@ public class PangawingQuiz extends AppCompatActivity {
                         }));
             });
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
+        if (countDownTimer != null) countDownTimer.cancel();
+        super.onDestroy();
     }
 }

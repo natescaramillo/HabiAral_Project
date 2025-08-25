@@ -223,7 +223,6 @@ public class PangngalanQuiz extends AppCompatActivity {
                 isAnswered = true;
                 disableAnswers();
                 nextButton.setEnabled(true);
-                Toast.makeText(PangngalanQuiz.this, "Time's up!", Toast.LENGTH_SHORT).show();
 
                 new Handler().postDelayed(() -> {
                     if (!quizFinished) nextButton.performClick();
@@ -269,7 +268,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         retryButton.setOnClickListener(v -> {
             if (resultDialog.isShowing()) resultDialog.dismiss();
             currentIndex = 0;
-            correctAnswers = 0; // reset score
+            correctAnswers = 0;
             Collections.shuffle(quizList);
             loadQuestion(currentIndex);
         });
