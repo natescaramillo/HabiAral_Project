@@ -51,7 +51,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     private Button unlockButton, unlockButton1;
     private boolean isGameOver = false;
     private CountDownTimer countDownTimer;
-    private static final long TOTAL_TIME = 30000;
+    private static final long TOTAL_TIME = 10000;
     private long timeLeft = TOTAL_TIME;
     private FirebaseFirestore db;
     private int correctAnswerCount = 0;
@@ -423,39 +423,27 @@ public class PalaroBaguhan extends AppCompatActivity {
         if (currentUser == null) return;
 
         String uid = currentUser.getUid();
+        DocumentReference docRef = db.collection("minigame_progress").document(uid);
 
-        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
-            if (!studentDoc.exists()) {
-                return;
-            }
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("baguhan_score", com.google.firebase.firestore.FieldValue.increment(baguhanScore));
+        updates.put("total_score", com.google.firebase.firestore.FieldValue.increment(baguhanScore));
 
-            String studentId = studentDoc.getString("studentId");
-            if (studentId == null || studentId.isEmpty()) {
-                return;
-            }
+        docRef.set(updates, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    baguhanScore = 0;
 
-            DocumentReference docRef = db.collection("minigame_progress").document(uid);
+                    docRef.get().addOnSuccessListener(snapshot -> {
+                        int baguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
+                        int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
+                        int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
 
-            docRef.get().addOnSuccessListener(snapshot -> {
-                int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
-                int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
-                int oldBaguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
-                int newBaguhanTotal = oldBaguhan + baguhanScore;
+                        int totalScore = baguhan + husay + dalubhasa;
 
-                Map<String, Object> updates = new HashMap<>();
-                updates.put("baguhan_score", newBaguhanTotal);
-                updates.put("studentId", studentId);
-                updates.put("total_score", newBaguhanTotal + husay + dalubhasa);
-
-                docRef.set(updates, SetOptions.merge())
-                        .addOnSuccessListener(aVoid -> {
-                            if (newBaguhanTotal >= 400) {
-                                unlockHusay(docRef);
-                            }
-                            baguhanScore = 0;
-                        });
-            });
-        });
+                        if (totalScore >= 400) unlockHusay(docRef);
+                        if (totalScore >= 800) unlockDalubhasa(docRef);
+                    });
+                });
     }
 
     private void unlockHusay(DocumentReference docRef) {
@@ -464,20 +452,32 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         docRef.get().addOnSuccessListener(snapshot -> {
             boolean alreadyUnlocked = snapshot.contains("husay_unlocked") && snapshot.getBoolean("husay_unlocked");
-
             if (!alreadyUnlocked) {
                 Map<String, Object> updates = new HashMap<>();
                 updates.put("husay_unlocked", true);
 
                 docRef.set(updates, SetOptions.merge())
                         .addOnSuccessListener(aVoid -> {
-                            if (countDownTimer != null) {
-                                countDownTimer.cancel();
-                            }
-                            if (tts != null) {
-                                tts.stop();
-                            }
+                            if (countDownTimer != null) countDownTimer.cancel();
+                            if (tts != null) tts.stop();
                             Toast.makeText(this, "Nabuksan na ang Husay!", Toast.LENGTH_LONG).show();
+                        });
+            }
+        });
+    }
+
+    private void unlockDalubhasa(DocumentReference docRef) {
+        docRef.get().addOnSuccessListener(snapshot -> {
+            boolean alreadyUnlocked = snapshot.contains("dalubhasa_unlocked") && snapshot.getBoolean("dalubhasa_unlocked");
+            if (!alreadyUnlocked) {
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("dalubhasa_unlocked", true);
+
+                docRef.set(updates, SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> {
+                            if (countDownTimer != null) countDownTimer.cancel();
+                            if (tts != null) tts.stop();
+                            Toast.makeText(this, "Nabuksan na ang Dalubhasa!", Toast.LENGTH_LONG).show();
                         });
             }
         });

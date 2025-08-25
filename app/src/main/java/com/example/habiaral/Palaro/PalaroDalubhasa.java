@@ -13,7 +13,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -62,7 +61,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private Button btnTapos;
 
     private CountDownTimer countDownTimer;
-    private static final long TOTAL_TIME = 60000000;
+    private static final long TOTAL_TIME = 300000;
     private long timeLeft = TOTAL_TIME;
 
     private FirebaseFirestore db;
@@ -464,8 +463,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         Toast.makeText(this, "Tapos na ang laro!", Toast.LENGTH_SHORT).show();
     }
 
-
-
     private void saveDalubhasaScore() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null || dalubhasaScore <= 0) return;
@@ -486,24 +483,19 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
             DocumentReference docRef = db.collection("minigame_progress").document(uid);
 
-            docRef.get().addOnSuccessListener(snapshot -> {
-                int baguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
-                int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
-                int oldDalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("dalubhasa_score", com.google.firebase.firestore.FieldValue.increment(dalubhasaScore));
+            updates.put("total_score", com.google.firebase.firestore.FieldValue.increment(dalubhasaScore));
+            updates.put("studentId", studentId);
 
-                int newDalubhasaTotal = oldDalubhasa + dalubhasaScore;
-                int totalScore = baguhan + husay + newDalubhasaTotal;
+            docRef.set(updates, SetOptions.merge())
+                    .addOnSuccessListener(aVoid -> {
+                        dalubhasaScore = 0;
 
-                Map<String, Object> updates = new HashMap<>();
-                updates.put("dalubhasa_score", newDalubhasaTotal);
-                updates.put("studentId", studentId);
-                updates.put("total_score", totalScore);
-
-                docRef.set(updates, SetOptions.merge())
-                        .addOnSuccessListener(aVoid -> {
-                            dalubhasaScore = 0;
+                        docRef.get().addOnSuccessListener(snapshot -> {
+                            int totalScore = snapshot.contains("total_score") ? snapshot.getLong("total_score").intValue() : 0;
                         });
-            });
+                    });
         });
     }
 
