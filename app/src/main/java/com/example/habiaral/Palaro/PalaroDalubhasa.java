@@ -459,8 +459,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
             dialog.dismiss();
             finish();
         });
-
-        Toast.makeText(this, "Tapos na ang laro!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveDalubhasaScore() {

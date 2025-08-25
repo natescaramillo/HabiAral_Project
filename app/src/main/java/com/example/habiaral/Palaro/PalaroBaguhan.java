@@ -155,7 +155,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                             }
 
                             new Handler().postDelayed(() -> {
-                                if (!isGameOver) {
+                                if (!isGameOver && !isFinishing()) {
                                     currentQuestionNumber++;
                                     resetForNextQuestion();
                                     loadBaguhanQuestion();
@@ -191,7 +191,6 @@ public class PalaroBaguhan extends AppCompatActivity {
 
     private void finishQuiz() {
         isGameOver = true;
-
         if (tts != null) tts.stop();
 
         saveBaguhanScore();
