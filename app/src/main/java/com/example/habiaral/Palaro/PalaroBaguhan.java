@@ -9,7 +9,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +57,6 @@ public class PalaroBaguhan extends AppCompatActivity {
     private int correctAnswerCount = 0;
     private int baguhanScore = 0;
     private int currentQuestionNumber = 1;
-    private static final String DOCUMENT_ID = "MP1";
     private boolean isAnswered = false;
     private boolean isTimeUp = false;
     private String studentID;
@@ -67,12 +65,8 @@ public class PalaroBaguhan extends AppCompatActivity {
     private int correctStreak = 0;
     private ImageView[] heartIcons;
     private List<String> questionIds = new ArrayList<>();
-    private List<Map<String, Object>> questions = new ArrayList<>();
-    private int currentQuestionIndex = 0;
     private long startTime;
     private boolean husayUnlocked = false;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +75,7 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
-                Locale tagalogLocale = new Locale("fil", "PH");
-                tts.setLanguage(tagalogLocale);
+                tts.setLanguage(new Locale("fil", "PH"));
                 tts.setSpeechRate(1.3f);
 
                 new Handler().postDelayed(() -> loadCharacterLine("MCL1"), 300);
@@ -91,9 +84,7 @@ public class PalaroBaguhan extends AppCompatActivity {
         });
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            studentID = currentUser.getUid();
-        }
+        if (currentUser != null) studentID = currentUser.getUid();
 
         baguhanQuestion = findViewById(R.id.baguhan_instructionText);
         answer1 = findViewById(R.id.baguhan_answer1);
@@ -126,12 +117,9 @@ public class PalaroBaguhan extends AppCompatActivity {
             selectedAnswer = (Button) view;
         };
 
-        answer1.setOnClickListener(answerClickListener);
-        answer2.setOnClickListener(answerClickListener);
-        answer3.setOnClickListener(answerClickListener);
-        answer4.setOnClickListener(answerClickListener);
-        answer5.setOnClickListener(answerClickListener);
-        answer6.setOnClickListener(answerClickListener);
+        for (Button btn : new Button[]{answer1, answer2, answer3, answer4, answer5, answer6}) {
+            btn.setOnClickListener(answerClickListener);
+        }
 
         unlockButton.setOnClickListener(v -> {
             if (isTimeUp || isAnswered) return;
@@ -141,9 +129,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                 String userAnswer = selectedAnswer.getText().toString();
                 String correctDocId = questionIds.get(currentQuestionNumber);
 
-
-                db.collection("baguhan").document(correctDocId)
-                        .get()
+                db.collection("baguhan").document(correctDocId).get()
                         .addOnSuccessListener(documentSnapshot -> {
                             if (documentSnapshot.exists()) {
                                 String correctAnswer = documentSnapshot.getString("correctAnswer");
@@ -152,36 +138,21 @@ public class PalaroBaguhan extends AppCompatActivity {
                                     correctAnswerCount++;
                                     baguhanScore += 5;
                                     correctStreak++;
-
-                                    if (correctStreak == 1) {
-                                        loadCharacterLine("MCL2");
-                                    } else if (correctStreak == 2) {
-                                        loadCharacterLine("MCL3");
-                                    } else if (correctStreak >= 3) {
-                                        loadCharacterLine("MCL4");
-                                    }
+                                    handleCorrectStreak(correctStreak);
 
                                     Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
                                     String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
                                     saveCorrectBaguhanAnswer(uid, studentID, correctDocId);
-
 
                                     timeLeft = Math.min(timeLeft + 3000, TOTAL_TIME);
                                     startTimer(timeLeft);
                                 } else {
                                     correctStreak = 0;
                                     deductHeart();
-                                    if (remainingHearts > 0) {
-                                        loadCharacterLine("MCL6");
-                                    } else {
-                                        loadCharacterLine("MCL5");
-                                    }
-
+                                    loadCharacterLine(remainingHearts > 0 ? "MCL6" : "MCL5");
                                     Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
                                 }
                             }
-
 
                             new Handler().postDelayed(() -> {
                                 if (!isGameOver) {
@@ -198,7 +169,6 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         unlockButton1.setOnLongClickListener(v -> {
             saveBaguhanScore();
-            Toast.makeText(this, "Naitala na ang progreso. Paalam muna!", Toast.LENGTH_SHORT).show();
             return true;
         });
 
@@ -211,6 +181,12 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         Button umalisButton = findViewById(R.id.UnlockButtonPalaro1);
         umalisButton.setOnClickListener(v -> showExitConfirmationDialog());
+    }
+
+    private void handleCorrectStreak(int streak) {
+        if (streak == 1) loadCharacterLine("MCL2");
+        else if (streak == 2) loadCharacterLine("MCL3");
+        else if (streak >= 3) loadCharacterLine("MCL4");
     }
 
     private void finishQuiz() {
@@ -258,8 +234,6 @@ public class PalaroBaguhan extends AppCompatActivity {
             finish();
         });
 
-        Toast.makeText(this, "Tapos na ang laro!", Toast.LENGTH_SHORT).show();
-
     }
 
     private void saveCorrectBaguhanAnswer(String uid, String firebaseUID, String questionId) {
@@ -267,7 +241,6 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         db.collection("students").document(firebaseUID).get().addOnSuccessListener(studentDoc -> {
             if (!studentDoc.exists() || !studentDoc.contains("studentId")) {
-                Toast.makeText(this, "Walang studentId na nahanap.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -455,13 +428,11 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
             if (!studentDoc.exists()) {
-                Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             String studentId = studentDoc.getString("studentId");
             if (studentId == null || studentId.isEmpty()) {
-                Toast.makeText(this, "Student ID not found", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -502,7 +473,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                     if (tts != null) {
                         tts.stop();
                     }
-
                     Toast.makeText(this, "Nabuksan na ang Husay!", Toast.LENGTH_LONG).show();
                 });
     }
@@ -538,8 +508,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                         }
                     }
                 });
-            } else {
-                Toast.makeText(this, "❗ Walang tanong sa database!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -608,7 +576,6 @@ public class PalaroBaguhan extends AppCompatActivity {
             heartIcons[remainingHearts].setVisibility(View.INVISIBLE);
 
             if (remainingHearts == 0) {
-                Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
                 if (tts != null) tts.stop();
                 disableAnswerSelection();
                 finishQuiz();
@@ -672,15 +639,10 @@ public class PalaroBaguhan extends AppCompatActivity {
                             answer5.setText(choices.get(4));
                             answer6.setText(choices.get(5));
                         });
-                    } else {
-                        Toast.makeText(this, "Invalid choices sa tanong: " + questionDocId, Toast.LENGTH_SHORT).show();
                     }
-
                     isAnswered = false;
                     selectedAnswer = null;
                     resetAnswerBackgrounds();
-
-
                 });
     }
 
@@ -765,6 +727,4 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         backDialog.show();
     }
-
 }
-
