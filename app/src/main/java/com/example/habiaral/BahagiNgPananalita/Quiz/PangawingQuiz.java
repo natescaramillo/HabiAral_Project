@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PangUkolLesson;
 import com.example.habiaral.R;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,6 +47,8 @@ public class PangawingQuiz extends AppCompatActivity {
     private String correctAnswer = "";
     private AlertDialog resultDialog;
     private String lessonName = "";
+    private String introText = "";
+
     private int correctAnswers = 0;
     private int totalQuestions = 0;
     private int currentIndex = -1;
@@ -106,8 +109,10 @@ public class PangawingQuiz extends AppCompatActivity {
                 quizFinished = true;
                 if (countDownTimer != null) countDownTimer.cancel();
 
-                // Save lesson and unlock achievements
-                saveQuizResultToFirestore();
+                if (correctAnswers >= 6) {
+                    saveQuizResultToFirestore();
+                }
+
                 showResultDialog();
             }
         });
@@ -149,9 +154,10 @@ public class PangawingQuiz extends AppCompatActivity {
     }
 
     private void loadQuizDocument() {
-        db.collection("quiz").document("Pangawing")
+        db.collection("quiz").document("Q10")
                 .get().addOnSuccessListener(doc -> {
                     if (doc.exists()) {
+                        introText = doc.getString("intro");
                         lessonName = doc.getString("lesson");
                         quizList = (List<Map<String, Object>>) doc.get("Quizzes");
 
@@ -159,13 +165,13 @@ public class PangawingQuiz extends AppCompatActivity {
                             Collections.shuffle(quizList);
                         }
 
-                        if (quizList != null && !quizList.isEmpty()) {
-                            nextButton.setEnabled(true);
+                        if (introText != null) {
                             questionTitle.setText("Simula");
-                            questionText.setText("Pumindot sa 'Next' para simulan ang quiz.");
+                            questionText.setText(introText);
                             answer1.setVisibility(View.GONE);
                             answer2.setVisibility(View.GONE);
                             answer3.setVisibility(View.GONE);
+                            nextButton.setEnabled(true);
                         }
                     }
                 }).addOnFailureListener(e ->
@@ -185,7 +191,7 @@ public class PangawingQuiz extends AppCompatActivity {
         if (choices != null && choices.size() >= 3) {
             List<String> shuffledChoices = new ArrayList<>(choices);
             Collections.shuffle(shuffledChoices);
-            questionTitle.setText("Tanong " + (index + 1));
+            questionTitle.setText(getQuestionOrdinal(index + 1));
             questionText.setText(question);
 
             answer1.setVisibility(View.VISIBLE);
@@ -289,6 +295,22 @@ public class PangawingQuiz extends AppCompatActivity {
         });
     }
 
+    private String getQuestionOrdinal(int number) {
+        switch (number) {
+            case 1: return "Unang tanong";
+            case 2: return "Pangalawang tanong";
+            case 3: return "Ikatlong tanong";
+            case 4: return "Ikaapat na tanong";
+            case 5: return "Ikalimang tanong";
+            case 6: return "Ikaanim na tanong";
+            case 7: return "Ikapitong tanong";
+            case 8: return "Ikawalong tanong";
+            case 9: return "Ikasiyam na tanong";
+            case 10: return "Ikasampung tanong";
+            default: return "Tanong";
+        }
+    }
+
     private void saveQuizResultToFirestore() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -336,7 +358,7 @@ public class PangawingQuiz extends AppCompatActivity {
         SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
         ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb.setSpan(new StyleSpan(Typeface.BOLD), line1.length(), line1.length() + line2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ssb.setSpan(new android.text.style.RelativeSizeSpan(1.3f), line1.length(), line1.length() + line2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.setSpan(new android.text.style.RelativeSizeSpan(1.1f), line1.length(), line1.length() + line2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tv.setText(ssb);
         Toast toast = new Toast(this);
