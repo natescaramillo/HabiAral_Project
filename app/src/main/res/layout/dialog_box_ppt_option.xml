@@ -8,6 +8,7 @@
     tools:layout_editor_absoluteY="7dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/logoutdialog"
         android:layout_width="0dp"
         android:layout_height="219dp"
         android:background="@drawable/pop_up_main_color"
@@ -89,7 +90,7 @@
             <Button
                 android:id="@+id/button_bumalik"
                 android:layout_width="42dp"
-                android:layout_height="30dp"
+                android:layout_height="36dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_color"
@@ -101,7 +102,7 @@
             <Button
                 android:id="@+id/button_resume"
                 android:layout_width="42dp"
-                android:layout_height="30dp"
+                android:layout_height="36dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_color"
                 android:fontFamily="@font/special"
