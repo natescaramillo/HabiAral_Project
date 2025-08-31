@@ -61,8 +61,6 @@
                 app:layout_constraintTop_toTopOf="@+id/view15" />
 
 
-
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -90,8 +88,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:fontFamily="@font/special"
                     android:layout_marginLeft="0dp"
+                    android:fontFamily="@font/special"
                     android:text="/100"
                     android:textColor="#FC4D2B06"
                     android:textSize="15sp" />
@@ -123,7 +121,7 @@
                 android:layout_marginTop="100dp"
                 android:clickable="true"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.981"
+                app:layout_constraintHorizontal_bias="0.944"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/design_game_mechanics" />
@@ -281,7 +279,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.39" />
+                app:layout_constraintGuide_begin="285dp" />
 
             <ImageView
                 android:id="@+id/trophy_image"
@@ -300,6 +298,17 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.5" />
+
+            <ImageView
+                android:id="@+id/back_button"
+                android:layout_width="32dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="36dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline7"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/design_back_button" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
