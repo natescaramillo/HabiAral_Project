@@ -101,7 +101,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 tts.setSpeechRate(1.3f);
 
                 new Handler().postDelayed(() -> loadCharacterLine("MDCL1"), 300);
-                new Handler().postDelayed(this::showCountdownThenLoadInstruction, 6000);
+                new Handler().postDelayed(this::showCountdownThenLoadInstruction, 4000);
             }
         });
 

@@ -111,7 +111,7 @@ public class PalaroHusay extends AppCompatActivity {
                 tts.setSpeechRate(1.3f);
 
                 new Handler().postDelayed(() -> loadCharacterLine("MHCL1"), 200);
-                new Handler().postDelayed(this::showCountdownThenLoadWords, 3000);
+                new Handler().postDelayed(this::showCountdownThenLoadWords, 4000);
             }
         });
 
@@ -368,7 +368,7 @@ public class PalaroHusay extends AppCompatActivity {
                     new Handler().postDelayed(() -> {
                         loadHusayWords("H1");
                         startTimer();
-                    }, 1500);
+                    }, 1400);
                 }
             }
         });
