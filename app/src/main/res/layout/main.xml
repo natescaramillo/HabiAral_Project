@@ -25,12 +25,6 @@
         android:textColor="#A27B5C"
         android:textSize="35sp" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:layout_gravity="bottom"/>
-
     <!-- ProgressBar (Hidden by default) -->
     <ProgressBar
         android:id="@+id/loading_spinner"
