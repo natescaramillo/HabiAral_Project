@@ -2,6 +2,7 @@ package com.example.habiaral.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -10,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
+import com.example.habiaral.InternetChecker;
 import com.example.habiaral.R;
 import com.google.android.gms.auth.api.signin.*;
 import com.google.android.gms.common.api.ApiException;
@@ -27,19 +29,47 @@ public class WelcomeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseFirestore db;
-
     private LinearLayout btnGoogleLogin;
+    private Handler handler = new Handler();
+    private Runnable internetCheckRunnable;
+    private boolean activityInitialized = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
 
+        startInternetChecking();
+    }
 
+    private void startInternetChecking() {
+        internetCheckRunnable = new Runnable() {
+            @Override
+            public void run() {
+                InternetChecker.checkInternet(WelcomeActivity.this, () -> {
+                    if (!activityInitialized) {
+                        RunActivity();
+                        activityInitialized = true;
+                    }
+                });
+
+                handler.postDelayed(this, 3000);
+            }
+        };
+
+        handler.post(internetCheckRunnable);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(internetCheckRunnable);
+    }
+
+    private void RunActivity() {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Google Sign-In setup
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -50,7 +80,6 @@ public class WelcomeActivity extends AppCompatActivity {
         btnGoogleLogin.setOnClickListener(v -> {
             btnGoogleLogin.setEnabled(false);
 
-            // Force sign out so account picker appears
             mAuth.signOut();
             mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
                 mGoogleSignInClient.revokeAccess().addOnCompleteListener(revokeTask -> {
@@ -60,7 +89,6 @@ public class WelcomeActivity extends AppCompatActivity {
         });
 
         if (mAuth.getCurrentUser() != null) {
-            // Already logged in → greet user
             String uid = mAuth.getCurrentUser().getUid();
             checkAndGreetUser(uid);
         } else {
@@ -121,7 +149,6 @@ public class WelcomeActivity extends AppCompatActivity {
                     goToIntroduction();
                 }
             } else {
-                // Fetch all students to find the last number
                 db.collection("students").get().addOnSuccessListener(allDocs -> {
                     int maxNumber = 0;
                     for (DocumentSnapshot document : allDocs) {
@@ -134,7 +161,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         }
                     }
 
-                    String generatedId = String.format("STUDENT%03d", maxNumber + 1); // STUDENT001, 002, 003…
+                    String generatedId = String.format("STUDENT%03d", maxNumber + 1);
 
                     Map<String, Object> student = new HashMap<>();
                     student.put("email", email);
@@ -168,7 +195,6 @@ public class WelcomeActivity extends AppCompatActivity {
                             goToIntroduction();
                         }
                     } else {
-                        // Account exists in FirebaseAuth but not in Firestore → sign out
                         mAuth.signOut();
                         btnGoogleLogin.setEnabled(true);
                     }

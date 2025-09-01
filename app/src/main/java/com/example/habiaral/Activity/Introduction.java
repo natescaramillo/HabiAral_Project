@@ -2,6 +2,7 @@ package com.example.habiaral.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.LessonProgressCache; // ✅ Added
+import com.example.habiaral.InternetChecker;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,12 +28,47 @@ public class Introduction extends AppCompatActivity {
     private FirebaseFirestore db;
     private String userId;
     private boolean isSaving = false;
+    private Handler handler = new Handler(); // C & P
+    private Runnable internetCheckRunnable; // C & P
+    private boolean activityInitialized = false; // C & P
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.introduction);
 
+        // call startInternetChecking
+        startInternetChecking();
+    }
+
+    // C & P
+    private void startInternetChecking() {
+        internetCheckRunnable = new Runnable() {
+            @Override
+            public void run() {
+                InternetChecker.checkInternet(Introduction.this, () -> { // palitan
+                    if (!activityInitialized) {
+                        RunActivity();
+                        activityInitialized = true;
+                    }
+                });
+
+                handler.postDelayed(this, 3000);
+            }
+        };
+
+        handler.post(internetCheckRunnable);
+    }
+
+    // C & P
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(internetCheckRunnable);
+    }
+
+    // Create bagong method
+    private void RunActivity() {
         nicknameInput = findViewById(R.id.nickname);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

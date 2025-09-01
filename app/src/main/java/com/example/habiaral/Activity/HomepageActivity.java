@@ -1,6 +1,7 @@
 package com.example.habiaral.Activity;
 
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
@@ -10,6 +11,7 @@ import com.example.habiaral.Fragment.AchievementFragment;
 import com.example.habiaral.Fragment.DictionaryFragment;
 import com.example.habiaral.Fragment.HomeFragment;
 import com.example.habiaral.Fragment.ProgressBarFragment;
+import com.example.habiaral.InternetChecker;
 import com.example.habiaral.R;
 import com.example.habiaral.Fragment.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -23,12 +25,43 @@ import androidx.core.view.WindowInsetsCompat;
 public class HomepageActivity extends AppCompatActivity {
 
     private final Map<Integer, Fragment> fragmentMap = new HashMap<>();
+    private Handler handler = new Handler();
+    private Runnable internetCheckRunnable;
+    private boolean activityInitialized = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
+        startInternetChecking();
+    }
+
+    private void startInternetChecking() {
+        internetCheckRunnable = new Runnable() {
+            @Override
+            public void run() {
+                InternetChecker.checkInternet(HomepageActivity.this, () -> {
+                    if (!activityInitialized) {
+                        RunActivity();
+                        activityInitialized = true;
+                    }
+                });
+
+                handler.postDelayed(this, 3000);
+            }
+        };
+
+        handler.post(internetCheckRunnable);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(internetCheckRunnable);
+    }
+
+    private void RunActivity() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.botnav);
 
         fragmentMap.put(R.id.home_nav, new HomeFragment());
