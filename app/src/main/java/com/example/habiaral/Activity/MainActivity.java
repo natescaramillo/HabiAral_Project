@@ -1,87 +1,74 @@
 package com.example.habiaral.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.LoadingDialog;
-import com.example.habiaral.NetworkUtil;
 import com.example.habiaral.R;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int SPLASH_DELAY = 2000;
-    private static final int INTERNET_CHECK_INTERVAL = 750;
-    private ConnectivityManager.NetworkCallback networkCallback;
-    private LoadingDialog loadingDialog;
+    private static final int CHECK_INTERVAL = 3000;
+    private static final int PROGRESS_BAR_DELAY = 2000;
+
+    private ProgressBar loading;
+    private TextView internetReturned;
     private Handler handler = new Handler();
-    private Runnable internetCheckRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        loadingDialog = new LoadingDialog(this);
+        loading = findViewById(R.id.loading_spinner);
+        internetReturned = findViewById(R.id.waiting_text);
 
-        networkCallback = NetworkUtil.registerNetworkListener(this, new NetworkUtil.NetworkListener() {
-            @Override
-            public void onNetworkConnected() {
-                startInternetChecking();
-            }
+        loading.setVisibility(View.GONE);
+        internetReturned.setVisibility(View.GONE);
 
-            @Override
-            public void onNetworkDisconnected() {
-                stopInternetChecking();
-                loadingDialog.show();
-            }
-        });
-
-        if (!NetworkUtil.isNetworkAvailable(this)) {
-            loadingDialog.show();
+        if (!isInternetAvailable()) {
+            handler.postDelayed(() -> {
+                loading.setVisibility(View.VISIBLE);
+                internetReturned.setVisibility(View.VISIBLE);
+                internetReturned.setText("Waiting for internet...");
+                waitForInternetConnection();
+            }, PROGRESS_BAR_DELAY);
         } else {
-            startInternetChecking();
+            goToWelcome();
         }
     }
 
-    private void startInternetChecking() {
-        if (internetCheckRunnable != null) return; // already running
+    private boolean isInternetAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+            return networkInfo != null && networkInfo.isConnected();
+        }
+        return false;
+    }
 
-        internetCheckRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (isFinishing() || isDestroyed()) return; // prevent crash when activity closed
-
-                NetworkUtil.hasInternetAccess(hasInternet -> {
-                    if (isFinishing() || isDestroyed()) return; // extra safeguard
-
-                    if (hasInternet) {
-                        if (loadingDialog != null) loadingDialog.dismiss();
-                        goToWelcome();
-                    } else {
-                        if (loadingDialog != null) loadingDialog.show();
-                    }
-                });
-
-                handler.postDelayed(this, INTERNET_CHECK_INTERVAL);
+    private void waitForInternetConnection() {
+        handler.postDelayed(() -> {
+            if (isInternetAvailable()) {
+                internetReturned.setText("Internet returned!");
+                goToWelcome();
+            } else {
+                waitForInternetConnection();
             }
-        };
-        handler.post(internetCheckRunnable);
-    }
-
-    private void stopInternetChecking() {
-        if (internetCheckRunnable != null) {
-            handler.removeCallbacks(internetCheckRunnable);
-            internetCheckRunnable = null;
-        }
+        }, CHECK_INTERVAL);
     }
 
     private void goToWelcome() {
-        stopInternetChecking();
-        new Handler().postDelayed(() -> {
+        handler.postDelayed(() -> {
             Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
             startActivity(intent);
             finish();
@@ -91,12 +78,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        NetworkUtil.unregisterNetworkListener(this, networkCallback);
-        stopInternetChecking();
-
-        if (loadingDialog != null) {
-            loadingDialog.dismiss();
-            loadingDialog = null;
-        }
+        handler.removeCallbacksAndMessages(null);
     }
 }
