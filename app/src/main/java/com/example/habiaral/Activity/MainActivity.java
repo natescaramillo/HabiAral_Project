@@ -48,19 +48,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startInternetChecking() {
-        if (internetCheckRunnable != null) return;
+        if (internetCheckRunnable != null) return; // already running
 
         internetCheckRunnable = new Runnable() {
             @Override
             public void run() {
+                if (isFinishing() || isDestroyed()) return; // prevent crash when activity closed
+
                 NetworkUtil.hasInternetAccess(hasInternet -> {
+                    if (isFinishing() || isDestroyed()) return; // extra safeguard
+
                     if (hasInternet) {
-                        loadingDialog.dismiss();
+                        if (loadingDialog != null) loadingDialog.dismiss();
                         goToWelcome();
                     } else {
-                        loadingDialog.show();
+                        if (loadingDialog != null) loadingDialog.show();
                     }
                 });
+
                 handler.postDelayed(this, INTERNET_CHECK_INTERVAL);
             }
         };
@@ -88,6 +93,10 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         NetworkUtil.unregisterNetworkListener(this, networkCallback);
         stopInternetChecking();
-        loadingDialog.dismiss();
+
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+            loadingDialog = null;
+        }
     }
 }
