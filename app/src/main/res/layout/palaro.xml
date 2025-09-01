@@ -299,17 +299,6 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.5" />
 
-            <ImageView
-                android:id="@+id/back_button"
-                android:layout_width="32dp"
-                android:layout_height="24dp"
-                android:layout_marginTop="36dp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline7"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/guideline"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/design_back_button" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
