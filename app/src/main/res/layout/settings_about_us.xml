@@ -6,21 +6,23 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background"
     android:fitsSystemWindows="false"
+
     tools:context=".Activity.AboutUsActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <View
             android:id="@+id/viewHeader"
             android:layout_width="0dp"
             android:layout_height="93dp"
             android:alpha="0.6"
             android:background="#A27B5C"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textAboutUs"
@@ -65,15 +67,15 @@
         <LinearLayout
             android:id="@+id/linearAboutUs"
             android:layout_width="326dp"
-            android:layout_height="161dp"
-            android:layout_marginTop="32dp"
+            android:layout_height="166dp"
+            android:layout_marginTop="60dp"
             android:background="@drawable/search_bar"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.565"
+            app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageMascot">
 
@@ -113,7 +115,7 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.505"
+            app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewOurTeamTitle">
 
@@ -144,8 +146,8 @@
 
         <LinearLayout
             android:id="@+id/linearJoinUs"
-            android:layout_width="333dp"
-            android:layout_height="125dp"
+            android:layout_width="326dp"
+            android:layout_height="166dp"
             android:layout_marginTop="4dp"
             android:background="@drawable/search_bar"
             android:gravity="center_vertical"
@@ -153,7 +155,7 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.53"
+            app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewJoinUsTitle">
 
