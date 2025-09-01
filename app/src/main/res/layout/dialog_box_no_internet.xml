@@ -71,6 +71,39 @@
             app:layout_constraintTop_toTopOf="@+id/guideline35"
             app:layout_constraintVertical_bias="0.88" />
 
+        <!-- Waiting Text (Hidden by default) -->
+
+        <ProgressBar
+            android:id="@+id/loading_spinner"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="70dp"
+            android:layout_height="59dp"
+            android:layout_gravity="center_horizontal"
+            android:indeterminateTint="#A27B5C"
+            app:layout_constraintBottom_toTopOf="@+id/guideline36"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline35"
+            app:layout_constraintVertical_bias="0.24"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/waiting_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/special"
+            android:text="Waiting for internet connection..."
+            android:textColor="#fff"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toTopOf="@+id/internet_retry_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.507"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/loading_spinner"
+            app:layout_constraintVertical_bias="0.0"
+            android:visibility="gone"/>
+
         <Button
             android:id="@+id/internet_retry_button"
             android:layout_width="wrap_content"
@@ -82,10 +115,9 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline36"
-            app:layout_constraintVertical_bias="0.224" />
+            app:layout_constraintVertical_bias="0.673" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
