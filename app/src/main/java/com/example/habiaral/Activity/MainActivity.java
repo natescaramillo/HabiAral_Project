@@ -1,76 +1,73 @@
 package com.example.habiaral.Activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habiaral.LoadingDialog;
+import com.example.habiaral.NetworkUtil;
 import com.example.habiaral.R;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int SPLASH_DELAY = 2000;
-    private static final int CHECK_INTERVAL = 3000;
-    private static final int PROGRESS_BAR_DELAY = 2000;
-    private ProgressBar loading;
-    private TextView internetReturned;
-    private Handler handler = new Handler();
+    private ConnectivityManager.NetworkCallback networkCallback;
+    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        loadingDialog = new LoadingDialog(this);
 
-        loading = findViewById(R.id.loading_spinner);
-        internetReturned = findViewById(R.id.waiting_text);
+        networkCallback = NetworkUtil.registerNetworkListener(this, new NetworkUtil.NetworkListener() {
+            @Override
+            public void onNetworkConnected() {
+                NetworkUtil.hasInternetAccess(hasInternet -> {
+                    if (hasInternet) {
+                        loadingDialog.dismiss();
+                        goToWelcome();
+                    } else {
+                        loadingDialog.show();
+                    }
+                });
+            }
 
-        // Check internet
-        if (!isInternetAvailable()) {
-            // No internet: start the delay before showing loading spinner
-                handler.postDelayed(() -> {
-                loading.setVisibility(View.VISIBLE);
-                internetReturned.setVisibility(View.VISIBLE);
-                waitForInternetConnection();
-            }, PROGRESS_BAR_DELAY);
+            @Override
+            public void onNetworkDisconnected() {
+                loadingDialog.show();
+            }
+        });
+
+        if (!NetworkUtil.isNetworkAvailable(this)) {
+            loadingDialog.show();
         } else {
-            goToWelcome();
+            NetworkUtil.hasInternetAccess(hasInternet -> {
+                if (hasInternet) {
+                    goToWelcome();
+                } else {
+                    loadingDialog.show();
+                }
+            });
         }
     }
 
-    // Method to check if device has internet
-    private boolean isInternetAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
-    }
-
-    // Keep checking if internet comes back
-    private void waitForInternetConnection() {
-        handler.postDelayed(() -> {
-            if (isInternetAvailable()) {
-                internetReturned.setText("Internet returned!");
-                goToWelcome();
-            } else {
-                waitForInternetConnection(); // Check again after delay
-            }
-        }, CHECK_INTERVAL);
-    }
-
-    // Move to WelcomeActivity
     private void goToWelcome() {
-        handler.postDelayed(() -> {
+        new Handler().postDelayed(() -> {
             Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
             startActivity(intent);
             finish();
         }, SPLASH_DELAY);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NetworkUtil.unregisterNetworkListener(this, networkCallback);
+        loadingDialog.dismiss();
     }
 }
