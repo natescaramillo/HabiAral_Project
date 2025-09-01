@@ -17,12 +17,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        // Tawag sa utility class
         InternetChecker.checkInternet(this, () -> goToWelcome());
     }
 
     private void goToWelcome() {
-        // Splash delay
         getWindow().getDecorView().postDelayed(() -> {
             startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
             finish();

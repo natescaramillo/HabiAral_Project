@@ -25,13 +25,23 @@ public class InternetChecker {
         Executors.newSingleThreadExecutor().execute(() -> {
             boolean connected = isInternetAvailable(context);
             Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(() -> {
-                if (connected) {
-                    onConnected.run();
-                } else {
-                    showNoInternetDialog(context, onConnected);
-                }
-            });
+
+            if (connected) {
+                handler.post(onConnected);
+            } else {
+                handler.postDelayed(() -> {
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        boolean stillDisconnected = !isInternetAvailable(context);
+                        handler.post(() -> {
+                            if (stillDisconnected) {
+                                showNoInternetDialog(context, onConnected);
+                            } else {
+                                onConnected.run();
+                            }
+                        });
+                    });
+                }, 3000);
+            }
         });
     }
 
