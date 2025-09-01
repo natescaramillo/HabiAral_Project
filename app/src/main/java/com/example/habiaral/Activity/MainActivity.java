@@ -14,8 +14,11 @@ import com.example.habiaral.R;
 public class MainActivity extends AppCompatActivity {
 
     private static final int SPLASH_DELAY = 2000;
+    private static final int INTERNET_CHECK_INTERVAL = 750;
     private ConnectivityManager.NetworkCallback networkCallback;
     private LoadingDialog loadingDialog;
+    private Handler handler = new Handler();
+    private Runnable internetCheckRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,29 @@ public class MainActivity extends AppCompatActivity {
         networkCallback = NetworkUtil.registerNetworkListener(this, new NetworkUtil.NetworkListener() {
             @Override
             public void onNetworkConnected() {
+                startInternetChecking();
+            }
+
+            @Override
+            public void onNetworkDisconnected() {
+                stopInternetChecking();
+                loadingDialog.show();
+            }
+        });
+
+        if (!NetworkUtil.isNetworkAvailable(this)) {
+            loadingDialog.show();
+        } else {
+            startInternetChecking();
+        }
+    }
+
+    private void startInternetChecking() {
+        if (internetCheckRunnable != null) return;
+
+        internetCheckRunnable = new Runnable() {
+            @Override
+            public void run() {
                 NetworkUtil.hasInternetAccess(hasInternet -> {
                     if (hasInternet) {
                         loadingDialog.dismiss();
@@ -35,28 +61,21 @@ public class MainActivity extends AppCompatActivity {
                         loadingDialog.show();
                     }
                 });
+                handler.postDelayed(this, INTERNET_CHECK_INTERVAL);
             }
+        };
+        handler.post(internetCheckRunnable);
+    }
 
-            @Override
-            public void onNetworkDisconnected() {
-                loadingDialog.show();
-            }
-        });
-
-        if (!NetworkUtil.isNetworkAvailable(this)) {
-            loadingDialog.show();
-        } else {
-            NetworkUtil.hasInternetAccess(hasInternet -> {
-                if (hasInternet) {
-                    goToWelcome();
-                } else {
-                    loadingDialog.show();
-                }
-            });
+    private void stopInternetChecking() {
+        if (internetCheckRunnable != null) {
+            handler.removeCallbacks(internetCheckRunnable);
+            internetCheckRunnable = null;
         }
     }
 
     private void goToWelcome() {
+        stopInternetChecking();
         new Handler().postDelayed(() -> {
             Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
             startActivity(intent);
@@ -68,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         NetworkUtil.unregisterNetworkListener(this, networkCallback);
+        stopInternetChecking();
         loadingDialog.dismiss();
     }
 }
