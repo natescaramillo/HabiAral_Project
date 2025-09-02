@@ -104,7 +104,7 @@
                 android:layout_marginEnd="5dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
-                android:src="@drawable/full_screen" />
+                android:src="@drawable/not_full_screen" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

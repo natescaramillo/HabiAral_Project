@@ -28,20 +28,20 @@ public class Introduction extends AppCompatActivity {
     private FirebaseFirestore db;
     private String userId;
     private boolean isSaving = false;
-    private Handler handler = new Handler(); // C & P
-    private Runnable internetCheckRunnable; // C & P
-    private boolean activityInitialized = false; // C & P
+    private Handler handler = new Handler(); // Copy & Paste
+    private Runnable internetCheckRunnable; // Copy & Paste
+    private boolean activityInitialized = false; // Copy & Paste
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.introduction);
 
-        // call startInternetChecking
+        // Copy & Paste
         startInternetChecking();
     }
 
-    // C & P
+    // Copy & Paste
     private void startInternetChecking() {
         internetCheckRunnable = new Runnable() {
             @Override
@@ -60,11 +60,11 @@ public class Introduction extends AppCompatActivity {
         handler.post(internetCheckRunnable);
     }
 
-    // C & P
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(internetCheckRunnable);
+        handler.removeCallbacks(internetCheckRunnable); // Copy & Paste
+        InternetChecker.resetDialogFlag();
     }
 
     // Create bagong method

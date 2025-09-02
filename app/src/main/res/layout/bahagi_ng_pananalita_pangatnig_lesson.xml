@@ -105,7 +105,7 @@
                 android:background="#CAA885"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/full_screen"
+                android:src="@drawable/not_full_screen"
                 android:adjustViewBounds="true"
                 android:layout_marginEnd="5dp"
                 android:scaleType="fitCenter"/>

@@ -2,12 +2,14 @@ package com.example.habiaral.BahagiNgPananalita;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.Lessons.*;
+import com.example.habiaral.InternetChecker;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,6 +31,10 @@ public class BahagiNgPananalita extends AppCompatActivity {
     private FirebaseFirestore db;
     private String uid;
 
+    // ✅ Internet checker
+    private Handler handler = new Handler();
+    private Runnable internetCheckRunnable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +49,25 @@ public class BahagiNgPananalita extends AppCompatActivity {
         uid = user.getUid();
         db = FirebaseFirestore.getInstance();
 
+        // ✅ Start checking internet
+        startInternetChecking();
+    }
+
+    private void startInternetChecking() {
+        internetCheckRunnable = new Runnable() {
+            @Override
+            public void run() {
+                InternetChecker.checkInternet(BahagiNgPananalita.this, () -> {
+                    // ✅ Only run Firestore code kapag may internet
+                    loadInitialData();
+                });
+                handler.postDelayed(this, 3000); // check ulit every 3 sec
+            }
+        };
+        handler.post(internetCheckRunnable);
+    }
+
+    private void loadInitialData() {
         // Load cached progress if available
         Map<String, Object> cachedData = LessonProgressCache.getData();
         if (cachedData != null) {
@@ -219,5 +244,12 @@ public class BahagiNgPananalita extends AppCompatActivity {
     private void lockButton(LinearLayout button) {
         button.setClickable(false);
         button.setAlpha(0.5f);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(internetCheckRunnable); // ✅ stop checking kapag sarado activity
+        InternetChecker.resetDialogFlag();
     }
 }

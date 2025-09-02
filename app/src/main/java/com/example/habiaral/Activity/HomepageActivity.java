@@ -59,6 +59,7 @@ public class HomepageActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(internetCheckRunnable);
+        InternetChecker.resetDialogFlag();
     }
 
     private void RunActivity() {

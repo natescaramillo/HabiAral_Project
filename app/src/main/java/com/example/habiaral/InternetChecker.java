@@ -45,6 +45,10 @@ public class InternetChecker {
         });
     }
 
+    public static void resetDialogFlag() {
+        isDialogShowing = false;
+    }
+
     private static boolean isInternetAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm != null) {
