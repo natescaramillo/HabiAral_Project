@@ -2,14 +2,12 @@ package com.example.habiaral.BahagiNgPananalita;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.Lessons.*;
-import com.example.habiaral.InternetChecker;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,18 +20,14 @@ import java.util.Map;
 
 public class BahagiNgPananalita extends AppCompatActivity {
 
-    private LinearLayout btnPangngalan, btnPandiwa, btnPangUri, btnPangHalip,
-            btnPangAbay, btnPangatnig, btnPangUkol, btnPangAkop, btnPadamdam, btnPangawing;
+    private LinearLayout btnPangngalan, btnPandiwa, btnPangUri, btnPangHalip, btnPangAbay,
+            btnPangatnig, btnPangUkol, btnPangAkop, btnPadamdam, btnPangawing;
 
-    private FrameLayout pangngalanLock, pandiwaLock, pangUriLock, pangHalipLock,
-            pangAbayLock, pangatnigLock, pangUkolLock, pangAkopLock, padamdamLock, pangawingLock;
+    private FrameLayout pangngalanLock, pandiwaLock, pangUriLock, pangHalipLock, pangAbayLock,
+            pangatnigLock, pangUkolLock, pangAkopLock, padamdamLock, pangawingLock;
 
     private FirebaseFirestore db;
     private String uid;
-
-    // ✅ Internet checker
-    private Handler handler = new Handler();
-    private Runnable internetCheckRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,25 +43,6 @@ public class BahagiNgPananalita extends AppCompatActivity {
         uid = user.getUid();
         db = FirebaseFirestore.getInstance();
 
-        // ✅ Start checking internet
-        startInternetChecking();
-    }
-
-    private void startInternetChecking() {
-        internetCheckRunnable = new Runnable() {
-            @Override
-            public void run() {
-                InternetChecker.checkInternet(BahagiNgPananalita.this, () -> {
-                    // ✅ Only run Firestore code kapag may internet
-                    loadInitialData();
-                });
-                handler.postDelayed(this, 3000); // check ulit every 3 sec
-            }
-        };
-        handler.post(internetCheckRunnable);
-    }
-
-    private void loadInitialData() {
         // Load cached progress if available
         Map<String, Object> cachedData = LessonProgressCache.getData();
         if (cachedData != null) {
@@ -152,9 +127,8 @@ public class BahagiNgPananalita extends AppCompatActivity {
         unlockButton(btnPangawing, padamdamDone, pangawingLock);
 
         checkAndCompleteModule(
-                pangngalanDone, pandiwaDone, pangUriDone, pangHalipDone,
-                pangAbayDone, pangatnigDone, pangUkolDone, pangAkopDone,
-                padamdamDone, pangawingDone
+                pangngalanDone, pandiwaDone, pangUriDone, pangHalipDone, pangAbayDone,
+                pangatnigDone, pangUkolDone, pangAkopDone, padamdamDone, pangawingDone
         );
     }
 
@@ -214,16 +188,15 @@ public class BahagiNgPananalita extends AppCompatActivity {
             boolean pangUkolDone, boolean pangAkopDone, boolean padamdamDone,
             boolean pangawingDone) {
 
-        boolean allDone = pangngalanDone && pandiwaDone && pangUriDone &&
-                pangHalipDone && pangAbayDone && pangatnigDone &&
-                pangUkolDone && pangAkopDone && padamdamDone && pangawingDone;
+        boolean allDone = pangngalanDone && pandiwaDone && pangUriDone && pangHalipDone &&
+                pangAbayDone && pangatnigDone && pangUkolDone && pangAkopDone &&
+                padamdamDone && pangawingDone;
 
         Map<String, Object> update = new HashMap<>();
         Map<String, Object> module1Updates = new HashMap<>();
 
         module1Updates.put("modulename", "Bahagi ng Pananalita");
         module1Updates.put("status", allDone ? "completed" : "in_progress");
-
         update.put("module_1", module1Updates);
 
         db.collection("module_progress").document(uid).set(update, SetOptions.merge());
@@ -244,12 +217,5 @@ public class BahagiNgPananalita extends AppCompatActivity {
     private void lockButton(LinearLayout button) {
         button.setClickable(false);
         button.setAlpha(0.5f);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        handler.removeCallbacks(internetCheckRunnable); // ✅ stop checking kapag sarado activity
-        InternetChecker.resetDialogFlag();
     }
 }

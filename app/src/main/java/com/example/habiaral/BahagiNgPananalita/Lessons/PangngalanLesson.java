@@ -14,7 +14,6 @@ import android.speech.tts.UtteranceProgressListener;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
-import com.example.habiaral.InternetChecker;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,22 +40,24 @@ public class PangngalanLesson extends AppCompatActivity {
             R.drawable.pangngalan28, R.drawable.pangngalan29, R.drawable.pangngalan30,
             R.drawable.pangngalan31
     };
+
     private android.os.Handler textHandler = new android.os.Handler();
     private Map<Integer, List<String>> pageLines = new HashMap<>();
+
     private boolean waitForResumeChoice = false;
     private String currentUtterancePage = "";
     final boolean[] isFullScreen = {false};
     private boolean isLessonDone = false;
     private boolean isFirstTime = true;
+
     private TextToSpeech textToSpeech;
     private AlertDialog dialogOption;
     private TextView instructionText;
     private Runnable textRunnable;
     private Button unlockButton;
     private ImageView imageView;
+
     private int currentPage = 0;
-    private android.os.Handler handler = new android.os.Handler();
-    private Runnable internetCheckRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,9 +108,9 @@ public class PangngalanLesson extends AppCompatActivity {
             if (!isFullScreen[0]) {
                 if (getSupportActionBar() != null) getSupportActionBar().hide();
                 getWindow().getDecorView().setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_FULLSCREEN
-                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 );
                 fullScreenOption.setImageResource(R.drawable.not_full_screen);
                 isFullScreen[0] = true;
@@ -120,24 +121,6 @@ public class PangngalanLesson extends AppCompatActivity {
                 isFullScreen[0] = false;
             }
         });
-
-        startInternetChecking();
-    }
-
-    private void startInternetChecking() {
-        internetCheckRunnable = new Runnable() {
-            @Override
-            public void run() {
-                InternetChecker.checkInternet(PangngalanLesson.this, () -> {
-                    // ✅ Optional: actions kapag may internet
-                    // Pwede mo lagyan kung gusto mo mag auto-reload ng data
-                });
-
-                handler.postDelayed(this, 3000); // check every 3 sec
-            }
-        };
-
-        handler.post(internetCheckRunnable);
     }
 
     private void nextPage() {
@@ -145,7 +128,6 @@ public class PangngalanLesson extends AppCompatActivity {
             currentPage++;
             imageView.setImageResource(pangngalanLesson[currentPage]);
             saveProgressToFirestore(false);
-
             stopSpeakingAndAnimation();
 
             if (pageLines.containsKey(currentPage)) {
@@ -169,7 +151,6 @@ public class PangngalanLesson extends AppCompatActivity {
             currentPage--;
             imageView.setImageResource(pangngalanLesson[currentPage]);
             saveProgressToFirestore(false);
-
             stopSpeakingAndAnimation();
 
             if (pageLines.containsKey(currentPage)) {
@@ -217,6 +198,7 @@ public class PangngalanLesson extends AppCompatActivity {
                                         unlockButton.setEnabled(true);
                                         unlockButton.setAlpha(1f);
                                     }
+
                                     showResumeDialog(currentPage);
                                     waitForResumeChoice = true;
                                 }
@@ -249,7 +231,7 @@ public class PangngalanLesson extends AppCompatActivity {
 
         Map<String, Object> moduleMap = new HashMap<>();
         moduleMap.put("modulename", "Bahagi ng Pananalita");
-        moduleMap.put("status","in_progress");
+        moduleMap.put("status", "in_progress");
         moduleMap.put("current_lesson", "pangngalan");
         moduleMap.put("lessons", lessonMap);
 
@@ -262,13 +244,13 @@ public class PangngalanLesson extends AppCompatActivity {
 
     private void loadCharacterLines() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         db.collection("lesson_character_lines").document("LCL1")
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
+                        List<Map<String, Object>> pages =
+                                (List<Map<String, Object>>) documentSnapshot.get("pages");
 
-                        List<Map<String, Object>> pages = (List<Map<String, Object>>) documentSnapshot.get("pages");
                         if (pages != null) {
                             for (Map<String, Object> page : pages) {
                                 Long pageNum = (Long) page.get("page");
@@ -279,12 +261,12 @@ public class PangngalanLesson extends AppCompatActivity {
                             }
                         }
 
-                        List<String> introLines = (List<String>) documentSnapshot.get("intro");
+                        List<String> introLines =
+                                (List<String>) documentSnapshot.get("intro");
 
                         if (!waitForResumeChoice) {
                             if (introLines != null && isFirstTime && !introLines.isEmpty()) {
                                 isFirstTime = false;
-
                                 speakSequentialLines(introLines, () -> {
                                     new android.os.Handler().postDelayed(() -> {
                                         imageView.setImageResource(pangngalanLesson[currentPage]);
@@ -293,7 +275,6 @@ public class PangngalanLesson extends AppCompatActivity {
                                         }
                                     }, 1500);
                                 });
-
                             } else {
                                 imageView.setImageResource(pangngalanLesson[currentPage]);
                                 if (pageLines.containsKey(currentPage)) {
@@ -360,10 +341,6 @@ public class PangngalanLesson extends AppCompatActivity {
         if (textRunnable != null) {
             textHandler.removeCallbacks(textRunnable);
         }
-
-        handler.removeCallbacks(internetCheckRunnable); // ✅ important
-        InternetChecker.resetDialogFlag(); // ✅ para fresh dialog sa next activity
-
         super.onDestroy();
     }
 
@@ -377,7 +354,7 @@ public class PangngalanLesson extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
 
-        android.view.View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_ppt_option, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_ppt_option, null);
         builder.setView(dialogView);
 
         dialogOption = builder.create();
@@ -389,7 +366,6 @@ public class PangngalanLesson extends AppCompatActivity {
         buttonResume.setOnClickListener(v -> {
             currentPage = checkpoint;
             imageView.setImageResource(pangngalanLesson[currentPage]);
-
             if (pageLines.containsKey(currentPage)) {
                 new android.os.Handler().postDelayed(() -> {
                     speakLines(pageLines.get(currentPage));
@@ -402,7 +378,6 @@ public class PangngalanLesson extends AppCompatActivity {
         buttonBumalik.setOnClickListener(v -> {
             currentPage = 0;
             imageView.setImageResource(pangngalanLesson[currentPage]);
-
             if (pageLines.containsKey(currentPage)) {
                 new android.os.Handler().postDelayed(() -> {
                     speakLines(pageLines.get(currentPage));
