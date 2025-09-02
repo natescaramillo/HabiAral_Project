@@ -215,6 +215,23 @@ public class PangngalanQuiz extends AppCompatActivity {
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
                 timerBar.setProgress((int) millisUntilFinished);
+
+                // ✅ Compute percentage
+                int percent = (int) ((timeLeftInMillis * 100) / 10000);
+
+                if (percent <= 25) {
+                    timerBar.setProgressDrawable(
+                            androidx.core.content.ContextCompat.getDrawable(PangngalanQuiz.this, R.drawable.timer_color_red)
+                    );
+                } else if (percent <= 50) {
+                    timerBar.setProgressDrawable(
+                            androidx.core.content.ContextCompat.getDrawable(PangngalanQuiz.this, R.drawable.timer_color_orange)
+                    );
+                } else {
+                    timerBar.setProgressDrawable(
+                            androidx.core.content.ContextCompat.getDrawable(PangngalanQuiz.this, R.drawable.timer_color_green)
+                    );
+                }
             }
 
             @Override
