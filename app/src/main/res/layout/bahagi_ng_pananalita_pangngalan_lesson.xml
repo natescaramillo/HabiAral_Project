@@ -12,11 +12,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="429dp"
         android:background="@drawable/lessons_design"
         app:layout_constraintBottom_toTopOf="@+id/guideline31"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.65" />
+            app:layout_constraintGuide_percent="0.6" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelinehorizontal2"
@@ -56,21 +56,64 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
 
+        <ImageView
+            android:id="@+id/imageViewPangngalan"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_margin="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toTopOf="@id/option_bar"
+            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="@+id/guidelinehorizontal2" />
+
+        <LinearLayout
+            android:id="@+id/option_bar"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#99A27B5C"
+            android:orientation="horizontal"
+            android:gravity="end|center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/imageViewPangngalan"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintBottom_toTopOf="@+id/guidelinehorizontal"
+            android:layout_marginTop="0dp">
+
             <ImageView
-                android:id="@+id/imageViewPangngalan"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:alpha="1"
-                android:layout_margin ="0dp"
-                app:layout_constraintBottom_toTopOf="@+id/guidelinehorizontal"
-                app:layout_constraintEnd_toStartOf="@+id/guideline3"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toTopOf="@+id/guidelinehorizontal2"
-                app:layout_constraintVertical_bias="1.0" />
+                android:id="@+id/back_option"
+                android:background="#CAA885"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/back_button" />
+
+            <ImageView
+                android:id="@+id/next_option"
+                android:background="#CAA885"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/next_button"
+                android:adjustViewBounds="true"
+                android:layout_marginEnd="5dp"
+                android:scaleType="fitCenter"/>
+
+        <ImageView
+            android:id="@+id/full_screen_option"
+            android:background="#CAA885"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/full_screen"
+            android:adjustViewBounds="true"
+            android:layout_marginEnd="5dp"
+            android:scaleType="fitCenter"/>
+    </LinearLayout>
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/instructionText"
@@ -89,7 +132,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/vertical_line1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.56" />
+        app:layout_constraintVertical_bias="0.524" />
 
     <Button
         android:id="@+id/UnlockButtonPangngalan"
@@ -112,7 +155,6 @@
         android:src="@drawable/tarsier_3d"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.675" />
@@ -129,13 +171,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.05" />
+        app:layout_constraintGuide_percent="0.04" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vertical_line2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.95" />
+        app:layout_constraintGuide_percent="0.96107054" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
