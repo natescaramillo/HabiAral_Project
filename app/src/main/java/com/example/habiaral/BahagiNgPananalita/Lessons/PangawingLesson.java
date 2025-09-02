@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ public class PangawingLesson extends AppCompatActivity {
     private Map<Integer, List<String>> pageLines = new HashMap<>();
     private boolean waitForResumeChoice = false;
     private String currentUtterancePage = "";
+    final boolean[] isFullScreen = {false};
     private boolean isLessonDone = false;
     private boolean isFirstTime = true;
     private TextToSpeech textToSpeech;
@@ -51,6 +53,9 @@ public class PangawingLesson extends AppCompatActivity {
         unlockButton = findViewById(R.id.UnlockButtonPangawing);
         imageView = findViewById(R.id.imageViewPangawing);
         instructionText = findViewById(R.id.instructionText);
+        ImageView backOption = findViewById(R.id.back_option);
+        ImageView nextOption = findViewById(R.id.next_option);
+        ImageView fullScreenOption = findViewById(R.id.full_screen_option);
 
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
@@ -80,6 +85,27 @@ public class PangawingLesson extends AppCompatActivity {
                 textToSpeech.shutdown();
             }
             startActivity(new Intent(PangawingLesson.this, PangawingQuiz.class));
+        });
+
+        backOption.setOnClickListener(v -> previousPage());
+        nextOption.setOnClickListener(v -> nextPage());
+
+        fullScreenOption.setOnClickListener(v -> {
+            if (!isFullScreen[0]) {
+                if (getSupportActionBar() != null) getSupportActionBar().hide();
+                getWindow().getDecorView().setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                );
+                fullScreenOption.setImageResource(R.drawable.not_full_screen);
+                isFullScreen[0] = true;
+            } else {
+                if (getSupportActionBar() != null) getSupportActionBar().show();
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                fullScreenOption.setImageResource(R.drawable.full_screen);
+                isFullScreen[0] = false;
+            }
         });
     }
 

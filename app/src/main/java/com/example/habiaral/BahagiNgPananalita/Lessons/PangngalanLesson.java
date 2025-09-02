@@ -43,20 +43,17 @@ public class PangngalanLesson extends AppCompatActivity {
 
     private android.os.Handler textHandler = new android.os.Handler();
     private Map<Integer, List<String>> pageLines = new HashMap<>();
-
     private boolean waitForResumeChoice = false;
     private String currentUtterancePage = "";
     final boolean[] isFullScreen = {false};
     private boolean isLessonDone = false;
     private boolean isFirstTime = true;
-
     private TextToSpeech textToSpeech;
     private AlertDialog dialogOption;
     private TextView instructionText;
     private Runnable textRunnable;
     private Button unlockButton;
     private ImageView imageView;
-
     private int currentPage = 0;
 
     @Override
