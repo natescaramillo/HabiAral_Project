@@ -46,12 +46,13 @@
 
     <ImageView
         android:id="@+id/imageView7"
-        android:layout_width="322dp"
-        android:layout_height="227dp"
+        android:layout_width="295dp"
+        android:layout_height="256dp"
         android:layout_gravity="center|top"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="10dp"
         android:adjustViewBounds="true"
-        android:src="@drawable/tarsier_home" />
+        android:src="@drawable/happy_tarsier" />
 
     <!-- Brown overlay starting halfway down the image -->
     <View

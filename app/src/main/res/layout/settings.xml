@@ -18,78 +18,117 @@
         android:id="@+id/textView20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:layout_gravity="center_horizontal"
-        android:textColor="#FFFFFF"
         android:fontFamily="@font/special"
-        android:textSize="20sp"
-        android:text="Settings" />
+        android:gravity="center"
+        android:text="Settings"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
 
-    <LinearLayout
-        android:layout_width="423dp"
-        android:layout_height="320dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="120dp"
-        android:orientation="vertical">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:src="@drawable/tarsier_peeking"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="-50dp"
+            android:layout_marginBottom="-40dp"/>
 
-        <FrameLayout
-            android:id="@+id/about_us"
-            android:layout_width="337dp"
-            android:layout_height="51dp"
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="305dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_color"
-            android:clickable="true">
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.293">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/poppins"
-                android:gravity="center"
-                android:text="Tungkol sa Amin"
-                android:textColor="#ffffff" />
+            <FrameLayout
+                android:id="@+id/about_us"
+                android:layout_width="337dp"
+                android:layout_height="51dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_color"
+                android:clickable="true">
 
-        </FrameLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/poppins"
+                    android:gravity="center"
+                    android:text="Tungkol sa Amin"
+                    android:textColor="#ffffff" />
 
-        <FrameLayout
-            android:id="@+id/change_username"
-            android:layout_width="337dp"
-            android:layout_height="51dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_color"
-            android:clickable="true">
+            </FrameLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/poppins"
-                android:gravity="center"
-                android:text="Palitan ang Palayaw"
-                android:textColor="#ffffff" />
+            <FrameLayout
+                android:id="@+id/change_username"
+                android:layout_width="337dp"
+                android:layout_height="51dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_color"
+                android:clickable="true">
 
-        </FrameLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/poppins"
+                    android:gravity="center"
+                    android:text="Palitan ang Palayaw"
+                    android:textColor="#ffffff" />
 
-        <FrameLayout
-            android:id="@+id/logout"
-            android:layout_width="338dp"
-            android:layout_height="51dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_color"
-            android:clickable="true">
+            </FrameLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/poppins"
-                android:gravity="center"
-                android:text="Logout"
-                android:textColor="#ffffff" />
-        </FrameLayout>
+            <FrameLayout
+                android:id="@+id/logout"
+                android:layout_width="338dp"
+                android:layout_height="51dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_color"
+                android:clickable="true">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/poppins"
+                    android:gravity="center"
+                    android:text="Logout"
+                    android:textColor="#ffffff" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/sounds"
+                android:layout_width="338dp"
+                android:layout_height="51dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_color"
+                android:clickable="true">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/poppins"
+                    android:gravity="center"
+                    android:text="Tunog"
+                    android:textColor="#ffffff" />
+            </FrameLayout>
 
 
-    </LinearLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
