@@ -316,15 +316,15 @@ public class PangUriQuiz extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> panghalipStatus = new HashMap<>();
-        panghalipStatus.put("status", "completed");
+        Map<String, Object> panguriStatus = new HashMap<>();
+        panguriStatus.put("status", "completed");
 
         Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("panghalip", panghalipStatus);
+        lessonsMap.put("panguri", panguriStatus);
 
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "panghalip");
+        updateMap.put("current_lesson", "panguri");
 
         Map<String, Object> moduleUpdate = Map.of("module_1", updateMap);
 
@@ -341,7 +341,7 @@ public class PangUriQuiz extends AppCompatActivity {
 
             Map<String, Object> cachedModule1 = (Map<String, Object>) cachedData.get("module_1");
             cachedModule1.put("lessons", lessonsMap);
-            cachedModule1.put("current_lesson", "panghalip");
+            cachedModule1.put("current_lesson", "panguri");
 
             LessonProgressCache.setData(cachedData);
         }

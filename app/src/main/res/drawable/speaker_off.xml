@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="640dp"
+    android:height="640dp"
+    android:viewportWidth="640"
+    android:viewportHeight="640">
+
+    <!-- Speaker body -->
+    <path
+        android:pathData="M80,416L128,416L262.1,535.2C268.5,540.9 276.7,544 285.2,544C304.4,544 320,528.4 320,509.2L320,130.8C320,111.6 304.4,96 285.2,96C276.7,96 268.5,99.1 262.1,104.8L128,224L80,224C53.5,224 32,245.5 32,272L32,368C32,394.5 53.5,416 80,416z"
+        android:fillColor="#ffffff"/>
+
+    <!-- X shifted lower -->
+    <path
+        android:pathData="M460,260L580,380M580,260L460,380"
+        android:strokeColor="#ffffff"
+        android:strokeWidth="48"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+</vector>

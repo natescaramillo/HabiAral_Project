@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.Timestamp;
@@ -62,11 +63,24 @@ public class AchievementFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.achievement, container, false);
         db = FirebaseFirestore.getInstance();
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            uid = currentUser.getUid();
+        } else {
+            Toast.makeText(getContext(), "User not logged in.", Toast.LENGTH_SHORT).show();
+            return root;
+        }
 
         loadAchievements();
 
         return root;
+    }
+
+    public void onResume() {
+        super.onResume();
+        if (uid != null) {
+            loadAchievements();
+        }
     }
 
     private void loadAchievements() {
@@ -120,7 +134,7 @@ public class AchievementFragment extends Fragment{
 
                 if (achievementsMap.containsKey(saKey)) {
                     image.setAlpha(1f);
-                    removeLockIconIfExists(box);
+                    removeLockIconIfExists(image);
 
                     // Extract unlockedAt date
                     Map<String, Object> saData = (Map<String, Object>) achievementsMap.get(saKey);
@@ -173,14 +187,15 @@ public class AchievementFragment extends Fragment{
         frame.addView(lockIcon);
     }
 
-    private void removeLockIconIfExists(View box) {
-        if (!(box instanceof ViewGroup)) return;
+    private void removeLockIconIfExists(View achievementImage) {
+        ViewParent parent = achievementImage.getParent();
+        if (!(parent instanceof FrameLayout)) return;
 
-        ViewGroup container = (ViewGroup) box;
-        for (int i = container.getChildCount() - 1; i >= 0; i--) {
-            View child = container.getChildAt(i);
+        FrameLayout frame = (FrameLayout) parent;
+        for (int i = frame.getChildCount() - 1; i >= 0; i--) {
+            View child = frame.getChildAt(i);
             if ("lock_icon".equals(child.getTag())) {
-                container.removeViewAt(i);
+                frame.removeViewAt(i);
             }
         }
     }

@@ -2,76 +2,98 @@ package com.example.habiaral.Activity;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.WindowCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.habiaral.Fragment.AchievementFragment;
 import com.example.habiaral.Fragment.DictionaryFragment;
 import com.example.habiaral.Fragment.HomeFragment;
 import com.example.habiaral.Fragment.ProgressBarFragment;
+import com.example.habiaral.Fragment.SettingsFragment;
 import com.example.habiaral.InternetChecker;
 import com.example.habiaral.R;
-import com.example.habiaral.Fragment.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.HashMap;
 import java.util.Map;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
 
 public class HomepageActivity extends AppCompatActivity {
 
     private final Map<Integer, Fragment> fragmentMap = new HashMap<>();
-    private Handler handler = new Handler();
-    private Runnable internetCheckRunnable;
-    private boolean activityInitialized = false;
+    private final Handler handler = new Handler();
+    private final Handler fragmentHandler = new Handler();
+    private Runnable pendingRunnable;
+    private long lastClickTime = 0;
+    private static final long MIN_INTERVAL = 250;
+
+    private Fragment activeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            boolean showWelcome = extras.getBoolean("SHOW_WELCOME_MESSAGE", false);
+            String nickname = extras.getString("USER_NICKNAME");
+
+            if (showWelcome && nickname != null && !nickname.isEmpty()) {
+                Toast.makeText(this, "Maligayang Pagbalik, " + nickname + "!", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        RunActivity();
         startInternetChecking();
     }
 
     private void startInternetChecking() {
-        internetCheckRunnable = new Runnable() {
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                InternetChecker.checkInternet(HomepageActivity.this, () -> {
-                    if (!activityInitialized) {
-                        RunActivity();
-                        activityInitialized = true;
-                    }
-                });
-
+                InternetChecker.checkInternet(HomepageActivity.this, () -> {});
                 handler.postDelayed(this, 3000);
             }
-        };
-
-        handler.post(internetCheckRunnable);
+        }, 0);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(internetCheckRunnable);
+        handler.removeCallbacksAndMessages(null);
         InternetChecker.resetDialogFlag();
     }
 
     private void RunActivity() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.botnav);
 
-        fragmentMap.put(R.id.home_nav, new HomeFragment());
-        fragmentMap.put(R.id.progressbar_nav, new ProgressBarFragment());
-        fragmentMap.put(R.id.achievement_nav, new AchievementFragment());
-        fragmentMap.put(R.id.settings_nav, new SettingsFragment());
-        fragmentMap.put(R.id.dictionary_nav, new DictionaryFragment());
+        Fragment homeFragment = new HomeFragment();
+        Fragment progressFragment = new ProgressBarFragment();
+        Fragment achievementFragment = new AchievementFragment();
+        Fragment settingsFragment = new SettingsFragment();
+        Fragment dictionaryFragment = new DictionaryFragment();
 
-        loadFragment(fragmentMap.get(R.id.home_nav));
+        fragmentMap.put(R.id.home_nav, homeFragment);
+        fragmentMap.put(R.id.progressbar_nav, progressFragment);
+        fragmentMap.put(R.id.achievement_nav, achievementFragment);
+        fragmentMap.put(R.id.settings_nav, settingsFragment);
+        fragmentMap.put(R.id.dictionary_nav, dictionaryFragment);
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, homeFragment, "HOME")
+                .commit();
+        activeFragment = homeFragment;
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, progressFragment, "PROGRESS").hide(progressFragment)
+                .add(R.id.fragment_container, achievementFragment, "ACHIEVEMENT").hide(achievementFragment)
+                .add(R.id.fragment_container, settingsFragment, "SETTINGS").hide(settingsFragment)
+                .add(R.id.fragment_container, dictionaryFragment, "DICTIONARY").hide(dictionaryFragment)
+                .commit();
 
         ViewCompat.setOnApplyWindowInsetsListener(bottomNavigationView, (v, insets) -> {
             int bottomInset = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom;
@@ -80,18 +102,41 @@ public class HomepageActivity extends AppCompatActivity {
         });
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
+            long now = System.currentTimeMillis();
+            if (now - lastClickTime < MIN_INTERVAL) {
+                return false;
+            }
+            lastClickTime = now;
+
             Fragment selectedFragment = fragmentMap.get(item.getItemId());
-            if (selectedFragment != null) {
-                loadFragment(selectedFragment);
+            if (selectedFragment != null && selectedFragment != activeFragment) {
+                bottomNavigationView.setEnabled(false);
+
+                loadFragmentDebounced(selectedFragment);
+
+                fragmentHandler.postDelayed(() -> bottomNavigationView.setEnabled(true), MIN_INTERVAL);
                 return true;
             }
             return false;
         });
     }
-    private void loadFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
+
+    private void loadFragmentDebounced(Fragment fragment) {
+        if (pendingRunnable != null) {
+            fragmentHandler.removeCallbacks(pendingRunnable);
+        }
+
+        pendingRunnable = () -> {
+            if (!isFinishing() && !isDestroyed() && fragment != null) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(activeFragment)
+                        .show(fragment)
+                        .commitAllowingStateLoss();
+                activeFragment = fragment;
+            }
+        };
+
+        fragmentHandler.postDelayed(pendingRunnable, 50);
     }
 }

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
+import com.example.habiaral.KayarianNgPangungusap.Lessons.TambalanLesson;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,7 +50,8 @@ public class PayakQuiz extends AppCompatActivity{
         builder.setCancelable(false);
 
         Button retryButton = dialogView.findViewById(R.id.retryButton);
-        Button homeButton = dialogView.findViewById(R.id.finishButton);
+        Button taposButton = dialogView.findViewById(R.id.finishButton);
+        Button homeButton = dialogView.findViewById(R.id.returnButton);
 
         AlertDialog dialog = builder.create();
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
@@ -60,6 +62,14 @@ public class PayakQuiz extends AppCompatActivity{
             Intent intent = getIntent();
             finish();
             startActivity(intent);
+        });
+
+        taposButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = new Intent(com.example.habiaral.KayarianNgPangungusap.Quiz.PayakQuiz.this, TambalanLesson.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
         });
 
         homeButton.setOnClickListener(v -> {

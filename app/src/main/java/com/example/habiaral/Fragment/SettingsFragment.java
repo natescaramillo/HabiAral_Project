@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -31,28 +32,55 @@ import java.util.Map;
 public class SettingsFragment extends Fragment {
     private FirebaseFirestore db;
     private FirebaseAuth auth;
-    private AlertDialog deleteDialog;
-
+    private ImageView btnSound;
+    private boolean isMuted = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings, container, false);
 
-        // ✅ FIX: initialize Firebase
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
         FrameLayout btnAboutUs = view.findViewById(R.id.about_us);
         FrameLayout btnChangeUsername = view.findViewById(R.id.change_username);
-        FrameLayout btnLogout = view.findViewById(R.id.logout); // ✅ Add this line
+        FrameLayout btnLogout = view.findViewById(R.id.logout);
+        FrameLayout btnSounds = view.findViewById(R.id.sounds);
+        btnSound = view.findViewById(R.id.imageView11);
+
+        SharedPreferences prefs = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        isMuted = prefs.getBoolean("isMuted", false);
+
+        if (isMuted) {
+            btnSound.setImageResource(R.drawable.speaker_off);
+        } else {
+            btnSound.setImageResource(R.drawable.speaker_on);
+        }
 
         btnAboutUs.setOnClickListener(v -> startActivity(new Intent(requireActivity(), AboutUsActivity.class)));
         btnChangeUsername.setOnClickListener(v -> showChangeNicknameDialog());
-        btnLogout.setOnClickListener(v -> showLogoutConfirmationDialog()); // ✅ Connect the logout action
+        btnLogout.setOnClickListener(v -> showLogoutConfirmationDialog());
+        btnSounds.setOnClickListener(v -> muteSound());
 
 
         return view;
+    }
+
+    private void muteSound() {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        if (isMuted) {
+            btnSound.setImageResource(R.drawable.speaker_on);
+            isMuted = false;
+        } else {
+            btnSound.setImageResource(R.drawable.speaker_off);
+            isMuted = true;
+        }
+
+        editor.putBoolean("isMuted", isMuted);
+        editor.apply();
     }
 
     private void showChangeNicknameDialog() {

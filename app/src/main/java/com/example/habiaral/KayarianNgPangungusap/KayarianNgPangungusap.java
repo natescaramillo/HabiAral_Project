@@ -176,7 +176,6 @@ public class KayarianNgPangungusap extends AppCompatActivity {
     }
 
     private void lockAllButtons() {
-        lockButton(btnPayak);
         lockButton(btnTambalan);
         lockButton(btnHugnayan);
         lockButton(btnLangkapan);

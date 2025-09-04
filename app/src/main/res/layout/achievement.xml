@@ -501,6 +501,7 @@
                             android:layout_height="77dp"
                             android:layout_gravity="center"
                             android:background="@drawable/rounded_image"
+                            android:alpha="0.2"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
                             android:src="@drawable/achievement11"

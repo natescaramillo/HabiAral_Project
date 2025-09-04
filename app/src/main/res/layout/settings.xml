@@ -140,7 +140,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="start|center_vertical"
                     android:layout_marginStart="50dp"
-                    android:src="@drawable/white_speaker"
+                    android:src="@drawable/speaker_on"
                     android:contentDescription="Speaker" />
 
             </FrameLayout>
