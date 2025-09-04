@@ -63,114 +63,115 @@
                 <!-- First SearchBar Section -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="138dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/search_bar" >
-
-                    <TextView
-                        android:id="@+id/first_description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/special"
-                        android:text="Lorem Ipsum"
-                        android:textColor="#fff"
-                        android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.061"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.327" />
+                    android:padding="12dp"
+                    android:background="@drawable/search_bar">
 
                     <TextView
                         android:id="@+id/first_Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="#fff"
                         android:fontFamily="@font/special"
                         android:text="Baguhan"
+                        android:textColor="#fff"
+                        android:textSize="15sp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <TextView
+                        android:id="@+id/first_description"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="@font/special"
+                        android:justificationMode="inter_word"
+                        android:text="Sa antas na ito, may mga pangungusap na may nawawalang salita. Kailangang punan ng mag-aaral ang patlang gamit ang tamang salita upang mabuo ang pangungusap. Bawat tamang sagot ay may katumbas na 5 puntos. Kapag nakaipon ng sapat na puntos, maaabot mo ang susunod na antas — Husay."
+                        android:textColor="#fff"
+                        android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.054"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.134" />
+                        app:layout_constraintTop_toBottomOf="@id/first_Title"
+                        app:layout_constraintVertical_bias="0.491" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 <!-- Second SearchBar Section -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="138dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/search_bar" >
+                    android:padding="12dp"
+                    android:background="@drawable/search_bar">
 
                     <TextView
                         android:id="@+id/second_Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="#fff"
                         android:fontFamily="@font/special"
                         android:text="Husay"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.054"
-                        app:layout_constraintStart_toStartOf="parent"
+                        android:textColor="#fff"
+                        android:textSize="15sp"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.134" />
+                        app:layout_constraintStart_toStartOf="parent" />
+
                     <TextView
                         android:id="@+id/second_description"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
                         android:fontFamily="@font/special"
-                        android:text="Lorem Ipsum"
+                        android:justificationMode="inter_word"
+                        android:text="Sa bahaging ito, pipili ang mag-aaral ng mga salita mula sa ibinigay na pagpipilian upang makabuo ng isang pangungusap na malinaw at may wastong kahulugan. Bawat tamang sagot ay may katumbas na 3 puntos. Kung makakalikom ng sapat na puntos, maa-unlock ang pinakamataas na antas — Dalubhasa."
                         android:textColor="#fff"
                         android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.061"
+                        app:layout_constraintTop_toBottomOf="@id/second_Title"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.327" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 <!-- Third SearchBar Section -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="138dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/search_bar" >
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:padding="12dp"
+                    android:background="@drawable/search_bar">
 
                     <TextView
                         android:id="@+id/third_Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="#fff"
                         android:fontFamily="@font/special"
                         android:text="Dalubhasa"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.054"
-                        app:layout_constraintStart_toStartOf="parent"
+                        android:textColor="#fff"
+                        android:textSize="15sp"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.134" />
+                        app:layout_constraintStart_toStartOf="parent" />
+
                     <TextView
                         android:id="@+id/third_description"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
                         android:fontFamily="@font/special"
-                        android:text="Lorem Ipsum"
+                        android:justificationMode="inter_word"
+                        android:text="Sa pinakahuling antas, bibigyan ang mag-aaral ng panuto kung anong uri ng pangungusap ang bubuuin. Kailangang gumawa ng sariling pangungusap na kumpleto, malinaw, at wasto. Gagamit ng Tagasuri ng Gramatika upang makita kung tama ang pagkakabuo. Ang gantimpala ay 10 hanggang 15 puntos, depende sa kaayusan, wastong gramatika, at kabuuan ng sagot."
                         android:textColor="#fff"
                         android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.061"
+                        app:layout_constraintTop_toBottomOf="@id/third_Title"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.327" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
                 <!-- Button moved here -->
