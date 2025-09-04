@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/special"
             android:justificationMode="inter_word"
-            android:text="Walang mahaginap na internet\n sa iyong lugar. Ulitin muli!"
+            android:text="Walang mahagilap na internet\n sa iyong lugar. Ulitin muli!"
             android:textColor="#fff"
             android:textSize="15sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline36"

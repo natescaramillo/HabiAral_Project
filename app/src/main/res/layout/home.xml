@@ -112,39 +112,6 @@
 
             <!-- BUTTON 2 -->
             <LinearLayout
-                android:id="@+id/komprehensyon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/button_color"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="12dp">
-
-                    <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:clipToOutline="true"
-                        android:background="@drawable/rounded_image"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/home_pagunawa"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/special"
-                    android:gravity="center"
-                    android:text="Pag-Unawa"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <!-- BUTTON 3 -->
-            <LinearLayout
                 android:id="@+id/kayarian"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -162,7 +129,6 @@
                     android:clipToOutline="true"
                     android:background="@drawable/rounded_image"
                     android:src="@drawable/home_kayarian" />
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -173,6 +139,42 @@
                     android:text="Kayarian ng Pangungusap"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
+
+
+            </LinearLayout>
+
+            <!-- BUTTON 3 -->
+            <LinearLayout
+                android:id="@+id/komprehensyon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button_color"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:clipToOutline="true"
+                    android:background="@drawable/rounded_image"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/home_pagunawa"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:gravity="center"
+                    android:text="Pag-Unawa"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
+
             </LinearLayout>
 
             <!-- BUTTON 4 -->

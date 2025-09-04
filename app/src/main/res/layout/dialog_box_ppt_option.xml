@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/logoutdialog"
         android:layout_width="0dp"
-        android:layout_height="219dp"
+        android:layout_height="270dp"
         android:background="@drawable/pop_up_main_color"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
@@ -21,8 +21,8 @@
 
         <ImageView
             android:id="@+id/imageView8"
-            android:layout_width="33dp"
-            android:layout_height="33dp"
+            android:layout_width="49dp"
+            android:layout_height="53dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,8 +50,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/special"
             android:gravity="center"
-            android:text="gusto mo bang ipagpatuloy kung saan ka tumigil?"
-            android:textAlignment="center"
+            android:text="Gusto mo bang ipagpatuloy kung saan ka tumigil?"
+            android:justificationMode="inter_word"
             android:textColor="#fff"
             android:textSize="15sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline18"
@@ -65,18 +65,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.15" />
+            app:layout_constraintGuide_percent="0.1" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.85" />
+            app:layout_constraintGuide_percent="0.9" />
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="horizontal"
             android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -89,8 +89,9 @@
 
             <Button
                 android:id="@+id/button_bumalik"
-                android:layout_width="42dp"
-                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_color"
@@ -101,8 +102,9 @@
 
             <Button
                 android:id="@+id/button_resume"
-                android:layout_width="42dp"
-                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button_color"
                 android:fontFamily="@font/special"
@@ -117,14 +119,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.2" />
+        app:layout_constraintGuide_percent="0.15" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.85" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
@@ -138,6 +140,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.6" />
+        app:layout_constraintGuide_percent="0.62" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
