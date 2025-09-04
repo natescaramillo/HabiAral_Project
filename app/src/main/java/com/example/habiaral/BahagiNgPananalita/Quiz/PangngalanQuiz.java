@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
@@ -160,12 +161,23 @@ public class PangngalanQuiz extends AppCompatActivity {
                         }
 
                         if (introText != null) {
+                            ProgressBar progressBar = findViewById(R.id.timerBar);
                             questionTitle.setText("Simula");
                             questionText.setText(introText);
                             answer1.setVisibility(View.GONE);
                             answer2.setVisibility(View.GONE);
                             answer3.setVisibility(View.GONE);
                             nextButton.setEnabled(true);
+
+                            // Center and make button longer for intro
+                            ConstraintLayout.LayoutParams params =
+                                    (ConstraintLayout.LayoutParams) nextButton.getLayoutParams();
+                            params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+                            params.setMargins(64, params.topMargin, 64, params.bottomMargin);
+                            nextButton.setLayoutParams(params);
+
+                            //  Hide timer + progress bar on intro
+                            progressBar.setVisibility(View.GONE);
                         }
                     }
                 }).addOnFailureListener(e ->
