@@ -507,6 +507,8 @@ public class PalaroBaguhan extends AppCompatActivity {
         });
     }
 
+    private MediaPlayer beepPlayer;
+
     private void showCountdownThenLoadQuestion() {
         db.collection("baguhan").get().addOnSuccessListener(querySnapshot -> {
             if (!querySnapshot.isEmpty()) {
@@ -518,6 +520,11 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                 currentQuestionNumber = 0;
 
+                // preload sound para walang delay
+                if (beepPlayer == null) {
+                    beepPlayer = MediaPlayer.create(this, R.raw.ready_start);
+                }
+
                 final Handler countdownHandler = new Handler();
                 final int[] countdown = {3};
 
@@ -527,10 +534,17 @@ public class PalaroBaguhan extends AppCompatActivity {
                         if (isGameOver) return;
 
                         if (countdown[0] > 0) {
+                            // sabay update ng text at tunog
                             baguhanQuestion.setText(String.valueOf(countdown[0]));
+
+                            if (beepPlayer != null) {
+                                beepPlayer.start(); // instant play kasi preloaded na
+                            }
+
                             countdown[0]--;
                             countdownHandler.postDelayed(this, 1000);
                         } else {
+                            baguhanQuestion.setText("");
                             loadBaguhanQuestion();
                             startTimer(timeLeft);
                         }
@@ -810,5 +824,16 @@ public class PalaroBaguhan extends AppCompatActivity {
         mediaPlayer.setOnCompletionListener(MediaPlayer::release);
         mediaPlayer.start();
     }
+
+    private void playReadyStartSound() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+        mediaPlayer = MediaPlayer.create(this, R.raw.ready_start);
+        mediaPlayer.setVolume(0.6f, 0.6f); // Pwede mong hinaan/lakasan volume
+        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mediaPlayer.start();
+    }
+
 
 }
