@@ -3,6 +3,7 @@ package com.example.habiaral.PagUnawa.Quiz;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -11,6 +12,7 @@ import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -182,30 +184,48 @@ public class Kwento3Quiz extends AppCompatActivity {
     }
     private void showAchievementUnlockedDialog(String title, int imageRes) {
         LayoutInflater inflater = LayoutInflater.from(this);
-        View toastView = inflater.inflate(R.layout.achievement_unlocked, null);  // palitan ng pangalan ng XML file mo
+        View dialogView = inflater.inflate(R.layout.achievement_unlocked, null);
 
-        ImageView iv = toastView.findViewById(R.id.imageView19);
-        TextView tv = toastView.findViewById(R.id.textView14);
+        ImageView iv = dialogView.findViewById(R.id.imageView19);
+        TextView tv = dialogView.findViewById(R.id.textView14);
 
         iv.setImageResource(imageRes);
         String line1 = "Nakamit mo na ang parangal:\n";
         String line2 = title;
 
         SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
-
         ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
         int start = line1.length();
         int end = line1.length() + line2.length();
         ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
         ssb.setSpan(new RelativeSizeSpan(1.1f), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tv.setText(ssb);
-        Toast toast = new Toast(this);
-        toast.setView(toastView);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
-        toast.show();
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+
+            // 👉 Gamitin LayoutParams para makuha yung offset na parang toast
+            WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+            params.y = 50; // offset mula sa taas (px)
+            dialog.getWindow().setAttributes(params);
+        }
+
+        // 🎵 Play sound sabay sa pop up
+        dialog.setOnShowListener(d -> {
+            MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.achievement_pop);
+            mediaPlayer.setVolume(0.5f, 0.5f);
+            mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+            mediaPlayer.start();
+        });
+
+        dialog.show();
     }
+
 }

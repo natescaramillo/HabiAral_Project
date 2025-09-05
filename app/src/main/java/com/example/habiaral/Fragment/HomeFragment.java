@@ -1,12 +1,19 @@
 package com.example.habiaral.Fragment;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,13 +40,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import android.media.MediaPlayer;
+
 
 public class HomeFragment extends Fragment {
 
     private final Map<Integer, Class<?>> lessonMap = new HashMap<>();
     private TextView nicknameTextView;
 
-    public HomeFragment() {}
+    public HomeFragment() {
+    }
+
+    private MediaPlayer mediaPlayer; // para sa sound
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,12 +69,36 @@ public class HomeFragment extends Fragment {
             LinearLayout button = view.findViewById(entry.getKey());
             Class<?> activityClass = entry.getValue();
             if (button != null) {
-                button.setOnClickListener(v -> startActivity(new Intent(getActivity(), activityClass)));
+                button.setOnClickListener(v -> {
+                    playClickSound(); // tumugtog bago mag startActivity
+                    startActivity(new Intent(getActivity(), activityClass));
+                });
             }
         }
 
         return view;
     }
+
+    private void playClickSound() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+        mediaPlayer = MediaPlayer.create(getContext(), R.raw.button_click);
+        mediaPlayer.setOnCompletionListener(mp -> {
+            mp.release(); // auto release para hindi mag-leak
+        });
+        mediaPlayer.start();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
 
     @Override
     public void onResume() {
@@ -78,6 +115,7 @@ public class HomeFragment extends Fragment {
             checkSevenDayStreak(studentId);
         }
     }
+
     private void checkSevenDayStreak(String uid) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -150,7 +188,8 @@ public class HomeFragment extends Fragment {
 
         db.collection("student_achievements").document(uid).get().addOnSuccessListener(snapshot -> {
             Map<String, Object> existing = (Map<String, Object>) snapshot.get("achievements");
-            if (existing != null && existing.containsKey(achievementCode)) return; // already unlocked
+            if (existing != null && existing.containsKey(achievementCode))
+                return; // already unlocked
 
             db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
                 if (!achDoc.exists()) return;
@@ -177,6 +216,7 @@ public class HomeFragment extends Fragment {
             });
         });
     }
+
     private void recordLogDate(String studentDocId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -203,33 +243,50 @@ public class HomeFragment extends Fragment {
     }
 
 
+    private void showAchievementUnlockedDialog(String title, int imageRes) {
+        LayoutInflater inflater = LayoutInflater.from(requireContext()); // dito mali dati
+        View dialogView = inflater.inflate(R.layout.achievement_unlocked, null);
 
-    private void showAchievementUnlockedDialog(String title, int imageRes){
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View toastView = inflater.inflate(R.layout.achievement_unlocked, null);
-
-        ImageView iv = toastView.findViewById(R.id.imageView19);
-        TextView tv = toastView.findViewById(R.id.textView14);
+        ImageView iv = dialogView.findViewById(R.id.imageView19);
+        TextView tv = dialogView.findViewById(R.id.textView14);
 
         iv.setImageResource(imageRes);
         String line1 = "Nakamit mo na ang parangal:\n";
         String line2 = title;
 
         SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
-
-        ssb.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, line1.length(), android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         int start = line1.length();
         int end = line1.length() + line2.length();
-        ssb.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), start, end, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ssb.setSpan(new android.text.style.RelativeSizeSpan(1.3f), start, end, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.setSpan(new RelativeSizeSpan(1.1f), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tv.setText(ssb);
 
-        Toast toast = new Toast(getContext());
-        toast.setView(toastView);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setGravity(android.view.Gravity.TOP | android.view.Gravity.CENTER_HORIZONTAL, 0, 100);
-        toast.show();
+        AlertDialog dialog = new AlertDialog.Builder(requireContext()) // gumamit ng requireContext()
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+
+            // 👉 Gamitin LayoutParams para makuha yung offset na parang toast
+            WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+            params.y = 50; // offset mula sa taas (px)
+            dialog.getWindow().setAttributes(params);
+        }
+
+        // 🎵 Play sound sabay sa pop up
+        dialog.setOnShowListener(d -> {
+            MediaPlayer mediaPlayer = MediaPlayer.create(requireContext(), R.raw.achievement_pop);
+            mediaPlayer.setVolume(0.5f, 0.5f);
+            mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+            mediaPlayer.start();
+        });
+
+        dialog.show();
     }
 
 

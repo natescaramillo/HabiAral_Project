@@ -1,6 +1,7 @@
 package com.example.habiaral.PagUnawa;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
@@ -27,6 +28,8 @@ public class PagUnawa extends AppCompatActivity {
     FrameLayout kwento1Lock, kwento2Lock, kwento3Lock;
     FirebaseFirestore db;
     String uid;
+    private MediaPlayer mediaPlayer; // 🔊 Sound player
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,25 @@ public class PagUnawa extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> loadLessonProgressFromFirestore());
     }
+    // 🔊 Play button click sound
+    private void playClickSound() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+        mediaPlayer = MediaPlayer.create(this, R.raw.button_click);
+        mediaPlayer.setOnCompletionListener(mp -> mp.release());
+        mediaPlayer.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
 
     private void loadLessonProgressFromFirestore() {
         db.collection("module_progress").document(uid)
@@ -136,9 +158,21 @@ public class PagUnawa extends AppCompatActivity {
         kwento2Lock = findViewById(R.id.kwento2Lock);
         kwento3Lock = findViewById(R.id.kwento3Lock);
 
-        btnKwento1.setOnClickListener(v -> startActivity(new Intent(this, Kwento1.class)));
-        btnKwento2.setOnClickListener(v -> startActivity(new Intent(this, Kwento2.class)));
-        btnKwento3.setOnClickListener(v -> startActivity(new Intent(this, Kwento3.class)));
+        // 🔊 Add click sound for each lesson
+        btnKwento1.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(this, Kwento1.class));
+        });
+
+        btnKwento2.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(this, Kwento2.class));
+        });
+
+        btnKwento3.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(this, Kwento3.class));
+        });
     }
 
     private void checkAndCompleteModule(boolean kwento1Done, boolean kwento2Done, boolean kwento3Done) {

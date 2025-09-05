@@ -3,6 +3,7 @@ package com.example.habiaral.Palaro;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.SpannableStringBuilder;
@@ -12,6 +13,7 @@ import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -60,6 +62,8 @@ public class Palaro extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private boolean isUnlocking = false;
+    private MediaPlayer mediaPlayer;
+
 
 
     @Override
@@ -97,7 +101,13 @@ public class Palaro extends AppCompatActivity {
         startEnergyRegeneration();
         loadTotalScoreFromFirestore();
 
+        // ✅ Button click listeners with sound
+        gameMechanicsIcon.setOnClickListener(v -> {
+            playClickSound();
+            showGameMechanics();
+        });
         button1.setOnClickListener(v -> {
+            playClickSound();
             if (userEnergy >= ENERGY_COST) {
                 userEnergy -= ENERGY_COST;
 
@@ -120,6 +130,7 @@ public class Palaro extends AppCompatActivity {
         });
 
         button2.setOnClickListener(v -> {
+            playClickSound();
             if (userPoints >= 400) {
                 startActivity(new Intent(Palaro.this, PalaroHusay.class));
             } else {
@@ -128,12 +139,22 @@ public class Palaro extends AppCompatActivity {
         });
 
         button3.setOnClickListener(v -> {
+            playClickSound();
             if (userPoints >= 800) {
                 startActivity(new Intent(Palaro.this, PalaroDalubhasa.class));
             } else {
                 Toast.makeText(this, "Unlock Dalubhasa at 800 points!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    // ✅ Helper method for sound
+    private void playClickSound() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+        mediaPlayer = MediaPlayer.create(this, R.raw.button_click);
+        mediaPlayer.setOnCompletionListener(mp -> mp.release());
+        mediaPlayer.start();
     }
 
     private void loadTotalScoreFromFirestore() {
@@ -275,36 +296,50 @@ public class Palaro extends AppCompatActivity {
         });
     }
 
-    private void showAchievementUnlockedDialog(String title, int imageRes){
+    private void showAchievementUnlockedDialog(String title, int imageRes) {
         LayoutInflater inflater = LayoutInflater.from(this);
-        View toastView = inflater.inflate(R.layout.achievement_unlocked, null);  // palitan ng pangalan ng XML file mo
+        View dialogView = inflater.inflate(R.layout.achievement_unlocked, null);
 
-        ImageView iv = toastView.findViewById(R.id.imageView19);
-        TextView tv = toastView.findViewById(R.id.textView14);
+        ImageView iv = dialogView.findViewById(R.id.imageView19);
+        TextView tv = dialogView.findViewById(R.id.textView14);
 
         iv.setImageResource(imageRes);
         String line1 = "Nakamit mo na ang parangal:\n";
         String line2 = title;
 
         SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
-
-        // Bold line1
         ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Bold line2 (achievement name)
         int start = line1.length();
         int end = line1.length() + line2.length();
         ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Make achievement name bigger (e.g. 1.3x)
-        ssb.setSpan(new RelativeSizeSpan(1.3f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.setSpan(new RelativeSizeSpan(1.1f), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tv.setText(ssb);
-        Toast toast = new Toast(this);
-        toast.setView(toastView);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 50); // 100 px mula sa top
-        toast.show();
+
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+
+            // 👉 Gamitin LayoutParams para makuha yung offset na parang toast
+            WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+            params.y = 50; // offset mula sa taas (px)
+            dialog.getWindow().setAttributes(params);
+        }
+
+        // 🎵 Play sound sabay sa pop up
+        dialog.setOnShowListener(d -> {
+            MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.achievement_pop);
+            mediaPlayer.setVolume(0.5f, 0.5f);
+            mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+            mediaPlayer.start();
+        });
+
+        dialog.show();
     }
 
 
@@ -438,7 +473,10 @@ public class Palaro extends AppCompatActivity {
         }
 
         Button btnIsara = dialogView.findViewById(R.id.btn_isara);
-        btnIsara.setOnClickListener(v -> dialog.dismiss());
+        btnIsara.setOnClickListener(v -> {
+            playClickSound(); // 🔊 tutunog pag-click
+            dialog.dismiss(); // ❌ isara dialog
+        });
 
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
@@ -449,6 +487,10 @@ public class Palaro extends AppCompatActivity {
         super.onDestroy();
         if (energyTimer != null) {
             energyTimer.cancel();
+        }
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 

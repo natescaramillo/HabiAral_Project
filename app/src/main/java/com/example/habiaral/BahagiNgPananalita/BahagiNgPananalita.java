@@ -17,6 +17,8 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
+import android.media.MediaPlayer;
+
 
 public class BahagiNgPananalita extends AppCompatActivity {
 
@@ -28,6 +30,8 @@ public class BahagiNgPananalita extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private String uid;
+    private MediaPlayer mediaPlayer; // 🔊 para sa sound
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,17 +174,58 @@ public class BahagiNgPananalita extends AppCompatActivity {
         padamdamLock = findViewById(R.id.padamdamLock);
         pangawingLock = findViewById(R.id.pangawingLock);
 
-        btnPangngalan.setOnClickListener(v -> startActivity(new Intent(this, PangngalanLesson.class)));
-        btnPandiwa.setOnClickListener(v -> startActivity(new Intent(this, PandiwaLesson.class)));
-        btnPangUri.setOnClickListener(v -> startActivity(new Intent(this, PangUriLesson.class)));
-        btnPangHalip.setOnClickListener(v -> startActivity(new Intent(this, PangHalipLesson.class)));
-        btnPangAbay.setOnClickListener(v -> startActivity(new Intent(this, PangAbayLesson.class)));
-        btnPangatnig.setOnClickListener(v -> startActivity(new Intent(this, PangatnigLesson.class)));
-        btnPangUkol.setOnClickListener(v -> startActivity(new Intent(this, PangUkolLesson.class)));
-        btnPangAkop.setOnClickListener(v -> startActivity(new Intent(this, PangAngkopLesson.class)));
-        btnPadamdam.setOnClickListener(v -> startActivity(new Intent(this, PandamdamLesson.class)));
-        btnPangawing.setOnClickListener(v -> startActivity(new Intent(this, PangawingLesson.class)));
-    }
+        // 🔊 Lagyan ng tunog bawat lesson button
+        btnPangngalan.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(this, PangngalanLesson.class));
+        });
+
+        btnPandiwa.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(this, PandiwaLesson.class));
+        });
+
+        btnPangUri.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(this, PangUriLesson.class));
+        });
+
+        btnPangHalip.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(this, PangHalipLesson.class));
+        });
+
+        btnPangAbay.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(this, PangAbayLesson.class));
+        });
+
+        btnPangatnig.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(this, PangatnigLesson.class));
+        });
+
+        btnPangUkol.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(this, PangUkolLesson.class));
+        });
+
+        btnPangAkop.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(this, PangAngkopLesson.class));
+        });
+
+        btnPadamdam.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(this, PandamdamLesson.class));
+        });
+
+        btnPangawing.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(this, PangawingLesson.class));
+        });
+        }
+
 
     private void checkAndCompleteModule(
             boolean pangngalanDone, boolean pandiwaDone, boolean pangUriDone,
@@ -217,5 +262,24 @@ public class BahagiNgPananalita extends AppCompatActivity {
     private void lockButton(LinearLayout button) {
         button.setClickable(false);
         button.setAlpha(0.5f);
+    }
+
+    // 🔊 Sound effect method
+    private void playClickSound() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+        mediaPlayer = MediaPlayer.create(this, R.raw.button_click);
+        mediaPlayer.setOnCompletionListener(mp -> mp.release());
+        mediaPlayer.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 }

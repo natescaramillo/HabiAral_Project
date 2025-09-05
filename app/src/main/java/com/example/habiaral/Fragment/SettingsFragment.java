@@ -3,6 +3,7 @@ package com.example.habiaral.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer; // ✅ Import for sound
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,10 +15,11 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import com.example.habiaral.Activity.WelcomeActivity;
 
+import com.example.habiaral.Activity.WelcomeActivity;
 import com.example.habiaral.Activity.AboutUsActivity;
 import com.example.habiaral.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -34,6 +36,7 @@ public class SettingsFragment extends Fragment {
     private FirebaseAuth auth;
     private ImageView btnSound;
     private boolean isMuted = false;
+    private MediaPlayer mediaPlayer; // ✅ Sound player
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,37 +55,69 @@ public class SettingsFragment extends Fragment {
         SharedPreferences prefs = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         isMuted = prefs.getBoolean("isMuted", false);
 
-        if (isMuted) {
-            btnSound.setImageResource(R.drawable.speaker_off);
-        } else {
-            btnSound.setImageResource(R.drawable.speaker_on);
-        }
+        updateSoundIcon();
 
-        btnAboutUs.setOnClickListener(v -> startActivity(new Intent(requireActivity(), AboutUsActivity.class)));
-        btnChangeUsername.setOnClickListener(v -> showChangeNicknameDialog());
-        btnLogout.setOnClickListener(v -> showLogoutConfirmationDialog());
-        btnSounds.setOnClickListener(v -> muteSound());
+        btnAboutUs.setOnClickListener(v -> {
+            playClickSound();
+            startActivity(new Intent(requireActivity(), AboutUsActivity.class));
+        });
 
+        btnChangeUsername.setOnClickListener(v -> {
+            playClickSound();
+            showChangeNicknameDialog();
+        });
+
+        btnLogout.setOnClickListener(v -> {
+            playClickSound();
+            showLogoutConfirmationDialog();
+        });
+
+        btnSounds.setOnClickListener(v -> {
+            playClickSound();
+            muteSound();
+        });
 
         return view;
+    }
+
+    private void playClickSound() {
+        if (!isMuted) {
+            // Gumamit ng bagong MediaPlayer instance bawat click
+            MediaPlayer mp = MediaPlayer.create(requireContext(), R.raw.button_click);
+            mp.setOnCompletionListener(MediaPlayer::release);
+            mp.start();
+        }
     }
 
     private void muteSound() {
         SharedPreferences prefs = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
-        if (isMuted) {
-            btnSound.setImageResource(R.drawable.speaker_on);
-            isMuted = false;
-        } else {
-            btnSound.setImageResource(R.drawable.speaker_off);
-            isMuted = true;
-        }
+        isMuted = !isMuted; // toggle value
+        updateSoundIcon();
 
         editor.putBoolean("isMuted", isMuted);
         editor.apply();
     }
 
+    private void updateSoundIcon() {
+        if (isMuted) {
+            btnSound.setImageResource(R.drawable.speaker_off);
+        } else {
+            btnSound.setImageResource(R.drawable.speaker_on);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
+    // --- unchanged parts (nickname + logout dialogs) ---
     private void showChangeNicknameDialog() {
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_box_change_username, null);
 
@@ -96,6 +131,8 @@ public class SettingsFragment extends Fragment {
                 .create();
 
         buttonConfirm.setOnClickListener(v -> {
+            playClickSound(); // ✅ sound on confirm
+
             String newNickname = editTextUsername.getText().toString().trim();
 
             if (!newNickname.isEmpty()) {
@@ -108,7 +145,6 @@ public class SettingsFragment extends Fragment {
                     db.collection("students").document(userId)
                             .update(update)
                             .addOnSuccessListener(unused -> {
-                                // ✅ Update SharedPreferences
                                 SharedPreferences prefs = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
                                 prefs.edit().putString("nickname", newNickname).apply();
 
@@ -126,7 +162,10 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        buttonCancel.setOnClickListener(v -> dialog.dismiss());
+        buttonCancel.setOnClickListener(v -> {
+            playClickSound(); // ✅ sound on cancel
+            dialog.dismiss();
+        });
 
         dialog.show();
 
@@ -137,7 +176,6 @@ public class SettingsFragment extends Fragment {
             dialog.getWindow().setAttributes(dialog.getWindow().getAttributes());
         }
     }
-
     private void showLogoutConfirmationDialog() {
         View dialogView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_box_logout, null);
@@ -151,25 +189,22 @@ public class SettingsFragment extends Fragment {
         Button btnNo = dialogView.findViewById(R.id.btnLogoutNo);
 
         btnYes.setOnClickListener(v -> {
+            playClickSound(); // ✅ sound on YES
             Toast.makeText(requireContext(), "Logging out...", Toast.LENGTH_SHORT).show();
 
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                // ✅ Sign out from Firebase
                 FirebaseAuth.getInstance().signOut();
 
-                // ✅ Sign out from Google
                 GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(getString(R.string.default_web_client_id)) // Make sure this matches your Firebase project
+                        .requestIdToken(getString(R.string.default_web_client_id))
                         .requestEmail()
                         .build();
 
                 GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
 
                 mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
-                    // ✅ Optional: revoke access to force account picker to show next login
                     mGoogleSignInClient.revokeAccess();
 
-                    // ✅ Redirect to login screen
                     Intent intent = new Intent(requireActivity(), WelcomeActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -177,10 +212,13 @@ public class SettingsFragment extends Fragment {
                     dialog.dismiss();
                     requireActivity().finish();
                 });
-            }, 2000); // 2-second delay
+            }, 2000);
         });
 
-        btnNo.setOnClickListener(v -> dialog.dismiss());
+        btnNo.setOnClickListener(v -> {
+            playClickSound(); // ✅ sound on NO
+            dialog.dismiss();
+        });
 
         dialog.show();
 

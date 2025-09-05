@@ -2,6 +2,7 @@ package com.example.habiaral.Palaro;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -12,6 +13,7 @@ import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -67,6 +69,8 @@ public class PalaroBaguhan extends AppCompatActivity {
     private List<String> questionIds = new ArrayList<>();
     private long startTime;
     private boolean husayUnlocked = false;
+    private MediaPlayer mediaPlayer; // 🔊 Sound player
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,8 +222,12 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         titleText.setText(getFinishMessage());
 
+        // 🔊 automatic tutunog pag lumabas ang dialog
+        playGameOverSound();
+
         Button balik = view.findViewById(R.id.btn_balik);
         balik.setOnClickListener(v -> {
+            playClickSound(); // 🔊 Add sound when clicking "Tapos"
             dialog.dismiss();
             Intent resultIntent = new Intent();
             resultIntent.putExtra("baguhanPoints", baguhanScore);
@@ -388,33 +396,50 @@ public class PalaroBaguhan extends AppCompatActivity {
         });
     }
 
-    private void showAchievementUnlockedDialog(String title, int imageRes){
+    private void showAchievementUnlockedDialog(String title, int imageRes) {
         LayoutInflater inflater = LayoutInflater.from(this);
-        View toastView = inflater.inflate(R.layout.achievement_unlocked, null);
+        View dialogView = inflater.inflate(R.layout.achievement_unlocked, null);
 
-        ImageView iv = toastView.findViewById(R.id.imageView19);
-        TextView tv = toastView.findViewById(R.id.textView14);
+        ImageView iv = dialogView.findViewById(R.id.imageView19);
+        TextView tv = dialogView.findViewById(R.id.textView14);
 
         iv.setImageResource(imageRes);
         String line1 = "Nakamit mo na ang parangal:\n";
         String line2 = title;
 
         SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
-
         ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
         int start = line1.length();
         int end = line1.length() + line2.length();
         ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        ssb.setSpan(new RelativeSizeSpan(1.3f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.setSpan(new RelativeSizeSpan(1.1f), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tv.setText(ssb);
-        Toast toast = new Toast(this);
-        toast.setView(toastView);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
-        toast.show();
+
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+
+            // 👉 Gamitin LayoutParams para makuha yung offset na parang toast
+            WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+            params.y = 50; // offset mula sa taas (px)
+            dialog.getWindow().setAttributes(params);
+        }
+
+        // 🎵 Play sound sabay sa pop up
+        dialog.setOnShowListener(d -> {
+            MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.achievement_pop);
+            mediaPlayer.setVolume(0.5f, 0.5f);
+            mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+            mediaPlayer.start();
+        });
+
+        dialog.show();
     }
 
     private void saveBaguhanScore() {
@@ -528,10 +553,14 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                 if (percent <= 25) {
                     timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.timer_color_red));
+                    playRedTimerSound();
                 } else if (percent <= 50) {
                     timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.timer_color_orange));
+                    playOrangeTimerSound();
                 } else {
                     timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.timer_color_green));
+                    playGreenTimerSound();
+
                 }
             }
 
@@ -671,6 +700,11 @@ public class PalaroBaguhan extends AppCompatActivity {
             tts.stop();
             tts.shutdown();
         }
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+
         super.onDestroy();
     }
 
@@ -707,6 +741,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void showExitConfirmationDialog() {
+        playClickSound(); // 🔊 play sound
         View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
         AlertDialog backDialog = new AlertDialog.Builder(this)
                 .setView(backDialogView)
@@ -721,13 +756,59 @@ public class PalaroBaguhan extends AppCompatActivity {
         Button noButton = backDialogView.findViewById(R.id.button6);
 
         yesButton.setOnClickListener(v -> {
+            playClickSound(); // 🔊 play sound
             if (countDownTimer != null) countDownTimer.cancel();
             backDialog.dismiss();
             finish();
         });
 
-        noButton.setOnClickListener(v -> backDialog.dismiss());
+        noButton.setOnClickListener(v -> {
+            playClickSound(); // 🔊 play sound
+            backDialog.dismiss();
+        });
 
         backDialog.show();
     }
+    private void playClickSound() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+        mediaPlayer = MediaPlayer.create(this, R.raw.button_click);
+        mediaPlayer.setOnCompletionListener(mp -> mp.release());
+        mediaPlayer.start();
+    }
+    private void playGameOverSound() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+        mediaPlayer = MediaPlayer.create(this, R.raw.game_over);
+        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mediaPlayer.start();
+    }
+    private void playGreenTimerSound() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) return; // avoid overlapping
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.green_timer);
+        mediaPlayer.setVolume(0.2f, 0.2f); // 🔊 hinaan (0.0 = mute, 1.0 = max)
+        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mediaPlayer.start();
+    }
+    private void playRedTimerSound() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) return; // avoid overlapping
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.red_timer);
+        mediaPlayer.setVolume(0.2f, 0.2f); // 🔊 hinaan (0.0 = mute, 1.0 = max)
+        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mediaPlayer.start();
+    }
+
+    private void playOrangeTimerSound() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) return; // avoid overlapping
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.orange_timer);
+        mediaPlayer.setVolume(0.2f, 0.2f); // 🔊 hinaan (0.0 = mute, 1.0 = max)
+        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mediaPlayer.start();
+    }
+
 }

@@ -2,6 +2,7 @@ package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -361,6 +362,8 @@ public class PangngalanLesson extends AppCompatActivity {
         Button buttonBumalik = dialogView.findViewById(R.id.button_bumalik);
 
         buttonResume.setOnClickListener(v -> {
+            playClickSound(); // 🔊 sound effect
+
             currentPage = checkpoint;
             imageView.setImageResource(pangngalanLesson[currentPage]);
             if (pageLines.containsKey(currentPage)) {
@@ -373,6 +376,8 @@ public class PangngalanLesson extends AppCompatActivity {
         });
 
         buttonBumalik.setOnClickListener(v -> {
+            playClickSound(); // 🔊 sound effect
+
             currentPage = 0;
             imageView.setImageResource(pangngalanLesson[currentPage]);
             if (pageLines.containsKey(currentPage)) {
@@ -385,6 +390,13 @@ public class PangngalanLesson extends AppCompatActivity {
         });
 
         dialogOption.show();
+    }
+
+    // 🎵 Reusable sound function
+    private void playClickSound() {
+        MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.button_click);
+        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mediaPlayer.start();
     }
 
     private void animateText(String text) {

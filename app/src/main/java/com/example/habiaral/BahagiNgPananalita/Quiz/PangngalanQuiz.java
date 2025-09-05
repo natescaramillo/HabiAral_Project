@@ -2,6 +2,7 @@ package com.example.habiaral.BahagiNgPananalita.Quiz;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -47,6 +48,7 @@ public class PangngalanQuiz extends AppCompatActivity {
     private int currentIndex = -1;
     private ProgressBar timerBar;
     private FirebaseFirestore db;
+    private MediaPlayer mediaPlayer; // 🎵 global MediaPlayer
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,8 @@ public class PangngalanQuiz extends AppCompatActivity {
             Button selected = (Button) view;
             String selectedAnswer = selected.getText().toString();
 
+            playClickSound();
+
             if (selectedAnswer.equals(correctAnswer)) {
                 correctAnswers++;
             }
@@ -84,6 +88,8 @@ public class PangngalanQuiz extends AppCompatActivity {
         answer3.setOnClickListener(choiceClickListener);
 
         nextButton.setOnClickListener(v -> {
+            playClickSound();
+
             if (currentIndex == -1) {
                 showCountdownThenLoadQuestion();
                 return;
@@ -216,21 +222,23 @@ public class PangngalanQuiz extends AppCompatActivity {
                 timeLeftInMillis = millisUntilFinished;
                 timerBar.setProgress((int) millisUntilFinished);
 
-                // ✅ Compute percentage
                 int percent = (int) ((timeLeftInMillis * 100) / 10000);
 
                 if (percent <= 25) {
                     timerBar.setProgressDrawable(
                             androidx.core.content.ContextCompat.getDrawable(PangngalanQuiz.this, R.drawable.timer_color_red)
                     );
+                    playRedTimerSound();
                 } else if (percent <= 50) {
                     timerBar.setProgressDrawable(
                             androidx.core.content.ContextCompat.getDrawable(PangngalanQuiz.this, R.drawable.timer_color_orange)
                     );
+                    playOrangeTimerSound();
                 } else {
                     timerBar.setProgressDrawable(
                             androidx.core.content.ContextCompat.getDrawable(PangngalanQuiz.this, R.drawable.timer_color_green)
                     );
+                    playGreenTimerSound();
                 }
             }
 
@@ -246,6 +254,37 @@ public class PangngalanQuiz extends AppCompatActivity {
                 }, 500);
             }
         }.start();
+    }
+
+    private void playGreenTimerSound() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) return;
+        mediaPlayer = MediaPlayer.create(this, R.raw.green_timer);
+        mediaPlayer.setVolume(0.2f, 0.2f);
+        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mediaPlayer.start();
+    }
+
+    private void playRedTimerSound() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) return;
+        mediaPlayer = MediaPlayer.create(this, R.raw.red_timer);
+        mediaPlayer.setVolume(0.2f, 0.2f);
+        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mediaPlayer.start();
+    }
+
+    private void playOrangeTimerSound() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) return;
+        mediaPlayer = MediaPlayer.create(this, R.raw.orange_timer);
+        mediaPlayer.setVolume(0.2f, 0.2f);
+        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mediaPlayer.start();
+    }
+
+    private void playClickSound() {
+        MediaPlayer mp = MediaPlayer.create(this, R.raw.button_click);
+        mp.setVolume(0.5f, 0.5f);
+        mp.setOnCompletionListener(MediaPlayer::release);
+        mp.start();
     }
 
     private void showResultDialog() {
@@ -280,9 +319,24 @@ public class PangngalanQuiz extends AppCompatActivity {
         resultDialog = builder.create();
         resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
+        // 🎵 Play music sabay sa paglabas ng dialog
+        resultDialog.setOnShowListener(d -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
+
+            int soundRes = (correctAnswers >= 6) ? R.raw.success : R.raw.game_over;
+            mediaPlayer = MediaPlayer.create(this, soundRes);
+            mediaPlayer.setVolume(0.6f, 0.6f);
+            mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+            mediaPlayer.start();
+        });
+
         if (!isFinishing()) resultDialog.show();
 
         retryButton.setOnClickListener(v -> {
+            playClickSound();
             if (resultDialog.isShowing()) resultDialog.dismiss();
             currentIndex = 0;
             correctAnswers = 0;
@@ -291,6 +345,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         });
 
         taposButton.setOnClickListener(v -> {
+            playClickSound();
             if (resultDialog.isShowing()) resultDialog.dismiss();
             Intent intent = new Intent(PangngalanQuiz.this, PandiwaLesson.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -299,6 +354,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         });
 
         homeButton.setOnClickListener(v -> {
+            playClickSound();
             if (resultDialog.isShowing()) resultDialog.dismiss();
             Intent intent = new Intent(PangngalanQuiz.this, BahagiNgPananalita.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -306,6 +362,7 @@ public class PangngalanQuiz extends AppCompatActivity {
             finish();
         });
     }
+
 
     private String getQuestionOrdinal(int number) {
         switch (number) {
@@ -369,6 +426,11 @@ public class PangngalanQuiz extends AppCompatActivity {
     protected void onDestroy() {
         if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
         if (countDownTimer != null) countDownTimer.cancel();
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
         super.onDestroy();
     }
 }
