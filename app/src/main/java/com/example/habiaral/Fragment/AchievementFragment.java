@@ -1,6 +1,7 @@
 package com.example.habiaral.Fragment;
 
 import android.app.Dialog;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -203,6 +204,9 @@ public class AchievementFragment extends Fragment{
     private void showAchievementDialog(String title, String description, int imgID, String unlockedAt) {
         if (getContext() == null) return;
 
+        // 🔊 Play sound kapag binuksan
+        playClickSound();
+
         Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.achievement_popup);
         dialog.setCancelable(true);
@@ -234,4 +238,10 @@ public class AchievementFragment extends Fragment{
 
         dialog.show();
     }
+    private void playClickSound() {
+        MediaPlayer mp = MediaPlayer.create(requireContext(), R.raw.button_click);
+        mp.setOnCompletionListener(MediaPlayer::release);
+        mp.start();
+    }
+
 }

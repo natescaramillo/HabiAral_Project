@@ -68,6 +68,8 @@ public class DictionaryFragment extends Fragment {
         textToSpeech = new TextToSpeech(requireContext(), status -> {
             if (status == TextToSpeech.SUCCESS) {
                 textToSpeech.setLanguage(new Locale("tl", "PH"));
+                textToSpeech.setSpeechRate(1.1f); // adjust mo value (1.2 - 1.5 okay na mabilis)
+
             } else {
                 Toast.makeText(getContext(), "Text-to-Speech failed to initialize", Toast.LENGTH_SHORT).show();
             }
@@ -141,6 +143,9 @@ public class DictionaryFragment extends Fragment {
             } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
                 speakerIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white));
 
+                // 🔊 Play button click sound
+                playButtonClickSound();
+
                 // Speak the word when released
                 if (textToSpeech != null) {
                     String toSpeak = word + ". Ang kahulugan nito ay: " + meaning;
@@ -161,4 +166,12 @@ public class DictionaryFragment extends Fragment {
             textToSpeech.shutdown();
         }
     }
+    private void playButtonClickSound() {
+        if (getContext() != null) {
+            android.media.MediaPlayer mp = android.media.MediaPlayer.create(getContext(), R.raw.button_click);
+            mp.setOnCompletionListener(android.media.MediaPlayer::release);
+            mp.start();
+        }
+    }
+
 }

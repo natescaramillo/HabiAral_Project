@@ -144,6 +144,11 @@ public class PalaroBaguhan extends AppCompatActivity {
                                     correctStreak++;
                                     handleCorrectStreak(correctStreak);
 
+                                    // 🔊 Play correct.wav kapag tama ang sagot
+                                    MediaPlayer correctSound = MediaPlayer.create(this, R.raw.correct);
+                                    correctSound.setOnCompletionListener(MediaPlayer::release);
+                                    correctSound.start();
+
                                     Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
                                     String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                     saveCorrectBaguhanAnswer(uid, studentID, correctDocId);
@@ -153,6 +158,11 @@ public class PalaroBaguhan extends AppCompatActivity {
                                 } else {
                                     correctStreak = 0;
                                     deductHeart();
+                                    // 🔊 Play wrong.wav kapag mali
+                                    MediaPlayer wrongSound = MediaPlayer.create(this, R.raw.wrong);
+                                    wrongSound.setOnCompletionListener(MediaPlayer::release);
+                                    wrongSound.start();
+
                                     loadCharacterLine(remainingHearts > 0 ? "MCL6" : "MCL5");
                                     Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
                                 }
@@ -620,6 +630,10 @@ public class PalaroBaguhan extends AppCompatActivity {
         if (remainingHearts > 0) {
             remainingHearts--;
             heartIcons[remainingHearts].setVisibility(View.INVISIBLE);
+            // 🎵 Play heart_pop sound tuwing nababawasan
+            MediaPlayer heartPop = MediaPlayer.create(this, R.raw.heart_pop);
+            heartPop.setOnCompletionListener(MediaPlayer::release);
+            heartPop.start();
 
             if (remainingHearts == 0) {
                 if (tts != null) tts.stop();
@@ -777,7 +791,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         });
 
         noButton.setOnClickListener(v -> {
-            playClickSound(); // 🔊 play sound
             backDialog.dismiss();
         });
 

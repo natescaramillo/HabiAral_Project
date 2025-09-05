@@ -1,5 +1,6 @@
 package com.example.habiaral.Activity;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
@@ -31,6 +32,8 @@ public class HomepageActivity extends AppCompatActivity {
     private static final long MIN_INTERVAL = 250;
 
     private Fragment activeFragment;
+    private MediaPlayer mediaPlayer; // 🔊 Sound player
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +111,8 @@ public class HomepageActivity extends AppCompatActivity {
             }
             lastClickTime = now;
 
+            playClickSound();
+
             Fragment selectedFragment = fragmentMap.get(item.getItemId());
             if (selectedFragment != null && selectedFragment != activeFragment) {
                 bottomNavigationView.setEnabled(false);
@@ -138,5 +143,13 @@ public class HomepageActivity extends AppCompatActivity {
         };
 
         fragmentHandler.postDelayed(pendingRunnable, 50);
+    }
+    private void playClickSound() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+        mediaPlayer = MediaPlayer.create(this, R.raw.button_click);
+        mediaPlayer.setOnCompletionListener(mp -> mp.release());
+        mediaPlayer.start();
     }
 }

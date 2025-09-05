@@ -293,7 +293,7 @@ public class PangngalanQuiz extends AppCompatActivity {
     }
 
     private void playClickSound() {
-        MediaPlayer mp = MediaPlayer.create(this, R.raw.button_click);
+        MediaPlayer mp = MediaPlayer.create(this, R.raw.quiz_click);
         mp.setVolume(0.5f, 0.5f);
         mp.setOnCompletionListener(MediaPlayer::release);
         mp.start();
