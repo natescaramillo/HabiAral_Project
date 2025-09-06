@@ -296,7 +296,6 @@ public class PangngalanQuiz extends AppCompatActivity {
         }.start();
     }
 
-
     private void stopTimerSound() {
         if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying()) {
@@ -338,13 +337,17 @@ public class PangngalanQuiz extends AppCompatActivity {
         Button noBtn = dialogView.findViewById(R.id.button6);
 
         yesBtn.setOnClickListener(v -> {
+            playClickSound();
             stopTimerSound();
             if (countDownTimer != null) countDownTimer.cancel();
             exitDialog.dismiss();
             finish();
         });
 
-        noBtn.setOnClickListener(v -> exitDialog.dismiss());
+        noBtn.setOnClickListener(v -> {
+            playClickSound();
+            exitDialog.dismiss();
+        });
 
         exitDialog.show();
     }

@@ -114,7 +114,7 @@
                 android:adjustViewBounds="true"
                 android:background="#CAA885"
                 android:scaleType="fitCenter"
-                android:src="@drawable/not_full_screen" />
+                android:src="@drawable/full_screen" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -133,6 +133,7 @@
         android:lineSpacingExtra="3dp"
         android:textColor="#000000"
         android:textSize="15sp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/vertical_line2"
         app:layout_constraintStart_toStartOf="@+id/vertical_line1"
@@ -161,6 +162,7 @@
         android:layout_width="201dp"
         android:layout_height="213dp"
         android:src="@drawable/tarsier_3d"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

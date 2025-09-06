@@ -2,6 +2,8 @@ package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
@@ -11,8 +13,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PandiwaQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,6 +65,8 @@ public class PandiwaLesson extends AppCompatActivity {
         ImageView backOption = findViewById(R.id.back_option);
         ImageView nextOption = findViewById(R.id.next_option);
         ImageView fullScreenOption = findViewById(R.id.full_screen_option);
+        instructionText = findViewById(R.id.instructionText);
+        ImageView imageView2 = findViewById(R.id.imageView2);
 
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
@@ -85,6 +91,7 @@ public class PandiwaLesson extends AppCompatActivity {
         });
 
         unlockButton.setOnClickListener(view -> {
+            playClickSound();
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
@@ -92,26 +99,77 @@ public class PandiwaLesson extends AppCompatActivity {
             startActivity(new Intent(PandiwaLesson.this, PandiwaQuiz.class));
         });
 
-        backOption.setOnClickListener(v -> previousPage());
-        nextOption.setOnClickListener(v -> nextPage());
+        backOption.setOnClickListener(v -> {
+            playClickSound();
+            previousPage();
+        });
+
+        nextOption.setOnClickListener(v -> {
+            playClickSound();
+            nextPage();
+        });
 
         fullScreenOption.setOnClickListener(v -> {
+            playClickSound();
             if (!isFullScreen[0]) {
                 if (getSupportActionBar() != null) getSupportActionBar().hide();
+
+                instructionText.setVisibility(View.GONE);
+                imageView2.setVisibility(View.GONE);
+
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
                 getWindow().getDecorView().setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_FULLSCREEN |
-                                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        View.SYSTEM_UI_FLAG_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 );
+
                 fullScreenOption.setImageResource(R.drawable.not_full_screen);
                 isFullScreen[0] = true;
             } else {
                 if (getSupportActionBar() != null) getSupportActionBar().show();
+
+                instructionText.setVisibility(View.VISIBLE);
+                imageView2.setVisibility(View.VISIBLE);
+
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+
                 fullScreenOption.setImageResource(R.drawable.full_screen);
                 isFullScreen[0] = false;
             }
         });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (textToSpeech != null) {
+                    textToSpeech.stop();
+                    textToSpeech.shutdown();
+                }
+                if (textRunnable != null) {
+                    textHandler.removeCallbacks(textRunnable);
+                }
+                Intent intent = new Intent(PandiwaLesson.this, BahagiNgPananalita.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && isFullScreen[0]) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            );
+        }
     }
 
     private void nextPage() {
@@ -119,7 +177,6 @@ public class PandiwaLesson extends AppCompatActivity {
             currentPage++;
             imageView.setImageResource(pandiwaLesson[currentPage]);
             saveProgressToFirestore(false);
-
             stopSpeakingAndAnimation();
 
             if (pageLines.containsKey(currentPage)) {
@@ -143,7 +200,6 @@ public class PandiwaLesson extends AppCompatActivity {
             currentPage--;
             imageView.setImageResource(pandiwaLesson[currentPage]);
             saveProgressToFirestore(false);
-
             stopSpeakingAndAnimation();
 
             if (pageLines.containsKey(currentPage)) {
@@ -191,6 +247,7 @@ public class PandiwaLesson extends AppCompatActivity {
                                         unlockButton.setEnabled(true);
                                         unlockButton.setAlpha(1f);
                                     }
+
                                     showResumeDialog(currentPage);
                                     waitForResumeChoice = true;
                                 }
@@ -241,8 +298,8 @@ public class PandiwaLesson extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-
                         List<Map<String, Object>> pages = (List<Map<String, Object>>) documentSnapshot.get("pages");
+
                         if (pages != null) {
                             for (Map<String, Object> page : pages) {
                                 Long pageNum = (Long) page.get("page");
@@ -258,7 +315,6 @@ public class PandiwaLesson extends AppCompatActivity {
                         if (!waitForResumeChoice) {
                             if (introLines != null && isFirstTime && !introLines.isEmpty()) {
                                 isFirstTime = false;
-
                                 speakSequentialLines(introLines, () -> {
                                     new android.os.Handler().postDelayed(() -> {
                                         imageView.setImageResource(pandiwaLesson[currentPage]);
@@ -267,7 +323,6 @@ public class PandiwaLesson extends AppCompatActivity {
                                         }
                                     }, 1500);
                                 });
-
                             } else {
                                 imageView.setImageResource(pandiwaLesson[currentPage]);
                                 if (pageLines.containsKey(currentPage)) {
@@ -347,7 +402,7 @@ public class PandiwaLesson extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
 
-        android.view.View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_ppt_option, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_ppt_option, null);
         builder.setView(dialogView);
 
         dialogOption = builder.create();
@@ -357,9 +412,10 @@ public class PandiwaLesson extends AppCompatActivity {
         Button buttonBumalik = dialogView.findViewById(R.id.button_bumalik);
 
         buttonResume.setOnClickListener(v -> {
+            playClickSound();
+
             currentPage = checkpoint;
             imageView.setImageResource(pandiwaLesson[currentPage]);
-
             if (pageLines.containsKey(currentPage)) {
                 new android.os.Handler().postDelayed(() -> {
                     speakLines(pageLines.get(currentPage));
@@ -370,9 +426,10 @@ public class PandiwaLesson extends AppCompatActivity {
         });
 
         buttonBumalik.setOnClickListener(v -> {
+            playClickSound();
+
             currentPage = 0;
             imageView.setImageResource(pandiwaLesson[currentPage]);
-
             if (pageLines.containsKey(currentPage)) {
                 new android.os.Handler().postDelayed(() -> {
                     speakLines(pageLines.get(currentPage));
@@ -383,6 +440,12 @@ public class PandiwaLesson extends AppCompatActivity {
         });
 
         dialogOption.show();
+    }
+
+    private void playClickSound() {
+        MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.button_click);
+        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mediaPlayer.start();
     }
 
     private void animateText(String text) {

@@ -69,7 +69,7 @@
             android:gravity="end|center_vertical"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="@+id/imageViewPangngalan"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="@+id/imageViewPangngalan"
             app:layout_constraintTop_toBottomOf="@id/imageViewPangngalan">
 

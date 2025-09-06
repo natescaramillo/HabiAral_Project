@@ -13,8 +13,10 @@ import android.widget.TextView;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -146,8 +148,22 @@ public class PangngalanLesson extends AppCompatActivity {
             }
         });
 
-
-
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (textToSpeech != null) {
+                    textToSpeech.stop();
+                    textToSpeech.shutdown();
+                }
+                if (textRunnable != null) {
+                    textHandler.removeCallbacks(textRunnable);
+                }
+                Intent intent = new Intent(PangngalanLesson.this, BahagiNgPananalita.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     @Override
@@ -287,8 +303,7 @@ public class PangngalanLesson extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        List<Map<String, Object>> pages =
-                                (List<Map<String, Object>>) documentSnapshot.get("pages");
+                        List<Map<String, Object>> pages = (List<Map<String, Object>>) documentSnapshot.get("pages");
 
                         if (pages != null) {
                             for (Map<String, Object> page : pages) {
