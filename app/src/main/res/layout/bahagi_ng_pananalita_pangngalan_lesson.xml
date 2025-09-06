@@ -75,9 +75,9 @@
             android:gravity="end|center_vertical"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/guidelinehorizontal"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewPangngalan"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="@+id/imageViewPangngalan"
             app:layout_constraintTop_toBottomOf="@id/imageViewPangngalan">
 
             <ImageView
