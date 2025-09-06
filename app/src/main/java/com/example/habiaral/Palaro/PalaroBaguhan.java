@@ -72,6 +72,10 @@ public class PalaroBaguhan extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private MediaPlayer greenPlayer, orangePlayer, redPlayer;
     private String lastTimerZone = "";
+    private Handler handler = new Handler();
+    private Runnable loadLineRunnable, startCountdownRunnable;
+    private Handler countdownHandler;
+    private Runnable countdownRunnable;
 
 
     @Override
@@ -84,8 +88,12 @@ public class PalaroBaguhan extends AppCompatActivity {
                 tts.setLanguage(new Locale("fil", "PH"));
                 tts.setSpeechRate(1.3f);
 
-                new Handler().postDelayed(() -> loadCharacterLine("MCL1"), 300);
-                new Handler().postDelayed(this::showCountdownThenLoadQuestion, 3000);
+                // save Runnables para ma-cancel sa exit
+                loadLineRunnable = () -> loadCharacterLine("MCL1");
+                startCountdownRunnable = this::showCountdownThenLoadQuestion;
+
+                handler.postDelayed(loadLineRunnable, 300);
+                handler.postDelayed(startCountdownRunnable, 3000);
             }
         });
 
@@ -189,13 +197,40 @@ public class PalaroBaguhan extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                showBackConfirmationDialog();
+                showExitConfirmationDialog();
             }
         });
 
         Button umalisButton = findViewById(R.id.UnlockButtonPalaro1);
         umalisButton.setOnClickListener(v -> showExitConfirmationDialog());
     }
+
+    private void exitGame() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+
+        if (handler != null) {
+            if (loadLineRunnable != null) handler.removeCallbacks(loadLineRunnable);
+            if (startCountdownRunnable != null) handler.removeCallbacks(startCountdownRunnable);
+        }
+        if (countdownHandler != null && countdownRunnable != null) {
+            countdownHandler.removeCallbacks(countdownRunnable);
+        }
+
+        stopAllSounds();
+        stopTimerSounds();
+
+        if (tts != null) {
+            tts.stop();
+        }
+
+        saveBaguhanScore();
+
+        finish();
+    }
+
 
     private void handleCorrectStreak(int streak) {
         if (streak == 1) loadCharacterLine("MCL2");
@@ -774,47 +809,12 @@ public class PalaroBaguhan extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (countDownTimer != null) countDownTimer.cancel();
+        exitGame();
         if (tts != null) {
-            tts.stop();
             tts.shutdown();
+            tts = null;
         }
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-        stopAllSounds();
         super.onDestroy();
-    }
-
-    private void showBackConfirmationDialog() {
-        View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
-
-        AlertDialog backDialog = new AlertDialog.Builder(this)
-                .setView(backDialogView)
-                .setCancelable(false)
-                .create();
-
-        if (backDialog.getWindow() != null) {
-            backDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        }
-
-        Button yesButton = backDialogView.findViewById(R.id.button5);
-        Button noButton = backDialogView.findViewById(R.id.button6);
-
-        yesButton.setOnClickListener(v -> {
-            if (countDownTimer != null) countDownTimer.cancel();
-            stopAllSounds();
-            stopTimerSounds();
-            if (tts != null) tts.stop();
-            saveBaguhanScore();
-            backDialog.dismiss();
-            finish();
-        });
-
-        noButton.setOnClickListener(v -> backDialog.dismiss());
-
-        backDialog.show();
     }
 
     private void speakText(String text) {
