@@ -69,7 +69,9 @@ public class PalaroBaguhan extends AppCompatActivity {
     private List<String> questionIds = new ArrayList<>();
     private long startTime;
     private boolean husayUnlocked = false;
-    private MediaPlayer mediaPlayer; // 🔊 Sound player
+    private MediaPlayer mediaPlayer;
+    private MediaPlayer greenPlayer, orangePlayer, redPlayer;
+    private String lastTimerZone = "";
 
 
     @Override
@@ -202,14 +204,38 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void finishQuiz() {
+        if (isGameOver) return;
         isGameOver = true;
+
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
         if (tts != null) tts.stop();
+        stopTimerSounds();
 
         saveBaguhanScore();
         unlockAchievementA8IfEligible();
         if (correctAnswerCount >= 20) unlockPerfectStreakAchievement();
 
         showFinishDialog();
+    }
+
+    private void stopTimerSounds() {
+        if (greenPlayer != null) {
+            if (greenPlayer.isPlaying()) greenPlayer.stop();
+            greenPlayer.release();
+            greenPlayer = null;
+        }
+        if (orangePlayer != null) {
+            if (orangePlayer.isPlaying()) orangePlayer.stop();
+            orangePlayer.release();
+            orangePlayer = null;
+        }
+        if (redPlayer != null) {
+            if (redPlayer.isPlaying()) redPlayer.stop();
+            redPlayer.release();
+            redPlayer = null;
+        }
     }
 
     private void showFinishDialog() {
@@ -525,7 +551,6 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                 currentQuestionNumber = 0;
 
-                // preload sound para walang delay
                 if (beepPlayer == null) {
                     beepPlayer = MediaPlayer.create(this, R.raw.ready_start);
                 }
@@ -539,11 +564,10 @@ public class PalaroBaguhan extends AppCompatActivity {
                         if (isGameOver) return;
 
                         if (countdown[0] > 0) {
-                            // sabay update ng text at tunog
                             baguhanQuestion.setText(String.valueOf(countdown[0]));
 
                             if (beepPlayer != null) {
-                                beepPlayer.start(); // instant play kasi preloaded na
+                                beepPlayer.start();
                             }
 
                             countdown[0]--;
@@ -572,14 +596,25 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                 if (percent <= 25) {
                     timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.timer_color_red));
-                    playRedTimerSound();
+                    if (!lastTimerZone.equals("RED")) {
+                        stopTimerSounds();
+                        playRedTimerSound();
+                        lastTimerZone = "RED";
+                    }
                 } else if (percent <= 50) {
                     timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.timer_color_orange));
-                    playOrangeTimerSound();
+                    if (!lastTimerZone.equals("ORANGE")) {
+                        stopTimerSounds();
+                        playOrangeTimerSound();
+                        lastTimerZone = "ORANGE";
+                    }
                 } else {
                     timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.timer_color_green));
-                    playGreenTimerSound();
-
+                    if (!lastTimerZone.equals("GREEN")) {
+                        stopTimerSounds();
+                        playGreenTimerSound();
+                        lastTimerZone = "GREEN";
+                    }
                 }
             }
 
@@ -589,6 +624,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                 isTimeUp = true;
                 disableAnswerSelection();
                 if (tts != null) tts.stop();
+                stopTimerSounds();
                 finishQuiz();
             }
         }.start();
@@ -631,6 +667,7 @@ public class PalaroBaguhan extends AppCompatActivity {
             heartPop.start();
 
             if (remainingHearts == 0) {
+                if (countDownTimer != null) countDownTimer.cancel();
                 if (tts != null) tts.stop();
                 disableAnswerSelection();
                 finishQuiz();
@@ -766,7 +803,9 @@ public class PalaroBaguhan extends AppCompatActivity {
         Button noButton = backDialogView.findViewById(R.id.button6);
 
         yesButton.setOnClickListener(v -> {
+            if (countDownTimer != null) countDownTimer.cancel();
             stopAllSounds();
+            stopTimerSounds();
             if (tts != null) tts.stop();
             saveBaguhanScore();
             backDialog.dismiss();
@@ -785,7 +824,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void showExitConfirmationDialog() {
-        playClickSound(); // 🔊 play sound
+        playClickSound();
         View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
         AlertDialog backDialog = new AlertDialog.Builder(this)
                 .setView(backDialogView)
@@ -803,6 +842,7 @@ public class PalaroBaguhan extends AppCompatActivity {
             playClickSound();
             if (countDownTimer != null) countDownTimer.cancel();
             stopAllSounds();
+            stopTimerSounds();
             if (tts != null) tts.stop();
             backDialog.dismiss();
             finish();
@@ -831,29 +871,39 @@ public class PalaroBaguhan extends AppCompatActivity {
         mediaPlayer.start();
     }
     private void playGreenTimerSound() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) return; // avoid overlapping
-
-        mediaPlayer = MediaPlayer.create(this, R.raw.green_timer);
-        mediaPlayer.setVolume(0.2f, 0.2f); // 🔊 hinaan (0.0 = mute, 1.0 = max)
-        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-        mediaPlayer.start();
-    }
-    private void playRedTimerSound() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) return; // avoid overlapping
-
-        mediaPlayer = MediaPlayer.create(this, R.raw.red_timer);
-        mediaPlayer.setVolume(0.2f, 0.2f); // 🔊 hinaan (0.0 = mute, 1.0 = max)
-        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-        mediaPlayer.start();
+        if (greenPlayer == null) {
+            greenPlayer = MediaPlayer.create(this, R.raw.green_timer);
+            greenPlayer.setVolume(0.2f, 0.2f);
+            greenPlayer.setOnCompletionListener(mp -> {
+                mp.release();
+                greenPlayer = null;
+            });
+            greenPlayer.start();
+        }
     }
 
     private void playOrangeTimerSound() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) return; // avoid overlapping
+        if (orangePlayer == null) {
+            orangePlayer = MediaPlayer.create(this, R.raw.orange_timer);
+            orangePlayer.setVolume(0.2f, 0.2f);
+            orangePlayer.setOnCompletionListener(mp -> {
+                mp.release();
+                orangePlayer = null;
+            });
+            orangePlayer.start();
+        }
+    }
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.orange_timer);
-        mediaPlayer.setVolume(0.2f, 0.2f); // 🔊 hinaan (0.0 = mute, 1.0 = max)
-        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-        mediaPlayer.start();
+    private void playRedTimerSound() {
+        if (redPlayer == null) {
+            redPlayer = MediaPlayer.create(this, R.raw.red_timer);
+            redPlayer.setVolume(0.2f, 0.2f);
+            redPlayer.setOnCompletionListener(mp -> {
+                mp.release();
+                redPlayer = null;
+            });
+            redPlayer.start();
+        }
     }
 
     private void playReadyStartSound() {
@@ -861,10 +911,8 @@ public class PalaroBaguhan extends AppCompatActivity {
             mediaPlayer.release();
         }
         mediaPlayer = MediaPlayer.create(this, R.raw.ready_start);
-        mediaPlayer.setVolume(0.6f, 0.6f); // Pwede mong hinaan/lakasan volume
+        mediaPlayer.setVolume(0.6f, 0.6f);
         mediaPlayer.setOnCompletionListener(MediaPlayer::release);
         mediaPlayer.start();
     }
-
-
 }
