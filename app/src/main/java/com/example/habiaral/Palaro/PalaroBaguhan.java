@@ -638,6 +638,24 @@ public class PalaroBaguhan extends AppCompatActivity {
         }
     }
 
+    private void stopAllSounds() {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+
+        if (beepPlayer != null) {
+            if (beepPlayer.isPlaying()) {
+                beepPlayer.stop();
+            }
+            beepPlayer.release();
+            beepPlayer = null;
+        }
+    }
+
     private void loadBaguhanQuestion() {
         if (isGameOver) return;
         startTime = System.currentTimeMillis();
@@ -728,7 +746,7 @@ public class PalaroBaguhan extends AppCompatActivity {
             mediaPlayer.release();
             mediaPlayer = null;
         }
-
+        stopAllSounds();
         super.onDestroy();
     }
 
@@ -748,6 +766,7 @@ public class PalaroBaguhan extends AppCompatActivity {
         Button noButton = backDialogView.findViewById(R.id.button6);
 
         yesButton.setOnClickListener(v -> {
+            stopAllSounds();
             if (tts != null) tts.stop();
             saveBaguhanScore();
             backDialog.dismiss();
@@ -783,6 +802,7 @@ public class PalaroBaguhan extends AppCompatActivity {
         yesButton.setOnClickListener(v -> {
             playClickSound();
             if (countDownTimer != null) countDownTimer.cancel();
+            stopAllSounds();
             if (tts != null) tts.stop();
             backDialog.dismiss();
             finish();
