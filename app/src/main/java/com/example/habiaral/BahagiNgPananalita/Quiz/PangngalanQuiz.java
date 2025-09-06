@@ -1,5 +1,6 @@
 package com.example.habiaral.BahagiNgPananalita.Quiz;
 
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -7,13 +8,15 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
@@ -34,10 +37,10 @@ import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
 public class PangngalanQuiz extends AppCompatActivity {
 
     private List<Map<String, Object>> quizList = new ArrayList<>();
-    private Button answer1, answer2, answer3, nextButton;
+    private Button answer1, answer2, answer3, nextButton, introButton;
     private TextView questionText, questionTitle;
     private CountDownTimer countDownTimer;
-    private long timeLeftInMillis = 10000;
+    private long timeLeftInMillis = 30000;
     private boolean quizFinished = false;
     private boolean isAnswered = false;
     private String correctAnswer = "";
@@ -49,7 +52,10 @@ public class PangngalanQuiz extends AppCompatActivity {
     private int currentIndex = -1;
     private ProgressBar timerBar;
     private FirebaseFirestore db;
-    private MediaPlayer mediaPlayer; // 🎵 global MediaPlayer
+    private MediaPlayer mediaPlayer;
+    private View background;
+    private int lastColorStage = 3;
+    private MediaPlayer resultPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,15 +64,34 @@ public class PangngalanQuiz extends AppCompatActivity {
 
         questionTitle = findViewById(R.id.questionTitle);
         questionText = findViewById(R.id.pangngalan_questionText);
+        nextButton = findViewById(R.id.pangngalanNextButton);
+        timerBar = findViewById(R.id.timerBar);
+        introButton = findViewById(R.id.intro_button);
+        background = findViewById(R.id.bottomBar);
+
         answer1 = findViewById(R.id.answer1);
         answer2 = findViewById(R.id.answer2);
         answer3 = findViewById(R.id.answer3);
-        nextButton = findViewById(R.id.pangngalanNextButton);
-        timerBar = findViewById(R.id.timerBar);
 
         db = FirebaseFirestore.getInstance();
 
+        answer1.setVisibility(View.GONE);
+        answer2.setVisibility(View.GONE);
+        answer3.setVisibility(View.GONE);
+        timerBar.setVisibility(View.GONE);
+        nextButton.setVisibility(View.GONE);
+        background.setVisibility(View.GONE);
+
+        introButton.setVisibility(View.VISIBLE);
+
         loadQuizDocument();
+
+        introButton.setOnClickListener(v -> {
+            playClickSound();
+
+
+            showCountdownThenLoadQuestion();
+        });
 
         View.OnClickListener choiceClickListener = view -> {
             if (isAnswered) return;
@@ -76,8 +101,6 @@ public class PangngalanQuiz extends AppCompatActivity {
 
             Button selected = (Button) view;
             String selectedAnswer = selected.getText().toString();
-
-            playClickSound();
 
             if (selectedAnswer.equals(correctAnswer)) {
                 correctAnswers++;
@@ -90,11 +113,6 @@ public class PangngalanQuiz extends AppCompatActivity {
 
         nextButton.setOnClickListener(v -> {
             playClickSound();
-
-            if (currentIndex == -1) {
-                showCountdownThenLoadQuestion();
-                return;
-            }
 
             if (!isAnswered) {
                 Toast.makeText(this, "Pumili muna ng sagot bago mag-next!", Toast.LENGTH_SHORT).show();
@@ -115,6 +133,13 @@ public class PangngalanQuiz extends AppCompatActivity {
                 }
 
                 showResultDialog();
+            }
+        });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                showExitDialog();
             }
         });
     }
@@ -149,6 +174,14 @@ public class PangngalanQuiz extends AppCompatActivity {
                     questionText.setText("");
                     currentIndex = 0;
                     loadQuestion(currentIndex);
+
+                    introButton.setVisibility(View.GONE);
+                    answer1.setVisibility(View.VISIBLE);
+                    answer2.setVisibility(View.VISIBLE);
+                    answer3.setVisibility(View.VISIBLE);
+                    timerBar.setVisibility(View.VISIBLE);
+                    nextButton.setVisibility(View.VISIBLE);
+                    background.setVisibility(View.VISIBLE);
                 }, 1000);
             }, 1000);
         }, 1000);
@@ -167,23 +200,9 @@ public class PangngalanQuiz extends AppCompatActivity {
                         }
 
                         if (introText != null) {
-                            ProgressBar progressBar = findViewById(R.id.timerBar);
                             questionTitle.setText("Simula");
                             questionText.setText(introText);
-                            answer1.setVisibility(View.GONE);
-                            answer2.setVisibility(View.GONE);
-                            answer3.setVisibility(View.GONE);
                             nextButton.setEnabled(true);
-
-                            // Center and make button longer for intro
-                            ConstraintLayout.LayoutParams params =
-                                    (ConstraintLayout.LayoutParams) nextButton.getLayoutParams();
-                            params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
-                            params.setMargins(64, params.topMargin, 64, params.bottomMargin);
-                            nextButton.setLayoutParams(params);
-
-                            //  Hide timer + progress bar on intro
-                            progressBar.setVisibility(View.GONE);
                         }
                     }
                 }).addOnFailureListener(e ->
@@ -193,6 +212,8 @@ public class PangngalanQuiz extends AppCompatActivity {
     private void loadQuestion(int index) {
         if (countDownTimer != null) countDownTimer.cancel();
         if (quizList == null || quizList.isEmpty()) return;
+
+        timerBar.setVisibility(View.VISIBLE);
 
         Map<String, Object> qData = quizList.get(index);
 
@@ -205,10 +226,6 @@ public class PangngalanQuiz extends AppCompatActivity {
             Collections.shuffle(shuffledChoices);
             questionTitle.setText(getQuestionOrdinal(index + 1));
             questionText.setText(question);
-
-            answer1.setVisibility(View.VISIBLE);
-            answer2.setVisibility(View.VISIBLE);
-            answer3.setVisibility(View.VISIBLE);
 
             answer1.setText(shuffledChoices.get(0));
             answer2.setText(shuffledChoices.get(1));
@@ -223,7 +240,9 @@ public class PangngalanQuiz extends AppCompatActivity {
 
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
-        timeLeftInMillis = 10000;
+        timeLeftInMillis = 30000;
+
+        lastColorStage = 3;
 
         timerBar.setMax((int) timeLeftInMillis);
         timerBar.setProgress((int) timeLeftInMillis);
@@ -232,25 +251,34 @@ public class PangngalanQuiz extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
-                timerBar.setProgress((int) millisUntilFinished);
 
-                int percent = (int) ((timeLeftInMillis * 100) / 10000);
+                int progress = (int) millisUntilFinished;
 
-                if (percent <= 25) {
+                ObjectAnimator animation = ObjectAnimator.ofInt(timerBar, "progress", timerBar.getProgress(), progress);
+                animation.setDuration(50);
+                animation.setInterpolator(new LinearInterpolator());
+                animation.start();
+
+                int percent = (int) ((timeLeftInMillis * 100) / 30000);
+
+                if (percent <= 25 && lastColorStage == 1) {
                     timerBar.setProgressDrawable(
-                            androidx.core.content.ContextCompat.getDrawable(PangngalanQuiz.this, R.drawable.timer_color_red)
+                            ContextCompat.getDrawable(PangngalanQuiz.this, R.drawable.timer_color_red)
                     );
-                    playRedTimerSound();
-                } else if (percent <= 50) {
+                    playTimerSound(R.raw.red_timer);
+                    lastColorStage = 0;
+                } else if (percent <= 50 && lastColorStage == 2) {
                     timerBar.setProgressDrawable(
-                            androidx.core.content.ContextCompat.getDrawable(PangngalanQuiz.this, R.drawable.timer_color_orange)
+                            ContextCompat.getDrawable(PangngalanQuiz.this, R.drawable.timer_color_orange)
                     );
-                    playOrangeTimerSound();
-                } else {
+                    playTimerSound(R.raw.orange_timer);
+                    lastColorStage--;
+                } else if (percent > 50 && lastColorStage == 3) {
                     timerBar.setProgressDrawable(
-                            androidx.core.content.ContextCompat.getDrawable(PangngalanQuiz.this, R.drawable.timer_color_green)
+                            ContextCompat.getDrawable(PangngalanQuiz.this, R.drawable.timer_color_green)
                     );
-                    playGreenTimerSound();
+                    playTimerSound(R.raw.green_timer);
+                    lastColorStage--;
                 }
             }
 
@@ -268,27 +296,26 @@ public class PangngalanQuiz extends AppCompatActivity {
         }.start();
     }
 
-    private void playGreenTimerSound() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) return;
-        mediaPlayer = MediaPlayer.create(this, R.raw.green_timer);
-        mediaPlayer.setVolume(0.2f, 0.2f);
-        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-        mediaPlayer.start();
+
+    private void stopTimerSound() {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 
-    private void playRedTimerSound() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) return;
-        mediaPlayer = MediaPlayer.create(this, R.raw.red_timer);
-        mediaPlayer.setVolume(0.2f, 0.2f);
-        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-        mediaPlayer.start();
-    }
+    private void playTimerSound(int resId) {
+        stopTimerSound();
 
-    private void playOrangeTimerSound() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) return;
-        mediaPlayer = MediaPlayer.create(this, R.raw.orange_timer);
-        mediaPlayer.setVolume(0.2f, 0.2f);
-        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mediaPlayer = MediaPlayer.create(this, resId);
+        mediaPlayer.setVolume(0.5f, 0.5f);
+        mediaPlayer.setOnCompletionListener(mp -> {
+            mp.release();
+            mediaPlayer = null;
+        });
         mediaPlayer.start();
     }
 
@@ -299,8 +326,39 @@ public class PangngalanQuiz extends AppCompatActivity {
         mp.start();
     }
 
+    private void showExitDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
+        builder.setView(dialogView);
+
+        AlertDialog exitDialog = builder.create();
+        exitDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        Button yesBtn = dialogView.findViewById(R.id.button5);
+        Button noBtn = dialogView.findViewById(R.id.button6);
+
+        yesBtn.setOnClickListener(v -> {
+            stopTimerSound();
+            if (countDownTimer != null) countDownTimer.cancel();
+            exitDialog.dismiss();
+            finish();
+        });
+
+        noBtn.setOnClickListener(v -> exitDialog.dismiss());
+
+        exitDialog.show();
+    }
+
     private void showResultDialog() {
-        if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
+        stopTimerSound();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+
+        if (resultDialog != null && resultDialog.isShowing()) {
+            resultDialog.dismiss();
+        }
+        releaseResultPlayer();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_quiz_score, null);
@@ -319,9 +377,11 @@ public class PangngalanQuiz extends AppCompatActivity {
         progressBar.setProgress(correctAnswers);
         scoreNumber.setText(correctAnswers + "/" + totalQuestions);
 
-        if (correctAnswers >= 6) {
+        boolean passed = correctAnswers >= 6;
+        if (passed) {
             resultText.setText("Ikaw ay nakapasa!");
             taposButton.setEnabled(true);
+            taposButton.setAlpha(1.0f);
         } else {
             resultText.setText("Ikaw ay nabigo, subukan muli!");
             taposButton.setEnabled(false);
@@ -329,52 +389,108 @@ public class PangngalanQuiz extends AppCompatActivity {
         }
 
         resultDialog = builder.create();
-        resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if (resultDialog.getWindow() != null) {
+            resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
-        // 🎵 Play music sabay sa paglabas ng dialog
         resultDialog.setOnShowListener(d -> {
-            if (mediaPlayer != null) {
-                mediaPlayer.release();
-                mediaPlayer = null;
+            releaseResultPlayer();
+            int soundRes = passed ? R.raw.success : R.raw.game_over;
+            resultPlayer = MediaPlayer.create(PangngalanQuiz.this, soundRes);
+            if (resultPlayer != null) {
+                resultPlayer.setVolume(0.6f, 0.6f);
+                resultPlayer.setOnCompletionListener(mp -> releaseResultPlayer());
+                try {
+                    resultPlayer.start();
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                    releaseResultPlayer();
+                }
             }
-
-            int soundRes = (correctAnswers >= 6) ? R.raw.success : R.raw.game_over;
-            mediaPlayer = MediaPlayer.create(this, soundRes);
-            mediaPlayer.setVolume(0.6f, 0.6f);
-            mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-            mediaPlayer.start();
         });
 
-        if (!isFinishing()) resultDialog.show();
+        if (!isFinishing() && !isDestroyed()) {
+            try {
+                resultDialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         retryButton.setOnClickListener(v -> {
             playClickSound();
-            if (resultDialog.isShowing()) resultDialog.dismiss();
-            currentIndex = 0;
-            correctAnswers = 0;
-            Collections.shuffle(quizList);
-            loadQuestion(currentIndex);
+            dismissAndReleaseResultDialog();
+            resetQuizForRetry();
         });
 
         taposButton.setOnClickListener(v -> {
             playClickSound();
-            if (resultDialog.isShowing()) resultDialog.dismiss();
-            Intent intent = new Intent(PangngalanQuiz.this, PandiwaLesson.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
+            dismissAndReleaseResultDialog();
+            navigateToLesson(PandiwaLesson.class);
         });
 
         homeButton.setOnClickListener(v -> {
             playClickSound();
-            if (resultDialog.isShowing()) resultDialog.dismiss();
-            Intent intent = new Intent(PangngalanQuiz.this, BahagiNgPananalita.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
+            dismissAndReleaseResultDialog();
+            navigateToLesson(BahagiNgPananalita.class);
         });
     }
 
+    private void releaseResultPlayer() {
+        if (resultPlayer != null) {
+            if (resultPlayer.isPlaying()) {
+                resultPlayer.stop();
+            }
+            resultPlayer.release();
+            resultPlayer = null;
+        }
+    }
+
+    private void dismissAndReleaseResultDialog() {
+        if (resultDialog != null && resultDialog.isShowing()) {
+            resultDialog.dismiss();
+        }
+        releaseResultPlayer();
+        resultDialog = null;
+    }
+
+    private void resetQuizForRetry() {
+        currentIndex = 0;
+        correctAnswers = 0;
+        isAnswered = false;
+        quizFinished = false;
+
+        if (quizList != null && !quizList.isEmpty()) {
+            Collections.shuffle(quizList);
+        } else {
+            Toast.makeText(this, "Walang mga tanong, subukang i-restart ang app.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        introButton.setVisibility(View.GONE);
+        answer1.setVisibility(View.VISIBLE);
+        answer2.setVisibility(View.VISIBLE);
+        answer3.setVisibility(View.VISIBLE);
+        timerBar.setVisibility(View.VISIBLE);
+        nextButton.setVisibility(View.VISIBLE);
+        background.setVisibility(View.VISIBLE);
+
+        loadQuestion(currentIndex);
+    }
+
+    private void navigateToLesson(Class<?> lessonActivityClass) {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        stopTimerSound();
+        releaseResultPlayer();
+
+        Intent intent = new Intent(PangngalanQuiz.this, lessonActivityClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
 
     private String getQuestionOrdinal(int number) {
         switch (number) {
@@ -435,14 +551,28 @@ public class PangngalanQuiz extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
-        if (countDownTimer != null) countDownTimer.cancel();
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
+    protected void onPause() {
+        super.onPause();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
         }
+        stopTimerSound();
+        releaseResultPlayer();
+    }
+
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
+        if (resultDialog != null && resultDialog.isShowing()) {
+            resultDialog.dismiss();
+        }
+        resultDialog = null;
+
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+        stopTimerSound();
+        releaseResultPlayer();
     }
 }

@@ -2,6 +2,7 @@ package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -57,6 +58,7 @@ public class PangngalanLesson extends AppCompatActivity {
     private ImageView imageView;
     private int currentPage = 0;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +70,8 @@ public class PangngalanLesson extends AppCompatActivity {
         ImageView backOption = findViewById(R.id.back_option);
         ImageView nextOption = findViewById(R.id.next_option);
         ImageView fullScreenOption = findViewById(R.id.full_screen_option);
+        instructionText = findViewById(R.id.instructionText);
+        ImageView imageView2 = findViewById(R.id.imageView2);
 
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
@@ -92,6 +96,7 @@ public class PangngalanLesson extends AppCompatActivity {
         });
 
         unlockButton.setOnClickListener(view -> {
+            playClickSound();
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
@@ -99,26 +104,62 @@ public class PangngalanLesson extends AppCompatActivity {
             startActivity(new Intent(PangngalanLesson.this, PangngalanQuiz.class));
         });
 
-        backOption.setOnClickListener(v -> previousPage());
-        nextOption.setOnClickListener(v -> nextPage());
+        backOption.setOnClickListener(v -> {
+            playClickSound();
+            previousPage();
+        });
+        nextOption.setOnClickListener(v -> {
+            playClickSound();
+            nextPage();
+        });
 
         fullScreenOption.setOnClickListener(v -> {
+            playClickSound();
             if (!isFullScreen[0]) {
                 if (getSupportActionBar() != null) getSupportActionBar().hide();
+
+                instructionText.setVisibility(View.GONE);
+                imageView2.setVisibility(View.GONE);
+
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
                 getWindow().getDecorView().setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_FULLSCREEN |
-                                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        View.SYSTEM_UI_FLAG_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 );
+
                 fullScreenOption.setImageResource(R.drawable.not_full_screen);
                 isFullScreen[0] = true;
             } else {
                 if (getSupportActionBar() != null) getSupportActionBar().show();
+
+                instructionText.setVisibility(View.VISIBLE);
+                imageView2.setVisibility(View.VISIBLE);
+
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+
                 fullScreenOption.setImageResource(R.drawable.full_screen);
                 isFullScreen[0] = false;
             }
         });
+
+
+
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && isFullScreen[0]) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            );
+        }
     }
 
     private void nextPage() {
@@ -259,8 +300,7 @@ public class PangngalanLesson extends AppCompatActivity {
                             }
                         }
 
-                        List<String> introLines =
-                                (List<String>) documentSnapshot.get("intro");
+                        List<String> introLines = (List<String>) documentSnapshot.get("intro");
 
                         if (!waitForResumeChoice) {
                             if (introLines != null && isFirstTime && !introLines.isEmpty()) {
@@ -362,7 +402,7 @@ public class PangngalanLesson extends AppCompatActivity {
         Button buttonBumalik = dialogView.findViewById(R.id.button_bumalik);
 
         buttonResume.setOnClickListener(v -> {
-            playClickSound(); // 🔊 sound effect
+            playClickSound();
 
             currentPage = checkpoint;
             imageView.setImageResource(pangngalanLesson[currentPage]);
@@ -376,7 +416,7 @@ public class PangngalanLesson extends AppCompatActivity {
         });
 
         buttonBumalik.setOnClickListener(v -> {
-            playClickSound(); // 🔊 sound effect
+            playClickSound();
 
             currentPage = 0;
             imageView.setImageResource(pangngalanLesson[currentPage]);
@@ -392,7 +432,6 @@ public class PangngalanLesson extends AppCompatActivity {
         dialogOption.show();
     }
 
-    // 🎵 Reusable sound function
     private void playClickSound() {
         MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.button_click);
         mediaPlayer.setOnCompletionListener(MediaPlayer::release);

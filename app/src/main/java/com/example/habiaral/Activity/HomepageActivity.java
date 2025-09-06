@@ -32,7 +32,7 @@ public class HomepageActivity extends AppCompatActivity {
     private static final long MIN_INTERVAL = 250;
 
     private Fragment activeFragment;
-    private MediaPlayer mediaPlayer; // 🔊 Sound player
+    private MediaPlayer mediaPlayer;
 
 
     @Override
@@ -132,12 +132,12 @@ public class HomepageActivity extends AppCompatActivity {
         }
 
         pendingRunnable = () -> {
-            if (!isFinishing() && !isDestroyed() && fragment != null) {
+            if (!isFinishing() && !isDestroyed() && fragment != null && fragment != activeFragment) {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .hide(activeFragment)
                         .show(fragment)
-                        .commitAllowingStateLoss();
+                        .commitNowAllowingStateLoss();
                 activeFragment = fragment;
             }
         };

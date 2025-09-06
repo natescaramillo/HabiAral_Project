@@ -63,7 +63,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private Button btnTapos;
 
     private CountDownTimer countDownTimer;
-    private static final long TOTAL_TIME = 300000;
+    private static final long TOTAL_TIME = 60000;
     private long timeLeft = TOTAL_TIME;
 
     private FirebaseFirestore db;
@@ -197,7 +197,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private void showUmalisDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PalaroDalubhasa.this);
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
 
         Button btnOo = dialogView.findViewById(R.id.button5);
         Button btnHindi = dialogView.findViewById(R.id.button6);
@@ -209,6 +209,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         btnOo.setOnClickListener(v -> {
             if (countDownTimer != null) countDownTimer.cancel();
+            if (tts != null) tts.stop();
             dialog.dismiss();
             finish();
         });
@@ -291,7 +292,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void showBackConfirmationDialog() {
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setCancelable(false)
@@ -306,6 +307,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         yesButton.setOnClickListener(v -> {
             if (countDownTimer != null) countDownTimer.cancel();
+            if (tts != null) tts.stop();
             dialog.dismiss();
             finish();
         });
@@ -431,6 +433,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 timerBar.setProgress(0);
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
+                if (tts != null) tts.stop();
                 saveDalubhasaScore();
                 finishQuiz();
             }
@@ -441,6 +444,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private void finishQuiz() {
         if (isGameOver) return;
         isGameOver = true;
+
+        if (tts != null) tts.stop();
 
         View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
         AlertDialog dialog = new AlertDialog.Builder(PalaroDalubhasa.this)
@@ -507,6 +512,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             if (remainingHearts == 0) {
                 Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
                 if (countDownTimer != null) countDownTimer.cancel();
+                if (tts != null) tts.stop();
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
                 saveDalubhasaScore();

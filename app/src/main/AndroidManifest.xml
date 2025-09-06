@@ -63,7 +63,9 @@
             android:screenOrientation="portrait" />
         <activity android:name=".Palaro.PalaroDalubhasa"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangngalanLesson"
+        <activity
+            android:name=".BahagiNgPananalita.Lessons.PangngalanLesson"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity android:name=".BahagiNgPananalita.Quiz.PangngalanQuiz"
             android:screenOrientation="portrait" />

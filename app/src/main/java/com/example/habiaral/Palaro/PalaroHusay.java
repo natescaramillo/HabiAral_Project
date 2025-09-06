@@ -10,7 +10,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -55,7 +54,7 @@ public class PalaroHusay extends AppCompatActivity {
     private Button unlockButton;
 
     private CountDownTimer countDownTimer;
-    private static final long TOTAL_TIME = 300000;
+    private static final long TOTAL_TIME = 60000;
     private long timeLeft = TOTAL_TIME;
 
     private FirebaseFirestore db;
@@ -124,7 +123,7 @@ public class PalaroHusay extends AppCompatActivity {
 
     private void showUmalisDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PalaroHusay.this);
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
 
         Button btnOo = dialogView.findViewById(R.id.button5);
         Button btnHindi = dialogView.findViewById(R.id.button6);
@@ -136,6 +135,7 @@ public class PalaroHusay extends AppCompatActivity {
 
         btnOo.setOnClickListener(v -> {
             if (countDownTimer != null) countDownTimer.cancel();
+            if (tts != null) tts.stop();
             dialog.dismiss();
             finish();
         });
@@ -250,7 +250,7 @@ public class PalaroHusay extends AppCompatActivity {
     }
 
     private void showBackConfirmationDialog() {
-        View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
+        View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
         AlertDialog backDialog = new AlertDialog.Builder(this)
                 .setView(backDialogView)
                 .setCancelable(false)
@@ -265,6 +265,7 @@ public class PalaroHusay extends AppCompatActivity {
 
         yesButton.setOnClickListener(v -> {
             if (countDownTimer != null) countDownTimer.cancel();
+            if (tts != null) tts.stop();
             backDialog.dismiss();
             finish();
         });
@@ -404,8 +405,8 @@ public class PalaroHusay extends AppCompatActivity {
             public void onFinish() {
                 timerBar.setProgress(0);
                 isTimeUp = true;
+                if (tts != null) tts.stop();
                 finishQuiz();
-
             }
         }.start();
     }
@@ -507,6 +508,7 @@ public class PalaroHusay extends AppCompatActivity {
 
         if (remainingHearts <= 0) {
             if (countDownTimer != null) countDownTimer.cancel();
+            if (tts != null) tts.stop();
             Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
             loadCharacterLine("MCL5");
 

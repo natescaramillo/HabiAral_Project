@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
+            app:layout_constraintGuide_begin="206dp" />
 
         <ImageView
             android:id="@+id/imageViewPangngalan"
@@ -72,48 +72,47 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="#99A27B5C"
-            android:orientation="horizontal"
             android:gravity="end|center_vertical"
-            app:layout_constraintTop_toBottomOf="@id/imageViewPangngalan"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/guidelinehorizontal"
-            android:layout_marginTop="0dp">
+            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/imageViewPangngalan">
 
             <ImageView
                 android:id="@+id/back_option"
-                android:background="#CAA885"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
                 android:layout_marginEnd="5dp"
+                android:adjustViewBounds="true"
+                android:background="#CAA885"
+                android:scaleType="fitCenter"
                 android:src="@drawable/back_button" />
 
             <ImageView
                 android:id="@+id/next_option"
-                android:background="#CAA885"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/next_button"
-                android:adjustViewBounds="true"
                 android:layout_marginEnd="5dp"
-                android:scaleType="fitCenter"/>
+                android:adjustViewBounds="true"
+                android:background="#CAA885"
+                android:scaleType="fitCenter"
+                android:src="@drawable/next_button" />
 
-        <ImageView
-            android:id="@+id/full_screen_option"
-            android:background="#CAA885"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/full_screen"
-            android:adjustViewBounds="true"
-            android:layout_marginEnd="5dp"
-            android:scaleType="fitCenter"/>
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/full_screen_option"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="5dp"
+                android:adjustViewBounds="true"
+                android:background="#CAA885"
+                android:scaleType="fitCenter"
+                android:src="@drawable/full_screen" />
+        </LinearLayout>
 
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/instructionText"
@@ -130,6 +129,7 @@
         android:lineSpacingExtra="3dp"
         android:textColor="#000000"
         android:textSize="15sp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/vertical_line2"
         app:layout_constraintHorizontal_bias="0.0"
@@ -156,6 +156,7 @@
         android:layout_width="201dp"
         android:layout_height="213dp"
         android:src="@drawable/tarsier_3d"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

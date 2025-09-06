@@ -53,7 +53,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     private Button unlockButton, unlockButton1;
     private boolean isGameOver = false;
     private CountDownTimer countDownTimer;
-    private static final long TOTAL_TIME = 10000;
+    private static final long TOTAL_TIME = 60000;
     private long timeLeft = TOTAL_TIME;
     private FirebaseFirestore db;
     private int correctAnswerCount = 0;
@@ -144,7 +144,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                                     correctStreak++;
                                     handleCorrectStreak(correctStreak);
 
-                                    // 🔊 Play correct.wav kapag tama ang sagot
                                     MediaPlayer correctSound = MediaPlayer.create(this, R.raw.correct);
                                     correctSound.setOnCompletionListener(MediaPlayer::release);
                                     correctSound.start();
@@ -158,7 +157,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                                 } else {
                                     correctStreak = 0;
                                     deductHeart();
-                                    // 🔊 Play wrong.wav kapag mali
                                     MediaPlayer wrongSound = MediaPlayer.create(this, R.raw.wrong);
                                     wrongSound.setOnCompletionListener(MediaPlayer::release);
                                     wrongSound.start();
@@ -232,12 +230,11 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         titleText.setText(getFinishMessage());
 
-        // 🔊 automatic tutunog pag lumabas ang dialog
         playGameOverSound();
 
         Button balik = view.findViewById(R.id.btn_balik);
         balik.setOnClickListener(v -> {
-            playClickSound(); // 🔊 Add sound when clicking "Tapos"
+            playClickSound();
             dialog.dismiss();
             Intent resultIntent = new Intent();
             resultIntent.putExtra("baguhanPoints", baguhanScore);
@@ -435,13 +432,11 @@ public class PalaroBaguhan extends AppCompatActivity {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             dialog.getWindow().setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
 
-            // 👉 Gamitin LayoutParams para makuha yung offset na parang toast
             WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-            params.y = 50; // offset mula sa taas (px)
+            params.y = 50;
             dialog.getWindow().setAttributes(params);
         }
 
-        // 🎵 Play sound sabay sa pop up
         dialog.setOnShowListener(d -> {
             MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.achievement_pop);
             mediaPlayer.setVolume(0.5f, 0.5f);
@@ -593,6 +588,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                 timerBar.setProgress(0);
                 isTimeUp = true;
                 disableAnswerSelection();
+                if (tts != null) tts.stop();
                 finishQuiz();
             }
         }.start();
@@ -630,7 +626,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         if (remainingHearts > 0) {
             remainingHearts--;
             heartIcons[remainingHearts].setVisibility(View.INVISIBLE);
-            // 🎵 Play heart_pop sound tuwing nababawasan
             MediaPlayer heartPop = MediaPlayer.create(this, R.raw.heart_pop);
             heartPop.setOnCompletionListener(MediaPlayer::release);
             heartPop.start();
@@ -648,6 +643,7 @@ public class PalaroBaguhan extends AppCompatActivity {
         startTime = System.currentTimeMillis();
 
         if (currentQuestionNumber >= questionIds.size()) {
+            if (tts != null) tts.stop();
             finishQuiz();
             return;
         }
@@ -737,7 +733,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void showBackConfirmationDialog() {
-        View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
+        View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
 
         AlertDialog backDialog = new AlertDialog.Builder(this)
                 .setView(backDialogView)
@@ -752,6 +748,7 @@ public class PalaroBaguhan extends AppCompatActivity {
         Button noButton = backDialogView.findViewById(R.id.button6);
 
         yesButton.setOnClickListener(v -> {
+            if (tts != null) tts.stop();
             saveBaguhanScore();
             backDialog.dismiss();
             finish();
@@ -770,7 +767,7 @@ public class PalaroBaguhan extends AppCompatActivity {
 
     private void showExitConfirmationDialog() {
         playClickSound(); // 🔊 play sound
-        View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit_palaro, null);
+        View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
         AlertDialog backDialog = new AlertDialog.Builder(this)
                 .setView(backDialogView)
                 .setCancelable(false)
@@ -784,8 +781,9 @@ public class PalaroBaguhan extends AppCompatActivity {
         Button noButton = backDialogView.findViewById(R.id.button6);
 
         yesButton.setOnClickListener(v -> {
-            playClickSound(); // 🔊 play sound
+            playClickSound();
             if (countDownTimer != null) countDownTimer.cancel();
+            if (tts != null) tts.stop();
             backDialog.dismiss();
             finish();
         });

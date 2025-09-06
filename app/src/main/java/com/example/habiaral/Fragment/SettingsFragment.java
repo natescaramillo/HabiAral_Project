@@ -36,7 +36,7 @@ public class SettingsFragment extends Fragment {
     private FirebaseAuth auth;
     private ImageView btnSound;
     private boolean isMuted = false;
-    private MediaPlayer mediaPlayer; // ✅ Sound player
+    private MediaPlayer mediaPlayer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,7 +82,6 @@ public class SettingsFragment extends Fragment {
 
     private void playClickSound() {
         if (!isMuted) {
-            // Gumamit ng bagong MediaPlayer instance bawat click
             MediaPlayer mp = MediaPlayer.create(requireContext(), R.raw.button_click);
             mp.setOnCompletionListener(MediaPlayer::release);
             mp.start();
@@ -93,7 +92,7 @@ public class SettingsFragment extends Fragment {
         SharedPreferences prefs = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
-        isMuted = !isMuted; // toggle value
+        isMuted = !isMuted;
         updateSoundIcon();
 
         editor.putBoolean("isMuted", isMuted);
@@ -117,7 +116,6 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    // --- unchanged parts (nickname + logout dialogs) ---
     private void showChangeNicknameDialog() {
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_box_change_username, null);
 
@@ -131,7 +129,7 @@ public class SettingsFragment extends Fragment {
                 .create();
 
         buttonConfirm.setOnClickListener(v -> {
-            playClickSound(); // ✅ sound on confirm
+            playClickSound();
 
             String newNickname = editTextUsername.getText().toString().trim();
 
@@ -150,6 +148,10 @@ public class SettingsFragment extends Fragment {
 
                                 Toast.makeText(requireContext(), "Na-update ang palayaw!", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
+
+                                Bundle result = new Bundle();
+                                result.putString("nickname", newNickname);
+                                getParentFragmentManager().setFragmentResult("nicknameKey", result);
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(requireContext(), "❌ Hindi na-update sa Firestore", Toast.LENGTH_SHORT).show();
@@ -163,7 +165,7 @@ public class SettingsFragment extends Fragment {
         });
 
         buttonCancel.setOnClickListener(v -> {
-            playClickSound(); // ✅ sound on cancel
+            playClickSound();
             dialog.dismiss();
         });
 
@@ -189,7 +191,7 @@ public class SettingsFragment extends Fragment {
         Button btnNo = dialogView.findViewById(R.id.btnLogoutNo);
 
         btnYes.setOnClickListener(v -> {
-            playClickSound(); // ✅ sound on YES
+            playClickSound();
             Toast.makeText(requireContext(), "Logging out...", Toast.LENGTH_SHORT).show();
 
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -216,7 +218,7 @@ public class SettingsFragment extends Fragment {
         });
 
         btnNo.setOnClickListener(v -> {
-            playClickSound(); // ✅ sound on NO
+            playClickSound();
             dialog.dismiss();
         });
 

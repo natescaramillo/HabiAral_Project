@@ -164,6 +164,7 @@ public class PangHalipQuiz extends AppCompatActivity {
                             answer1.setVisibility(View.GONE);
                             answer2.setVisibility(View.GONE);
                             answer3.setVisibility(View.GONE);
+                            timerBar.setVisibility(View.GONE);
                             nextButton.setEnabled(true);
                         }
                     }

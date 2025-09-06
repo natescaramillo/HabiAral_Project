@@ -166,6 +166,38 @@ public class DictionaryFragment extends Fragment {
             textToSpeech.shutdown();
         }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (textToSpeech != null) {
+            textToSpeech.stop(); // patigilin agad kahit naka-hide lang
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {
+            // Fragment is hidden, stop TTS
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+            }
+        }
+    }
+
+    public void onResume() {
+        super.onResume();
+        if (textToSpeech == null) {
+            textToSpeech = new TextToSpeech(requireContext(), status -> {
+                if (status == TextToSpeech.SUCCESS) {
+                    textToSpeech.setLanguage(new Locale("tl", "PH"));
+                    textToSpeech.setSpeechRate(1.1f);
+                }
+            });
+        }
+    }
+
     private void playButtonClickSound() {
         if (getContext() != null) {
             android.media.MediaPlayer mp = android.media.MediaPlayer.create(getContext(), R.raw.button_click);

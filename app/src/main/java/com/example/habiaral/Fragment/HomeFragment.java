@@ -1,6 +1,7 @@
 package com.example.habiaral.Fragment;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -27,7 +28,6 @@ import com.example.habiaral.PagUnawa.PagUnawa;
 import com.example.habiaral.Palaro.Palaro;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -51,14 +51,14 @@ public class HomeFragment extends Fragment {
     public HomeFragment() {
     }
 
-    private MediaPlayer mediaPlayer; // para sa sound
+    private MediaPlayer mediaPlayer;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home, container, false);
 
-        nicknameTextView = view.findViewById(R.id.nickname_id); // Make sure this ID exists in XML
+        nicknameTextView = view.findViewById(R.id.nickname_id);
 
         lessonMap.put(R.id.bahagi, BahagiNgPananalita.class);
         lessonMap.put(R.id.komprehensyon, PagUnawa.class);
@@ -70,11 +70,19 @@ public class HomeFragment extends Fragment {
             Class<?> activityClass = entry.getValue();
             if (button != null) {
                 button.setOnClickListener(v -> {
-                    playClickSound(); // tumugtog bago mag startActivity
+                    playClickSound();
                     startActivity(new Intent(getActivity(), activityClass));
                 });
             }
         }
+
+        getParentFragmentManager().setFragmentResultListener("nicknameKey", this, (requestKey, bundle) -> {
+            String nickname = bundle.getString("nickname");
+            nicknameTextView.setText(nickname);
+
+            SharedPreferences prefs = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            prefs.edit().putString("nickname", nickname).apply();
+        });
 
         return view;
     }
@@ -85,7 +93,7 @@ public class HomeFragment extends Fragment {
         }
         mediaPlayer = MediaPlayer.create(getContext(), R.raw.button_click);
         mediaPlayer.setOnCompletionListener(mp -> {
-            mp.release(); // auto release para hindi mag-leak
+            mp.release();
         });
         mediaPlayer.start();
     }
@@ -104,14 +112,12 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         loadNicknameFromPrefs();
-        loadNicknameFromFirestore(); // Optional: load fresh copy
+        loadNicknameFromFirestore();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             String studentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-            // Record that user played today
             recordLogDate(studentId);
 
-            // Check streak & achievement
             checkSevenDayStreak(studentId);
         }
     }
@@ -130,7 +136,6 @@ public class HomeFragment extends Fragment {
                     List<String> playedDates = new ArrayList<>();
                     for (Map.Entry<String, Object> entry : data.entrySet()) {
                         if (entry.getValue() instanceof Boolean && (Boolean) entry.getValue()) {
-                            // Validate date format before adding
                             if (entry.getKey().matches("\\d{4}-\\d{2}-\\d{2}")) {
                                 playedDates.add(entry.getKey());
                             }
@@ -139,7 +144,6 @@ public class HomeFragment extends Fragment {
 
                     if (playedDates.isEmpty()) return;
 
-                    // Sort dates
                     Collections.sort(playedDates);
 
                     int maxStreak = 1;
@@ -235,7 +239,7 @@ public class HomeFragment extends Fragment {
                             update.put("studentId", studentId);
 
                             db.collection("daily_play_logs")
-                                    .document(studentDocId) // doc ID same as UID
+                                    .document(studentDocId)
                                     .set(update, SetOptions.merge());
                         }
                     }
@@ -244,7 +248,7 @@ public class HomeFragment extends Fragment {
 
 
     private void showAchievementUnlockedDialog(String title, int imageRes) {
-        LayoutInflater inflater = LayoutInflater.from(requireContext()); // dito mali dati
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
         View dialogView = inflater.inflate(R.layout.achievement_unlocked, null);
 
         ImageView iv = dialogView.findViewById(R.id.imageView19);
@@ -263,7 +267,7 @@ public class HomeFragment extends Fragment {
 
         tv.setText(ssb);
 
-        AlertDialog dialog = new AlertDialog.Builder(requireContext()) // gumamit ng requireContext()
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
                 .setView(dialogView)
                 .setCancelable(true)
                 .create();
@@ -272,13 +276,11 @@ public class HomeFragment extends Fragment {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             dialog.getWindow().setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
 
-            // 👉 Gamitin LayoutParams para makuha yung offset na parang toast
             WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
             params.y = 50; // offset mula sa taas (px)
             dialog.getWindow().setAttributes(params);
         }
 
-        // 🎵 Play sound sabay sa pop up
         dialog.setOnShowListener(d -> {
             MediaPlayer mediaPlayer = MediaPlayer.create(requireContext(), R.raw.achievement_pop);
             mediaPlayer.setVolume(0.5f, 0.5f);
@@ -313,7 +315,6 @@ public class HomeFragment extends Fragment {
                         if (nickname != null && !nickname.trim().isEmpty()) {
                             nicknameTextView.setText(nickname);
 
-                            // Update SharedPreferences for next time
                             SharedPreferences prefs = requireActivity().getSharedPreferences("UserPrefs", android.content.Context.MODE_PRIVATE);
                             prefs.edit().putString("nickname", nickname).apply();
                         }
