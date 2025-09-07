@@ -72,7 +72,6 @@ public class PangngalanLesson extends AppCompatActivity {
         ImageView backOption = findViewById(R.id.back_option);
         ImageView nextOption = findViewById(R.id.next_option);
         ImageView fullScreenOption = findViewById(R.id.full_screen_option);
-        instructionText = findViewById(R.id.instructionText);
         ImageView imageView2 = findViewById(R.id.imageView2);
 
         unlockButton.setEnabled(false);
