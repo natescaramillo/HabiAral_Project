@@ -130,7 +130,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         userSentenceInput.setEnabled(false);
         btnTapos.setEnabled(false);
 
-
+        //edited
         btnTapos.setOnClickListener(v -> {
             if (!hasSubmitted) {
                 String sentence = userSentenceInput.getText().toString().trim();
@@ -147,10 +147,18 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     }
 
                     if (!missingKeywords.isEmpty()) {
-                        Toast.makeText(this, "Kulang ng salitang: " + missingKeywords, Toast.LENGTH_LONG).show();
+                        String reminder = "Wala ka ng kinakailangang bahagi sa iyong sagot. Pakibasa muli ang mga panuto.";
+                        Toast.makeText(this, reminder, Toast.LENGTH_LONG).show();
+                        speakLine(reminder); // ✅ TTS reminder
+
+                        // Ipakita rin ang specific na kulang (Toast lang, no TTS)
+                        String details = "Kulang: " + String.join(", ", missingKeywords);
+                        Toast.makeText(this, details, Toast.LENGTH_LONG).show();
+
                         loadCharacterLine(currentDalubhasaID);
                         return;
                     }
+
 
                     GrammarChecker.checkGrammar(this, sentence, new GrammarChecker.GrammarCallback() {
                         @Override
@@ -366,10 +374,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         if (currentQuestionNumber < instructionList.size()) {
             String instruction = instructionList.get(currentQuestionNumber);
-            dalubhasaInstruction.setText(instructionList.get(currentQuestionNumber));
+            dalubhasaInstruction.setText(instruction); // ✅ text lang, no TTS
             currentKeywords = keywordList.get(currentQuestionNumber);
             currentDalubhasaID = "D" + (currentQuestionNumber + 1);
-            speakLine(instruction);
 
             userSentenceInput.setText("");
             userSentenceInput.setEnabled(true);

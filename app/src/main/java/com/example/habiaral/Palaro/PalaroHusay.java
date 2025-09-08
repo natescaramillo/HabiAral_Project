@@ -287,7 +287,8 @@ public class PalaroHusay extends AppCompatActivity {
                     }
                 });
     }
-
+//EDITED
+    // Wala na ang TTS, hindi na magsasalita kapag buo ang sagot
     private void loadHusayWords(String docId) {
         db.collection("husay").document(docId)
                 .get()
@@ -321,7 +322,6 @@ public class PalaroHusay extends AppCompatActivity {
                                                 fullAnswerView.append(".");
                                                 currentText = fullAnswerView.getText().toString();
                                             }
-                                            speakText(currentText.trim());
                                         }
 
                                     }

@@ -728,6 +728,8 @@ public class PalaroBaguhan extends AppCompatActivity {
         }
     }
 
+    //  Wala na ang speakText() dito, hindi na magsasalita ang tanong
+
     private void loadBaguhanQuestion() {
         if (isGameOver) return;
         startTime = System.currentTimeMillis();
@@ -760,12 +762,13 @@ public class PalaroBaguhan extends AppCompatActivity {
                             }
                         }
                     }
+                    //EDITED
 
                     if (question != null) {
                         runOnUiThread(() -> {
                             baguhanQuestion.setText(question);
-                            String spokenVersion = question.replaceAll("_+", "blanko");
-                            speakText(spokenVersion);
+                            // Wala na ang speakText() dito, hindi na magsasalita ang tanong
+
                         });
                     }
 
