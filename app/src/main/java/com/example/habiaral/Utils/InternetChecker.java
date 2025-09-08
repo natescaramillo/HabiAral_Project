@@ -1,4 +1,4 @@
-package com.example.habiaral;
+package com.example.habiaral.Utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.habiaral.R;
 
 import java.net.HttpURLConnection;
 import java.net.URL;

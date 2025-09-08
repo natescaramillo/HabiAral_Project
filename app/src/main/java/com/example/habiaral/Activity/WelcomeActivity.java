@@ -3,7 +3,6 @@ package com.example.habiaral.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -11,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
-import com.example.habiaral.InternetChecker;
+import com.example.habiaral.Utils.InternetChecker;
 import com.example.habiaral.R;
 import com.google.android.gms.auth.api.signin.*;
 import com.google.android.gms.common.api.ApiException;

@@ -15,7 +15,7 @@ import com.example.habiaral.Fragment.DictionaryFragment;
 import com.example.habiaral.Fragment.HomeFragment;
 import com.example.habiaral.Fragment.ProgressBarFragment;
 import com.example.habiaral.Fragment.SettingsFragment;
-import com.example.habiaral.InternetChecker;
+import com.example.habiaral.Utils.InternetChecker;
 import com.example.habiaral.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
