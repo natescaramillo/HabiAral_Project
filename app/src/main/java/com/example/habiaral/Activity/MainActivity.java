@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.InternetChecker;
+import com.example.habiaral.Utils.InternetChecker;
 import com.example.habiaral.R;
 
 public class MainActivity extends AppCompatActivity {
