@@ -58,6 +58,7 @@ public class PangngalanLesson extends AppCompatActivity {
     private Button unlockButton;
     private int currentPage = 0;
     private final boolean[] isFullScreen = {false};
+    private ImageView backOption, nextOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +68,10 @@ public class PangngalanLesson extends AppCompatActivity {
         unlockButton = findViewById(R.id.UnlockButtonPangngalan);
         imageView = findViewById(R.id.imageViewPangngalan);
         instructionText = findViewById(R.id.instructionText);
-        ImageView backOption = findViewById(R.id.back_option);
-        ImageView nextOption = findViewById(R.id.next_option);
+
+        backOption = findViewById(R.id.back_option);
+        nextOption = findViewById(R.id.next_option);
+
         ImageView fullScreenOption = findViewById(R.id.full_screen_option);
         ImageView imageView2 = findViewById(R.id.imageView2);
 
@@ -84,16 +87,6 @@ public class PangngalanLesson extends AppCompatActivity {
         });
 
         checkLessonStatus();
-
-        // swipe left/right sa image
-        imageView.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                float x = event.getX();
-                if (x < v.getWidth() / 2) previousPage();
-                else nextPage();
-            }
-            return true;
-        });
 
         unlockButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
@@ -138,7 +131,7 @@ public class PangngalanLesson extends AppCompatActivity {
     }
 
     private void nextPage() {
-        if (currentPage < pangngalanLesson.length - 1) {
+        if (currentPage < pangngalanLesson.length - 1 ) {
             currentPage++;
             updatePage();
         }
@@ -152,6 +145,26 @@ public class PangngalanLesson extends AppCompatActivity {
         if (currentPage > 0) {
             currentPage--;
             updatePage();
+        }
+    }
+
+    private void updateNavigationButtons() {
+        // Disable previous if first page
+        if (currentPage == 0) {
+            backOption.setEnabled(false);
+            backOption.setAlpha(0.5f);
+        } else {
+            backOption.setEnabled(true);
+            backOption.setAlpha(1f);
+        }
+
+        // Disable next if last page
+        if (currentPage == pangngalanLesson.length - 1) {
+            nextOption.setEnabled(false);
+            nextOption.setAlpha(0.5f);
+        } else {
+            nextOption.setEnabled(true);
+            nextOption.setAlpha(1f);
         }
     }
 
@@ -172,6 +185,8 @@ public class PangngalanLesson extends AppCompatActivity {
         } else {
             instructionText.setText("");
         }
+
+        updateNavigationButtons();
     }
 
     private void checkLessonStatus() {
