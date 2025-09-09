@@ -15,6 +15,7 @@ import android.speech.tts.UtteranceProgressListener;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
@@ -59,6 +60,8 @@ public class PangngalanLesson extends AppCompatActivity {
     private int currentPage = 0;
     private final boolean[] isFullScreen = {false};
     private ImageView backOption, nextOption;
+    private ConstraintLayout constraintLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,8 @@ public class PangngalanLesson extends AppCompatActivity {
 
         ImageView fullScreenOption = findViewById(R.id.full_screen_option);
         ImageView imageView2 = findViewById(R.id.imageView2);
+
+        constraintLayout = findViewById(R.id.instructionContainer);
 
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
@@ -115,6 +120,7 @@ public class PangngalanLesson extends AppCompatActivity {
             if (getSupportActionBar() != null) getSupportActionBar().hide();
             instructionText.setVisibility(View.GONE);
             imageView2.setVisibility(View.GONE);
+            constraintLayout.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);

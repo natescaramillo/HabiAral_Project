@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangAngkopQuiz;
@@ -49,6 +50,7 @@ public class PangAngkopLesson extends AppCompatActivity {
     private Button unlockButton;
     private ImageView imageView;
     private int currentPage = 0;
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,8 @@ public class PangAngkopLesson extends AppCompatActivity {
         ImageView nextOption = findViewById(R.id.next_option);
         ImageView fullScreenOption = findViewById(R.id.full_screen_option);
         ImageView imageView2 = findViewById(R.id.imageView2);
+        constraintLayout = findViewById(R.id.instructionContainer);
+
 
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
@@ -111,6 +115,7 @@ public class PangAngkopLesson extends AppCompatActivity {
 
                 instructionText.setVisibility(View.GONE);
                 imageView2.setVisibility(View.GONE);
+                constraintLayout.setVisibility(View.GONE);
 
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
