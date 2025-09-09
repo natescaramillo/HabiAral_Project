@@ -67,6 +67,8 @@ public class PangngalanQuiz extends AppCompatActivity {
     private boolean greenPlayed = false;
 
     private int currentStreamId = -1;
+    private MediaPlayer readyPlayer;
+
 
 
 
@@ -189,26 +191,32 @@ public class PangngalanQuiz extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadQuestion() {
-        questionText.setText("3");
-        new Handler().postDelayed(() -> {
-            questionText.setText("2");
-            new Handler().postDelayed(() -> {
-                questionText.setText("1");
-                new Handler().postDelayed(() -> {
-                    questionText.setText("");
-                    currentIndex = 0;
-                    loadQuestion(currentIndex);
+        // Start audio once
+        playReadySound();
 
-                    introButton.setVisibility(View.GONE);
-                    answer1.setVisibility(View.VISIBLE);
-                    answer2.setVisibility(View.VISIBLE);
-                    answer3.setVisibility(View.VISIBLE);
-                    timerBar.setVisibility(View.VISIBLE);
-                    nextButton.setVisibility(View.VISIBLE);
-                    background.setVisibility(View.VISIBLE);
-                }, 1000);
-            }, 1000);
-        }, 1000);
+        // Show "3" agad
+        questionText.setText("3");
+
+        // After 1s → show "2"
+        new Handler().postDelayed(() -> questionText.setText("2"), 1000);
+
+        // After 2s → show "1"
+        new Handler().postDelayed(() -> questionText.setText("1"), 2000);
+
+        // After 3s → remove text + load question
+        new Handler().postDelayed(() -> {
+            questionText.setText("");
+            currentIndex = 0;
+            loadQuestion(currentIndex);
+
+            introButton.setVisibility(View.GONE);
+            answer1.setVisibility(View.VISIBLE);
+            answer2.setVisibility(View.VISIBLE);
+            answer3.setVisibility(View.VISIBLE);
+            timerBar.setVisibility(View.VISIBLE);
+            nextButton.setVisibility(View.VISIBLE);
+            background.setVisibility(View.VISIBLE);
+        }, 3000);
     }
 
     private void loadQuizDocument() {
@@ -616,4 +624,23 @@ public class PangngalanQuiz extends AppCompatActivity {
         stopTimerSound();
         releaseResultPlayer();
     }
+    private void playReadySound() {
+        releaseReadyPlayer();
+        readyPlayer = MediaPlayer.create(this, R.raw.ready_start);
+        if (readyPlayer != null) {
+            readyPlayer.setOnCompletionListener(mp -> releaseReadyPlayer());
+            readyPlayer.start();
+        }
+    }
+
+    private void releaseReadyPlayer() {
+        if (readyPlayer != null) {
+            if (readyPlayer.isPlaying()) {
+                readyPlayer.stop();
+            }
+            readyPlayer.release();
+            readyPlayer = null;
+        }
+    }
+
 }
