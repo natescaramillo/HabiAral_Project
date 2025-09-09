@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.Utils.InternetChecker;
+import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        InternetChecker.checkInternet(this, () -> goToWelcome());
+        InternetCheckerUtils.checkInternet(this, () -> goToWelcome());
     }
 
     private void goToWelcome() {

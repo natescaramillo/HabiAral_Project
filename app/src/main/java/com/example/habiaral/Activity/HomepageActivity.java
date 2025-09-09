@@ -15,7 +15,7 @@ import com.example.habiaral.Fragment.DictionaryFragment;
 import com.example.habiaral.Fragment.HomeFragment;
 import com.example.habiaral.Fragment.ProgressBarFragment;
 import com.example.habiaral.Fragment.SettingsFragment;
-import com.example.habiaral.Utils.InternetChecker;
+import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -58,7 +58,7 @@ public class HomepageActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                InternetChecker.checkInternet(HomepageActivity.this, () -> {});
+                InternetCheckerUtils.checkInternet(HomepageActivity.this, () -> {});
                 handler.postDelayed(this, 3000);
             }
         }, 0);
@@ -68,7 +68,7 @@ public class HomepageActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
-        InternetChecker.resetDialogFlag();
+        InternetCheckerUtils.resetDialogFlag();
     }
 
     private void RunActivity() {

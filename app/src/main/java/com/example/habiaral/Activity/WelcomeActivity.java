@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
-import com.example.habiaral.Utils.InternetChecker;
+import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.R;
 import com.google.android.gms.auth.api.signin.*;
 import com.google.android.gms.common.api.ApiException;
@@ -45,7 +45,7 @@ public class WelcomeActivity extends AppCompatActivity {
         internetCheckRunnable = new Runnable() {
             @Override
             public void run() {
-                InternetChecker.checkInternet(WelcomeActivity.this, () -> {
+                InternetCheckerUtils.checkInternet(WelcomeActivity.this, () -> {
                     if (!activityInitialized) {
                         RunActivity();
                         activityInitialized = true;

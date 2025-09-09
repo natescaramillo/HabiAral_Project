@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.LessonProgressCache; // ✅ Added
-import com.example.habiaral.Utils.InternetChecker;
+import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,7 +46,7 @@ public class Introduction extends AppCompatActivity {
         internetCheckRunnable = new Runnable() {
             @Override
             public void run() {
-                InternetChecker.checkInternet(Introduction.this, () -> { // palitan
+                InternetCheckerUtils.checkInternet(Introduction.this, () -> { // palitan
                     if (!activityInitialized) {
                         RunActivity();
                         activityInitialized = true;
@@ -64,7 +64,7 @@ public class Introduction extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(internetCheckRunnable); // Copy & Paste
-        InternetChecker.resetDialogFlag();
+        InternetCheckerUtils.resetDialogFlag();
     }
 
     // Create bagong method

@@ -19,7 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Executors;
 
-public class InternetChecker {
+public class InternetCheckerUtils {
 
     private static boolean isDialogShowing = false;
 
