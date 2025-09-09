@@ -24,12 +24,6 @@
         app:layout_constraintVertical_bias="0.0">
 
         <!-- Guidelines (add width/height to avoid errors) -->
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelinehorizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.6" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelinehorizontal2"
@@ -77,13 +71,12 @@
         <LinearLayout
             android:id="@+id/option_bar"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="45dp"
             android:background="#99A27B5C"
             android:gravity="end|center_vertical"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/guidelinehorizontal"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewPanguri"
+            app:layout_constraintStart_toStartOf="@+id/imageViewPanguri"
             app:layout_constraintTop_toBottomOf="@id/imageViewPanguri">
 
             <ImageView
@@ -117,16 +110,17 @@
                 android:src="@drawable/full_screen" />
         </LinearLayout>
 
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Instruction text -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/instructionContainer"
         android:layout_width="match_parent"
         android:layout_height="119dp"
         android:background="@drawable/rounded_rect"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
         android:backgroundTint="#FFEFEA"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
@@ -139,10 +133,12 @@
 
         <TextView
             android:id="@+id/instructionText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/special"
-            android:gravity="center"
+            android:gravity="start"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:justificationMode="inter_word"
             android:lineSpacingExtra="3dp"
             android:textColor="#000000"
@@ -154,6 +150,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <!-- Unlock Button -->
     <Button

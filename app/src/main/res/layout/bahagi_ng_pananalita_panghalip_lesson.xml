@@ -110,11 +110,10 @@
     <!-- Instruction text -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/instructionContainer"
         android:layout_width="match_parent"
         android:layout_height="119dp"
         android:background="@drawable/rounded_rect"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
         android:backgroundTint="#FFEFEA"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
@@ -127,10 +126,12 @@
 
         <TextView
             android:id="@+id/instructionText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/special"
-            android:gravity="center"
+            android:gravity="start"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:justificationMode="inter_word"
             android:lineSpacingExtra="3dp"
             android:textColor="#000000"
@@ -142,6 +143,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <!-- Unlock button -->
     <Button

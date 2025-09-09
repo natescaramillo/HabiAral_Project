@@ -22,13 +22,6 @@
         app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelinehorizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.6" />
-
-        <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelinehorizontal2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,53 +57,53 @@
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toTopOf="@id/option_bar"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="@+id/guidelinehorizontal2" />
 
         <LinearLayout
             android:id="@+id/option_bar"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="45dp"
             android:background="#99A27B5C"
-            android:orientation="horizontal"
             android:gravity="end|center_vertical"
-            app:layout_constraintTop_toBottomOf="@id/imageViewPandamdam"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewPandamdam"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintBottom_toTopOf="@+id/guidelinehorizontal"
-            android:layout_marginTop="0dp">
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/imageViewPandamdam"
+            app:layout_constraintTop_toBottomOf="@id/imageViewPandamdam">
 
             <ImageView
                 android:id="@+id/back_option"
-                android:background="#CAA885"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
                 android:layout_marginEnd="5dp"
+                android:adjustViewBounds="true"
+                android:background="#CAA885"
+                android:scaleType="fitCenter"
                 android:src="@drawable/back_button" />
 
             <ImageView
                 android:id="@+id/next_option"
-                android:background="#CAA885"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/next_button"
-                android:adjustViewBounds="true"
                 android:layout_marginEnd="5dp"
-                android:scaleType="fitCenter"/>
+                android:adjustViewBounds="true"
+                android:background="#CAA885"
+                android:scaleType="fitCenter"
+                android:src="@drawable/next_button" />
 
             <ImageView
                 android:id="@+id/full_screen_option"
-                android:background="#CAA885"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/full_screen"
-                android:adjustViewBounds="true"
                 android:layout_marginEnd="5dp"
-                android:scaleType="fitCenter"/>
+                android:adjustViewBounds="true"
+                android:background="#CAA885"
+                android:scaleType="fitCenter"
+                android:src="@drawable/full_screen" />
         </LinearLayout>
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -118,11 +111,10 @@
     <!-- Instruction text -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/instructionContainer"
         android:layout_width="match_parent"
         android:layout_height="119dp"
         android:background="@drawable/rounded_rect"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
         android:backgroundTint="#FFEFEA"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
@@ -135,10 +127,12 @@
 
         <TextView
             android:id="@+id/instructionText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/special"
-            android:gravity="center"
+            android:gravity="start"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:justificationMode="inter_word"
             android:lineSpacingExtra="3dp"
             android:textColor="#000000"
@@ -150,6 +144,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <Button
         android:id="@+id/UnlockButtonPandamdam"
         android:layout_width="wrap_content"
