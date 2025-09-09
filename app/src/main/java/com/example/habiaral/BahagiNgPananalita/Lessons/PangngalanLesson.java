@@ -3,9 +3,7 @@ package com.example.habiaral.BahagiNgPananalita.Lessons;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -69,8 +67,8 @@ public class PangngalanLesson extends AppCompatActivity {
         setContentView(R.layout.bahagi_ng_pananalita_pangngalan_lesson);
 
         unlockButton = findViewById(R.id.UnlockButtonPangngalan);
-        imageView = findViewById(R.id.imageViewPangngalan);
-        instructionText = findViewById(R.id.instructionText);
+        imageView = findViewById(R.id.imageViewPangngalan); // change
+        instructionText = findViewById(R.id.instructionText); // change
 
         backOption = findViewById(R.id.back_option);
         nextOption = findViewById(R.id.next_option);
@@ -96,7 +94,7 @@ public class PangngalanLesson extends AppCompatActivity {
         unlockButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             stopTTS();
-            startActivity(new Intent(this, PangngalanQuiz.class));
+            startActivity(new Intent(this, PangngalanQuiz.class)); // change
         });
 
         backOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
@@ -107,7 +105,7 @@ public class PangngalanLesson extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() {
                 stopTTS();
-                startActivity(new Intent(PangngalanLesson.this, BahagiNgPananalita.class)
+                startActivity(new Intent(PangngalanLesson.this, BahagiNgPananalita.class) // change
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                 finish();
             }
@@ -137,11 +135,11 @@ public class PangngalanLesson extends AppCompatActivity {
     }
 
     private void nextPage() {
-        if (currentPage < pangngalanLesson.length - 1 ) {
+        if (currentPage < pangngalanLesson.length - 1 ) { // change
             currentPage++;
             updatePage();
         }
-        if (currentPage == pangngalanLesson.length - 1) {
+        if (currentPage == pangngalanLesson.length - 1) { // change
             unlockButton.setEnabled(true);
             unlockButton.setAlpha(1f);
         }
@@ -155,7 +153,6 @@ public class PangngalanLesson extends AppCompatActivity {
     }
 
     private void updateNavigationButtons() {
-        // Disable previous if first page
         if (currentPage == 0) {
             backOption.setEnabled(false);
             backOption.setAlpha(0.5f);
@@ -164,8 +161,7 @@ public class PangngalanLesson extends AppCompatActivity {
             backOption.setAlpha(1f);
         }
 
-        // Disable next if last page
-        if (currentPage == pangngalanLesson.length - 1) {
+        if (currentPage == pangngalanLesson.length - 1) { // change
             nextOption.setEnabled(false);
             nextOption.setAlpha(0.5f);
         } else {
@@ -175,13 +171,12 @@ public class PangngalanLesson extends AppCompatActivity {
     }
 
     private void updatePage() {
-        imageView.setImageResource(pangngalanLesson[currentPage]);
+        imageView.setImageResource(pangngalanLesson[currentPage]); // change
         FirestoreUtils.saveLessonProgress(FirestoreUtils.getCurrentUser().getUid(),
-                "pangngalan", currentPage, isLessonDone);
+                "pangngalan", currentPage, isLessonDone); // change
 
         stopSpeaking();
 
-        // cancel running text animation before starting new one
         TextAnimationUtils.cancelAnimation(instructionText);
 
         if (pageLines.containsKey(currentPage)) {
@@ -205,13 +200,13 @@ public class PangngalanLesson extends AppCompatActivity {
                         Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
                         if (module1 != null) {
                             Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
-                            if (lessons != null && lessons.containsKey("pangngalan")) {
-                                Map<String, Object> pangngalan = (Map<String, Object>) lessons.get("pangngalan");
-                                if (pangngalan != null) {
-                                    Long checkpoint = (Long) pangngalan.get("checkpoint");
+                            if (lessons != null && lessons.containsKey("pangngalan")) { // change
+                                Map<String, Object> pangngalan = (Map<String, Object>) lessons.get("pangngalan"); // change
+                                if (pangngalan != null) { // change
+                                    Long checkpoint = (Long) pangngalan.get("checkpoint"); // change
                                     currentPage = (checkpoint != null) ? checkpoint.intValue() : 0;
                                     isFirstTime = false;
-                                    if ("completed".equals(pangngalan.get("status"))) {
+                                    if ("completed".equals(pangngalan.get("status"))) { // change
                                         isLessonDone = true;
                                         unlockButton.setEnabled(true);
                                         unlockButton.setAlpha(1f);
@@ -223,15 +218,15 @@ public class PangngalanLesson extends AppCompatActivity {
                         }
                     } else {
                         currentPage = 0;
-                        imageView.setImageResource(pangngalanLesson[currentPage]);
+                        imageView.setImageResource(pangngalanLesson[currentPage]); // change
                         isFirstTime = true;
                     }
-                    FirestoreUtils.saveLessonProgress(user.getUid(), "pangngalan", currentPage, isLessonDone);
+                    FirestoreUtils.saveLessonProgress(user.getUid(), "pangngalan", currentPage, isLessonDone); // change
                 });
     }
 
     private void loadCharacterLines() {
-        FirebaseFirestore.getInstance().collection("lesson_character_lines").document("LCL1").get()
+        FirebaseFirestore.getInstance().collection("lesson_character_lines").document("LCL1").get() // change
                 .addOnSuccessListener(doc -> {
                     if (!doc.exists()) return;
                     List<Map<String, Object>> pages = (List<Map<String, Object>>) doc.get("pages");
