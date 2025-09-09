@@ -28,11 +28,13 @@ public class DialogUtils {
         Button buttonBumalik = dialogView.findViewById(R.id.button_bumalik);
 
         buttonResume.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(context, R.raw.button_click);
             listener.onResumeLesson();
             dialog.dismiss();
         });
 
         buttonBumalik.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(context, R.raw.button_click);
             listener.onRestartLesson();
             dialog.dismiss();
         });
