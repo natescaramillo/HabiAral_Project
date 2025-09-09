@@ -20,8 +20,6 @@ import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
-import com.example.habiaral.BahagiNgPananalita.Lessons.PandamdamLesson;
-import com.example.habiaral.BahagiNgPananalita.Lessons.PangUriLesson;
 import com.example.habiaral.BahagiNgPananalita.Lessons.PangawingLesson;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -522,15 +520,15 @@ public class PandamdamQuiz extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> pangawingStatus = new HashMap<>();
-        pangawingStatus.put("status", "completed");
+        Map<String, Object> pandamdamStatus = new HashMap<>();
+        pandamdamStatus.put("status", "completed");
 
         Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("pangawing", pangawingStatus);
+        lessonsMap.put("pandamdam", pandamdamStatus);
 
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "pangawing");
+        updateMap.put("current_lesson", "pandamdam");
 
         Map<String, Object> moduleUpdate = Map.of("module_1", updateMap);
 
@@ -547,7 +545,7 @@ public class PandamdamQuiz extends AppCompatActivity {
 
             Map<String, Object> cachedModule1 = (Map<String, Object>) cachedData.get("module_1");
             cachedModule1.put("lessons", lessonsMap);
-            cachedModule1.put("current_lesson", "pangawing");
+            cachedModule1.put("current_lesson", "pandamdam");
 
             LessonProgressCache.setData(cachedData);
         }

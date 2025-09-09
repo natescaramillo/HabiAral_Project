@@ -159,7 +159,12 @@ public class PangngalanLesson extends AppCompatActivity {
         imageView.setImageResource(pangngalanLesson[currentPage]);
         FirestoreUtils.saveLessonProgress(FirestoreUtils.getCurrentUser().getUid(),
                 "pangngalan", currentPage, isLessonDone);
+
         stopSpeaking();
+
+        // cancel running text animation before starting new one
+        TextAnimationUtils.cancelAnimation(instructionText);
+
         if (pageLines.containsKey(currentPage)) {
             instructionText.setText("");
             new android.os.Handler().postDelayed(() ->
@@ -280,6 +285,7 @@ public class PangngalanLesson extends AppCompatActivity {
     private void stopSpeaking() {
         if (textToSpeech != null) textToSpeech.stop();
         textHandler.removeCallbacksAndMessages(null);
+        TextAnimationUtils.cancelAnimation(instructionText);
     }
 
     private void stopTTS() {
