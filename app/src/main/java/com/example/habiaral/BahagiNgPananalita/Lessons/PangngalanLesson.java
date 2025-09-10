@@ -2,9 +2,7 @@ package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +18,7 @@ import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.DialogUtils;
 import com.example.habiaral.Utils.FirestoreUtils;
+import com.example.habiaral.Utils.FullScreenUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.example.habiaral.Utils.TextAnimationUtils;
 import com.google.firebase.auth.FirebaseUser;
@@ -59,7 +58,9 @@ public class PangngalanLesson extends AppCompatActivity {
     private final boolean[] isFullScreen = {false};
     private ImageView backOption, nextOption;
     private ConstraintLayout constraintLayout;
-
+    private int resumePage = -1;
+    private int resumeLine = -1;
+    private boolean isNavigatingInsideApp = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +68,8 @@ public class PangngalanLesson extends AppCompatActivity {
         setContentView(R.layout.bahagi_ng_pananalita_pangngalan_lesson);
 
         unlockButton = findViewById(R.id.UnlockButtonPangngalan);
-        imageView = findViewById(R.id.imageViewPangngalan); // change
-        instructionText = findViewById(R.id.instructionText); // change
+        imageView = findViewById(R.id.imageViewPangngalan);
+        instructionText = findViewById(R.id.instructionText);
 
         backOption = findViewById(R.id.back_option);
         nextOption = findViewById(R.id.next_option);
@@ -93,53 +94,44 @@ public class PangngalanLesson extends AppCompatActivity {
 
         unlockButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
+            isNavigatingInsideApp = true;
             stopTTS();
-            startActivity(new Intent(this, PangngalanQuiz.class)); // change
+            startActivity(new Intent(this, PangngalanQuiz.class));
         });
 
         backOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
         nextOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); nextPage(); });
 
-        fullScreenOption.setOnClickListener(v -> toggleFullScreen(fullScreenOption, imageView2));
+        fullScreenOption.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            FullScreenUtils.toggleFullScreen(
+                    this,
+                    isFullScreen,
+                    fullScreenOption,
+                    imageView,
+                    imageView2,
+                    constraintLayout,
+                    instructionText,
+                    unlockButton
+            );
+        });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() {
                 stopTTS();
-                startActivity(new Intent(PangngalanLesson.this, BahagiNgPananalita.class) // change
+                startActivity(new Intent(PangngalanLesson.this, BahagiNgPananalita.class)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                 finish();
             }
         });
     }
 
-    private void toggleFullScreen(ImageView fullScreenOption, ImageView imageView2) {
-        SoundClickUtils.playClickSound(this, R.raw.button_click);
-        if (!isFullScreen[0]) {
-            if (getSupportActionBar() != null) getSupportActionBar().hide();
-            instructionText.setVisibility(View.GONE);
-            imageView2.setVisibility(View.GONE);
-            constraintLayout.setVisibility(View.GONE);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            fullScreenOption.setImageResource(R.drawable.not_full_screen);
-        } else {
-            if (getSupportActionBar() != null) getSupportActionBar().show();
-            instructionText.setVisibility(View.VISIBLE);
-            imageView2.setVisibility(View.VISIBLE);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-            fullScreenOption.setImageResource(R.drawable.full_screen);
-        }
-        isFullScreen[0] = !isFullScreen[0];
-    }
-
     private void nextPage() {
-        if (currentPage < pangngalanLesson.length - 1 ) { // change
+        if (currentPage < pangngalanLesson.length - 1 ) {
             currentPage++;
             updatePage();
         }
-        if (currentPage == pangngalanLesson.length - 1) { // change
+        if (currentPage == pangngalanLesson.length - 1) {
             unlockButton.setEnabled(true);
             unlockButton.setAlpha(1f);
         }
@@ -161,7 +153,7 @@ public class PangngalanLesson extends AppCompatActivity {
             backOption.setAlpha(1f);
         }
 
-        if (currentPage == pangngalanLesson.length - 1) { // change
+        if (currentPage == pangngalanLesson.length - 1) {
             nextOption.setEnabled(false);
             nextOption.setAlpha(0.5f);
         } else {
@@ -171,9 +163,9 @@ public class PangngalanLesson extends AppCompatActivity {
     }
 
     private void updatePage() {
-        imageView.setImageResource(pangngalanLesson[currentPage]); // change
+        imageView.setImageResource(pangngalanLesson[currentPage]);
         FirestoreUtils.saveLessonProgress(FirestoreUtils.getCurrentUser().getUid(),
-                "pangngalan", currentPage, isLessonDone); // change
+                "pangngalan", currentPage, isLessonDone);
 
         stopSpeaking();
 
@@ -200,13 +192,13 @@ public class PangngalanLesson extends AppCompatActivity {
                         Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
                         if (module1 != null) {
                             Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
-                            if (lessons != null && lessons.containsKey("pangngalan")) { // change
-                                Map<String, Object> pangngalan = (Map<String, Object>) lessons.get("pangngalan"); // change
-                                if (pangngalan != null) { // change
-                                    Long checkpoint = (Long) pangngalan.get("checkpoint"); // change
+                            if (lessons != null && lessons.containsKey("pangngalan")) {
+                                Map<String, Object> pangngalan = (Map<String, Object>) lessons.get("pangngalan");
+                                if (pangngalan != null) {
+                                    Long checkpoint = (Long) pangngalan.get("checkpoint");
                                     currentPage = (checkpoint != null) ? checkpoint.intValue() : 0;
                                     isFirstTime = false;
-                                    if ("completed".equals(pangngalan.get("status"))) { // change
+                                    if ("completed".equals(pangngalan.get("status"))) {
                                         isLessonDone = true;
                                         unlockButton.setEnabled(true);
                                         unlockButton.setAlpha(1f);
@@ -218,15 +210,15 @@ public class PangngalanLesson extends AppCompatActivity {
                         }
                     } else {
                         currentPage = 0;
-                        imageView.setImageResource(pangngalanLesson[currentPage]); // change
+                        imageView.setImageResource(pangngalanLesson[currentPage]);
                         isFirstTime = true;
                     }
-                    FirestoreUtils.saveLessonProgress(user.getUid(), "pangngalan", currentPage, isLessonDone); // change
+                    FirestoreUtils.saveLessonProgress(user.getUid(), "pangngalan", currentPage, isLessonDone);
                 });
     }
 
     private void loadCharacterLines() {
-        FirebaseFirestore.getInstance().collection("lesson_character_lines").document("LCL1").get() // change
+        FirebaseFirestore.getInstance().collection("lesson_character_lines").document("LCL1").get()
                 .addOnSuccessListener(doc -> {
                     if (!doc.exists()) return;
                     List<Map<String, Object>> pages = (List<Map<String, Object>>) doc.get("pages");
@@ -313,5 +305,27 @@ public class PangngalanLesson extends AppCompatActivity {
     }
 
     @Override protected void onDestroy() { stopTTS(); super.onDestroy(); }
-    @Override protected void onPause() { stopSpeaking(); super.onPause(); }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (!isNavigatingInsideApp) {
+            resumePage = currentPage;
+        }
+
+        stopSpeaking();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (resumePage != -1) {
+            currentPage = resumePage;
+            updatePage();
+            resumePage = -1;
+            resumeLine = -1;
+        }
+    }
 }
