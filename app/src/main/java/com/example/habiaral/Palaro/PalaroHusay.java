@@ -405,9 +405,14 @@ public class PalaroHusay extends AppCompatActivity {
             public void onFinish() {
                 timerBar.setProgress(0);
                 isTimeUp = true;
-                if (tts != null) tts.stop();
+
+                // 👉 magsalita si MCL5
+                loadCharacterLine("MCL5");
+
+                // 👉 sabay agad ang Game Over dialog
                 finishQuiz();
             }
+
         }.start();
     }
 
@@ -508,13 +513,17 @@ public class PalaroHusay extends AppCompatActivity {
 
         if (remainingHearts <= 0) {
             if (countDownTimer != null) countDownTimer.cancel();
-            if (tts != null) tts.stop();
+
             Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
+
+            // 👉 magsalita muna si MCL5
             loadCharacterLine("MCL5");
 
+            // 👉 tapos agad i-call yung finishQuiz() para sabay
             finishQuiz();
         }
     }
+
     private void speakText(String text) {
         if (text == null || text.trim().isEmpty()) return;
 

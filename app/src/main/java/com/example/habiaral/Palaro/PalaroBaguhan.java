@@ -658,10 +658,17 @@ public class PalaroBaguhan extends AppCompatActivity {
                 timerBar.setProgress(0);
                 isTimeUp = true;
                 disableAnswerSelection();
-                if (tts != null) tts.stop();
+
+                // 👉 magsasalita si MCL5 kapag ubos oras
+                loadCharacterLine("MCL5");
+
+                // ❌ huwag munang i-stop ang TTS dito para hindi maputol ang boses
                 stopTimerSounds();
+
+                // 👉 sabay palabasin ang Game Over dialog
                 finishQuiz();
             }
+
         }.start();
     }
 
@@ -803,7 +810,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         String line = documentSnapshot.getString("line");
                         if (line != null) {
-                            baguhanQuestion.setText(line);
                             speakText(line);
                         }
                     }

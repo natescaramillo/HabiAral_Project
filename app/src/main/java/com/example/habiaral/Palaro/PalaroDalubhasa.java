@@ -63,7 +63,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private Button btnTapos;
 
     private CountDownTimer countDownTimer;
-    private static final long TOTAL_TIME = 60000;
+    private static final long TOTAL_TIME = 6000000;
     private long timeLeft = TOTAL_TIME;
 
     private FirebaseFirestore db;
@@ -330,7 +330,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String line = documentSnapshot.getString("line");
-                        dalubhasaInstruction.setText(line);
 
                         if (line != null && !line.isEmpty()) {
                             speakLine(line);
@@ -361,7 +360,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 });
     }
     private void speakLine(String text) {
-        if (isGameOver) return;
         if (text == null || text.trim().isEmpty()) return;
 
         if (isTtsReady && tts != null) {
@@ -430,9 +428,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_green));
                 }
 
-                if (millisUntilFinished <= 5000 && millisUntilFinished >= 4900) {
-                    loadCharacterLine("MCL5");
-                }
+
             }
 
             @Override
@@ -440,10 +436,15 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 timerBar.setProgress(0);
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
-                if (tts != null) tts.stop();
+
+                // 👉 Magsalita agad si MCL5
+                loadCharacterLine("MCL5");
+
+                // 👉 Sabay ipakita ang Game Over dialog
                 saveDalubhasaScore();
                 finishQuiz();
             }
+
 
         }.start();
     }
@@ -452,7 +453,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         if (isGameOver) return;
         isGameOver = true;
 
-        if (tts != null) tts.stop();
 
         View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
         AlertDialog dialog = new AlertDialog.Builder(PalaroDalubhasa.this)
@@ -519,14 +519,19 @@ public class PalaroDalubhasa extends AppCompatActivity {
             if (remainingHearts == 0) {
                 Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
                 if (countDownTimer != null) countDownTimer.cancel();
-                if (tts != null) tts.stop();
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
+
+                // 👉 Magsalita muna si MCL5
+                loadCharacterLine("MCL5");
+
+                // 👉 Sabay agad ang Game Over dialog
                 saveDalubhasaScore();
                 finishQuiz();
             }
         }
     }
+
 
 
     @Override
