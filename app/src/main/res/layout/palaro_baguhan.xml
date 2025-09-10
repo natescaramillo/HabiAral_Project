@@ -183,7 +183,7 @@
             <!-- Answer Buttons in 3x2 Grid -->
             <GridLayout
                 android:id="@+id/answerGrid"
-                android:layout_width="wrap_content"
+                android:layout_width="351dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="32dp"
@@ -196,12 +196,12 @@
                     android:id="@+id/baguhan_answer1"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_margin="10dp"
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/special"
                     android:gravity="center"
                     android:text=""
-                    android:textSize="15sp" />
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/baguhan_answer2"
@@ -212,7 +212,7 @@
                     android:fontFamily="@font/special"
                     android:gravity="center"
                     android:text=""
-                    android:textSize="15sp" />
+                    android:textSize="12sp"/>
 
                 <Button
                     android:id="@+id/baguhan_answer3"
@@ -223,7 +223,7 @@
                     android:fontFamily="@font/special"
                     android:gravity="center"
                     android:text=""
-                    android:textSize="15sp" />
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/baguhan_answer4"
@@ -234,7 +234,7 @@
                     android:fontFamily="@font/special"
                     android:gravity="center"
                     android:text=""
-                    android:textSize="15sp" />
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/baguhan_answer5"
@@ -245,7 +245,7 @@
                     android:fontFamily="@font/special"
                     android:gravity="center"
                     android:text=""
-                    android:textSize="15sp"/>
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/baguhan_answer6"
@@ -256,7 +256,7 @@
                     android:fontFamily="@font/special"
                     android:gravity="center"
                     android:text=""
-                    android:textSize="15sp" />
+                    android:textSize="12sp" />
 
             </GridLayout>
 
