@@ -63,7 +63,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private Button btnTapos;
 
     private CountDownTimer countDownTimer;
-    private static final long TOTAL_TIME = 6000000;
+    private static final long TOTAL_TIME = 60000;
     private long timeLeft = TOTAL_TIME;
 
     private FirebaseFirestore db;
@@ -87,6 +87,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private int perfectAnswerCount = 0;
 
     private boolean isGameOver = false;
+    private boolean greenSound = false;
+    private boolean redSound = false;
+    private boolean orangeSound = false;
 
 
     @Override
@@ -114,7 +117,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
         btnTapos = findViewById(R.id.UnlockButtonPalaro);
         Button btnUmalis = findViewById(R.id.UnlockButtonPalaro1);
 
-        btnUmalis.setOnClickListener(v -> showUmalisDialog());
+        btnUmalis.setOnClickListener(v -> {
+            playButtonClickSound(); // 🎵 added
+            showUmalisDialog();
+        });
 
 
         heartIcons = new ImageView[]{
@@ -126,6 +132,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         };
 
         db = FirebaseFirestore.getInstance();
+
 
         userSentenceInput.setEnabled(false);
         btnTapos.setEnabled(false);
@@ -198,6 +205,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
+                playButtonClickSound(); // 🎵 added
                 showBackConfirmationDialog();
             }
         });
@@ -216,13 +224,18 @@ public class PalaroDalubhasa extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         btnOo.setOnClickListener(v -> {
+            playButtonClickSound(); // 🎵 added
+
             if (countDownTimer != null) countDownTimer.cancel();
             if (tts != null) tts.stop();
             dialog.dismiss();
             finish();
         });
 
-        btnHindi.setOnClickListener(v -> dialog.dismiss());
+        btnHindi.setOnClickListener(v -> {
+            playButtonClickSound(); // 🎵 added
+            dialog.dismiss();
+        });
 
         dialog.show();
     }
@@ -240,6 +253,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 scoreForThisSentence = 15;
                 dalubhasaScore += scoreForThisSentence;
                 perfectAnswerCount++;
+                // 🎵 Play correct sound
+                playCorrectSound();
 
                 loadCharacterLine("MDCL2");
 
@@ -252,6 +267,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 }
 
                 dalubhasaScore += scoreForThisSentence;
+
+
+                // 🎵 Play wrong sound
+                playWrongSound();
 
                 if (scoreForThisSentence == 13 || scoreForThisSentence == 15) {
                     perfectAnswerCount++;
@@ -314,13 +333,17 @@ public class PalaroDalubhasa extends AppCompatActivity {
         Button noButton = dialogView.findViewById(R.id.button6);
 
         yesButton.setOnClickListener(v -> {
+            playButtonClickSound(); // 🎵 added
             if (countDownTimer != null) countDownTimer.cancel();
             if (tts != null) tts.stop();
             dialog.dismiss();
             finish();
         });
 
-        noButton.setOnClickListener(v -> dialog.dismiss());
+        noButton.setOnClickListener(v -> {
+            playButtonClickSound(); // 🎵 added
+            dialog.dismiss();
+        });
         dialog.show();
     }
 
@@ -390,6 +413,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadInstruction() {
+        // 🎵 1. Play ready_go_new.mp3
+        MediaPlayer readyGoSound = MediaPlayer.create(this, R.raw.ready_go_new);
+
+        // Handler para sa countdown text
         final Handler countdownHandler = new Handler();
         final int[] countdown = {3};
 
@@ -401,13 +428,22 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     countdown[0]--;
                     countdownHandler.postDelayed(this, 1000);
                 } else {
-                    loadAllDalubhasaInstructions();
-                    startTimer();
+                    // matapos ang 1 → gawing blanko habang tumutunog pa
+                    dalubhasaInstruction.setText("");
                 }
             }
         };
-
         countdownHandler.post(countdownRunnable);
+
+        // 👉 Pagkatapos ng tunog, doon lang magload ng instructions at timer
+        readyGoSound.setOnCompletionListener(mp -> {
+            mp.release();
+            // tapos na tunog, tsaka lang lumabas ang instructions at timer
+            loadAllDalubhasaInstructions();
+            startTimer();
+        });
+
+        readyGoSound.start();
     }
 
     private void startTimer() {
@@ -420,15 +456,32 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(percent);
 
+                // Sound triggers flags to avoid repeating sounds
                 if (percent <= 25) {
                     timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_red));
+                    if (!redSound) {
+                        playTimerSound(R.raw.red_timer);
+                        redSound = true;
+                        greenSound = false;
+                        orangeSound = false;
+                    }
                 } else if (percent <= 50) {
                     timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_orange));
+                    if (!orangeSound) {
+                        playTimerSound(R.raw.orange_timer);
+                        orangeSound = true;
+                        greenSound = false;
+                        redSound = false;
+                    }
                 } else {
                     timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_green));
+                    if (!greenSound) {
+                        playTimerSound(R.raw.green_timer);
+                        greenSound = true;
+                        orangeSound = false;
+                        redSound = false;
+                    }
                 }
-
-
             }
 
             @Override
@@ -437,22 +490,29 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
 
-                // 👉 Magsalita agad si MCL5
                 loadCharacterLine("MCL5");
-
-                // 👉 Sabay ipakita ang Game Over dialog
                 saveDalubhasaScore();
                 finishQuiz();
             }
-
-
         }.start();
     }
+
+    // Helper method
+    private void playTimerSound(int soundResId) {
+        MediaPlayer mp = MediaPlayer.create(this, soundResId);
+        mp.setOnCompletionListener(MediaPlayer::release);
+        mp.start();
+    }
+
 
     private void finishQuiz() {
         if (isGameOver) return;
         isGameOver = true;
 
+        // 🎵 Play game over sound bago ipakita ang dialog
+        MediaPlayer gameOverSound = MediaPlayer.create(this, R.raw.game_over); // <- lagay mo dito file mo
+        gameOverSound.setOnCompletionListener(MediaPlayer::release);
+        gameOverSound.start();
 
         View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
         AlertDialog dialog = new AlertDialog.Builder(PalaroDalubhasa.this)
@@ -514,6 +574,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private void deductHeart() {
         if (remainingHearts > 0) {
             remainingHearts--;
+            // 🎵 Play heart_pop.mp3 tuwing nababawasan ang puso
+            MediaPlayer heartPop = MediaPlayer.create(this, R.raw.heart_pop);
+            heartPop.setOnCompletionListener(MediaPlayer::release);
+            heartPop.start();
+
             heartIcons[remainingHearts].setVisibility(View.INVISIBLE);
 
             if (remainingHearts == 0) {
@@ -744,6 +809,22 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+    private void playButtonClickSound() {
+        MediaPlayer mp = MediaPlayer.create(this, R.raw.button_click);
+        mp.setOnCompletionListener(MediaPlayer::release);
+        mp.start();
+    }
+    private void playCorrectSound() {
+        MediaPlayer mp = MediaPlayer.create(this, R.raw.correct);
+        mp.setOnCompletionListener(MediaPlayer::release);
+        mp.start();
+    }
+
+    private void playWrongSound() {
+        MediaPlayer mp = MediaPlayer.create(this, R.raw.wrong);
+        mp.setOnCompletionListener(MediaPlayer::release);
+        mp.start();
     }
 
 }
