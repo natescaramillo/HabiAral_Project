@@ -17,9 +17,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PandiwaQuiz;
+import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.DialogUtils;
 import com.example.habiaral.Utils.FirestoreUtils;
+import com.example.habiaral.Utils.FullScreenUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.example.habiaral.Utils.TextAnimationUtils;
 import com.google.firebase.auth.FirebaseUser;
@@ -53,6 +55,9 @@ public class PandiwaLesson extends AppCompatActivity {
     private final boolean[] isFullScreen = {false};
     private ImageView backOption, nextOption;
     private ConstraintLayout constraintLayout;
+    private int resumePage = -1;
+    private int resumeLine = -1;
+    private boolean isNavigatingInsideApp = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,14 +91,27 @@ public class PandiwaLesson extends AppCompatActivity {
 
         unlockButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
+            isNavigatingInsideApp = true;
             stopTTS();
-            startActivity(new Intent(this, PandiwaQuiz.class));
+            startActivity(new Intent(this, PangngalanQuiz.class));
         });
 
         backOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
         nextOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); nextPage(); });
 
-        fullScreenOption.setOnClickListener(v -> toggleFullScreen(fullScreenOption, imageView2));
+        fullScreenOption.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            FullScreenUtils.toggleFullScreen(
+                    this,
+                    isFullScreen,
+                    fullScreenOption,
+                    imageView,
+                    imageView2,
+                    constraintLayout,
+                    instructionText,
+                    unlockButton
+            );
+        });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() {
@@ -103,28 +121,6 @@ public class PandiwaLesson extends AppCompatActivity {
                 finish();
             }
         });
-    }
-
-    private void toggleFullScreen(ImageView fullScreenOption, ImageView imageView2) {
-        SoundClickUtils.playClickSound(this, R.raw.button_click);
-        if (!isFullScreen[0]) {
-            if (getSupportActionBar() != null) getSupportActionBar().hide();
-            instructionText.setVisibility(View.GONE);
-            imageView2.setVisibility(View.GONE);
-            constraintLayout.setVisibility(View.GONE);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            fullScreenOption.setImageResource(R.drawable.not_full_screen);
-        } else {
-            if (getSupportActionBar() != null) getSupportActionBar().show();
-            instructionText.setVisibility(View.VISIBLE);
-            imageView2.setVisibility(View.VISIBLE);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-            fullScreenOption.setImageResource(R.drawable.full_screen);
-        }
-        isFullScreen[0] = !isFullScreen[0];
     }
 
     private void nextPage() {
@@ -306,5 +302,27 @@ public class PandiwaLesson extends AppCompatActivity {
     }
 
     @Override protected void onDestroy() { stopTTS(); super.onDestroy(); }
-    @Override protected void onPause() { stopSpeaking(); super.onPause(); }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (!isNavigatingInsideApp) {
+            resumePage = currentPage;
+        }
+
+        stopSpeaking();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (resumePage != -1) {
+            currentPage = resumePage;
+            updatePage();
+            resumePage = -1;
+            resumeLine = -1;
+        }
+    }
 }

@@ -94,18 +94,16 @@ public class Palaro extends AppCompatActivity {
             editor.apply();
         }
 
-        gameMechanicsIcon.setOnClickListener(v -> showGameMechanics());
-
         updateUI();
         checkLocks();
         startEnergyRegeneration();
         loadTotalScoreFromFirestore();
 
-        // ✅ Button click listeners with sound
         gameMechanicsIcon.setOnClickListener(v -> {
             playClickSound();
             showGameMechanics();
         });
+
         button1.setOnClickListener(v -> {
             playClickSound();
             if (userEnergy >= ENERGY_COST) {
