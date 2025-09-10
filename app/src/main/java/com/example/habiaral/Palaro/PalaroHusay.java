@@ -73,6 +73,12 @@ public class PalaroHusay extends AppCompatActivity {
     private int attemptCount = 0;
     private boolean isGameOver = false;
 
+    private MediaPlayer greenSound, orangeSound, redSound;
+    private boolean playedGreen = false;
+    private boolean playedOrange = false;
+    private boolean playedRed = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +98,10 @@ public class PalaroHusay extends AppCompatActivity {
         unlockButton = findViewById(R.id.UnlockButtonPalaro);
 
         Button btnUmalis = findViewById(R.id.UnlockButtonPalaro1);
-        btnUmalis.setOnClickListener(v -> showUmalisDialog());
+        btnUmalis.setOnClickListener(v -> {
+            playButtonClickSound();
+            showUmalisDialog();
+        });
 
         heartIcons = new ImageView[]{
                 findViewById(R.id.heart01),
@@ -101,6 +110,9 @@ public class PalaroHusay extends AppCompatActivity {
                 findViewById(R.id.heart04),
                 findViewById(R.id.heart05)
         };
+        greenSound = MediaPlayer.create(this, R.raw.green_timer);
+        orangeSound = MediaPlayer.create(this, R.raw.orange_timer);
+        redSound = MediaPlayer.create(this, R.raw.red_timer);
 
         db = FirebaseFirestore.getInstance();
 
@@ -134,19 +146,30 @@ public class PalaroHusay extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         btnOo.setOnClickListener(v -> {
+            playButtonClickSound();
             if (countDownTimer != null) countDownTimer.cancel();
             if (tts != null) tts.stop();
             dialog.dismiss();
             finish();
         });
 
-        btnHindi.setOnClickListener(v -> dialog.dismiss());
-
+        btnHindi.setOnClickListener(v -> {
+            playButtonClickSound();
+            dialog.dismiss();
+        });
         dialog.show();
+
+    }
+    @Override
+    public void onBackPressed() {
+        // 🎵 Play button_click.mp3 bago ipakita ang exit dialog
+        playButtonClickSound();
+        showUmalisDialog();
     }
 
     private void setupUnlockButton() {
         unlockButton.setOnClickListener(v -> {
+            playButtonClickSound();
             if (isTimeUp || isAnswered) return;
 
             String userAnswer = fullAnswerView.getText().toString().trim();
@@ -170,6 +193,11 @@ public class PalaroHusay extends AppCompatActivity {
                             long elapsedTimeInSeconds = (endTime - startTime) / 1000;
 
                             if (userAnswer.equalsIgnoreCase(correctAnswer)) {
+                                // 🎵 Play correct sound
+                                MediaPlayer correctSound = MediaPlayer.create(this, R.raw.correct);
+                                correctSound.setOnCompletionListener(MediaPlayer::release);
+                                correctSound.start();
+
                                 correctAnswerCount++;
                                 husayScore += 3;
                                 correctStreak++;
@@ -191,6 +219,11 @@ public class PalaroHusay extends AppCompatActivity {
                                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                 saveCorrectHusayAnswer(userId, userId, husayDocId);
                             } else {
+                                // 🎵 Play wrong sound
+                                MediaPlayer wrongSound = MediaPlayer.create(this, R.raw.wrong);
+                                wrongSound.setOnCompletionListener(MediaPlayer::release);
+                                wrongSound.start();
+
                                 correctStreak = 0;
                                 deductHeart();
                                 String lineId = remainingHearts > 0 ? "MCL6" : "MCL5";
@@ -220,12 +253,18 @@ public class PalaroHusay extends AppCompatActivity {
                     });
         });
     }
+    private void playButtonClickSound() {
+        MediaPlayer clickSound = MediaPlayer.create(this, R.raw.button_click);
+        clickSound.setOnCompletionListener(MediaPlayer::release);
+        clickSound.start();
+    }
 
     private void setupAnswerSelection() {
         TextView[] answers = {answer1, answer2, answer3, answer4, answer5, answer6};
 
         for (TextView answer : answers) {
             answer.setOnClickListener(view -> {
+                playButtonClickSound();
                 if (isTimeUp || isAnswered) return;
                 resetAnswerBackgrounds();
                 view.setBackgroundResource(R.drawable.answer_option_bg_selected);
@@ -311,6 +350,7 @@ public class PalaroHusay extends AppCompatActivity {
                                 answer.setEnabled(true);
 
                                 answer.setOnClickListener(view -> {
+                                    playButtonClickSound();
                                     if (view.isEnabled()) {
                                         String current = fullAnswerView.getText().toString().trim();
                                         fullAnswerView.setText((current + " " + ((TextView) view).getText()).trim());
@@ -356,8 +396,11 @@ public class PalaroHusay extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadWords() {
+        // 🎵 Play ready_go_new.mp3
+        MediaPlayer readyGoSound = MediaPlayer.create(this, R.raw.ready_go_new);
+
         final Handler countdownHandler = new Handler();
-        final int[] countdown = {3};
+        final int[] countdown = {3}; // magsimula sa 1
 
         countdownHandler.post(new Runnable() {
             @Override
@@ -367,15 +410,26 @@ public class PalaroHusay extends AppCompatActivity {
                     countdown[0]--;
                     countdownHandler.postDelayed(this, 1000);
                 } else {
-                    loadCharacterLine("MHCL2");
-                    new Handler().postDelayed(() -> {
-                        loadHusayWords("H1");
-                        startTimer();
-                    }, 1400);
+                    // matapos ang 3 → gawing blanko
+                    husayInstruction.setText("");
                 }
             }
         });
+
+        // 👉 Pagkatapos ng tunog, start game
+        readyGoSound.setOnCompletionListener(mp -> {
+            mp.release();
+
+            loadCharacterLine("MHCL2");
+            new Handler().postDelayed(() -> {
+                loadHusayWords("H1");
+                startTimer();
+            }, 1400);
+        });
+
+        readyGoSound.start();
     }
+
 
     private void startTimer() {
         restartTimer(timeLeft);
@@ -392,12 +446,32 @@ public class PalaroHusay extends AppCompatActivity {
                 int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(percent);
 
-                if (percent <= 25) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_red));
-                } else if (percent <= 50) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_orange));
-                } else {
+                // GREEN zone
+                if (percent > 50) {
                     timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_green));
+                    if (!playedGreen) {
+                        playedGreen = true;
+                        playedOrange = false; // reset para pag bumalik sa orange
+                        playedRed = false;
+                        greenSound.start();
+                    }
+                }
+                // ORANGE zone
+                else if (percent > 25) {
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_orange));
+                    if (!playedOrange) {
+                        playedOrange = true;
+                        playedRed = false;
+                        orangeSound.start();
+                    }
+                }
+                // RED zone
+                else {
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_red));
+                    if (!playedRed) {
+                        playedRed = true;
+                        redSound.start();
+                    }
                 }
             }
 
@@ -426,6 +500,11 @@ public class PalaroHusay extends AppCompatActivity {
         if (tts != null) {
             tts.stop();
         }
+
+        // 🎵 Play gameover.mp3 bago ipakita yung dialog
+        MediaPlayer gameOverSound = MediaPlayer.create(this, R.raw.game_over);
+        gameOverSound.setOnCompletionListener(MediaPlayer::release);
+        gameOverSound.start();
 
         saveHusayScore();
 
@@ -507,6 +586,11 @@ public class PalaroHusay extends AppCompatActivity {
     private void deductHeart() {
         remainingHearts--;
 
+        // 🎵 Play heart_pop sound
+        MediaPlayer heartPopSound = MediaPlayer.create(this, R.raw.heart_pop);
+        heartPopSound.setOnCompletionListener(MediaPlayer::release);
+        heartPopSound.start();
+
         if (heartIcons != null && remainingHearts >= 0 && remainingHearts < heartIcons.length) {
             heartIcons[remainingHearts].setVisibility(View.INVISIBLE);
         }
@@ -545,6 +629,9 @@ public class PalaroHusay extends AppCompatActivity {
             tts.stop();
             tts.shutdown();
         }
+        if (greenSound != null) greenSound.release();
+        if (orangeSound != null) orangeSound.release();
+        if (redSound != null) redSound.release();
         super.onDestroy();
     }
     private void saveCorrectHusayAnswer(String uid, String firebaseUID, String questionId) {

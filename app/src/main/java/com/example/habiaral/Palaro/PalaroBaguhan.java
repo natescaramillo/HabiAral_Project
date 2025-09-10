@@ -924,4 +924,12 @@ public class PalaroBaguhan extends AppCompatActivity {
         mediaPlayer.setOnCompletionListener(MediaPlayer::release);
         mediaPlayer.start();
     }
+
+    @Override
+    public void onBackPressed() {
+        // 🎵 Play button_click.mp3 bago ipakita ang exit dialog
+        playClickSound();
+        showExitConfirmationDialog();
+    }
+
 }
