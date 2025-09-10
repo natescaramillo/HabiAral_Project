@@ -7,7 +7,7 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.util.Map;
 
-public class FirestoreUtils {
+public class BahagiFirestoreUtils {
 
     public static FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();

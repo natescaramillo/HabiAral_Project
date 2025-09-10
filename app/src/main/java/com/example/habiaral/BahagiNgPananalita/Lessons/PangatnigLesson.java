@@ -17,7 +17,7 @@ import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangatnigQuiz;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.DialogUtils;
-import com.example.habiaral.Utils.FirestoreUtils;
+import com.example.habiaral.Utils.BahagiFirestoreUtils;
 import com.example.habiaral.Utils.FullScreenUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.example.habiaral.Utils.TextAnimationUtils;
@@ -155,7 +155,7 @@ public class PangatnigLesson extends AppCompatActivity {
 
     private void updatePage() {
         imageView.setImageResource(pangatnigLesson[currentPage]);
-        FirestoreUtils.saveLessonProgress(FirestoreUtils.getCurrentUser().getUid(),
+        BahagiFirestoreUtils.saveLessonProgress(BahagiFirestoreUtils.getCurrentUser().getUid(),
                 "pangatnig", currentPage, isLessonDone);
 
         stopSpeaking();
@@ -174,7 +174,7 @@ public class PangatnigLesson extends AppCompatActivity {
     }
 
     private void checkLessonStatus() {
-        FirebaseUser user = FirestoreUtils.getCurrentUser();
+        FirebaseUser user = BahagiFirestoreUtils.getCurrentUser();
         if (user == null) return;
 
         FirebaseFirestore.getInstance().collection("module_progress").document(user.getUid()).get()
@@ -204,7 +204,7 @@ public class PangatnigLesson extends AppCompatActivity {
                         imageView.setImageResource(pangatnigLesson[currentPage]);
                         isFirstTime = true;
                     }
-                    FirestoreUtils.saveLessonProgress(user.getUid(), "pangatnig", currentPage, isLessonDone);
+                    BahagiFirestoreUtils.saveLessonProgress(user.getUid(), "pangatnig", currentPage, isLessonDone);
                 });
     }
 
