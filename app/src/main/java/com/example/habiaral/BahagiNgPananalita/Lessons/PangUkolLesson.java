@@ -2,11 +2,9 @@ package com.example.habiaral.BahagiNgPananalita.Lessons;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,7 +15,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangUkolQuiz;
-import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.DialogUtils;
 import com.example.habiaral.Utils.FirestoreUtils;
@@ -91,7 +88,7 @@ public class PangUkolLesson extends AppCompatActivity {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             isNavigatingInsideApp = true;
             stopTTS();
-            startActivity(new Intent(this, PangngalanQuiz.class));
+            startActivity(new Intent(this, PangUkolQuiz.class));
         });
 
         backOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
