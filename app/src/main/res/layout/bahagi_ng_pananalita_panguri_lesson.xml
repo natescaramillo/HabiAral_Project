@@ -61,7 +61,7 @@
             android:id="@+id/imageViewPanguri"
             android:layout_width="0dp"
             android:layout_height="200dp"
-            android:scaleType="fitCenter"
+            android:scaleType="fitXY"
             android:src="@drawable/panguri01"
             app:layout_constraintBottom_toTopOf="@id/option_bar"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"

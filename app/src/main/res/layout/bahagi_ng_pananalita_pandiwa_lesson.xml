@@ -21,12 +21,6 @@
         app:layout_constraintVertical_bias="0.0">
 
         <!-- Guidelines -->
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelinehorizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.6" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelinehorizontal2"
@@ -68,42 +62,41 @@
         <LinearLayout
             android:id="@+id/option_bar"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="45dp"
             android:background="#99A27B5C"
-            android:orientation="horizontal"
             android:gravity="end|center_vertical"
-            app:layout_constraintTop_toBottomOf="@id/imageViewPandiwa"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintBottom_toTopOf="@+id/guidelinehorizontal">
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/imageViewPandiwa">
 
             <ImageView
                 android:id="@+id/back_option"
-                android:background="#CAA885"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginEnd="5dp"
                 android:adjustViewBounds="true"
+                android:background="#CAA885"
                 android:scaleType="fitCenter"
                 android:src="@drawable/back_button" />
 
             <ImageView
                 android:id="@+id/next_option"
-                android:background="#CAA885"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginEnd="5dp"
                 android:adjustViewBounds="true"
+                android:background="#CAA885"
                 android:scaleType="fitCenter"
                 android:src="@drawable/next_button" />
 
             <ImageView
                 android:id="@+id/full_screen_option"
-                android:background="#CAA885"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginEnd="5dp"
                 android:adjustViewBounds="true"
+                android:background="#CAA885"
                 android:scaleType="fitCenter"
                 android:src="@drawable/full_screen" />
         </LinearLayout>

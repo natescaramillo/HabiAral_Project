@@ -70,7 +70,7 @@
             android:id="@+id/imageViewPangabay"
             android:layout_width="0dp"
             android:layout_height="200dp"
-            android:scaleType="fitCenter"
+            android:scaleType="fitXY"
             android:src="@drawable/pangabay01"
             app:layout_constraintBottom_toTopOf="@id/option_bar"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
@@ -86,8 +86,9 @@
             android:gravity="end|center_vertical"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/guidelinehorizontal"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewPangabay"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="@+id/imageViewPangabay"
             app:layout_constraintTop_toBottomOf="@id/imageViewPangabay">
 
             <ImageView
