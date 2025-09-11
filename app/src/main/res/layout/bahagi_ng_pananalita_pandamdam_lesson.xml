@@ -54,13 +54,16 @@
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_margin="0dp"
+            android:background="@drawable/rounded_ppt"
+            android:clipToOutline="true"
             android:scaleType="fitXY"
             android:src="@drawable/pandamdam01"
-            app:layout_constraintBottom_toTopOf="@id/option_bar"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="@+id/guidelinehorizontal2" />
+            app:layout_constraintTop_toTopOf="@+id/guidelinehorizontal2"
+            app:layout_constraintVertical_bias="0.0" />
 
         <LinearLayout
             android:id="@+id/option_bar"
@@ -69,11 +72,13 @@
             android:background="#99A27B5C"
             android:gravity="end|center_vertical"
             android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/imageViewPandamdam"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/imageViewPandamdam"
-            app:layout_constraintTop_toBottomOf="@id/imageViewPandamdam">
+            app:layout_constraintTop_toBottomOf="@id/imageViewPandamdam"
+            app:layout_constraintVertical_bias="0.0">
 
             <ImageView
                 android:id="@+id/back_option"
@@ -111,42 +116,6 @@
 
     <!-- Instruction text -->
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/instructionContainer"
-        android:layout_width="match_parent"
-        android:layout_height="119dp"
-        android:background="@drawable/rounded_rect"
-        android:backgroundTint="#FFEFEA"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-        <TextView
-            android:id="@+id/instructionText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/special"
-            android:gravity="start"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:justificationMode="inter_word"
-            android:lineSpacingExtra="2dp"
-            android:textColor="#000000"
-            android:textSize="13sp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <Button
         android:id="@+id/UnlockButtonPandamdam"
         android:layout_width="wrap_content"
@@ -164,7 +133,7 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="201dp"
+        android:layout_width="337dp"
         android:layout_height="213dp"
         android:src="@drawable/tarsier_3d"
         android:visibility="visible"
@@ -172,7 +141,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.675" />
+        app:layout_constraintVertical_bias="0.691" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline31"
