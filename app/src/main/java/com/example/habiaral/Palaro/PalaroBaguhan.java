@@ -53,7 +53,7 @@ import androidx.core.content.ContextCompat;
 
 public class PalaroBaguhan extends AppCompatActivity {
 
-    private Button answer1, answer2, answer3, answer4, answer5, answer6, selectedAnswer;
+    private Button selectedAnswer;
     private TextView baguhanQuestion;
     private ProgressBar timerBar;
     private Button unlockButton, unlockButton1;
@@ -74,14 +74,10 @@ public class PalaroBaguhan extends AppCompatActivity {
     private ImageView[] heartIcons;
     private List<String> questionIds = new ArrayList<>();
     private long startTime;
-    private boolean husayUnlocked = false;
     private MediaPlayer mediaPlayer;
-    private MediaPlayer greenPlayer, orangePlayer, redPlayer;
     private String lastTimerZone = "";
     private Handler handler = new Handler();
     private Runnable loadLineRunnable, startCountdownRunnable;
-    private Handler countdownHandler;
-    private Runnable countdownRunnable;
     private Button[] answerButtons;
     public static final String LINE_START = "MCL1";
     public static final String LINE_ONE_CORRECT = "MCL2";
@@ -159,6 +155,7 @@ public class PalaroBaguhan extends AppCompatActivity {
         }
 
         unlockButton.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             if (isTimeUp || isAnswered) return;
 
             if (selectedAnswer != null) {
@@ -213,6 +210,7 @@ public class PalaroBaguhan extends AppCompatActivity {
         });
 
         unlockButton1.setOnLongClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             saveBaguhanScore();
             return true;
         });
@@ -225,10 +223,16 @@ public class PalaroBaguhan extends AppCompatActivity {
         });
 
         Button umalisButton = findViewById(R.id.UnlockButtonPalaro1);
-        umalisButton.setOnClickListener(v -> showExitConfirmationDialog());
+        umalisButton.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            showExitConfirmationDialog();
+        });
     }
 
     private void exitGame() {
+        if (isGameOver) return;
+        isGameOver = true;
+
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
@@ -237,9 +241,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         if (handler != null) {
             if (loadLineRunnable != null) handler.removeCallbacks(loadLineRunnable);
             if (startCountdownRunnable != null) handler.removeCallbacks(startCountdownRunnable);
-        }
-        if (countdownHandler != null && countdownRunnable != null) {
-            countdownHandler.removeCallbacks(countdownRunnable);
         }
 
         stopAllSounds();
@@ -250,8 +251,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         }
 
         saveBaguhanScore();
-
-        finish();
     }
 
 
@@ -790,10 +789,7 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         yesButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
-            if (countDownTimer != null) countDownTimer.cancel();
-            stopAllSounds();
-            TimerSoundUtils.stop();
-            if (tts != null) tts.stop();
+            exitGame();
             backDialog.dismiss();
             finish();
         });

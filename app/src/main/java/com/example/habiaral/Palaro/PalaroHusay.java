@@ -31,6 +31,7 @@ import android.speech.tts.TextToSpeech;
 import java.util.Locale;
 
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -99,7 +100,7 @@ public class PalaroHusay extends AppCompatActivity {
 
         Button btnUmalis = findViewById(R.id.UnlockButtonPalaro1);
         btnUmalis.setOnClickListener(v -> {
-            playButtonClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             showUmalisDialog();
         });
 
@@ -146,30 +147,33 @@ public class PalaroHusay extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         btnOo.setOnClickListener(v -> {
-            playButtonClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+
+            stopAllSounds();
+
             if (countDownTimer != null) countDownTimer.cancel();
-            if (tts != null) tts.stop();
             dialog.dismiss();
             finish();
         });
 
         btnHindi.setOnClickListener(v -> {
-            playButtonClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             dialog.dismiss();
         });
         dialog.show();
 
     }
-    @Override
-    public void onBackPressed() {
-        // 🎵 Play button_click.mp3 bago ipakita ang exit dialog
-        playButtonClickSound();
-        showUmalisDialog();
+
+    private void stopAllSounds() {
+        if (greenSound != null && greenSound.isPlaying()) greenSound.pause();
+        if (orangeSound != null && orangeSound.isPlaying()) orangeSound.pause();
+        if (redSound != null && redSound.isPlaying()) redSound.pause();
+        if (tts != null) tts.stop();
     }
 
     private void setupUnlockButton() {
         unlockButton.setOnClickListener(v -> {
-            playButtonClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             if (isTimeUp || isAnswered) return;
 
             String userAnswer = fullAnswerView.getText().toString().trim();
@@ -253,18 +257,13 @@ public class PalaroHusay extends AppCompatActivity {
                     });
         });
     }
-    private void playButtonClickSound() {
-        MediaPlayer clickSound = MediaPlayer.create(this, R.raw.button_click);
-        clickSound.setOnCompletionListener(MediaPlayer::release);
-        clickSound.start();
-    }
 
     private void setupAnswerSelection() {
         TextView[] answers = {answer1, answer2, answer3, answer4, answer5, answer6};
 
         for (TextView answer : answers) {
             answer.setOnClickListener(view -> {
-                playButtonClickSound();
+                SoundClickUtils.playClickSound(this, R.raw.button_click);
                 if (isTimeUp || isAnswered) return;
                 resetAnswerBackgrounds();
                 view.setBackgroundResource(R.drawable.answer_option_bg_selected);
@@ -303,13 +302,17 @@ public class PalaroHusay extends AppCompatActivity {
         Button noButton = backDialogView.findViewById(R.id.button6);
 
         yesButton.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             if (countDownTimer != null) countDownTimer.cancel();
             if (tts != null) tts.stop();
             backDialog.dismiss();
             finish();
         });
 
-        noButton.setOnClickListener(v -> backDialog.dismiss());
+        noButton.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            backDialog.dismiss();
+        });
 
         backDialog.show();
     }
@@ -350,7 +353,7 @@ public class PalaroHusay extends AppCompatActivity {
                                 answer.setEnabled(true);
 
                                 answer.setOnClickListener(view -> {
-                                    playButtonClickSound();
+                                    SoundClickUtils.playClickSound(this, R.raw.button_click);
                                     if (view.isEnabled()) {
                                         String current = fullAnswerView.getText().toString().trim();
                                         fullAnswerView.setText((current + " " + ((TextView) view).getText()).trim());
@@ -396,7 +399,6 @@ public class PalaroHusay extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadWords() {
-        // 🎵 Play ready_go_new.mp3
         MediaPlayer readyGoSound = MediaPlayer.create(this, R.raw.ready_go_new);
 
         final Handler countdownHandler = new Handler();
@@ -533,6 +535,7 @@ public class PalaroHusay extends AppCompatActivity {
 
         Button balik = showTotalPoints.findViewById(R.id.btn_balik);
         balik.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             dialog.dismiss();
             husayScore = 0;
             Intent resultIntent = new Intent();
