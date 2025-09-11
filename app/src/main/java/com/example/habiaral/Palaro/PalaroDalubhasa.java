@@ -321,8 +321,18 @@ public class PalaroDalubhasa extends AppCompatActivity {
                             spannable.setSpan(new ForegroundColorSpan(Color.RED), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
 
-                        dalubhasaInstruction.setText(spannable);
-                        new Handler().postDelayed(this::nextQuestion, 5000);
+                        // ipakita sa errorTooltip
+                        errorTooltip.setText(spannable);
+                        errorTooltip.setVisibility(View.VISIBLE);
+                        errorIcon.setVisibility(View.VISIBLE);
+
+// optional: auto-hide after ilang seconds
+                        new Handler().postDelayed(() -> {
+                            errorTooltip.setVisibility(View.GONE);
+                            errorIcon.setVisibility(View.GONE);
+                        }, 5000);
+
+                        new Handler().postDelayed(this::nextQuestion, 4000);
 
                     } catch (JSONException e) {
                         e.printStackTrace();

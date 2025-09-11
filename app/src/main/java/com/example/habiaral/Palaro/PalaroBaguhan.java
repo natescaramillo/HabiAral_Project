@@ -703,6 +703,10 @@ public class PalaroBaguhan extends AppCompatActivity {
         db.collection("baguhan").document(questionDocId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
+                    if (!questionIds.get(currentQuestionNumber).equals(questionDocId)) {
+                        // This result is stale, ignore it
+                        return;
+                    }
                     if (!documentSnapshot.exists()) {
                         finishQuiz();
                         return;
