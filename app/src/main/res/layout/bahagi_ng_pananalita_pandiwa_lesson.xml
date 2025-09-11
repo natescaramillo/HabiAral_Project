@@ -46,16 +46,17 @@
         <!-- Lesson Image -->
 
         <!-- Option bar with small icons -->
+
         <ImageView
             android:id="@+id/imageViewPandiwa"
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_margin="0dp"
-            android:scaleType="fitCenter"
+            android:scaleType="fitXY"
             android:src="@drawable/pandiwa01"
             app:layout_constraintBottom_toTopOf="@id/option_bar"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="@+id/guidelinehorizontal2" />
 
