@@ -41,13 +41,11 @@ public class PangHalipLesson extends AppCompatActivity {
     private boolean isLessonDone = false;
     private boolean isFirstTime = true;
     private TextToSpeech textToSpeech;
-    private TextView instructionText;
     private ImageView imageView;
     private Button unlockButton;
     private int currentPage = 0;
     private final boolean[] isFullScreen = {false};
     private ImageView backOption, nextOption;
-    private ConstraintLayout constraintLayout;
     private int resumePage = -1;
     private int resumeLine = -1;
     private boolean isNavigatingInsideApp = false;
@@ -59,15 +57,12 @@ public class PangHalipLesson extends AppCompatActivity {
 
         unlockButton = findViewById(R.id.UnlockButtonPanghalip);
         imageView = findViewById(R.id.imageViewPanghalip);
-        instructionText = findViewById(R.id.instructionText);
 
         backOption = findViewById(R.id.back_option);
         nextOption = findViewById(R.id.next_option);
 
         ImageView fullScreenOption = findViewById(R.id.full_screen_option);
         ImageView imageView2 = findViewById(R.id.imageView2);
-
-        constraintLayout = findViewById(R.id.instructionContainer);
 
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
@@ -100,8 +95,6 @@ public class PangHalipLesson extends AppCompatActivity {
                     fullScreenOption,
                     imageView,
                     imageView2,
-                    constraintLayout,
-                    instructionText,
                     unlockButton
             );
         });
@@ -158,18 +151,12 @@ public class PangHalipLesson extends AppCompatActivity {
                 "panghalip", currentPage, isLessonDone);
 
         stopSpeaking();
-
-        TextAnimationUtils.cancelAnimation(instructionText);
-
-        if (pageLines.containsKey(currentPage)) {
-            instructionText.setText("");
-            new android.os.Handler().postDelayed(() ->
-                    speakLines(pageLines.get(currentPage)), 500);
-        } else {
-            instructionText.setText("");
-        }
-
         updateNavigationButtons();
+
+        List<String> lines = pageLines.get(currentPage);
+        if (lines != null && !lines.isEmpty()) {
+            speakSequentialLines(lines, () -> {});
+        }
     }
 
     private void checkLessonStatus() {
@@ -236,8 +223,6 @@ public class PangHalipLesson extends AppCompatActivity {
         final int[] index = {0};
         String utterancePage = "page_" + currentPage;
 
-        TextAnimationUtils.animateText(instructionText, lines.get(0), 50);
-
         textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override public void onStart(String s) {}
             @Override public void onDone(String utteranceId) {
@@ -245,7 +230,6 @@ public class PangHalipLesson extends AppCompatActivity {
                     if (!utteranceId.startsWith(utterancePage)) return;
                     index[0]++;
                     if (index[0] < lines.size()) {
-                        TextAnimationUtils.animateText(instructionText, lines.get(index[0]), 50);
                         speak(lines.get(index[0]), utterancePage + "_" + index[0]);
                     } else onComplete.run();
                 });
@@ -254,10 +238,6 @@ public class PangHalipLesson extends AppCompatActivity {
         });
 
         speak(lines.get(0), utterancePage + "_0");
-    }
-
-    private void speakLines(List<String> lines) {
-        speakSequentialLines(lines, () -> instructionText.setText(""));
     }
 
     private void speak(String text, String id) {
@@ -283,7 +263,6 @@ public class PangHalipLesson extends AppCompatActivity {
     private void stopSpeaking() {
         if (textToSpeech != null) textToSpeech.stop();
         textHandler.removeCallbacksAndMessages(null);
-        TextAnimationUtils.cancelAnimation(instructionText);
     }
 
     private void stopTTS() {

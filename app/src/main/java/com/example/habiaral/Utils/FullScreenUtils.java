@@ -17,16 +17,12 @@ public class FullScreenUtils {
             ImageView fullScreenOption,
             ImageView imageView,
             ImageView imageView2,
-            ConstraintLayout instructionContainer,
-            TextView instructionText,
             Button unlockButton
     ) {
         if (!isFullScreen[0]) {
             if (activity.getActionBar() != null) activity.getActionBar().hide();
 
             unlockButton.setVisibility(View.GONE);
-            instructionContainer.setVisibility(View.GONE);
-            instructionText.setVisibility(View.GONE);
             imageView2.setVisibility(View.GONE);
 
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
@@ -45,8 +41,6 @@ public class FullScreenUtils {
             if (activity.getActionBar() != null) activity.getActionBar().show();
 
             unlockButton.setVisibility(View.VISIBLE);
-            instructionContainer.setVisibility(View.VISIBLE);
-            instructionText.setVisibility(View.VISIBLE);
             imageView2.setVisibility(View.VISIBLE);
 
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
