@@ -90,6 +90,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private boolean greenSound = false;
     private boolean redSound = false;
     private boolean orangeSound = false;
+    private ImageView errorIcon;
+    private TextView errorTooltip;
 
 
     @Override
@@ -116,6 +118,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
         timerBar = findViewById(R.id.timerBar);
         btnTapos = findViewById(R.id.UnlockButtonPalaro);
         Button btnUmalis = findViewById(R.id.UnlockButtonPalaro1);
+        errorIcon = findViewById(R.id.error_icon);
+        errorTooltip = findViewById(R.id.errorTooltip);
+
+
 
         btnUmalis.setOnClickListener(v -> {
             playButtonClickSound(); // 🎵 added
@@ -142,9 +148,12 @@ public class PalaroDalubhasa extends AppCompatActivity {
             if (!hasSubmitted) {
                 String sentence = userSentenceInput.getText().toString().trim();
                 if (sentence.isEmpty()) {
-                    Toast.makeText(this, "Pakisulat ang iyong pangungusap.", Toast.LENGTH_SHORT).show();
+                    showErrorTooltip("Pakisulat ang iyong pangungusap.");
+                    return;
+
                 } else if (!sentence.endsWith(".")) {
-                    Toast.makeText(this, "Siguraduhing nagtatapos ang pangungusap sa tuldok (.)", Toast.LENGTH_SHORT).show();
+
+                    showErrorTooltip("Siguraduhing nagtatapos ang pangungusap sa tuldok (.)");;
                 } else {
                     List<String> missingKeywords = new ArrayList<>();
                     for (String keyword : currentKeywords) {
@@ -154,14 +163,12 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     }
 
                     if (!missingKeywords.isEmpty()) {
-                        String reminder = "Wala ka ng kinakailangang bahagi sa iyong sagot. Pakibasa muli ang mga panuto.";
-                        Toast.makeText(this, reminder, Toast.LENGTH_LONG).show();
-                        speakLine(reminder); // ✅ TTS reminder
-
-                        // Ipakita rin ang specific na kulang (Toast lang, no TTS)
                         String details = "Kulang: " + String.join(", ", missingKeywords);
-                        Toast.makeText(this, details, Toast.LENGTH_LONG).show();
+                        errorIcon.setVisibility(View.VISIBLE);
+                        errorTooltip.setVisibility(View.VISIBLE);
+                        errorTooltip.setText(details);
 
+                        speakLine("Wala ka ng kinakailangang bahagi sa iyong sagot. Pakibasa muli ang mga panuto.");
                         loadCharacterLine(currentDalubhasaID);
                         return;
                     }
@@ -210,6 +217,19 @@ public class PalaroDalubhasa extends AppCompatActivity {
             }
         });
     }
+
+    private void showErrorTooltip(String message) {
+        errorTooltip.setText(message); // set custom error text
+        errorIcon.setVisibility(View.VISIBLE);
+        errorTooltip.setVisibility(View.VISIBLE);
+
+        // Auto-hide after 2 seconds
+        new android.os.Handler().postDelayed(() -> {
+            errorTooltip.setVisibility(View.GONE);
+            errorIcon.setVisibility(View.GONE);
+        }, 2000);
+    }
+
 
     private void showUmalisDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PalaroDalubhasa.this);

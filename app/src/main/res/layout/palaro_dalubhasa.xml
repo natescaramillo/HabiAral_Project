@@ -97,7 +97,7 @@
 
             <ImageView
                 android:id="@+id/heart05"
-                android:layout_width="44dp"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="4dp"
                 app:srcCompat="@drawable/design_heart" />
@@ -126,10 +126,10 @@
             android:padding="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
-            app:layout_constraintHorizontal_bias="0.073"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline12"
             app:layout_constraintTop_toTopOf="@+id/heartsRow"
-            app:layout_constraintVertical_bias="0.578" />
+            app:layout_constraintVertical_bias="0.573" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline12"
@@ -215,6 +215,34 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.949" />
 
+        <ImageView
+            android:id="@+id/error_icon"
+            android:layout_width="23dp"
+            android:layout_height="22dp"
+            android:src="@drawable/exclamation_mark"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/dalubhasa_answer"
+            app:layout_constraintEnd_toEndOf="@+id/dalubhasa_answer"
+            app:layout_constraintHorizontal_bias="0.941"
+            app:layout_constraintStart_toStartOf="@+id/dalubhasa_answer"
+            app:layout_constraintTop_toTopOf="@+id/dalubhasa_answer"
+            app:layout_constraintVertical_bias="0.126" />
+
+        <TextView
+            android:id="@+id/errorTooltip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content "
+            android:background="@drawable/tooltip_bubble"
+            android:padding="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:visibility= "gone"
+            app:layout_constraintBottom_toTopOf="@+id/error_icon"
+            app:layout_constraintEnd_toStartOf="@+id/guideline13"
+            app:layout_constraintHorizontal_bias="0.909"
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
