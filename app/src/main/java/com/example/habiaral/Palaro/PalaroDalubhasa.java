@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -92,6 +93,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private boolean orangeSound = false;
     private ImageView errorIcon;
     private TextView errorTooltip;
+
+    private MediaPlayer greenTimerSoundPlayer;
+    private MediaPlayer orangeTimerSoundPlayer;
+    private MediaPlayer redTimerSoundPlayer;
+    private String lastTimerZone = "";
 
 
     @Override
@@ -444,7 +450,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private void showCountdownThenLoadInstruction() {
         // 🎵 1. Play ready_go_new.mp3
-        MediaPlayer readyGoSound = MediaPlayer.create(this, R.raw.ready_go_new);
+        MediaPlayer readyGoSound = MediaPlayer.create(this, R.raw.start_3tones);
 
         // Handler para sa countdown text
         final Handler countdownHandler = new Handler();
@@ -458,7 +464,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     countdown[0]--;
                     countdownHandler.postDelayed(this, 1000);
                 } else {
-                    // matapos ang 1 → gawing blanko habang tumutunog pa
                     dalubhasaInstruction.setText("");
                 }
             }
@@ -486,31 +491,12 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(percent);
 
-                // Sound triggers flags to avoid repeating sounds
                 if (percent <= 25) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_red));
-                    if (!redSound) {
-                        playTimerSound(R.raw.red_timer);
-                        redSound = true;
-                        greenSound = false;
-                        orangeSound = false;
-                    }
+                    updateTimerZone("RED", R.drawable.timer_color_red, R.raw.red_timer);
                 } else if (percent <= 50) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_orange));
-                    if (!orangeSound) {
-                        playTimerSound(R.raw.orange_timer);
-                        orangeSound = true;
-                        greenSound = false;
-                        redSound = false;
-                    }
+                    updateTimerZone("ORANGE", R.drawable.timer_color_orange, R.raw.orange_timer);
                 } else {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_green));
-                    if (!greenSound) {
-                        playTimerSound(R.raw.green_timer);
-                        greenSound = true;
-                        orangeSound = false;
-                        redSound = false;
-                    }
+                    updateTimerZone("GREEN", R.drawable.timer_color_green, R.raw.green_timer);
                 }
             }
 
@@ -520,6 +506,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
 
+                // Stop all timer sounds
+                stopAllTimerSounds();
+
                 loadCharacterLine("MCL5");
                 saveDalubhasaScore();
                 finishQuiz();
@@ -527,13 +516,43 @@ public class PalaroDalubhasa extends AppCompatActivity {
         }.start();
     }
 
-    // Helper method
-    private void playTimerSound(int soundResId) {
-        MediaPlayer mp = MediaPlayer.create(this, soundResId);
-        mp.setOnCompletionListener(MediaPlayer::release);
-        mp.start();
+    private void updateTimerZone(String zone, int drawableRes, int soundRes) {
+        if (!lastTimerZone.equals(zone)) {
+            stopAllTimerSounds();
+            timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, drawableRes));
+            playTimerSound(soundRes);
+            lastTimerZone = zone;
+        }
     }
 
+    private void stopAllTimerSounds() {
+        if (greenTimerSoundPlayer != null) { greenTimerSoundPlayer.stop(); greenTimerSoundPlayer.release(); greenTimerSoundPlayer = null; }
+        if (orangeTimerSoundPlayer != null) { orangeTimerSoundPlayer.stop(); orangeTimerSoundPlayer.release(); orangeTimerSoundPlayer = null; }
+        if (redTimerSoundPlayer != null) { redTimerSoundPlayer.stop(); redTimerSoundPlayer.release(); redTimerSoundPlayer = null; }
+
+        greenSound = false;
+        orangeSound = false;
+        redSound = false;
+    }
+
+    private void playTimerSound(int soundResId) {
+        stopAllTimerSounds();
+
+        MediaPlayer mp = MediaPlayer.create(this, soundResId);
+
+        if (soundResId == R.raw.green_timer) greenTimerSoundPlayer = mp;
+        else if (soundResId == R.raw.orange_timer) orangeTimerSoundPlayer = mp;
+        else if (soundResId == R.raw.red_timer) redTimerSoundPlayer = mp;
+
+        mp.setOnCompletionListener(mediaPlayer -> {
+            mediaPlayer.release();
+            if (soundResId == R.raw.green_timer) greenTimerSoundPlayer = null;
+            else if (soundResId == R.raw.orange_timer) orangeTimerSoundPlayer = null;
+            else if (soundResId == R.raw.red_timer) redTimerSoundPlayer = null;
+        });
+
+        mp.start();
+    }
 
     private void finishQuiz() {
         if (isGameOver) return;
@@ -856,5 +875,30 @@ public class PalaroDalubhasa extends AppCompatActivity {
         mp.setOnCompletionListener(MediaPlayer::release);
         mp.start();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (greenTimerSoundPlayer != null) greenTimerSoundPlayer.setVolume(0f, 0f);
+        if (orangeTimerSoundPlayer != null) orangeTimerSoundPlayer.setVolume(0f, 0f);
+        if (redTimerSoundPlayer != null) redTimerSoundPlayer.setVolume(0f, 0f);
+
+        TimerSoundUtils.setVolume(0f);
+
+        if (tts != null) tts.stop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (greenTimerSoundPlayer != null) greenTimerSoundPlayer.setVolume(1f, 1f);
+        if (orangeTimerSoundPlayer != null) orangeTimerSoundPlayer.setVolume(1f, 1f);
+        if (redTimerSoundPlayer != null) redTimerSoundPlayer.setVolume(1f, 1f);
+
+        TimerSoundUtils.setVolume(0.2f);
+    }
+
 
 }
