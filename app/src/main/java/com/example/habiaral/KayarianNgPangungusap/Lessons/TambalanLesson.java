@@ -13,11 +13,10 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.KayarianNgPangungusap.Quiz.TambalanQuiz;
 import com.example.habiaral.R;
-import com.example.habiaral.Utils.DialogUtils;
+import com.example.habiaral.Utils.ResumeDialogUtils;
 import com.example.habiaral.Utils.KayarianFirestoreUtils;
 import com.example.habiaral.Utils.FullScreenUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
@@ -278,7 +277,7 @@ public class TambalanLesson extends AppCompatActivity {
     }
 
     private void showResumeDialog(int checkpoint) {
-        AlertDialog dialog = DialogUtils.showResumeDialog(this, new DialogUtils.ResumeDialogListener() {
+        AlertDialog dialog = ResumeDialogUtils.showResumeDialog(this, new ResumeDialogUtils.ResumeDialogListener() {
             @Override public void onResumeLesson() {
                 currentPage = checkpoint;
                 updatePage();

@@ -7,7 +7,7 @@ import android.widget.Button;
 
 import com.example.habiaral.R;
 
-public class DialogUtils {
+public class ResumeDialogUtils {
 
     public interface ResumeDialogListener {
         void onResumeLesson();

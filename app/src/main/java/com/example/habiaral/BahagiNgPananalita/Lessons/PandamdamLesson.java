@@ -16,7 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PandamdamQuiz;
 import com.example.habiaral.R;
-import com.example.habiaral.Utils.DialogUtils;
+import com.example.habiaral.Utils.ResumeDialogUtils;
 import com.example.habiaral.Utils.BahagiFirestoreUtils;
 import com.example.habiaral.Utils.FullScreenUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
@@ -266,7 +266,7 @@ public class PandamdamLesson extends AppCompatActivity {
     }
 
     private void showResumeDialog(int checkpoint) {
-        AlertDialog dialog = DialogUtils.showResumeDialog(this, new DialogUtils.ResumeDialogListener() {
+        AlertDialog dialog = ResumeDialogUtils.showResumeDialog(this, new ResumeDialogUtils.ResumeDialogListener() {
             @Override public void onResumeLesson() {
                 currentPage = checkpoint;
                 updatePage();

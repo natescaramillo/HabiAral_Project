@@ -45,7 +45,7 @@ public class Palaro extends AppCompatActivity {
     int userPoints;
     int userEnergy;
 
-    final int ENERGY_COST = 20;
+    final int ENERGY_COST = 0;
     final int ENERGY_MAX = 100;
     final long ENERGY_INTERVAL = 3 * 60 * 1000;
 

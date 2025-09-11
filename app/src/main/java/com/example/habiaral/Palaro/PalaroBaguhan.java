@@ -29,10 +29,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.FinishDialogUtils;
+import com.example.habiaral.Utils.SoundClickUtils;
+import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -40,6 +45,7 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.ContextCompat;
@@ -76,6 +82,20 @@ public class PalaroBaguhan extends AppCompatActivity {
     private Runnable loadLineRunnable, startCountdownRunnable;
     private Handler countdownHandler;
     private Runnable countdownRunnable;
+    private Button[] answerButtons;
+    public static final String LINE_START = "MCL1";
+    public static final String LINE_ONE_CORRECT = "MCL2";
+    public static final String LINE_TWO_CORRECT = "MCL3";
+    public static final String LINE_STREAK = "MCL4";
+    public static final String LINE_WRONG = "MCL6";
+    private static final String LINE_WRONG_2 = "MCL5";
+    private static final String FIELD_BAGUHAN = "baguhan_score";
+    private static final String FIELD_HUSAY = "husay_score";
+    private static final String FIELD_DALUBHASA = "dalubhasa_score";
+    private static final String FIELD_TOTAL = "total_score";
+
+    private static final String FIELD_HUSAY_UNLOCKED = "husay_unlocked";
+    private static final String FIELD_DALUBHASA_UNLOCKED = "dalubhasa_unlocked";
 
 
     @Override
@@ -88,8 +108,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                 tts.setLanguage(new Locale("fil", "PH"));
                 tts.setSpeechRate(1.3f);
 
-                // save Runnables para ma-cancel sa exit
-                loadLineRunnable = () -> loadCharacterLine("MCL1");
+                loadLineRunnable = () -> loadCharacterLine(LINE_START);
                 startCountdownRunnable = this::showCountdownThenLoadQuestion;
 
                 handler.postDelayed(loadLineRunnable, 300);
@@ -101,12 +120,16 @@ public class PalaroBaguhan extends AppCompatActivity {
         if (currentUser != null) studentID = currentUser.getUid();
 
         baguhanQuestion = findViewById(R.id.baguhan_instructionText);
-        answer1 = findViewById(R.id.baguhan_answer1);
-        answer2 = findViewById(R.id.baguhan_answer2);
-        answer3 = findViewById(R.id.baguhan_answer3);
-        answer4 = findViewById(R.id.baguhan_answer4);
-        answer5 = findViewById(R.id.baguhan_answer5);
-        answer6 = findViewById(R.id.baguhan_answer6);
+
+        answerButtons = new Button[]{
+                findViewById(R.id.baguhan_answer1),
+                findViewById(R.id.baguhan_answer2),
+                findViewById(R.id.baguhan_answer3),
+                findViewById(R.id.baguhan_answer4),
+                findViewById(R.id.baguhan_answer5),
+                findViewById(R.id.baguhan_answer6)
+        };
+
         timerBar = findViewById(R.id.timerBar);
         unlockButton = findViewById(R.id.UnlockButtonPalaro);
         unlockButton1 = findViewById(R.id.UnlockButtonPalaro1);
@@ -131,7 +154,7 @@ public class PalaroBaguhan extends AppCompatActivity {
             selectedAnswer = (Button) view;
         };
 
-        for (Button btn : new Button[]{answer1, answer2, answer3, answer4, answer5, answer6}) {
+        for (Button btn : answerButtons) {
             btn.setOnClickListener(answerClickListener);
         }
 
@@ -171,7 +194,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                                     wrongSound.setOnCompletionListener(MediaPlayer::release);
                                     wrongSound.start();
 
-                                    loadCharacterLine(remainingHearts > 0 ? "MCL6" : "MCL5");
+                                    loadCharacterLine(remainingHearts > 0 ? LINE_WRONG : LINE_WRONG_2);
                                     Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -220,7 +243,7 @@ public class PalaroBaguhan extends AppCompatActivity {
         }
 
         stopAllSounds();
-        stopTimerSounds();
+        TimerSoundUtils.stop();
 
         if (tts != null) {
             tts.stop();
@@ -233,9 +256,9 @@ public class PalaroBaguhan extends AppCompatActivity {
 
 
     private void handleCorrectStreak(int streak) {
-        if (streak == 1) loadCharacterLine("MCL2");
-        else if (streak == 2) loadCharacterLine("MCL3");
-        else if (streak >= 3) loadCharacterLine("MCL4");
+        if (streak == 1) loadCharacterLine(LINE_ONE_CORRECT);
+        else if (streak == 2) loadCharacterLine(LINE_TWO_CORRECT);
+        else if (streak >= 3) loadCharacterLine(LINE_STREAK);
     }
 
     private void finishQuiz() {
@@ -246,7 +269,7 @@ public class PalaroBaguhan extends AppCompatActivity {
             countDownTimer.cancel();
         }
         if (tts != null) tts.stop();
-        stopTimerSounds();
+        TimerSoundUtils.stop();
 
         saveBaguhanScore();
         unlockAchievementA8IfEligible();
@@ -255,53 +278,18 @@ public class PalaroBaguhan extends AppCompatActivity {
         showFinishDialog();
     }
 
-    private void stopTimerSounds() {
-        if (greenPlayer != null) {
-            if (greenPlayer.isPlaying()) greenPlayer.stop();
-            greenPlayer.release();
-            greenPlayer = null;
-        }
-        if (orangePlayer != null) {
-            if (orangePlayer.isPlaying()) orangePlayer.stop();
-            orangePlayer.release();
-            orangePlayer = null;
-        }
-        if (redPlayer != null) {
-            if (redPlayer.isPlaying()) redPlayer.stop();
-            redPlayer.release();
-            redPlayer = null;
-        }
-    }
-
     private void showFinishDialog() {
-        View view = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
-        AlertDialog dialog = new AlertDialog.Builder(PalaroBaguhan.this)
-                .setView(view)
-                .setCancelable(false)
-                .create();
-        dialog.show();
-
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        }
-
-        TextView titleText = view.findViewById(R.id.textView11);
-        TextView scoreText = view.findViewById(R.id.scoreText);
-        scoreText.setText(String.valueOf(baguhanScore));
-
-        titleText.setText(getFinishMessage());
+        String message = getFinishMessage();
+        FinishDialogUtils.showFinishDialog(this, baguhanScore, message, () -> {
+            if (!isFinishing()) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("baguhanPoints", baguhanScore);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            }
+        });
 
         playGameOverSound();
-
-        Button balik = view.findViewById(R.id.btn_balik);
-        balik.setOnClickListener(v -> {
-            playClickSound();
-            dialog.dismiss();
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("baguhanPoints", baguhanScore);
-            setResult(RESULT_OK, resultIntent);
-            finish();
-        });
     }
 
     private String getFinishMessage() {
@@ -516,59 +504,43 @@ public class PalaroBaguhan extends AppCompatActivity {
         DocumentReference docRef = db.collection("minigame_progress").document(uid);
 
         Map<String, Object> updates = new HashMap<>();
-        updates.put("baguhan_score", com.google.firebase.firestore.FieldValue.increment(baguhanScore));
-        updates.put("total_score", com.google.firebase.firestore.FieldValue.increment(baguhanScore));
+        updates.put(FIELD_BAGUHAN, FieldValue.increment(baguhanScore));
+        updates.put(FIELD_TOTAL, FieldValue.increment(baguhanScore));
 
-        docRef.set(updates, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    baguhanScore = 0;
+        docRef.set(updates, SetOptions.merge()).addOnSuccessListener(aVoid -> {
+            baguhanScore = 0;
 
-                    docRef.get().addOnSuccessListener(snapshot -> {
-                        int baguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
-                        int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
-                        int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
+            docRef.get().addOnSuccessListener(snapshot -> {
+                int baguhan = getScore(snapshot, FIELD_BAGUHAN);
+                int husay = getScore(snapshot, FIELD_HUSAY);
+                int dalubhasa = getScore(snapshot, FIELD_DALUBHASA);
 
-                        int totalScore = baguhan + husay + dalubhasa;
+                int totalScore = baguhan + husay + dalubhasa;
 
-                        if (totalScore >= 400) unlockHusay(docRef);
-                        if (totalScore >= 800) unlockDalubhasa(docRef);
-                    });
-                });
-    }
-
-    private void unlockHusay(DocumentReference docRef) {
-        if (husayUnlocked) return;
-        husayUnlocked = true;
-
-        docRef.get().addOnSuccessListener(snapshot -> {
-            boolean alreadyUnlocked = snapshot.contains("husay_unlocked") && snapshot.getBoolean("husay_unlocked");
-            if (!alreadyUnlocked) {
-                Map<String, Object> updates = new HashMap<>();
-                updates.put("husay_unlocked", true);
-
-                docRef.set(updates, SetOptions.merge())
-                        .addOnSuccessListener(aVoid -> {
-                            if (countDownTimer != null) countDownTimer.cancel();
-                            if (tts != null) tts.stop();
-                            Toast.makeText(this, "Nabuksan na ang Husay!", Toast.LENGTH_LONG).show();
-                        });
-            }
+                checkAndUnlock(docRef, totalScore, 400, FIELD_HUSAY_UNLOCKED, "Nabuksan na ang Husay!");
+                checkAndUnlock(docRef, totalScore, 800, FIELD_DALUBHASA_UNLOCKED, "Nabuksan na ang Dalubhasa!");
+            });
         });
     }
 
-    private void unlockDalubhasa(DocumentReference docRef) {
+    private int getScore(DocumentSnapshot snapshot, String field) {
+        return snapshot.contains(field) ? snapshot.getLong(field).intValue() : 0;
+    }
+
+    private void checkAndUnlock(DocumentReference docRef, int totalScore, int threshold, String unlockField, String message) {
+        if (totalScore < threshold) return;
+
         docRef.get().addOnSuccessListener(snapshot -> {
-            boolean alreadyUnlocked = snapshot.contains("dalubhasa_unlocked") && snapshot.getBoolean("dalubhasa_unlocked");
+            boolean alreadyUnlocked = snapshot.contains(unlockField) && Boolean.TRUE.equals(snapshot.getBoolean(unlockField));
             if (!alreadyUnlocked) {
                 Map<String, Object> updates = new HashMap<>();
-                updates.put("dalubhasa_unlocked", true);
+                updates.put(unlockField, true);
 
-                docRef.set(updates, SetOptions.merge())
-                        .addOnSuccessListener(aVoid -> {
-                            if (countDownTimer != null) countDownTimer.cancel();
-                            if (tts != null) tts.stop();
-                            Toast.makeText(this, "Nabuksan na ang Dalubhasa!", Toast.LENGTH_LONG).show();
-                        });
+                docRef.set(updates, SetOptions.merge()).addOnSuccessListener(aVoid -> {
+                    if (countDownTimer != null) countDownTimer.cancel();
+                    if (tts != null) tts.stop();
+                    Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                });
             }
         });
     }
@@ -587,7 +559,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                 currentQuestionNumber = 0;
 
                 if (beepPlayer == null) {
-                    beepPlayer = MediaPlayer.create(this, R.raw.ready_start);
+                    beepPlayer = MediaPlayer.create(this, R.raw.ready_go_new);
                 }
 
                 final Handler countdownHandler = new Handler();
@@ -630,26 +602,11 @@ public class PalaroBaguhan extends AppCompatActivity {
                 timerBar.setProgress(percent);
 
                 if (percent <= 25) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.timer_color_red));
-                    if (!lastTimerZone.equals("RED")) {
-                        stopTimerSounds();
-                        playRedTimerSound();
-                        lastTimerZone = "RED";
-                    }
+                    updateTimerZone("RED", R.drawable.timer_color_red, R.raw.red_timer);
                 } else if (percent <= 50) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.timer_color_orange));
-                    if (!lastTimerZone.equals("ORANGE")) {
-                        stopTimerSounds();
-                        playOrangeTimerSound();
-                        lastTimerZone = "ORANGE";
-                    }
+                    updateTimerZone("ORANGE", R.drawable.timer_color_orange, R.raw.orange_timer);
                 } else {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, R.drawable.timer_color_green));
-                    if (!lastTimerZone.equals("GREEN")) {
-                        stopTimerSounds();
-                        playGreenTimerSound();
-                        lastTimerZone = "GREEN";
-                    }
+                    updateTimerZone("GREEN", R.drawable.timer_color_green, R.raw.green_timer);
                 }
             }
 
@@ -658,20 +615,22 @@ public class PalaroBaguhan extends AppCompatActivity {
                 timerBar.setProgress(0);
                 isTimeUp = true;
                 disableAnswerSelection();
-
-                // 👉 magsasalita si MCL5 kapag ubos oras
-                loadCharacterLine("MCL5");
-
-                // ❌ huwag munang i-stop ang TTS dito para hindi maputol ang boses
-                stopTimerSounds();
-
-                // 👉 sabay palabasin ang Game Over dialog
+                loadCharacterLine(LINE_WRONG_2);
+                TimerSoundUtils.stop();
                 finishQuiz();
             }
 
         }.start();
     }
 
+    private void updateTimerZone(String zone, int drawableRes, int soundRes) {
+        if (!lastTimerZone.equals(zone)) {
+            TimerSoundUtils.stop();
+            timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroBaguhan.this, drawableRes));
+            TimerSoundUtils.playTimerSound(PalaroBaguhan.this, soundRes, null);
+            lastTimerZone = zone;
+        }
+    }
 
     private void resetForNextQuestion() {
         isAnswered = false;
@@ -682,23 +641,18 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void resetAnswerBackgrounds() {
-        answer1.setBackgroundResource(R.drawable.answer_option_bg);
-        answer2.setBackgroundResource(R.drawable.answer_option_bg);
-        answer3.setBackgroundResource(R.drawable.answer_option_bg);
-        answer4.setBackgroundResource(R.drawable.answer_option_bg);
-        answer5.setBackgroundResource(R.drawable.answer_option_bg);
-        answer6.setBackgroundResource(R.drawable.answer_option_bg);
+        for (Button btn : answerButtons) {
+            btn.setBackgroundResource(R.drawable.answer_option_bg);
+        }
     }
 
     private void disableAnswerSelection() {
-        answer1.setOnClickListener(null);
-        answer2.setOnClickListener(null);
-        answer3.setOnClickListener(null);
-        answer4.setOnClickListener(null);
-        answer5.setOnClickListener(null);
-        answer6.setOnClickListener(null);
+        for (Button btn : answerButtons) {
+            btn.setOnClickListener(null);
+        }
         unlockButton.setEnabled(false);
     }
+
 
     private void deductHeart() {
         if (remainingHearts > 0) {
@@ -735,8 +689,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         }
     }
 
-    //  Wala na ang speakText() dito, hindi na magsasalita ang tanong
-
     private void loadBaguhanQuestion() {
         if (isGameOver) return;
         startTime = System.currentTimeMillis();
@@ -769,33 +721,22 @@ public class PalaroBaguhan extends AppCompatActivity {
                             }
                         }
                     }
-                    //EDITED
 
                     if (question != null) {
                         runOnUiThread(() -> {
                             baguhanQuestion.setText(question);
-                            // Wala na ang speakText() dito, hindi na magsasalita ang tanong
-
                         });
                     }
 
-                    if (choices.size() >= 6) {
+                    if (choices.size() >= answerButtons.length) {
                         runOnUiThread(() -> {
-                            answer1.setVisibility(View.VISIBLE);
-                            answer2.setVisibility(View.VISIBLE);
-                            answer3.setVisibility(View.VISIBLE);
-                            answer4.setVisibility(View.VISIBLE);
-                            answer5.setVisibility(View.VISIBLE);
-                            answer6.setVisibility(View.VISIBLE);
-
-                            answer1.setText(choices.get(0));
-                            answer2.setText(choices.get(1));
-                            answer3.setText(choices.get(2));
-                            answer4.setText(choices.get(3));
-                            answer5.setText(choices.get(4));
-                            answer6.setText(choices.get(5));
+                            for (int i = 0; i < answerButtons.length; i++) {
+                                answerButtons[i].setVisibility(View.VISIBLE);
+                                answerButtons[i].setText(choices.get(i));
+                            }
                         });
                     }
+
                     isAnswered = false;
                     selectedAnswer = null;
                     resetAnswerBackgrounds();
@@ -823,6 +764,7 @@ public class PalaroBaguhan extends AppCompatActivity {
             tts.shutdown();
             tts = null;
         }
+        TimerSoundUtils.stop();
         super.onDestroy();
     }
 
@@ -833,7 +775,6 @@ public class PalaroBaguhan extends AppCompatActivity {
     }
 
     private void showExitConfirmationDialog() {
-        playClickSound();
         View backDialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
         AlertDialog backDialog = new AlertDialog.Builder(this)
                 .setView(backDialogView)
@@ -848,29 +789,23 @@ public class PalaroBaguhan extends AppCompatActivity {
         Button noButton = backDialogView.findViewById(R.id.button6);
 
         yesButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             if (countDownTimer != null) countDownTimer.cancel();
             stopAllSounds();
-            stopTimerSounds();
+            TimerSoundUtils.stop();
             if (tts != null) tts.stop();
             backDialog.dismiss();
             finish();
         });
 
         noButton.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             backDialog.dismiss();
         });
 
         backDialog.show();
     }
-    private void playClickSound() {
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
-        mediaPlayer = MediaPlayer.create(this, R.raw.button_click);
-        mediaPlayer.setOnCompletionListener(mp -> mp.release());
-        mediaPlayer.start();
-    }
+
     private void playGameOverSound() {
         if (mediaPlayer != null) {
             mediaPlayer.release();
@@ -879,57 +814,16 @@ public class PalaroBaguhan extends AppCompatActivity {
         mediaPlayer.setOnCompletionListener(MediaPlayer::release);
         mediaPlayer.start();
     }
-    private void playGreenTimerSound() {
-        if (greenPlayer == null) {
-            greenPlayer = MediaPlayer.create(this, R.raw.green_timer);
-            greenPlayer.setVolume(0.2f, 0.2f);
-            greenPlayer.setOnCompletionListener(mp -> {
-                mp.release();
-                greenPlayer = null;
-            });
-            greenPlayer.start();
-        }
-    }
-
-    private void playOrangeTimerSound() {
-        if (orangePlayer == null) {
-            orangePlayer = MediaPlayer.create(this, R.raw.orange_timer);
-            orangePlayer.setVolume(0.2f, 0.2f);
-            orangePlayer.setOnCompletionListener(mp -> {
-                mp.release();
-                orangePlayer = null;
-            });
-            orangePlayer.start();
-        }
-    }
-
-    private void playRedTimerSound() {
-        if (redPlayer == null) {
-            redPlayer = MediaPlayer.create(this, R.raw.red_timer);
-            redPlayer.setVolume(0.2f, 0.2f);
-            redPlayer.setOnCompletionListener(mp -> {
-                mp.release();
-                redPlayer = null;
-            });
-            redPlayer.start();
-        }
-    }
-
-    private void playReadyStartSound() {
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
-        mediaPlayer = MediaPlayer.create(this, R.raw.ready_start);
-        mediaPlayer.setVolume(0.6f, 0.6f);
-        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-        mediaPlayer.start();
-    }
 
     @Override
-    public void onBackPressed() {
-        // 🎵 Play button_click.mp3 bago ipakita ang exit dialog
-        playClickSound();
-        showExitConfirmationDialog();
+    protected void onPause() {
+        super.onPause();
+        stopAllSounds();
+        TimerSoundUtils.stop();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        if (tts != null) tts.stop();
     }
 
 }
