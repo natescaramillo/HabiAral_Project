@@ -10,27 +10,10 @@
     tools:context=".Activity.PalaroHusay">
 
 
-    <TextView
-        android:id="@+id/husay_instructionText"
-        android:layout_width="337dp"
-        android:layout_height="127dp"
-        android:layout_marginTop="48dp"
-        android:layout_weight="1"
-        android:background="@drawable/rounded_rect"
-        android:backgroundTint="#FFEFEA"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
         android:id="@+id/characterIcon"
-        android:layout_width="270dp"
-        android:layout_height="163dp"
+        android:layout_width="355dp"
+        android:layout_height="224dp"
         android:layout_marginTop="4dp"
         android:src="@drawable/tarsier_3d"
         app:layout_constraintBottom_toTopOf="@+id/guideline22"
@@ -38,7 +21,7 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.378" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomBar"
