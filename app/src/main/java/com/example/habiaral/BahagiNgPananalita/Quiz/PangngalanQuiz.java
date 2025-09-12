@@ -67,6 +67,9 @@ public class PangngalanQuiz extends AppCompatActivity {
     private int currentStreamId = -1;
     private MediaPlayer readyPlayer;
 
+    private List<Map<String, Object>> allQuizList = new ArrayList<>();
+
+
 
 
 
@@ -223,10 +226,17 @@ public class PangngalanQuiz extends AppCompatActivity {
                     if (doc.exists()) {
                         introText = doc.getString("intro");
                         lessonName = doc.getString("lesson");
-                        quizList = (List<Map<String, Object>>) doc.get("Quizzes");
 
-                        if (quizList != null && !quizList.isEmpty()) {
-                            Collections.shuffle(quizList);
+                        // Kunin lahat ng tanong
+                        allQuizList = (List<Map<String, Object>>) doc.get("Quizzes");
+
+                        if (allQuizList != null && !allQuizList.isEmpty()) {
+                            // Shuffle lahat muna
+                            Collections.shuffle(allQuizList);
+
+                            // First attempt: 10 questions lang
+                            int limit = Math.min(10, allQuizList.size());
+                            quizList = new ArrayList<>(allQuizList.subList(0, limit));
                         }
 
                         if (introText != null) {
@@ -238,6 +248,7 @@ public class PangngalanQuiz extends AppCompatActivity {
                 }).addOnFailureListener(e ->
                         Toast.makeText(this, "Failed to load quiz data.", Toast.LENGTH_SHORT).show());
     }
+
 
     private void loadQuestion(int index) {
         if (countDownTimer != null) countDownTimer.cancel();
@@ -502,8 +513,11 @@ public class PangngalanQuiz extends AppCompatActivity {
         isAnswered = false;
         quizFinished = false;
 
-        if (quizList != null && !quizList.isEmpty()) {
-            Collections.shuffle(quizList);
+        if (allQuizList != null && !allQuizList.isEmpty()) {
+            // Shuffle lahat ulit at kunin ulit ang 10 bago mag-retry
+            Collections.shuffle(allQuizList);
+            int limit = Math.min(10, allQuizList.size());
+            quizList = new ArrayList<>(allQuizList.subList(0, limit));
         } else {
             Toast.makeText(this, "Walang mga tanong, subukang i-restart ang app.", Toast.LENGTH_LONG).show();
             finish();
@@ -520,6 +534,7 @@ public class PangngalanQuiz extends AppCompatActivity {
 
         loadQuestion(currentIndex);
     }
+
 
     private void navigateToLesson(Class<?> lessonActivityClass) {
         if (countDownTimer != null) {
