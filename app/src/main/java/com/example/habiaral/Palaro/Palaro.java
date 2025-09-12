@@ -470,8 +470,8 @@ public class Palaro extends AppCompatActivity {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
 
-        Button btnIsara = dialogView.findViewById(R.id.btn_isara);
-        btnIsara.setOnClickListener(v -> {
+        ImageView imgIsara = dialogView.findViewById(R.id.img_Isara);
+        imgIsara.setOnClickListener(v -> {
             playClickSound(); // 🔊 tutunog pag-click
             dialog.dismiss(); // ❌ isara dialog
         });

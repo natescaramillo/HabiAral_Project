@@ -40,6 +40,18 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/img_Isara"
+                android:layout_width="27dp"
+                android:layout_height="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.953"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.444"
+                app:srcCompat="@drawable/design_x_close" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Scrollable Content (below highlight) -->
@@ -114,7 +126,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/special"
-                        android:text="Husay"
+                        android:text="Husay (400 na puntos)"
                         android:textColor="#fff"
                         android:textSize="15sp"
                         app:layout_constraintTop_toTopOf="parent"
@@ -152,7 +164,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/special"
-                        android:text="Dalubhasa"
+                        android:text="Dalubhasa(800 na puntos)"
                         android:textColor="#fff"
                         android:textSize="15sp"
                         app:layout_constraintTop_toTopOf="parent"
@@ -178,15 +190,6 @@
 
 
                 <!-- Button moved here -->
-                <Button
-                    android:id="@+id/btn_isara"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/button_color"
-                    android:fontFamily="@font/special"
-                    android:text="Isara"
-                    android:textColor="#FFFFFF" />
 
             </LinearLayout>
         </ScrollView>

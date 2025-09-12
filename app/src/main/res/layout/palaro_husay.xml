@@ -180,7 +180,7 @@
                 android:background="@drawable/answer_option_bg"
                 android:fontFamily="@font/special"
                 android:gravity="center"
-                android:textSize="15sp" />
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/husay_answer4"
