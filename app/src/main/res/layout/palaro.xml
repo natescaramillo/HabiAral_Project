@@ -319,11 +319,11 @@
                 android:id="@+id/trophy_image"
                 android:layout_width="256dp"
                 android:layout_height="183dp"
-                android:layout_marginStart="172dp"
+                android:layout_marginStart="156dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline"
                 app:layout_constraintTop_toTopOf="@+id/guideline3"
-                app:layout_constraintVertical_bias="0.029"
+                app:layout_constraintVertical_bias="0.025"
                 app:srcCompat="@drawable/trophy_unranked" />
 
             <androidx.constraintlayout.widget.Guideline
