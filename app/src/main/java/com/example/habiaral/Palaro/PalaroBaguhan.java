@@ -558,7 +558,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                 currentQuestionNumber = 0;
 
                 if (beepPlayer == null) {
-                    beepPlayer = MediaPlayer.create(this, R.raw.ready_go_new);
+                    beepPlayer = MediaPlayer.create(this, R.raw.start_3tones);
                 }
 
                 final Handler countdownHandler = new Handler();
@@ -704,7 +704,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (!questionIds.get(currentQuestionNumber).equals(questionDocId)) {
-                        // This result is stale, ignore it
                         return;
                     }
                     if (!documentSnapshot.exists()) {
@@ -745,7 +744,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                     resetAnswerBackgrounds();
                 });
     }
-
 
     private void loadCharacterLine(String lineId) {
         db.collection("minigame_character_lines").document(lineId)
@@ -818,12 +816,23 @@ public class PalaroBaguhan extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        stopAllSounds();
-        TimerSoundUtils.stop();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
+
+        if (mediaPlayer != null) mediaPlayer.setVolume(0f, 0f);
+        if (beepPlayer != null) beepPlayer.setVolume(0f, 0f);
+
+        TimerSoundUtils.setVolume(0f);
+
         if (tts != null) tts.stop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mediaPlayer != null) mediaPlayer.setVolume(1f, 1f);
+        if (beepPlayer != null) beepPlayer.setVolume(1f, 1f);
+
+        TimerSoundUtils.setVolume(1f);
     }
 
 }

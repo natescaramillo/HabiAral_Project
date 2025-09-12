@@ -32,6 +32,7 @@ import java.util.Locale;
 
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.SoundClickUtils;
+import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -78,6 +79,7 @@ public class PalaroHusay extends AppCompatActivity {
     private boolean playedGreen = false;
     private boolean playedOrange = false;
     private boolean playedRed = false;
+    private String lastTimerZone = "";
 
 
     @Override
@@ -197,7 +199,6 @@ public class PalaroHusay extends AppCompatActivity {
                             long elapsedTimeInSeconds = (endTime - startTime) / 1000;
 
                             if (userAnswer.equalsIgnoreCase(correctAnswer)) {
-                                // 🎵 Play correct sound
                                 MediaPlayer correctSound = MediaPlayer.create(this, R.raw.correct);
                                 correctSound.setOnCompletionListener(MediaPlayer::release);
                                 correctSound.start();
@@ -223,7 +224,6 @@ public class PalaroHusay extends AppCompatActivity {
                                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                 saveCorrectHusayAnswer(userId, userId, husayDocId);
                             } else {
-                                // 🎵 Play wrong sound
                                 MediaPlayer wrongSound = MediaPlayer.create(this, R.raw.wrong);
                                 wrongSound.setOnCompletionListener(MediaPlayer::release);
                                 wrongSound.start();
@@ -329,8 +329,7 @@ public class PalaroHusay extends AppCompatActivity {
                     }
                 });
     }
-//EDITED
-    // Wala na ang TTS, hindi na magsasalita kapag buo ang sagot
+
     private void loadHusayWords(String docId) {
         db.collection("husay").document(docId)
                 .get()
@@ -399,10 +398,10 @@ public class PalaroHusay extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadWords() {
-        MediaPlayer readyGoSound = MediaPlayer.create(this, R.raw.ready_go_new);
+        MediaPlayer readyGoSound = MediaPlayer.create(this, R.raw.start_3tones);
 
         final Handler countdownHandler = new Handler();
-        final int[] countdown = {3}; // magsimula sa 1
+        final int[] countdown = {3};
 
         countdownHandler.post(new Runnable() {
             @Override
@@ -412,13 +411,11 @@ public class PalaroHusay extends AppCompatActivity {
                     countdown[0]--;
                     countdownHandler.postDelayed(this, 1000);
                 } else {
-                    // matapos ang 3 → gawing blanko
                     husayInstruction.setText("");
                 }
             }
         });
 
-        // 👉 Pagkatapos ng tunog, start game
         readyGoSound.setOnCompletionListener(mp -> {
             mp.release();
 
@@ -440,40 +437,19 @@ public class PalaroHusay extends AppCompatActivity {
     private void restartTimer(long duration) {
         if (countDownTimer != null) countDownTimer.cancel();
 
-        countDownTimer = new CountDownTimer(duration, 1000) {
+        countDownTimer = new CountDownTimer(duration, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeft = millisUntilFinished;
-
                 int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(percent);
 
-                // GREEN zone
                 if (percent > 50) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_green));
-                    if (!playedGreen) {
-                        playedGreen = true;
-                        playedOrange = false; // reset para pag bumalik sa orange
-                        playedRed = false;
-                        greenSound.start();
-                    }
-                }
-                // ORANGE zone
-                else if (percent > 25) {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_orange));
-                    if (!playedOrange) {
-                        playedOrange = true;
-                        playedRed = false;
-                        orangeSound.start();
-                    }
-                }
-                // RED zone
-                else {
-                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_red));
-                    if (!playedRed) {
-                        playedRed = true;
-                        redSound.start();
-                    }
+                    updateTimerZone("GREEN", R.drawable.timer_color_green, greenSound);
+                } else if (percent > 25) {
+                    updateTimerZone("ORANGE", R.drawable.timer_color_orange, orangeSound);
+                } else {
+                    updateTimerZone("RED", R.drawable.timer_color_red, redSound);
                 }
             }
 
@@ -481,15 +457,28 @@ public class PalaroHusay extends AppCompatActivity {
             public void onFinish() {
                 timerBar.setProgress(0);
                 isTimeUp = true;
-
-                // 👉 magsalita si MCL5
                 loadCharacterLine("MCL5");
-
-                // 👉 sabay agad ang Game Over dialog
                 finishQuiz();
             }
-
         }.start();
+    }
+
+    private void updateTimerZone(String zone, int drawableRes, MediaPlayer sound) {
+        if (!lastTimerZone.equals(zone)) {
+            stopTimerSounds();
+            timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, drawableRes));
+            if (sound != null) {
+                sound.seekTo(0);
+                sound.start();
+            }
+            lastTimerZone = zone;
+        }
+    }
+
+    private void stopTimerSounds() {
+        if (greenSound.isPlaying()) greenSound.pause();
+        if (orangeSound.isPlaying()) orangeSound.pause();
+        if (redSound.isPlaying()) redSound.pause();
     }
 
     private void finishQuiz() {
@@ -503,7 +492,6 @@ public class PalaroHusay extends AppCompatActivity {
             tts.stop();
         }
 
-        // 🎵 Play gameover.mp3 bago ipakita yung dialog
         MediaPlayer gameOverSound = MediaPlayer.create(this, R.raw.game_over);
         gameOverSound.setOnCompletionListener(MediaPlayer::release);
         gameOverSound.start();
@@ -589,7 +577,6 @@ public class PalaroHusay extends AppCompatActivity {
     private void deductHeart() {
         remainingHearts--;
 
-        // 🎵 Play heart_pop sound
         MediaPlayer heartPopSound = MediaPlayer.create(this, R.raw.heart_pop);
         heartPopSound.setOnCompletionListener(MediaPlayer::release);
         heartPopSound.start();
@@ -603,10 +590,7 @@ public class PalaroHusay extends AppCompatActivity {
 
             Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
 
-            // 👉 magsalita muna si MCL5
             loadCharacterLine("MCL5");
-
-            // 👉 tapos agad i-call yung finishQuiz() para sabay
             finishQuiz();
         }
     }
@@ -836,13 +820,11 @@ public class PalaroHusay extends AppCompatActivity {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             dialog.getWindow().setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
 
-            // 👉 Gamitin LayoutParams para makuha yung offset na parang toast
             WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-            params.y = 50; // offset mula sa taas (px)
+            params.y = 50;
             dialog.getWindow().setAttributes(params);
         }
 
-        // 🎵 Play sound sabay sa pop up
         dialog.setOnShowListener(d -> {
             MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.achievement_pop);
             mediaPlayer.setVolume(0.5f, 0.5f);
@@ -904,4 +886,27 @@ public class PalaroHusay extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (greenSound != null) greenSound.setVolume(0f, 0f);
+        if (orangeSound != null) orangeSound.setVolume(0f, 0f);
+        if (redSound != null) redSound.setVolume(0f, 0f);
+
+        TimerSoundUtils.setVolume(0f);
+
+        if (tts != null) tts.stop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (greenSound != null) greenSound.setVolume(1f, 1f);
+        if (orangeSound != null) orangeSound.setVolume(1f, 1f);
+        if (redSound != null) redSound.setVolume(1f, 1f);
+
+        TimerSoundUtils.setVolume(0.2f);
+    }
 }
