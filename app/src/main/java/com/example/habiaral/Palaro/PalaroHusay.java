@@ -86,7 +86,6 @@ public class PalaroHusay extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.palaro_husay);
-        husayInstruction = findViewById(R.id.husay_instructionText);
         answer1 = findViewById(R.id.husay_answer1);
         answer2 = findViewById(R.id.husay_answer2);
         answer3 = findViewById(R.id.husay_answer3);

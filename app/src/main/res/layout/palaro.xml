@@ -127,10 +127,10 @@
                 app:srcCompat="@drawable/design_game_mechanics" />
 
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/button"
-                android:layout_width="290dp"
-                android:layout_height="84dp"
+                android:layout_width="291dp"
+                android:layout_height="105dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/button_color"
                 android:fontFamily="@font/special"
@@ -153,14 +153,30 @@
                     android:textAlignment="center"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
-                    android:textSize="15sp" />
-            </LinearLayout>
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.069"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/bahuhanImg"
+                    android:layout_width="120dp"
+                    android:layout_height="85dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/bahugan" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/button2"
-                android:layout_width="290dp"
-                android:layout_height="84dp"
+                android:layout_width="291dp"
+                android:layout_height="105dp"
                 android:background="@drawable/button_color"
                 android:fontFamily="@font/special"
                 android:gravity="center"
@@ -181,13 +197,29 @@
                     android:text="HUSAY"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
-                    android:textSize="15sp" />
-            </LinearLayout>
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.064"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
+                <ImageView
+                    android:id="@+id/husayImg"
+                    android:layout_width="120dp"
+                    android:layout_height="85dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/husay" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/button3"
-                android:layout_width="290dp"
-                android:layout_height="84dp"
+                android:layout_width="291dp"
+                android:layout_height="105dp"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/button_color"
                 android:fontFamily="@font/special"
@@ -209,8 +241,24 @@
                     android:text="DALUBHASA"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
-                    android:textSize="15sp" />
-            </LinearLayout>
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.075"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/dalubhasaImg"
+                    android:layout_width="120dp"
+                    android:layout_height="85dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/dalubhasa" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/user_point"
