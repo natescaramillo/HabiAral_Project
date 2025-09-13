@@ -63,15 +63,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private EditText userSentenceInput;
     private ProgressBar timerBar;
     private Button btnTapos;
-
     private CountDownTimer countDownTimer;
     private static final long TOTAL_TIME = 60000;
     private long timeLeft = TOTAL_TIME;
-
     private FirebaseFirestore db;
     private boolean hasSubmitted = false;
-
-    private int correctAnswerCount = 0;
     private int currentErrorCount = 0;
     private int dalubhasaScore = 0;
     private List<String> instructionList = new ArrayList<>();
@@ -81,31 +77,24 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private String currentDalubhasaID = "";
     private int remainingHearts = 5;
     private ImageView[] heartIcons;
-
-    private TextToSpeech textToSpeech;
-
     private boolean isTtsReady = false;
     private TextToSpeech tts;
     private int perfectAnswerCount = 0;
-
     private boolean isGameOver = false;
     private boolean greenSound = false;
     private boolean redSound = false;
     private boolean orangeSound = false;
     private ImageView errorIcon;
     private TextView errorTooltip;
-
     private MediaPlayer greenTimerSoundPlayer;
     private MediaPlayer orangeTimerSoundPlayer;
     private MediaPlayer redTimerSoundPlayer;
     private String lastTimerZone = "";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.palaro_dalubhasa);
-
 
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
@@ -128,13 +117,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
         errorIcon = findViewById(R.id.error_icon);
         errorTooltip = findViewById(R.id.errorTooltip);
 
-
-
         btnUmalis.setOnClickListener(v -> {
-            playButtonClickSound(); // 🎵 added
+            playButtonClickSound();
             showUmalisDialog();
         });
-
 
         heartIcons = new ImageView[]{
                 findViewById(R.id.heart01),
@@ -146,71 +132,31 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-
         userSentenceInput.setEnabled(false);
         btnTapos.setEnabled(false);
 
-        //edited
         btnTapos.setOnClickListener(v -> {
-            if (!hasSubmitted) {
-                String sentence = userSentenceInput.getText().toString().trim();
-                if (sentence.isEmpty()) {
-                    showErrorTooltip("Pakisulat ang iyong pangungusap.");
-                    return;
+            if (hasSubmitted) {
 
-                } else if (!sentence.endsWith(".")) {
+                nextQuestion();
+                userSentenceInput.setEnabled(true);
+                userSentenceInput.setText("");
+                btnTapos.setEnabled(true);
 
-                    showErrorTooltip("Siguraduhing nagtatapos ang pangungusap sa tuldok (.)");;
-                } else {
-                    List<String> missingKeywords = new ArrayList<>();
-                    for (String keyword : currentKeywords) {
-                        if (!sentence.toLowerCase().contains(keyword.toLowerCase())) {
-                            missingKeywords.add(keyword);
-                        }
-                    }
+                String firebaseUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                String questionId = currentDalubhasaID;
+                saveDalubhasaAnswer(firebaseUID, questionId);
 
-                    if (!missingKeywords.isEmpty()) {
-                        String details = "Kulang: " + String.join(", ", missingKeywords);
-                        errorIcon.setVisibility(View.VISIBLE);
-                        errorTooltip.setVisibility(View.VISIBLE);
-                        errorTooltip.setText(details);
-
-                        speakLine("Wala ka ng kinakailangang bahagi sa iyong sagot. Pakibasa muli ang mga panuto.");
-                        loadCharacterLine(currentDalubhasaID);
-                        return;
-                    }
-
-
-                    GrammarChecker.checkGrammar(this, sentence, new GrammarChecker.GrammarCallback() {
-                        @Override
-                        public void onResult(String response) {
-                            runOnUiThread(() -> {
-                                highlightGrammarIssues(response, sentence);
-                                hasSubmitted = true;
-                                userSentenceInput.setEnabled(false);
-                                btnTapos.setEnabled(false);
-
-                                String firebaseUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                String questionId = currentDalubhasaID;
-                                saveDalubhasaAnswer(firebaseUID, questionId);
-
-                            });
-                        }
-
-                        @Override
-                        public void onError(String error) {
-                            runOnUiThread(() ->
-                                    Toast.makeText(PalaroDalubhasa.this, "Grammar Check Failed: " + error, Toast.LENGTH_SHORT).show());
-                        }
-                    });
-                }
+                hasSubmitted = false;
+            } else {
+                showErrorTooltip("Pakipindot ang Enter para i-check ang grammar muna.");
             }
         });
 
         userSentenceInput.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE ||
                     (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                btnTapos.performClick();
+                checkGrammar();
                 return true;
             }
             return false;
@@ -219,24 +165,71 @@ public class PalaroDalubhasa extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                playButtonClickSound(); // 🎵 added
+                playButtonClickSound();
                 showBackConfirmationDialog();
             }
         });
     }
 
+    private void checkGrammar() {
+        String sentence = userSentenceInput.getText().toString().trim();
+        if (sentence.isEmpty()) {
+            showErrorTooltip("Pakisulat ang iyong pangungusap.");
+            return;
+        } else if (!sentence.endsWith(".")) {
+            showErrorTooltip("Siguraduhing nagtatapos ang pangungusap sa tuldok (.)");
+            return;
+        }
+
+        List<String> missingKeywords = new ArrayList<>();
+        for (String keyword : currentKeywords) {
+            if (!sentence.toLowerCase().contains(keyword.toLowerCase())) {
+                missingKeywords.add(keyword);
+            }
+        }
+
+        if (!missingKeywords.isEmpty()) {
+            String details = "Kulang: " + String.join(", ", missingKeywords);
+            errorIcon.setVisibility(View.VISIBLE);
+            errorTooltip.setVisibility(View.VISIBLE);
+            errorTooltip.setText(details);
+            speakLine("Wala ka ng kinakailangang bahagi sa iyong sagot. Pakibasa muli ang mga panuto.");
+            loadCharacterLine(currentDalubhasaID);
+            return;
+        }
+
+        GrammarChecker.checkGrammar(this, sentence, new GrammarChecker.GrammarCallback() {
+            @Override
+            public void onResult(String response) {
+                runOnUiThread(() -> {
+                    highlightGrammarIssues(response, sentence);
+                    hasSubmitted = true;
+                    userSentenceInput.setEnabled(false);
+                });
+            }
+
+            @Override
+            public void onError(String error) {
+                runOnUiThread(() ->
+                        Toast.makeText(PalaroDalubhasa.this, "Grammar Check Failed: " + error, Toast.LENGTH_SHORT).show()
+                );
+            }
+        });
+    }
+
     private void showErrorTooltip(String message) {
-        errorTooltip.setText(message); // set custom error text
+        errorTooltip.setText(message);
         errorIcon.setVisibility(View.VISIBLE);
         errorTooltip.setVisibility(View.VISIBLE);
 
-        // Auto-hide after 2 seconds
-        new android.os.Handler().postDelayed(() -> {
-            errorTooltip.setVisibility(View.GONE);
-            errorIcon.setVisibility(View.GONE);
-        }, 2000);
-    }
+        new Handler().postDelayed(() -> errorTooltip.setVisibility(View.GONE), 2500);
 
+        errorIcon.setOnClickListener(v -> {
+            errorTooltip.setVisibility(View.VISIBLE);
+
+            new Handler().postDelayed(() -> errorTooltip.setVisibility(View.GONE), 2500);
+        });
+    }
 
     private void showUmalisDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PalaroDalubhasa.this);
@@ -251,7 +244,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         btnOo.setOnClickListener(v -> {
-            playButtonClickSound(); // 🎵 added
+            playButtonClickSound();
 
             if (countDownTimer != null) countDownTimer.cancel();
             if (tts != null) tts.stop();
@@ -260,7 +253,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
 
         btnHindi.setOnClickListener(v -> {
-            playButtonClickSound(); // 🎵 added
+            playButtonClickSound();
             dialog.dismiss();
         });
 
@@ -280,7 +273,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 scoreForThisSentence = 15;
                 dalubhasaScore += scoreForThisSentence;
                 perfectAnswerCount++;
-                // 🎵 Play correct sound
                 playCorrectSound();
 
                 loadCharacterLine("MDCL2");
@@ -295,8 +287,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                 dalubhasaScore += scoreForThisSentence;
 
-
-                // 🎵 Play wrong sound
                 playWrongSound();
 
                 if (scoreForThisSentence == 13 || scoreForThisSentence == 15) {
@@ -308,7 +298,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 if (perfectAnswerCount >= 5) {
                     unlockSagotBayaniAchievement();
                 }
-
 
                 loadCharacterLine("MDCL3");
 
@@ -328,16 +317,19 @@ public class PalaroDalubhasa extends AppCompatActivity {
                             spannable.setSpan(new ForegroundColorSpan(Color.RED), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
 
-                        // ipakita sa errorTooltip
                         errorTooltip.setText(spannable);
                         errorTooltip.setVisibility(View.VISIBLE);
                         errorIcon.setVisibility(View.VISIBLE);
 
-// optional: auto-hide after ilang seconds
-                        new Handler().postDelayed(() -> {
-                            errorTooltip.setVisibility(View.GONE);
-                            errorIcon.setVisibility(View.GONE);
-                        }, 5000);
+                        new Handler().postDelayed(() -> errorTooltip.setVisibility(View.GONE), 2500);
+
+                        errorIcon.setOnClickListener(v -> {
+                            if (errorTooltip.getVisibility() == View.VISIBLE) {
+                                errorTooltip.setVisibility(View.GONE);
+                            } else {
+                                errorTooltip.setVisibility(View.VISIBLE);
+                            }
+                        });
 
                         new Handler().postDelayed(this::nextQuestion, 4000);
 
@@ -370,7 +362,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         Button noButton = dialogView.findViewById(R.id.button6);
 
         yesButton.setOnClickListener(v -> {
-            playButtonClickSound(); // 🎵 added
+            playButtonClickSound();
             if (countDownTimer != null) countDownTimer.cancel();
             if (tts != null) tts.stop();
             dialog.dismiss();
@@ -378,7 +370,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
 
         noButton.setOnClickListener(v -> {
-            playButtonClickSound(); // 🎵 added
+            playButtonClickSound();
             dialog.dismiss();
         });
         dialog.show();
@@ -442,6 +434,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             hasSubmitted = false;
             grammarFeedbackText.setText("");
             currentQuestionNumber++;
+            startTimer();
         } else {
             if (countDownTimer != null) countDownTimer.cancel();
             saveDalubhasaScore();
@@ -450,10 +443,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadInstruction() {
-        // 🎵 1. Play ready_go_new.mp3
         MediaPlayer readyGoSound = MediaPlayer.create(this, R.raw.start_3tones);
 
-        // Handler para sa countdown text
         final Handler countdownHandler = new Handler();
         final int[] countdown = {3};
 
@@ -471,10 +462,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
         };
         countdownHandler.post(countdownRunnable);
 
-        // 👉 Pagkatapos ng tunog, doon lang magload ng instructions at timer
         readyGoSound.setOnCompletionListener(mp -> {
             mp.release();
-            // tapos na tunog, tsaka lang lumabas ang instructions at timer
             loadAllDalubhasaInstructions();
             startTimer();
         });
@@ -507,12 +496,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
 
-                // Stop all timer sounds
                 stopAllTimerSounds();
 
                 loadCharacterLine("MCL5");
                 saveDalubhasaScore();
-                finishQuiz();
             }
         }.start();
     }
@@ -559,8 +546,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         if (isGameOver) return;
         isGameOver = true;
 
-        // 🎵 Play game over sound bago ipakita ang dialog
-        MediaPlayer gameOverSound = MediaPlayer.create(this, R.raw.game_over); // <- lagay mo dito file mo
+        MediaPlayer gameOverSound = MediaPlayer.create(this, R.raw.game_over);
         gameOverSound.setOnCompletionListener(MediaPlayer::release);
         gameOverSound.start();
 
@@ -624,7 +610,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private void deductHeart() {
         if (remainingHearts > 0) {
             remainingHearts--;
-            // 🎵 Play heart_pop.mp3 tuwing nababawasan ang puso
             MediaPlayer heartPop = MediaPlayer.create(this, R.raw.heart_pop);
             heartPop.setOnCompletionListener(MediaPlayer::release);
             heartPop.start();
@@ -637,10 +622,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
 
-                // 👉 Magsalita muna si MCL5
                 loadCharacterLine("MCL5");
 
-                // 👉 Sabay agad ang Game Over dialog
                 saveDalubhasaScore();
                 finishQuiz();
             }
@@ -695,8 +678,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
             });
         });
     }
-
-
 
     private void unlockQuestionBankMasterAchievement() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -844,13 +825,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             dialog.getWindow().setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
 
-            // 👉 Gamitin LayoutParams para makuha yung offset na parang toast
             WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-            params.y = 50; // offset mula sa taas (px)
+            params.y = 50;
             dialog.getWindow().setAttributes(params);
         }
 
-        // 🎵 Play sound sabay sa pop up
         dialog.setOnShowListener(d -> {
             MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.achievement_pop);
             mediaPlayer.setVolume(0.5f, 0.5f);

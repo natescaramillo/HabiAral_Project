@@ -223,10 +223,10 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/dalubhasa_answer"
             app:layout_constraintEnd_toEndOf="@+id/dalubhasa_answer"
-            app:layout_constraintHorizontal_bias="0.941"
+            app:layout_constraintHorizontal_bias="0.979"
             app:layout_constraintStart_toStartOf="@+id/dalubhasa_answer"
             app:layout_constraintTop_toTopOf="@+id/dalubhasa_answer"
-            app:layout_constraintVertical_bias="0.126" />
+            app:layout_constraintVertical_bias="0.036" />
 
         <TextView
             android:id="@+id/errorTooltip"
@@ -237,7 +237,7 @@
             android:padding="8dp"
             android:textColor="@android:color/white"
             android:textSize="14sp"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/error_icon"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.0"
