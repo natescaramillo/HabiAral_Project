@@ -171,7 +171,7 @@ public class PagUnawa extends AppCompatActivity {
             startActivity(new Intent(this, Kwento3.class));
         });
         btnKwento4.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             startActivity(new Intent(this, Kwento4.class));
         });
     }
