@@ -111,7 +111,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
                 if (account == null || account.getIdToken() == null) {
                     btnGoogleLogin.setEnabled(true);
-                    Toast.makeText(this, "Google sign-in failed: ID token is null", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Nabigo ang pag-sign in sa Google: Walang laman ang ID token.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 

@@ -73,7 +73,7 @@ public class Introduction extends AppCompatActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Hindi naka-login ang gumagamit.", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -116,11 +116,11 @@ public class Introduction extends AppCompatActivity {
 
         studentRef.set(update, SetOptions.merge())
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Palayaw na-save!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Matagumpay na nai-save ang palayaw!", Toast.LENGTH_SHORT).show();
                     preloadLessonProgressAndGoHome(); // ✅ preload before going home
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "❌ Hindi na-save ang palayaw", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Hindi nai-save ang palayaw", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                     isSaving = false;
                     nicknameInput.setEnabled(true);
