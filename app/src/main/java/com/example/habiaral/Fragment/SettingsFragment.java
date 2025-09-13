@@ -58,6 +58,10 @@ public class SettingsFragment extends Fragment {
         isMuted = SoundManager.isMuted(requireContext());
         updateSoundIcon();
 
+        btnLogout.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
+            showLogoutConfirmationDialog();
+        });
         btnAboutUs.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
             startActivity(new Intent(requireActivity(), AboutUsActivity.class));

@@ -122,13 +122,13 @@ public class WelcomeActivity extends AppCompatActivity {
                             if (authTask.isSuccessful()) {
                                 saveUserToFirestore(account);
                             } else {
-                                Toast.makeText(this, "Firebase authentication failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Nabigo ang pag-authenticate sa Firebase", Toast.LENGTH_SHORT).show();
                             }
                         });
 
             } catch (ApiException e) {
                 btnGoogleLogin.setEnabled(true);
-                Toast.makeText(this, "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Nabigo ang pag-sign in sa Google: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -169,14 +169,14 @@ public class WelcomeActivity extends AppCompatActivity {
                     docRef.set(student)
                             .addOnSuccessListener(unused -> goToIntroduction())
                             .addOnFailureListener(e -> {
-                                Toast.makeText(this, "Failed to save user", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Nabigo ang pag-save ng gumagamit", Toast.LENGTH_SHORT).show();
                             });
                 }).addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to generate student ID", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Nabigo ang pagbuo ng student ID", Toast.LENGTH_SHORT).show();
                 });
             }
         }).addOnFailureListener(e -> {
-            Toast.makeText(this, "Error checking user", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "May error sa pagsuri ng gumagamit", Toast.LENGTH_SHORT).show();
         });
     }
 

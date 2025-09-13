@@ -49,7 +49,6 @@ import java.util.Map;
 
 public class PalaroHusay extends AppCompatActivity {
 
-    private TextView husayInstruction;
     private Button answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9;
     private TextView fullAnswerView;
     private ProgressBar timerBar;
@@ -322,7 +321,6 @@ public class PalaroHusay extends AppCompatActivity {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String line = documentSnapshot.getString("line");
-                        husayInstruction.setText(line);
                         speakText(line);
 
                     }
@@ -406,11 +404,8 @@ public class PalaroHusay extends AppCompatActivity {
             @Override
             public void run() {
                 if (countdown[0] > 0) {
-                    husayInstruction.setText(String.valueOf(countdown[0]));
                     countdown[0]--;
                     countdownHandler.postDelayed(this, 1000);
-                } else {
-                    husayInstruction.setText("");
                 }
             }
         });
