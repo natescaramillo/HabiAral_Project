@@ -500,24 +500,47 @@ public class PalaroBaguhan extends AppCompatActivity {
         if (currentUser == null) return;
 
         String uid = currentUser.getUid();
-        DocumentReference docRef = db.collection("minigame_progress").document(uid);
 
-        Map<String, Object> updates = new HashMap<>();
-        updates.put(FIELD_BAGUHAN, FieldValue.increment(baguhanScore));
-        updates.put(FIELD_TOTAL, FieldValue.increment(baguhanScore));
+        // Kunin muna studentId mula sa students collection
+        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
+            if (!studentDoc.exists()) {
+                Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        docRef.set(updates, SetOptions.merge()).addOnSuccessListener(aVoid -> {
-            baguhanScore = 0;
+            String studentId = studentDoc.getString("studentId");
+            if (studentId == null || studentId.isEmpty()) {
+                Toast.makeText(this, "Student ID not found", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            DocumentReference docRef = db.collection("minigame_progress").document(uid);
 
             docRef.get().addOnSuccessListener(snapshot -> {
-                int baguhan = getScore(snapshot, FIELD_BAGUHAN);
-                int husay = getScore(snapshot, FIELD_HUSAY);
-                int dalubhasa = getScore(snapshot, FIELD_DALUBHASA);
+                int husay = snapshot.contains(FIELD_HUSAY) ? snapshot.getLong(FIELD_HUSAY).intValue() : 0;
+                int dalubhasa = snapshot.contains(FIELD_DALUBHASA) ? snapshot.getLong(FIELD_DALUBHASA).intValue() : 0;
+                int oldBaguhan = snapshot.contains(FIELD_BAGUHAN) ? snapshot.getLong(FIELD_BAGUHAN).intValue() : 0;
 
-                int totalScore = baguhan + husay + dalubhasa;
+                int newBaguhanTotal = oldBaguhan + baguhanScore;
 
-                checkAndUnlock(docRef, totalScore, 400, FIELD_HUSAY_UNLOCKED, "Nabuksan na ang Husay!");
-                checkAndUnlock(docRef, totalScore, 800, FIELD_DALUBHASA_UNLOCKED, "Nabuksan na ang Dalubhasa!");
+                Map<String, Object> updates = new HashMap<>();
+                updates.put(FIELD_BAGUHAN, newBaguhanTotal);
+                updates.put("studentId", studentId); // isave din studentId
+                updates.put(FIELD_TOTAL, newBaguhanTotal + husay + dalubhasa);
+
+                docRef.set(updates, SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> {
+                            if (newBaguhanTotal >= 400) {
+                                checkAndUnlock(docRef, newBaguhanTotal + husay + dalubhasa, 400, FIELD_HUSAY_UNLOCKED, "Nabuksan na ang Husay!");
+                            }
+                            if (newBaguhanTotal + husay + dalubhasa >= 800) {
+                                checkAndUnlock(docRef, newBaguhanTotal + husay + dalubhasa, 800, FIELD_DALUBHASA_UNLOCKED, "Nabuksan na ang Dalubhasa!");
+                            }
+                            baguhanScore = 0;
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(this, "Error saving score", Toast.LENGTH_SHORT).show();
+                        });
             });
         });
     }
