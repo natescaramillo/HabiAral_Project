@@ -51,7 +51,6 @@
             android:fontFamily="@font/special"
             android:gravity="center"
             android:text="Gusto mo bang ipagpatuloy kung saan ka tumigil?"
-            android:justificationMode="inter_word"
             android:textColor="#fff"
             android:textSize="15sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline18"
