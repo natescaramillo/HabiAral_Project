@@ -12,7 +12,7 @@ import com.example.habiaral.KayarianNgPangungusap.Lessons.TambalanLesson;
 import com.example.habiaral.KayarianNgPangungusap.Lessons.HugnayanLesson;
 import com.example.habiaral.KayarianNgPangungusap.Lessons.LangkapanLesson;
 import com.example.habiaral.R;
-import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
+import com.example.habiaral.Cache.LessonProgressCache;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;

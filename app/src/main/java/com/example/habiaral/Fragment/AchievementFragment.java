@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -205,7 +206,7 @@ public class AchievementFragment extends Fragment{
         if (getContext() == null) return;
 
         // 🔊 Play sound kapag binuksan
-        playClickSound();
+        SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
 
         Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.achievement_popup);
@@ -237,11 +238,6 @@ public class AchievementFragment extends Fragment{
         if (close != null) close.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
-    }
-    private void playClickSound() {
-        MediaPlayer mp = MediaPlayer.create(requireContext(), R.raw.button_click);
-        mp.setOnCompletionListener(MediaPlayer::release);
-        mp.start();
     }
 
 }

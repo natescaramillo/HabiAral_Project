@@ -22,6 +22,8 @@ import androidx.fragment.app.Fragment;
 import com.example.habiaral.Activity.WelcomeActivity;
 import com.example.habiaral.Activity.AboutUsActivity;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.SoundClickUtils;
+import com.example.habiaral.Utils.SoundManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -53,50 +55,26 @@ public class SettingsFragment extends Fragment {
         btnSound = view.findViewById(R.id.imageView11);
 
         SharedPreferences prefs = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
-        isMuted = prefs.getBoolean("isMuted", false);
-
+        isMuted = SoundManager.isMuted(requireContext());
         updateSoundIcon();
 
         btnAboutUs.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
             startActivity(new Intent(requireActivity(), AboutUsActivity.class));
         });
 
         btnChangeUsername.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
             showChangeNicknameDialog();
         });
 
-        btnLogout.setOnClickListener(v -> {
-            playClickSound();
-            showLogoutConfirmationDialog();
-        });
-
         btnSounds.setOnClickListener(v -> {
-            playClickSound();
-            muteSound();
+            SoundManager.toggleMute(requireContext());
+            isMuted = SoundManager.isMuted(requireContext());
+            updateSoundIcon();
         });
 
         return view;
-    }
-
-    private void playClickSound() {
-        if (!isMuted) {
-            MediaPlayer mp = MediaPlayer.create(requireContext(), R.raw.button_click);
-            mp.setOnCompletionListener(MediaPlayer::release);
-            mp.start();
-        }
-    }
-
-    private void muteSound() {
-        SharedPreferences prefs = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-
-        isMuted = !isMuted;
-        updateSoundIcon();
-
-        editor.putBoolean("isMuted", isMuted);
-        editor.apply();
     }
 
     private void updateSoundIcon() {
@@ -129,7 +107,7 @@ public class SettingsFragment extends Fragment {
                 .create();
 
         buttonConfirm.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
 
             String newNickname = editTextUsername.getText().toString().trim();
 
@@ -165,7 +143,7 @@ public class SettingsFragment extends Fragment {
         });
 
         buttonCancel.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
             dialog.dismiss();
         });
 
@@ -191,7 +169,7 @@ public class SettingsFragment extends Fragment {
         Button btnNo = dialogView.findViewById(R.id.btnLogoutNo);
 
         btnYes.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
             Toast.makeText(requireContext(), "Logging out...", Toast.LENGTH_SHORT).show();
 
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -218,7 +196,7 @@ public class SettingsFragment extends Fragment {
         });
 
         btnNo.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
             dialog.dismiss();
         });
 

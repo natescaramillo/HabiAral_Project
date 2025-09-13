@@ -27,6 +27,7 @@ import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.PagUnawa.PagUnawa;
 import com.example.habiaral.Palaro.Palaro;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -70,7 +71,7 @@ public class HomeFragment extends Fragment {
             Class<?> activityClass = entry.getValue();
             if (button != null) {
                 button.setOnClickListener(v -> {
-                    playClickSound();
+                    SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
                     startActivity(new Intent(getActivity(), activityClass));
                 });
             }
@@ -85,17 +86,6 @@ public class HomeFragment extends Fragment {
         });
 
         return view;
-    }
-
-    private void playClickSound() {
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
-        mediaPlayer = MediaPlayer.create(getContext(), R.raw.button_click);
-        mediaPlayer.setOnCompletionListener(mp -> {
-            mp.release();
-        });
-        mediaPlayer.start();
     }
 
     @Override

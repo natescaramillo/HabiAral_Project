@@ -9,7 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
+import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.R;
 import com.google.android.gms.auth.api.signin.*;

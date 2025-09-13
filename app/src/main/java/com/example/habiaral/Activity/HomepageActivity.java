@@ -17,6 +17,7 @@ import com.example.habiaral.Fragment.ProgressBarFragment;
 import com.example.habiaral.Fragment.SettingsFragment;
 import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.HashMap;
@@ -111,7 +112,7 @@ public class HomepageActivity extends AppCompatActivity {
             }
             lastClickTime = now;
 
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
 
             Fragment selectedFragment = fragmentMap.get(item.getItemId());
             if (selectedFragment != null && selectedFragment != activeFragment) {
@@ -143,13 +144,5 @@ public class HomepageActivity extends AppCompatActivity {
         };
 
         fragmentHandler.postDelayed(pendingRunnable, 50);
-    }
-    private void playClickSound() {
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
-        mediaPlayer = MediaPlayer.create(this, R.raw.button_click);
-        mediaPlayer.setOnCompletionListener(mp -> mp.release());
-        mediaPlayer.start();
     }
 }

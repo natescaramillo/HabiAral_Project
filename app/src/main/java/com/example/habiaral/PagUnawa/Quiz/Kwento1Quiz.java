@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.PagUnawa.PagUnawa;
 import com.example.habiaral.PagUnawa.Stories.Kwento2;
 import com.example.habiaral.R;
@@ -104,8 +105,8 @@ public class Kwento1Quiz extends AppCompatActivity {
                 .document(uid)
                 .set(moduleUpdate, SetOptions.merge());
 
-        if (com.example.habiaral.BahagiNgPananalita.LessonProgressCache.getData() != null) {
-            Map<String, Object> cachedData = com.example.habiaral.BahagiNgPananalita.LessonProgressCache.getData();
+        if (LessonProgressCache.getData() != null) {
+            Map<String, Object> cachedData = LessonProgressCache.getData();
 
             if (!cachedData.containsKey("module_3")) {
                 cachedData.put("module_3", new HashMap<String, Object>());
@@ -115,7 +116,7 @@ public class Kwento1Quiz extends AppCompatActivity {
             cachedModule3.put("lessons", lessonsMap);
             cachedModule3.put("current_lesson", "kwento1");
 
-            com.example.habiaral.BahagiNgPananalita.LessonProgressCache.setData(cachedData);
+            LessonProgressCache.setData(cachedData);
         }
     }
 }

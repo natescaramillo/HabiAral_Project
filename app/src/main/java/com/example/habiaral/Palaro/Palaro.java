@@ -25,6 +25,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -100,12 +101,12 @@ public class Palaro extends AppCompatActivity {
         loadTotalScoreFromFirestore();
 
         gameMechanicsIcon.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             showGameMechanics();
         });
 
         button1.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             if (userEnergy >= ENERGY_COST) {
                 userEnergy -= ENERGY_COST;
 
@@ -128,7 +129,7 @@ public class Palaro extends AppCompatActivity {
         });
 
         button2.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             if (userPoints >= 400) {
                 startActivity(new Intent(Palaro.this, PalaroHusay.class));
             } else {
@@ -137,22 +138,13 @@ public class Palaro extends AppCompatActivity {
         });
 
         button3.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             if (userPoints >= 800) {
                 startActivity(new Intent(Palaro.this, PalaroDalubhasa.class));
             } else {
                 Toast.makeText(this, "Unlock Dalubhasa at 800 points!", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-    // ✅ Helper method for sound
-    private void playClickSound() {
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
-        mediaPlayer = MediaPlayer.create(this, R.raw.button_click);
-        mediaPlayer.setOnCompletionListener(mp -> mp.release());
-        mediaPlayer.start();
     }
 
     private void loadTotalScoreFromFirestore() {
@@ -472,8 +464,8 @@ public class Palaro extends AppCompatActivity {
 
         ImageView imgIsara = dialogView.findViewById(R.id.img_Isara);
         imgIsara.setOnClickListener(v -> {
-            playClickSound(); // 🔊 tutunog pag-click
-            dialog.dismiss(); // ❌ isara dialog
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            dialog.dismiss();
         });
 
         dialog.setCanceledOnTouchOutside(true);

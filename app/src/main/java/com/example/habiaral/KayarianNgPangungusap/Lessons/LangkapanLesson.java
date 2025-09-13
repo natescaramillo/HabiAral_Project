@@ -13,6 +13,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.example.habiaral.BahagiNgPananalita.Lessons.PangngalanLesson;
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.KayarianNgPangungusap.Quiz.LangkapanQuiz;
 import com.example.habiaral.R;
@@ -20,6 +21,7 @@ import com.example.habiaral.Utils.ResumeDialogUtils;
 import com.example.habiaral.Utils.KayarianFirestoreUtils;
 import com.example.habiaral.Utils.FullScreenUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
+import com.example.habiaral.Utils.SoundManager;
 import com.example.habiaral.Utils.TextAnimationUtils;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -81,6 +83,7 @@ public class LangkapanLesson extends AppCompatActivity {
             if (status == TextToSpeech.SUCCESS) {
                 textToSpeech.setLanguage(new Locale("tl", "PH"));
                 textToSpeech.setSpeechRate(1.0f);
+                SoundManager.setTts(textToSpeech);
                 loadCharacterLines();
             }
         });
@@ -240,14 +243,19 @@ public class LangkapanLesson extends AppCompatActivity {
                     if (!utteranceId.startsWith(utterancePage)) return;
                     index[0]++;
                     if (index[0] < lines.size()) {
-                        speak(lines.get(index[0]), utterancePage + "_" + index[0]);
+                        if (!SoundManager.isMuted(LangkapanLesson.this)) {
+                            speak(lines.get(index[0]), utterancePage + "_" + index[0]);
+                        }
                     } else onComplete.run();
                 });
             }
+
             @Override public void onError(String s) {}
         });
 
-        speak(lines.get(0), utterancePage + "_0");
+        if (!SoundManager.isMuted(this)) {
+            speak(lines.get(0), utterancePage + "_0");
+        }
     }
 
     private void speak(String text, String id) {
