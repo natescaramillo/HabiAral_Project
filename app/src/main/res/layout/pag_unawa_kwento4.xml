@@ -8,13 +8,13 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/imageViewComic2"
+        android:id="@+id/imageViewComic4"
         android:layout_width="334dp"
         android:layout_height="517dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:src="@drawable/kwento1_page01"
-        app:layout_constraintBottom_toTopOf="@+id/UnlockButtonKwento2"
+        app:layout_constraintBottom_toTopOf="@+id/UnlockButtonKwento4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
         app:layout_constraintVertical_bias="0.342" />
 
     <Button
-        android:id="@+id/UnlockButtonKwento2"
+        android:id="@+id/UnlockButtonKwento4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_button_achievement"
@@ -34,5 +34,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.963"
-        android:layout_marginBottom="24dp"/>
+        android:layout_marginBottom="20dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
