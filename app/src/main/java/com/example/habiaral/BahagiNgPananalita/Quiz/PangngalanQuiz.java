@@ -21,6 +21,9 @@ import androidx.core.content.ContextCompat;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.AppPreloader;
+import com.example.habiaral.Utils.SoundClickUtils;
+import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
+import com.example.habiaral.Cache.LessonProgressCache;
 
 public class PangngalanQuiz extends AppCompatActivity {
 
@@ -57,7 +60,6 @@ public class PangngalanQuiz extends AppCompatActivity {
     private int lastColorStage = 3;
     private MediaPlayer resultPlayer;
     private SoundPool soundPool;
-    private int clickSoundId;
     private int greenSoundId, orangeSoundId, redSoundId;
     private Drawable redDrawable, orangeDrawable, greenDrawable;
     private boolean redPlayed = false;
@@ -69,25 +71,22 @@ public class PangngalanQuiz extends AppCompatActivity {
 
     private List<Map<String, Object>> allQuizList = new ArrayList<>();
 
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bahagi_ng_pananalita_pangngalan_quiz);
 
-        // SoundPool para sa instant sounds
-        soundPool = new SoundPool.Builder().setMaxStreams(5).build();
-        clickSoundId = soundPool.load(this, R.raw.quiz_click, 1);
-        greenSoundId = soundPool.load(this, R.raw.green_timer, 1);
-        orangeSoundId = soundPool.load(this, R.raw.orange_timer, 1);
-        redSoundId = soundPool.load(this, R.raw.red_timer, 1);
+        AppPreloader.init(this);
 
-        redDrawable = ContextCompat.getDrawable(this, R.drawable.timer_color_red);
-        orangeDrawable = ContextCompat.getDrawable(this, R.drawable.timer_color_orange);
-        greenDrawable = ContextCompat.getDrawable(this, R.drawable.timer_color_green);
+        soundPool = AppPreloader.soundPool;
+        greenSoundId = AppPreloader.greenSoundId;
+        orangeSoundId = AppPreloader.orangeSoundId;
+        redSoundId = AppPreloader.redSoundId;
+
+        redDrawable = AppPreloader.redDrawable;
+        orangeDrawable = AppPreloader.orangeDrawable;
+        greenDrawable = AppPreloader.greenDrawable;
+
 
         questionTitle = findViewById(R.id.questionTitle);
         questionText = findViewById(R.id.pangngalan_questionText);
@@ -114,7 +113,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         loadQuizDocument();
 
         introButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
 
 
             showCountdownThenLoadQuestion();
@@ -139,7 +138,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         answer3.setOnClickListener(choiceClickListener);
 
         nextButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
 
             if (!isAnswered) {
                 Toast.makeText(this, "Pumili muna ng sagot bago mag-next!", Toast.LENGTH_SHORT).show();
@@ -296,35 +295,31 @@ public class PangngalanQuiz extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
-                int progress = (int) millisUntilFinished;
 
-                // Diretso update, no animation
+                int progress = (int) Math.min(millisUntilFinished, Integer.MAX_VALUE);
                 timerBar.setProgress(progress);
 
                 int percent = (int) ((timeLeftInMillis * 100) / 30000);
 
-                if (percent <= 25 && lastColorStage == 1) {
+                if (percent <= 25 && lastColorStage > 0) {
                     timerBar.setProgressDrawable(redDrawable);
                     playLoopingSound(redSoundId);
                     lastColorStage = 0;
-                } else if (percent <= 50 && lastColorStage == 2) {
+                } else if (percent <= 50 && percent > 25 && lastColorStage > 1) {
                     timerBar.setProgressDrawable(orangeDrawable);
                     playLoopingSound(orangeSoundId);
                     lastColorStage = 1;
-                } else if (percent > 50 && lastColorStage == 3) {
+                } else if (percent > 50 && lastColorStage > 2) {
                     timerBar.setProgressDrawable(greenDrawable);
                     playLoopingSound(greenSoundId);
                     lastColorStage = 2;
                 }
-
-
             }
+
             private void playLoopingSound(int soundId) {
-                // stop current if meron
                 if (currentStreamId != -1) {
                     soundPool.stop(currentStreamId);
                 }
-                // start new loop
                 currentStreamId = soundPool.play(soundId, 1, 1, 0, -1, 1);
             }
 
@@ -349,8 +344,6 @@ public class PangngalanQuiz extends AppCompatActivity {
         }.start();
     }
 
-
-
     private void stopTimerSound() {
         if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying()) {
@@ -359,21 +352,17 @@ public class PangngalanQuiz extends AppCompatActivity {
             mediaPlayer.release();
             mediaPlayer = null;
         }
-    }
 
-    private void playTimerSound(int soundId) {
-        if (soundId != 0) {
-            soundPool.play(soundId, 0.6f, 0.6f, 1, 0, 1f);
+        if (currentStreamId != -1 && soundPool != null) {
+            soundPool.stop(currentStreamId);
+            currentStreamId = -1;
+        }
+
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
         }
     }
-
-
-    private void playClickSound() {
-        if (clickSoundId != 0) {
-            soundPool.play(clickSoundId, 0.5f, 0.5f, 1, 0, 1f);
-        }
-    }
-
 
     private void showExitDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -387,15 +376,14 @@ public class PangngalanQuiz extends AppCompatActivity {
         Button noBtn = dialogView.findViewById(R.id.button6);
 
         yesBtn.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             stopTimerSound();
-            if (countDownTimer != null) countDownTimer.cancel();
             exitDialog.dismiss();
             finish();
         });
 
         noBtn.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             exitDialog.dismiss();
         });
 
@@ -404,9 +392,6 @@ public class PangngalanQuiz extends AppCompatActivity {
 
     private void showResultDialog() {
         stopTimerSound();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
 
         if (resultDialog != null && resultDialog.isShowing()) {
             resultDialog.dismiss();
@@ -471,19 +456,19 @@ public class PangngalanQuiz extends AppCompatActivity {
         }
 
         retryButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
             resetQuizForRetry();
         });
 
         taposButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
             navigateToLesson(PandiwaLesson.class);
         });
 
         homeButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
             navigateToLesson(BahagiNgPananalita.class);
         });
@@ -514,7 +499,6 @@ public class PangngalanQuiz extends AppCompatActivity {
         quizFinished = false;
 
         if (allQuizList != null && !allQuizList.isEmpty()) {
-            // Shuffle lahat ulit at kunin ulit ang 10 bago mag-retry
             Collections.shuffle(allQuizList);
             int limit = Math.min(10, allQuizList.size());
             quizList = new ArrayList<>(allQuizList.subList(0, limit));
@@ -537,9 +521,6 @@ public class PangngalanQuiz extends AppCompatActivity {
 
 
     private void navigateToLesson(Class<?> lessonActivityClass) {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
         stopTimerSound();
         releaseResultPlayer();
 
@@ -610,11 +591,32 @@ public class PangngalanQuiz extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
+
+        // hinaan o i-mute lahat ng tunog
+        if (currentStreamId != -1 && soundPool != null) {
+            soundPool.setVolume(currentStreamId, 0f, 0f);
         }
-        stopTimerSound();
-        releaseResultPlayer();
+
+        if (mediaPlayer != null) mediaPlayer.setVolume(0f, 0f);
+        if (resultPlayer != null) resultPlayer.setVolume(0f, 0f);
+        if (readyPlayer != null) readyPlayer.setVolume(0f, 0f);
+
+        TimerSoundUtils.setVolume(0f);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (currentStreamId != -1 && soundPool != null) {
+            soundPool.setVolume(currentStreamId, 1f, 1f);
+        }
+
+        if (mediaPlayer != null) mediaPlayer.setVolume(1f, 1f);
+        if (resultPlayer != null) resultPlayer.setVolume(1f, 1f);
+        if (readyPlayer != null) readyPlayer.setVolume(1f, 1f);
+
+        TimerSoundUtils.setVolume(1f);
     }
 
     @Override
@@ -624,11 +626,6 @@ public class PangngalanQuiz extends AppCompatActivity {
             resultDialog.dismiss();
         }
         resultDialog = null;
-
-        if (soundPool != null) {
-            soundPool.release();
-            soundPool = null;
-        }
 
         if (countDownTimer != null) {
             countDownTimer.cancel();

@@ -1,4 +1,4 @@
-package com.example.habiaral.Palaro;
+package com.example.habiaral.GrammarChecker;
 
 import android.content.Context;
 

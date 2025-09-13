@@ -12,7 +12,8 @@ import com.example.habiaral.PagUnawa.Stories.Kwento1;
 import com.example.habiaral.PagUnawa.Stories.Kwento2;
 import com.example.habiaral.PagUnawa.Stories.Kwento3;
 import com.example.habiaral.R;
-import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
+import com.example.habiaral.Cache.LessonProgressCache;
+import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -71,15 +72,6 @@ public class PagUnawa extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> loadLessonProgressFromFirestore());
-    }
-    // 🔊 Play button click sound
-    private void playClickSound() {
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
-        mediaPlayer = MediaPlayer.create(this, R.raw.button_click);
-        mediaPlayer.setOnCompletionListener(mp -> mp.release());
-        mediaPlayer.start();
     }
 
     @Override
@@ -160,17 +152,17 @@ public class PagUnawa extends AppCompatActivity {
 
         // 🔊 Add click sound for each lesson
         btnKwento1.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             startActivity(new Intent(this, Kwento1.class));
         });
 
         btnKwento2.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             startActivity(new Intent(this, Kwento2.class));
         });
 
         btnKwento3.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             startActivity(new Intent(this, Kwento3.class));
         });
     }

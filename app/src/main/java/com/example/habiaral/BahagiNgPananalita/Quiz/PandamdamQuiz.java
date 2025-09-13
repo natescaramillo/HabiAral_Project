@@ -19,9 +19,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
+import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.BahagiNgPananalita.Lessons.PangawingLesson;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -86,7 +87,7 @@ public class PandamdamQuiz extends AppCompatActivity {
         loadQuizDocument();
 
         introButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
 
             showCountdownThenLoadQuestion();
         });
@@ -110,7 +111,7 @@ public class PandamdamQuiz extends AppCompatActivity {
         answer3.setOnClickListener(choiceClickListener);
 
         nextButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
 
             if (!isAnswered) {
                 Toast.makeText(this, "Pumili muna ng sagot bago mag-next!", Toast.LENGTH_SHORT).show();
@@ -180,9 +181,9 @@ public class PandamdamQuiz extends AppCompatActivity {
                     timerBar.setVisibility(View.VISIBLE);
                     nextButton.setVisibility(View.VISIBLE);
                     background.setVisibility(View.VISIBLE);
-                }, 1000);
-            }, 1000);
-        }, 1000);
+                }, 8500);
+            }, 8500);
+        }, 8500);
     }
 
     private void loadQuizDocument() {
@@ -316,13 +317,6 @@ public class PandamdamQuiz extends AppCompatActivity {
         mediaPlayer.start();
     }
 
-    private void playClickSound() {
-        MediaPlayer mp = MediaPlayer.create(this, R.raw.quiz_click);
-        mp.setVolume(0.5f, 0.5f);
-        mp.setOnCompletionListener(MediaPlayer::release);
-        mp.start();
-    }
-
     private void showExitDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
@@ -335,7 +329,7 @@ public class PandamdamQuiz extends AppCompatActivity {
         Button noBtn = dialogView.findViewById(R.id.button6);
 
         yesBtn.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             stopTimerSound();
             if (countDownTimer != null) countDownTimer.cancel();
             exitDialog.dismiss();
@@ -343,7 +337,7 @@ public class PandamdamQuiz extends AppCompatActivity {
         });
 
         noBtn.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             exitDialog.dismiss();
         });
 
@@ -419,19 +413,19 @@ public class PandamdamQuiz extends AppCompatActivity {
         }
 
         retryButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
             resetQuizForRetry();
         });
 
         taposButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
             navigateToLesson(PangawingLesson.class);
         });
 
         homeButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
             navigateToLesson(BahagiNgPananalita.class);
         });

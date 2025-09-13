@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.BahagiNgPananalita.LessonProgressCache; // ✅ Added
+import com.example.habiaral.Cache.LessonProgressCache; // ✅ Added
 import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;

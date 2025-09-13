@@ -19,10 +19,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.BahagiNgPananalita.LessonProgressCache;
-import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
+import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.BahagiNgPananalita.Lessons.PangUriLesson;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -87,9 +87,8 @@ public class PandiwaQuiz extends AppCompatActivity {
 
         loadQuizDocument();
 
-        // c & p
         introButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
 
             showCountdownThenLoadQuestion();
         });
@@ -112,9 +111,8 @@ public class PandiwaQuiz extends AppCompatActivity {
         answer2.setOnClickListener(choiceClickListener);
         answer3.setOnClickListener(choiceClickListener);
 
-        // c & p
         nextButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
 
             if (!isAnswered) {
                 Toast.makeText(this, "Pumili muna ng sagot bago mag-next!", Toast.LENGTH_SHORT).show();
@@ -138,7 +136,6 @@ public class PandiwaQuiz extends AppCompatActivity {
             }
         });
 
-        // c & p
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -167,7 +164,6 @@ public class PandiwaQuiz extends AppCompatActivity {
         answer3.setEnabled(false);
     }
 
-    // c & p
     private void showCountdownThenLoadQuestion() {
         questionText.setText("3");
         new Handler().postDelayed(() -> {
@@ -191,7 +187,6 @@ public class PandiwaQuiz extends AppCompatActivity {
         }, 1000);
     }
 
-    // delete
     private void loadQuizDocument() {
         db.collection("quiz").document("Q2")
                 .get().addOnSuccessListener(doc -> {
@@ -214,7 +209,6 @@ public class PandiwaQuiz extends AppCompatActivity {
                         Toast.makeText(this, "Failed to load quiz data.", Toast.LENGTH_SHORT).show());
     }
 
-    // delete
     private void loadQuestion(int index) {
         if (countDownTimer != null) countDownTimer.cancel();
         if (quizList == null || quizList.isEmpty()) return;
@@ -244,7 +238,6 @@ public class PandiwaQuiz extends AppCompatActivity {
         }
     }
 
-    // c & p
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
         timeLeftInMillis = 30000;
@@ -303,7 +296,6 @@ public class PandiwaQuiz extends AppCompatActivity {
         }.start();
     }
 
-    // c & p
     private void stopTimerSound() {
         if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying()) {
@@ -314,7 +306,6 @@ public class PandiwaQuiz extends AppCompatActivity {
         }
     }
 
-    // c & p
     private void playTimerSound(int resId) {
         stopTimerSound();
 
@@ -327,15 +318,6 @@ public class PandiwaQuiz extends AppCompatActivity {
         mediaPlayer.start();
     }
 
-    // c & p
-    private void playClickSound() {
-        MediaPlayer mp = MediaPlayer.create(this, R.raw.quiz_click);
-        mp.setVolume(0.5f, 0.5f);
-        mp.setOnCompletionListener(MediaPlayer::release);
-        mp.start();
-    }
-
-    // c & p
     private void showExitDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
@@ -348,7 +330,7 @@ public class PandiwaQuiz extends AppCompatActivity {
         Button noBtn = dialogView.findViewById(R.id.button6);
 
         yesBtn.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             stopTimerSound();
             if (countDownTimer != null) countDownTimer.cancel();
             exitDialog.dismiss();
@@ -356,14 +338,13 @@ public class PandiwaQuiz extends AppCompatActivity {
         });
 
         noBtn.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             exitDialog.dismiss();
         });
 
         exitDialog.show();
     }
 
-    // c & p
     private void showResultDialog() {
         stopTimerSound();
         if (countDownTimer != null) {
@@ -433,25 +414,24 @@ public class PandiwaQuiz extends AppCompatActivity {
         }
 
         retryButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
             resetQuizForRetry();
         });
 
         taposButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
             navigateToLesson(PangUriLesson.class); // next lesson
         });
 
         homeButton.setOnClickListener(v -> {
-            playClickSound();
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
             navigateToLesson(BahagiNgPananalita.class);
         });
     }
 
-    // c & p
     private void releaseResultPlayer() {
         if (resultPlayer != null) {
             if (resultPlayer.isPlaying()) {
@@ -462,7 +442,6 @@ public class PandiwaQuiz extends AppCompatActivity {
         }
     }
 
-    // c & p
     private void dismissAndReleaseResultDialog() {
         if (resultDialog != null && resultDialog.isShowing()) {
             resultDialog.dismiss();
@@ -471,7 +450,6 @@ public class PandiwaQuiz extends AppCompatActivity {
         resultDialog = null;
     }
 
-    // c & p
     private void resetQuizForRetry() {
         currentIndex = 0;
         correctAnswers = 0;
@@ -497,7 +475,6 @@ public class PandiwaQuiz extends AppCompatActivity {
         loadQuestion(currentIndex);
     }
 
-    // c & p
     private void navigateToLesson(Class<?> lessonActivityClass) {
         if (countDownTimer != null) {
             countDownTimer.cancel();
@@ -569,7 +546,6 @@ public class PandiwaQuiz extends AppCompatActivity {
         }
     }
 
-    // c & p
     @Override
     protected void onPause() {
         super.onPause();
@@ -580,7 +556,6 @@ public class PandiwaQuiz extends AppCompatActivity {
         releaseResultPlayer();
     }
 
-    // c & p
     @Override
     protected void onDestroy() {
         super.onDestroy();

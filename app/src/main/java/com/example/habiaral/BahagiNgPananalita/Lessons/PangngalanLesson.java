@@ -5,22 +5,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.Utils.ResumeDialogUtils;
 import com.example.habiaral.Utils.BahagiFirestoreUtils;
 import com.example.habiaral.Utils.FullScreenUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
-import com.example.habiaral.Utils.TextAnimationUtils;
+import com.example.habiaral.Utils.SoundManager;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -28,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
 
 public class PangngalanLesson extends AppCompatActivity {
 
@@ -81,6 +81,7 @@ public class PangngalanLesson extends AppCompatActivity {
             if (status == TextToSpeech.SUCCESS) {
                 textToSpeech.setLanguage(new Locale("tl", "PH"));
                 textToSpeech.setSpeechRate(1.0f);
+                SoundManager.setTts(textToSpeech);
                 loadCharacterLines();
             }
         });
@@ -91,7 +92,7 @@ public class PangngalanLesson extends AppCompatActivity {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             isNavigatingInsideApp = true;
             stopTTS();
-            startActivity(new Intent(this, PangngalanQuiz.class));
+            startActivity(new Intent(PangngalanLesson.this, PangngalanQuiz.class));
         });
 
         backOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
@@ -240,14 +241,19 @@ public class PangngalanLesson extends AppCompatActivity {
                     if (!utteranceId.startsWith(utterancePage)) return;
                     index[0]++;
                     if (index[0] < lines.size()) {
-                        speak(lines.get(index[0]), utterancePage + "_" + index[0]);
+                        if (!SoundManager.isMuted(PangngalanLesson.this)) {
+                            speak(lines.get(index[0]), utterancePage + "_" + index[0]);
+                        }
                     } else onComplete.run();
                 });
             }
+
             @Override public void onError(String s) {}
         });
 
-        speak(lines.get(0), utterancePage + "_0");
+        if (!SoundManager.isMuted(this)) {
+            speak(lines.get(0), utterancePage + "_0");
+        }
     }
 
     private void speak(String text, String id) {
