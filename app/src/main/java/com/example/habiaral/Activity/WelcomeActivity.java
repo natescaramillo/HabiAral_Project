@@ -17,7 +17,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
-
+import androidx.constraintlayout.widget.ConstraintLayout;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +28,9 @@ public class WelcomeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseFirestore db;
-    private LinearLayout btnGoogleLogin;
+
+    private ConstraintLayout btnGoogleLogin;
+
     private Handler handler = new Handler();
     private Runnable internetCheckRunnable;
     private boolean activityInitialized = false;

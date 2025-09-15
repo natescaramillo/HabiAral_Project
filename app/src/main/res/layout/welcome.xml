@@ -48,14 +48,14 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="211dp"
-        android:layout_height="45dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_small"
         android:fontFamily="@font/special"
         android:gravity="center"
         android:text="Maligayang Pagdating sa"
         android:textColor="#A27B5C"
-        android:textSize="@dimen/text_title"
+        android:textSize="@dimen/text_title_large"
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
@@ -74,13 +74,13 @@
         android:gravity="center"
         android:text="HabiAral"
         android:textColor="#A27B5C"
-        android:textSize="@dimen/text_title_large"
+        android:textSize="45dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.222" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btnGoogleLogin"
@@ -122,13 +122,12 @@
             android:gravity="center"
             android:text="Login with Google"
             android:textColor="#5C4033"
-            android:textSize="@dimen/text_small"
+            android:textSize="11dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.792"
+            app:layout_constraintHorizontal_bias="0.671"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.473" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
