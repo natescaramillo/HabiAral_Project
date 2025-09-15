@@ -45,12 +45,11 @@
         app:layout_constraintGuide_percent="0.80" />
 
 
-    <!-- Google Button -->
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="197dp"
-        android:layout_height="44dp"
+        android:layout_width="211dp"
+        android:layout_height="45dp"
         android:layout_marginTop="@dimen/margin_small"
         android:fontFamily="@font/special"
         android:gravity="center"
@@ -61,7 +60,10 @@
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintTop_toTopOf="@id/guidelineTop"
-        app:layout_constraintVertical_bias="0.031" />
+        app:layout_constraintVertical_bias="0.021" />
+
+
+    <!-- Google Button -->
 
     <TextView
         android:id="@+id/textView3"
@@ -114,8 +116,8 @@
 
         <TextView
             android:id="@+id/textView16"
-            android:layout_width="113dp"
-            android:layout_height="19dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:fontFamily="@font/special"
             android:gravity="center"
             android:text="Login with Google"
@@ -123,9 +125,10 @@
             android:textSize="@dimen/text_small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.849"
+            app:layout_constraintHorizontal_bias="0.792"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.473" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
