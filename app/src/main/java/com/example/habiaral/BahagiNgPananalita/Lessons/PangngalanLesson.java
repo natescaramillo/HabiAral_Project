@@ -27,6 +27,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import android.content.ActivityNotFoundException;
+import android.speech.tts.Voice;
+import android.widget.Toast;
 
 
 public class PangngalanLesson extends AppCompatActivity {
@@ -77,14 +80,55 @@ public class PangngalanLesson extends AppCompatActivity {
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
+        // 🔹 Initialize TTS with Filipino voice check
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
-                textToSpeech.setLanguage(new Locale("tl", "PH"));
-                textToSpeech.setSpeechRate(1.0f);
-                SoundManager.setTts(textToSpeech);
-                loadCharacterLines();
+
+                // Build Filipino locale
+                Locale filLocale = new Locale.Builder().setLanguage("fil").setRegion("PH").build();
+
+                // Try setLanguage first
+                int result = textToSpeech.setLanguage(filLocale);
+
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    // No Filipino voice installed — prompt user to install
+                    Toast.makeText(this,
+                            "Kailangan i-download ang Filipino voice sa Text-to-Speech settings.",
+                            Toast.LENGTH_LONG).show();
+                    try {
+                        Intent installIntent = new Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                        startActivity(installIntent);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(this,
+                                "Hindi ma-open ang installer ng TTS.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    // Filipino voice available. Force it if possible
+                    Voice selected = null;
+                    for (Voice v : textToSpeech.getVoices()) {
+                        Locale vLocale = v.getLocale();
+                        if (vLocale != null && vLocale.getLanguage().equals("fil")) {
+                            selected = v;
+                            break;
+                        } else if (v.getName().toLowerCase().contains("fil")) {
+                            selected = v;
+                            break;
+                        }
+                    }
+                    if (selected != null) {
+                        textToSpeech.setVoice(selected);
+                    }
+
+                    textToSpeech.setSpeechRate(1.0f);
+                    SoundManager.setTts(textToSpeech);
+                    loadCharacterLines();
+                }
+            } else {
+                Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
             }
         });
+
 
         checkLessonStatus();
 
