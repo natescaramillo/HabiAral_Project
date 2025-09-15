@@ -60,10 +60,11 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:src="@drawable/tarsier_3d"
-        app:layout_constraintTop_toBottomOf="@id/baguhan_instructionText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintDimensionRatio="16:11"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/baguhan_instructionText"
         app:layout_constraintWidth_percent="0.85" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

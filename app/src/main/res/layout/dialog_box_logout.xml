@@ -29,6 +29,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.678">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline45"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.50" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="61dp"
@@ -61,49 +68,55 @@
             android:id="@+id/textViewMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:fontFamily="@font/special"
             android:gravity="center"
             android:text="Sigurado ka bang gusto mong mag-logout?"
             android:textColor="#ffffff"
             android:textSize="20sp"
+            android:autoSizeMinTextSize="5dp"
+            android:autoSizeMaxTextSize="500dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.383" />
+            app:layout_constraintVertical_bias="0.411" />
 
         <Button
             android:id="@+id/btnLogoutNo"
             android:layout_width="100dp"
             android:layout_height="60dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/button_color"
             android:fontFamily="@font/special"
             android:text="Hindi"
             android:textColor="#ffffff"
-            android:layout_marginBottom="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.85"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline45"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.911" />
+            app:layout_constraintVertical_bias="0.913" />
 
         <Button
             android:id="@+id/btnLogoutYes"
             android:layout_width="100dp"
             android:layout_height="60dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/button_color"
             android:fontFamily="@font/special"
             android:text="Oo"
             android:textColor="#ffffff"
-            android:layout_marginBottom="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.162"
+            app:layout_constraintEnd_toStartOf="@+id/guideline45"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.91" />
+            app:layout_constraintVertical_bias="0.913" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
