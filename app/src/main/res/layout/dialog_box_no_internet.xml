@@ -71,6 +71,8 @@
             android:justificationMode="inter_word"
             android:text="Walang mahagilap na internet\n sa iyong lugar. Ulitin muli!"
             android:textColor="#fff"
+            android:autoSizeMinTextSize="5dp"
+            android:autoSizeMaxTextSize="50dp"
             android:textSize="15sp"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/guideline36"
