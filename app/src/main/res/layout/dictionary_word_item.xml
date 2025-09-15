@@ -29,8 +29,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="8dp">
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp">
 
             <TextView
                 android:id="@+id/wordTextView"
@@ -40,7 +41,7 @@
                 android:fontFamily="@font/special"
                 android:text="Sample Word"
                 android:textColor="#ffffff"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/speakerIcon"
@@ -54,9 +55,12 @@
 
     <TextView
         android:id="@+id/meaningTextView"
-        android:layout_width="318dp"
+        android:layout_width="0dp"
         android:layout_height="79dp"
         android:fontFamily="@font/special"
+        android:layout_margin="5dp"
+        android:justificationMode="inter_word"
+        android:gravity="start"
         android:text="This is an example meaning"
         android:textColor="#ffffff"
         android:textSize="15sp"
