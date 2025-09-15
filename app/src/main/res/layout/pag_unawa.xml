@@ -35,8 +35,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/kwento1"
-                android:layout_width="327dp"
-                android:layout_height="162dp"
+                android:layout_width="330dp"
+                android:layout_height="193dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rounded_rect"
@@ -92,8 +92,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/kwento2"
-                android:layout_width="327dp"
-                android:layout_height="162dp"
+                android:layout_width="330dp"
+                android:layout_height="193dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rounded_rect"
@@ -107,7 +107,7 @@
                     android:layout_height="0dp"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/tarshier_mango"
+                    android:src="@drawable/agila"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -150,8 +150,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/kwento3"
-                android:layout_width="327dp"
-                android:layout_height="162dp"
+                android:layout_width="330dp"
+                android:layout_height="193dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rounded_rect"
@@ -165,7 +165,7 @@
                     android:layout_height="0dp"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/tarshier_mango"
+                    android:src="@drawable/kakanin"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -207,8 +207,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/kwento4"
-                android:layout_width="327dp"
-                android:layout_height="162dp"
+                android:layout_width="330dp"
+                android:layout_height="193dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rounded_rect"
@@ -222,7 +222,7 @@
                     android:layout_height="0dp"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/tarshier_mango"
+                    android:src="@drawable/sulayman"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
