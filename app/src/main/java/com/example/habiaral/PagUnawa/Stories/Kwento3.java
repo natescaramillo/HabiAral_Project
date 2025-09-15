@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.PagUnawa.Quiz.Kwento3Quiz;
+import com.example.habiaral.PagUnawa.Quiz.Kwento4Quiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,13 +21,17 @@ import java.util.Map;
 public class Kwento3 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.kwento1_page01, R.drawable.kwento1_page02, R.drawable.kwento1_page03,
-            R.drawable.kwento1_page04, R.drawable.kwento1_page05, R.drawable.kwento1_page06,
-            R.drawable.kwento1_page07, R.drawable.kwento1_page08, R.drawable.kwento1_page09,
-            R.drawable.kwento1_page10, R.drawable.kwento1_page11, R.drawable.kwento1_page12,
-            R.drawable.kwento1_page13, R.drawable.kwento1_page14, R.drawable.kwento1_page15,
-            R.drawable.kwento1_page16, R.drawable.kwento1_page17, R.drawable.kwento1_page18,
-            R.drawable.kwento1_page19
+            R.drawable.juan_01, R.drawable.juan_02, R.drawable.juan_03,
+            R.drawable.juan_04, R.drawable.juan_05, R.drawable.juan_06,
+            R.drawable.juan_07, R.drawable.juan_08, R.drawable.juan_09,
+            R.drawable.juan_10, R.drawable.juan_11, R.drawable.juan_12,
+            R.drawable.juan_13, R.drawable.juan_14, R.drawable.juan_15,
+            R.drawable.juan_16, R.drawable.juan_17, R.drawable.juan_18,
+            R.drawable.juan_19, R.drawable.juan_20, R.drawable.juan_21,
+            R.drawable.juan_22, R.drawable.juan_23, R.drawable.juan_24,
+            R.drawable.juan_25, R.drawable.juan_26, R.drawable.juan_27,
+            R.drawable.juan_28, R.drawable.juan_29, R.drawable.juan_30,
+            R.drawable.juan_31
     };
     private boolean isLessonDone = false;
     private ImageView storyImage;

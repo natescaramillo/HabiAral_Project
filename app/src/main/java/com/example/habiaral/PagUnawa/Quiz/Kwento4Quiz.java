@@ -37,7 +37,7 @@ public class Kwento4Quiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_kwento3_quiz);
+        setContentView(R.layout.pag_unawa_kwento4_quiz);
 
         nextButton = findViewById(R.id.nextButton);
 
@@ -56,7 +56,8 @@ public class Kwento4Quiz extends AppCompatActivity {
         builder.setCancelable(false);
 
         Button retryButton = dialogView.findViewById(R.id.retryButton);
-        Button homeButton = dialogView.findViewById(R.id.finishButton);
+        Button taposButton = dialogView.findViewById(R.id.finishButton);
+        Button homeButton = dialogView.findViewById(R.id.returnButton);
 
         AlertDialog dialog = builder.create();
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
@@ -69,6 +70,14 @@ public class Kwento4Quiz extends AppCompatActivity {
             startActivity(intent);
         });
 
+        taposButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = new Intent(Kwento4Quiz.this, PagUnawa.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+
         homeButton.setOnClickListener(v -> {
             dialog.dismiss();
             Intent intent = new Intent(Kwento4Quiz.this, PagUnawa.class);
@@ -78,11 +87,8 @@ public class Kwento4Quiz extends AppCompatActivity {
         });
     }
 
-    // =========================
-    // FIRESTORE UPDATES
-    // =========================
     private void unlockNextLesson() {
-        Toast.makeText(this, "Next Lesson Unlocked: Kwento3!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Next Lesson Unlocked: Kwento4!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {
@@ -92,15 +98,15 @@ public class Kwento4Quiz extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> kwento3Status = new HashMap<>();
-        kwento3Status.put("status", "completed");
+        Map<String, Object> kwento4Status = new HashMap<>();
+        kwento4Status.put("status", "completed");
 
         Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("kwento3", kwento3Status);
+        lessonsMap.put("kwento4", kwento4Status);
 
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "kwento3");
+        updateMap.put("current_lesson", "kwento4");
 
         db.collection("module_progress")
                 .document(uid)
@@ -129,7 +135,7 @@ public class Kwento4Quiz extends AppCompatActivity {
             if (lessons == null) return;
 
             String[] lessonKeys = {
-                    "kwento1", "kwento2", "kwento3"
+                    "kwento1", "kwento2", "kwento3", "kwento4"
             };
 
             for (String key : lessonKeys) {
@@ -211,13 +217,11 @@ public class Kwento4Quiz extends AppCompatActivity {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             dialog.getWindow().setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
 
-            // 👉 Gamitin LayoutParams para makuha yung offset na parang toast
             WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-            params.y = 50; // offset mula sa taas (px)
+            params.y = 50;
             dialog.getWindow().setAttributes(params);
         }
 
-        // 🎵 Play sound sabay sa pop up
         dialog.setOnShowListener(d -> {
             MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.achievement_pop);
             mediaPlayer.setVolume(0.5f, 0.5f);

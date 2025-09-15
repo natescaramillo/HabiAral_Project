@@ -126,6 +126,10 @@
             android:screenOrientation="portrait" />
         <activity android:name=".PagUnawa.Quiz.Kwento3Quiz"
             android:screenOrientation="portrait" />
+        <activity android:name=".PagUnawa.Stories.Kwento4"
+            android:screenOrientation="portrait" />
+        <activity android:name=".PagUnawa.Quiz.Kwento4Quiz"
+            android:screenOrientation="portrait" />
         <activity android:name=".KayarianNgPangungusap.Lessons.PayakLesson"
             android:screenOrientation="portrait" />
         <activity android:name=".KayarianNgPangungusap.Quiz.PayakQuiz"

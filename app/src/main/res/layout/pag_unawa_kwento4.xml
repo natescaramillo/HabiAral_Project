@@ -13,7 +13,7 @@
         android:layout_height="517dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/kwento1_page01"
+        android:src="@drawable/sulayman_01"
         app:layout_constraintBottom_toTopOf="@+id/UnlockButtonKwento4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.466"

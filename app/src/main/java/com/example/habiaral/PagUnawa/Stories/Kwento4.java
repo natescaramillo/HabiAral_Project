@@ -21,13 +21,14 @@ import java.util.Map;
 public class Kwento4 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.kwento1_page01, R.drawable.kwento1_page02, R.drawable.kwento1_page03,
-            R.drawable.kwento1_page04, R.drawable.kwento1_page05, R.drawable.kwento1_page06,
-            R.drawable.kwento1_page07, R.drawable.kwento1_page08, R.drawable.kwento1_page09,
-            R.drawable.kwento1_page10, R.drawable.kwento1_page11, R.drawable.kwento1_page12,
-            R.drawable.kwento1_page13, R.drawable.kwento1_page14, R.drawable.kwento1_page15,
-            R.drawable.kwento1_page16, R.drawable.kwento1_page17, R.drawable.kwento1_page18,
-            R.drawable.kwento1_page19
+            R.drawable.sulayman_01, R.drawable.sulayman_02, R.drawable.sulayman_03,
+            R.drawable.sulayman_04, R.drawable.sulayman_05, R.drawable.sulayman_06,
+            R.drawable.sulayman_07, R.drawable.sulayman_08, R.drawable.sulayman_09,
+            R.drawable.sulayman_10, R.drawable.sulayman_11, R.drawable.sulayman_12,
+            R.drawable.sulayman_13, R.drawable.sulayman_14, R.drawable.sulayman_15,
+            R.drawable.sulayman_16, R.drawable.sulayman_17, R.drawable.sulayman_18,
+            R.drawable.sulayman_19, R.drawable.sulayman_20, R.drawable.sulayman_21,
+            R.drawable.sulayman_22, R.drawable.sulayman_23
     };
     private boolean isLessonDone = false;
     private ImageView storyImage;
@@ -37,10 +38,10 @@ public class Kwento4 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_kwento3);
+        setContentView(R.layout.pag_unawa_kwento4);
 
-        storyImage = findViewById(R.id.imageViewComic3);
-        unlockButton = findViewById(R.id.UnlockButtonKwento3);
+        storyImage = findViewById(R.id.imageViewComic4);
+        unlockButton = findViewById(R.id.UnlockButtonKwento4);
 
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
@@ -86,9 +87,9 @@ public class Kwento4 extends AppCompatActivity {
                         if (module3 != null) {
                             Map<String, Object> lessons = (Map<String, Object>) module3.get("lessons");
                             if (lessons != null) {
-                                Map<String, Object> kwento3 = (Map<String, Object>) lessons.get("kwento3");
-                                if (kwento3 != null) {
-                                    String status = (String) kwento3.get("status");
+                                Map<String, Object> kwento4 = (Map<String, Object>) lessons.get("kwento4");
+                                if (kwento4 != null) {
+                                    String status = (String) kwento4.get("status");
                                     if ("in_progress".equals(status) || "completed".equals(status)) {
                                         isLessonDone = true;
                                         unlockButton.setEnabled(true);
@@ -108,16 +109,16 @@ public class Kwento4 extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> kwento3Status = new HashMap<>();
-        kwento3Status.put("status", "in_progress");
+        Map<String, Object> kwento4Status = new HashMap<>();
+        kwento4Status.put("status", "in_progress");
 
         Map<String, Object> lessonMap = new HashMap<>();
-        lessonMap.put("kwento3", kwento3Status);
+        lessonMap.put("kwento4", kwento4Status);
 
         Map<String, Object> progressMap = new HashMap<>();
         progressMap.put("modulename", "Pag-Unawa");
         progressMap.put("status", "in_progress");
-        progressMap.put("current_lesson", "kwento3");
+        progressMap.put("current_lesson", "kwento4");
         progressMap.put("lessons", lessonMap);
 
         db.collection("module_progress")
