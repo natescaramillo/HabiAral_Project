@@ -59,7 +59,7 @@
         android:gravity="center"
         android:text="Maligayang Pagdating sa"
         android:textColor="#A27B5C"
-        android:textSize="@dimen/text_title_large"
+        android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
         app:layout_constraintHorizontal_bias="0.0"
@@ -77,7 +77,7 @@
         android:gravity="center"
         android:text="HabiAral"
         android:textColor="#A27B5C"
-        android:textSize="@dimen/text_title_xlarge"
+        android:textSize="30dp  "
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintHorizontal_bias="0.0"
@@ -95,13 +95,15 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="@dimen/padding_medium"
-        android:paddingTop="@dimen/padding_small"
+        android:paddingTop="2dp"
         android:paddingEnd="@dimen/padding_medium"
-        android:paddingBottom="@dimen/padding_small"
+        android:paddingBottom="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        app:layout_constraintTop_toTopOf="@id/guidelineBottom">
+        app:layout_constraintTop_toTopOf="@id/guidelineBottom"
+        app:layout_constraintVertical_bias="0.235">
 
         <ImageView
             android:layout_width="@dimen/icon_small"
