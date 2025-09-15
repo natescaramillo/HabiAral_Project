@@ -45,25 +45,23 @@
         app:layout_constraintGuide_percent="0.80" />
 
 
+    <!-- Google Button -->
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="211dp"
-        android:layout_height="45dp"
+        android:layout_width="197dp"
+        android:layout_height="44dp"
         android:layout_marginTop="@dimen/margin_small"
         android:fontFamily="@font/special"
         android:gravity="center"
         android:text="Maligayang Pagdating sa"
         android:textColor="#A27B5C"
-        android:textSize="20dp"
+        android:textSize="@dimen/text_title"
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintTop_toTopOf="@id/guidelineTop"
-        app:layout_constraintVertical_bias="0.021" />
-
-
-    <!-- Google Button -->
+        app:layout_constraintVertical_bias="0.031" />
 
     <TextView
         android:id="@+id/textView3"
@@ -74,7 +72,7 @@
         android:gravity="center"
         android:text="HabiAral"
         android:textColor="#A27B5C"
-        android:textSize="30dp"
+        android:textSize="@dimen/text_title_large"
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintHorizontal_bias="0.0"
@@ -82,7 +80,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:layout_constraintVertical_bias="0.0" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btnGoogleLogin"
         android:layout_width="182dp"
         android:layout_height="39dp"
@@ -100,25 +98,35 @@
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintTop_toTopOf="@id/guidelineBottom"
-        app:layout_constraintVertical_bias="0.235">
+        app:layout_constraintVertical_bias="0.101">
 
         <ImageView
-            android:layout_width="@dimen/icon_small"
-            android:layout_height="@dimen/icon_small"
-            android:layout_marginEnd="@dimen/margin_small"
+            android:id="@+id/imageView12"
+            android:layout_width="42dp"
+            android:layout_height="33dp"
             android:contentDescription="Google Logo"
-            android:src="@drawable/design_google" />
+            android:src="@drawable/design_google"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textView16"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_medium"
+            android:id="@+id/textView16"
+            android:layout_width="113dp"
+            android:layout_height="19dp"
             android:fontFamily="@font/special"
             android:gravity="center"
             android:text="Login with Google"
             android:textColor="#5C4033"
-            android:textSize="@dimen/text_small" />
-    </LinearLayout>
+            android:textSize="@dimen/text_small"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.849"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline14"
