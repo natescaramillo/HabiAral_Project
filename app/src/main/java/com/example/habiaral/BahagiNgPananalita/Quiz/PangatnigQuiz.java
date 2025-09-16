@@ -56,6 +56,7 @@ public class PangatnigQuiz extends AppCompatActivity {
     private View background;
     private int lastColorStage = 3;
     private MediaPlayer resultPlayer;
+    private List<Map<String, Object>> allQuizList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,10 +193,17 @@ public class PangatnigQuiz extends AppCompatActivity {
                     if (doc.exists()) {
                         introText = doc.getString("intro");
                         lessonName = doc.getString("lesson");
-                        quizList = (List<Map<String, Object>>) doc.get("Quizzes");
 
-                        if (quizList != null && !quizList.isEmpty()) {
-                            Collections.shuffle(quizList);
+                        // Kunin lahat ng tanong
+                        allQuizList = (List<Map<String, Object>>) doc.get("Quizzes");
+
+                        if (allQuizList != null && !allQuizList.isEmpty()) {
+                            // Shuffle lahat muna
+                            Collections.shuffle(allQuizList);
+
+                            // First attempt: 10 questions lang
+                            int limit = Math.min(10, allQuizList.size());
+                            quizList = new ArrayList<>(allQuizList.subList(0, limit));
                         }
 
                         if (introText != null) {

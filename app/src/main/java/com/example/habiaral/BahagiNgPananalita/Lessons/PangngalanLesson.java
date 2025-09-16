@@ -31,7 +31,6 @@ import android.content.ActivityNotFoundException;
 import android.speech.tts.Voice;
 import android.widget.Toast;
 
-
 public class PangngalanLesson extends AppCompatActivity {
 
     private final int[] pangngalanLesson = {
@@ -80,18 +79,14 @@ public class PangngalanLesson extends AppCompatActivity {
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
-        // 🔹 Initialize TTS with Filipino voice check
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
 
-                // Build Filipino locale
                 Locale filLocale = new Locale.Builder().setLanguage("fil").setRegion("PH").build();
 
-                // Try setLanguage first
                 int result = textToSpeech.setLanguage(filLocale);
 
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    // No Filipino voice installed — prompt user to install
                     Toast.makeText(this,
                             "Kailangan i-download ang Filipino voice sa Text-to-Speech settings.",
                             Toast.LENGTH_LONG).show();
@@ -104,7 +99,6 @@ public class PangngalanLesson extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    // Filipino voice available. Force it if possible
                     Voice selected = null;
                     for (Voice v : textToSpeech.getVoices()) {
                         Locale vLocale = v.getLocale();

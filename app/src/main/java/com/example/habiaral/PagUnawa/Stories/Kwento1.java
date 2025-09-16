@@ -2,11 +2,15 @@ package com.example.habiaral.PagUnawa.Stories;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habiaral.PagUnawa.PagUnawa;
 import com.example.habiaral.PagUnawa.Quiz.Kwento1Quiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,7 +49,20 @@ public class Kwento1 extends AppCompatActivity {
         unlockButton.setAlpha(0.5f);
 
         storyImage.setImageResource(comicPages[currentPage]);
-        storyImage.setOnClickListener(v -> nextPage());
+
+        storyImage.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                float x = event.getX();
+                float width = storyImage.getWidth();
+
+                if (x < width / 2) {
+                    previousPage();
+                } else {
+                    nextPage();
+                }
+            }
+            return true;
+        });
 
         checkLessonStatusFromFirestore();
 
@@ -55,12 +72,23 @@ public class Kwento1 extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override public void handleOnBackPressed() {
+                startActivity(new Intent(Kwento1.this, PagUnawa.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+                finish();
+            }
+        });
     }
 
     private void nextPage() {
         if (currentPage < comicPages.length - 1) {
             currentPage++;
+
+            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
             storyImage.setImageResource(comicPages[currentPage]);
+            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
 
             if (currentPage == comicPages.length - 1) {
                 isLessonDone = true;
@@ -68,6 +96,16 @@ public class Kwento1 extends AppCompatActivity {
                 unlockButton.setAlpha(1f);
                 saveProgressToFirestore();
             }
+        }
+    }
+
+    private void previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+
+            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
+            storyImage.setImageResource(comicPages[currentPage]);
+            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
         }
     }
 

@@ -47,6 +47,7 @@ public class PangUkolQuiz extends AppCompatActivity {
     private AlertDialog resultDialog;
     private String lessonName = "";
     private int correctAnswers = 0;
+    private List<Map<String, Object>> allQuizList = new ArrayList<>();
     private int totalQuestions = 0;
     private String introText = "";
     private int currentIndex = -1;
@@ -192,10 +193,17 @@ public class PangUkolQuiz extends AppCompatActivity {
                     if (doc.exists()) {
                         introText = doc.getString("intro");
                         lessonName = doc.getString("lesson");
-                        quizList = (List<Map<String, Object>>) doc.get("Quizzes");
 
-                        if (quizList != null && !quizList.isEmpty()) {
-                            Collections.shuffle(quizList);
+                        // Kunin lahat ng tanong
+                        allQuizList = (List<Map<String, Object>>) doc.get("Quizzes");
+
+                        if (allQuizList != null && !allQuizList.isEmpty()) {
+                            // Shuffle lahat muna
+                            Collections.shuffle(allQuizList);
+
+                            // First attempt: 10 questions lang
+                            int limit = Math.min(10, allQuizList.size());
+                            quizList = new ArrayList<>(allQuizList.subList(0, limit));
                         }
 
                         if (introText != null) {

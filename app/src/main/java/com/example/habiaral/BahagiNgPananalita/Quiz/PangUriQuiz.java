@@ -52,6 +52,7 @@ public class PangUriQuiz extends AppCompatActivity {
     private int currentIndex = -1;
     private ProgressBar timerBar;
     private FirebaseFirestore db;
+    private List<Map<String, Object>> allQuizList = new ArrayList<>();
     private MediaPlayer mediaPlayer;
     private View background;
     private int lastColorStage = 3;
@@ -192,10 +193,17 @@ public class PangUriQuiz extends AppCompatActivity {
                     if (doc.exists()) {
                         introText = doc.getString("intro");
                         lessonName = doc.getString("lesson");
-                        quizList = (List<Map<String, Object>>) doc.get("Quizzes");
 
-                        if (quizList != null && !quizList.isEmpty()) {
-                            Collections.shuffle(quizList);
+                        // Kunin lahat ng tanong
+                        allQuizList = (List<Map<String, Object>>) doc.get("Quizzes");
+
+                        if (allQuizList != null && !allQuizList.isEmpty()) {
+                            // Shuffle lahat muna
+                            Collections.shuffle(allQuizList);
+
+                            // First attempt: 10 questions lang
+                            int limit = Math.min(10, allQuizList.size());
+                            quizList = new ArrayList<>(allQuizList.subList(0, limit));
                         }
 
                         if (introText != null) {

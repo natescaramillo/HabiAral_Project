@@ -30,7 +30,7 @@ public class PagUnawa extends AppCompatActivity {
     FrameLayout kwento1Lock, kwento2Lock, kwento3Lock, kwento4Lock;
     FirebaseFirestore db;
     String uid;
-    private MediaPlayer mediaPlayer; // 🔊 Sound player
+    private MediaPlayer mediaPlayer;
 
 
     @Override
@@ -47,7 +47,6 @@ public class PagUnawa extends AppCompatActivity {
         uid = user.getUid();
         db = FirebaseFirestore.getInstance();
 
-        // Load from cache first
         Map<String, Object> cachedData = LessonProgressCache.getData();
         if (cachedData != null) {
             updateUIFromProgress(cachedData);
@@ -97,10 +96,7 @@ public class PagUnawa extends AppCompatActivity {
         Map<String, Object> data = snapshot.getData();
         if (data == null) return;
 
-        // Update cache
         LessonProgressCache.setData(data);
-
-        // Update UI
         updateUIFromProgress(data);
     }
 
@@ -155,7 +151,6 @@ public class PagUnawa extends AppCompatActivity {
         kwento3Lock = findViewById(R.id.kwento3Lock);
         kwento4Lock = findViewById(R.id.kwento4Lock);
 
-        // 🔊 Add click sound for each lesson
         btnKwento1.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             startActivity(new Intent(this, Kwento1.class));
@@ -170,6 +165,7 @@ public class PagUnawa extends AppCompatActivity {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             startActivity(new Intent(this, Kwento3.class));
         });
+
         btnKwento4.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             startActivity(new Intent(this, Kwento4.class));
@@ -177,7 +173,7 @@ public class PagUnawa extends AppCompatActivity {
     }
 
     private void checkAndCompleteModule(boolean kwento1Done, boolean kwento2Done, boolean kwento3Done, boolean kwento4Done) {
-        boolean allDone = kwento1Done && kwento2Done && kwento3Done;
+        boolean allDone = kwento1Done && kwento2Done && kwento3Done && kwento4Done;
 
         Map<String, Object> update = new HashMap<>();
         Map<String, Object> module3Updates = new HashMap<>();
