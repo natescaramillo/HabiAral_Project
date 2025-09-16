@@ -26,6 +26,10 @@
             android:text="Palitan ang Palayaw"
             android:textColor="#FFFFFF"
             android:textSize="32sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="50sp"
+            android:autoSizeStepGranularity="2sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,6 +45,10 @@
             android:text="Ilagay ang bagong palayaw sa ibaba:"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="30sp"
+            android:autoSizeStepGranularity="2sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/textViewTitle"
             app:layout_constraintHorizontal_bias="0.491"
@@ -78,10 +86,10 @@
             android:textColor="#ffffff"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline51"
-            app:layout_constraintHorizontal_bias="0.625"
+            app:layout_constraintHorizontal_bias="0.63"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline50"
-            app:layout_constraintVertical_bias="0.058" />
+            app:layout_constraintVertical_bias="0.283" />
 
         <Button
             android:id="@+id/buttonCancel"
@@ -96,7 +104,7 @@
             app:layout_constraintHorizontal_bias="0.333"
             app:layout_constraintStart_toStartOf="@+id/guideline51"
             app:layout_constraintTop_toTopOf="@+id/guideline50"
-            app:layout_constraintVertical_bias="0.059" />
+            app:layout_constraintVertical_bias="0.283" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline49"
