@@ -3,21 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="500dp">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="343dp"
-        android:layout_height="309dp"
+        android:layout_width="0dp"
+        android:layout_height="317dp"
         android:background="@drawable/pop_up_main_color"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.111">
 
         <TextView
             android:id="@+id/textViewTitle"
-            android:layout_width="335dp"
-            android:layout_height="75dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:fontFamily="@font/special"
             android:gravity="center_horizontal"
             android:text="Palitan ang Palayaw"
@@ -31,9 +34,8 @@
 
         <TextView
             android:id="@+id/textViewPrompt"
-            android:layout_width="271dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="39dp"
             android:fontFamily="@font/special"
             android:gravity="center"
             android:text="Ilagay ang bagong palayaw sa ibaba:"
@@ -41,15 +43,17 @@
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/textViewTitle"
+            app:layout_constraintHorizontal_bias="0.491"
             app:layout_constraintStart_toStartOf="@+id/textViewTitle"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.186" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
+            app:layout_constraintVertical_bias="0.0" />
 
         <EditText
             android:id="@+id/editTextUsername"
-            android:layout_width="267dp"
-            android:layout_height="47dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="0dp"
+            android:layout_height="51dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:background="@drawable/custom_edit_text_nickname"
             android:fontFamily="@font/special"
             android:hint="Bagong Palayaw"
@@ -58,11 +62,11 @@
             android:textColorHint="#000000"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textViewPrompt"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/textViewPrompt"
-            app:layout_constraintTop_toBottomOf="@+id/textViewPrompt"
-            app:layout_constraintVertical_bias="0.013" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.333"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline49"
+            app:layout_constraintVertical_bias="0.07" />
 
         <Button
             android:id="@+id/buttonConfirm"
@@ -73,11 +77,11 @@
             android:text="Palitan"
             android:textColor="#ffffff"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/editTextUsername"
-            app:layout_constraintHorizontal_bias="0.116"
-            app:layout_constraintStart_toStartOf="@+id/editTextUsername"
-            app:layout_constraintTop_toBottomOf="@+id/editTextUsername"
-            app:layout_constraintVertical_bias="0.39" />
+            app:layout_constraintEnd_toStartOf="@+id/guideline51"
+            app:layout_constraintHorizontal_bias="0.625"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline50"
+            app:layout_constraintVertical_bias="0.058" />
 
         <Button
             android:id="@+id/buttonCancel"
@@ -88,11 +92,46 @@
             android:text="Kanselahin"
             android:textColor="#ffffff"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/editTextUsername"
-            app:layout_constraintHorizontal_bias="0.963"
-            app:layout_constraintStart_toStartOf="@+id/editTextUsername"
-            app:layout_constraintTop_toBottomOf="@+id/editTextUsername"
-            app:layout_constraintVertical_bias="0.39" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.333"
+            app:layout_constraintStart_toStartOf="@+id/guideline51"
+            app:layout_constraintTop_toTopOf="@+id/guideline50"
+            app:layout_constraintVertical_bias="0.059" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline49"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.35" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.6" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline51"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.02" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.98" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

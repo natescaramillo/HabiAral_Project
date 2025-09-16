@@ -36,28 +36,29 @@
             android:fontFamily="@font/special"
             android:text="Hindi"
             android:textColor="#ffffff"
+            android:layout_marginStart="10dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline30"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.352"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline32"
-            app:layout_constraintTop_toBottomOf="@+id/textView23"
-            app:layout_constraintVertical_bias="0.609" />
+            app:layout_constraintTop_toTopOf="@+id/guideline44"
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/button5"
             android:layout_width="83dp"
             android:layout_height="44dp"
-            android:layout_marginTop="11dp"
             android:background="@drawable/button_color"
             android:fontFamily="@font/special"
             android:text="OO"
             android:textColor="#ffffff"
+            android:layout_marginEnd="10dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline30"
             app:layout_constraintEnd_toStartOf="@+id/guideline32"
-            app:layout_constraintHorizontal_bias="0.676"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView23"
-            app:layout_constraintVertical_bias="0.466" />
+            app:layout_constraintTop_toTopOf="@+id/guideline44"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/textView23"
@@ -71,6 +72,9 @@
             android:autoSizeTextType="uniform"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
+            android:autoSizeMinTextSize="5dp"
+            android:autoSizeMaxTextSize="500dp"
+            android:autoSizeStepGranularity="2sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline44"
             app:layout_constraintEnd_toStartOf="@+id/guideline42"
             app:layout_constraintHorizontal_bias="0.502"
@@ -87,6 +91,10 @@
             android:text="Teka!"
             android:textColor="#FFFFFF"
             android:textSize="40sp"
+            android:autoSizeMinTextSize="20sp"
+            android:autoSizeMaxTextSize="100dp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

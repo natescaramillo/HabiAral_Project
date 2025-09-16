@@ -20,6 +20,20 @@
 
         <!-- Waiting Text (Hidden by default) -->
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline46"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline47"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95" />
+
         <ProgressBar
             android:id="@+id/loading_spinner"
             style="?android:attr/progressBarStyleLarge"
@@ -35,18 +49,24 @@
 
         <TextView
             android:id="@+id/waiting_text"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="@font/special"
             android:text="Waiting for internet connection..."
             android:textColor="#A27B5C"
+            android:layout_marginTop="10dp"
             android:textSize="18sp"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeMaxTextSize="50sp"
+            android:autoSizeStepGranularity="2sp"
+            android:gravity="center_horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.868" />
+            app:layout_constraintEnd_toStartOf="@+id/guideline47"
+            app:layout_constraintHorizontal_bias="0.506"
+            app:layout_constraintStart_toStartOf="@+id/guideline46"
+            app:layout_constraintTop_toBottomOf="@+id/loading_spinner"
+            app:layout_constraintVertical_bias="0.311" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
