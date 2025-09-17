@@ -96,10 +96,11 @@
                     <com.google.android.material.imageview.ShapeableImageView
                         android:layout_width="100dp"
                         android:layout_height="100dp"
-                        android:background="@drawable/rounded_image"
                         android:clipToOutline="true"
                         android:scaleType="fitXY"
-                        android:src="@drawable/home_bahagi" />
+                        android:src="@drawable/home_bahagi"
+                        android:background="@drawable/rounded_image"
+                        app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -131,7 +132,8 @@
                         android:layout_height="100dp"
                         android:background="@drawable/rounded_image"
                         android:clipToOutline="true"
-                        android:src="@drawable/home_kayarian" />
+                        android:src="@drawable/home_kayarian"
+                        app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -161,13 +163,15 @@
                     android:padding="12dp">
 
                     <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/home_pagunawa_image"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/home_pagunawa"
                         android:background="@drawable/rounded_image"
                         android:clipToOutline="true"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/home_pagunawa" />
-
+                        app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -200,7 +204,8 @@
                         android:background="@drawable/rounded_image"
                         android:clipToOutline="true"
                         android:scaleType="fitXY"
-                        android:src="@drawable/home_palaro" />
+                        android:src="@drawable/home_palaro"
+                        app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     <TextView
                         android:layout_width="0dp"
