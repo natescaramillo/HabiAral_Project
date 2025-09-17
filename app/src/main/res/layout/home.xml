@@ -93,7 +93,7 @@
                     android:orientation="horizontal"
                     android:padding="12dp">
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:background="@drawable/rounded_image"
@@ -126,7 +126,7 @@
                     android:orientation="horizontal"
                     android:padding="12dp">
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:background="@drawable/rounded_image"
@@ -160,7 +160,7 @@
                     android:orientation="horizontal"
                     android:padding="12dp">
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:background="@drawable/rounded_image"
@@ -194,7 +194,7 @@
                     android:orientation="horizontal"
                     android:padding="12dp">
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:background="@drawable/rounded_image"
