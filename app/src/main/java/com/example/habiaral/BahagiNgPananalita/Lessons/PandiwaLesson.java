@@ -43,20 +43,21 @@ public class PandiwaLesson extends AppCompatActivity {
             R.drawable.pandiwa13, R.drawable.pandiwa14, R.drawable.pandiwa15,
             R.drawable.pandiwa16, R.drawable.pandiwa17, R.drawable.pandiwa18
     };
+
     private android.os.Handler textHandler = new android.os.Handler();
     private Map<Integer, List<String>> pageLines = new HashMap<>();
+    private final boolean[] isFullScreen = {false};
+    private boolean isNavigatingInsideApp = false;
     private boolean waitForResumeChoice = false;
+    private ImageView backOption, nextOption;
     private boolean isLessonDone = false;
     private boolean isFirstTime = true;
     private TextToSpeech textToSpeech;
     private ImageView imageView;
     private Button unlockButton;
     private int currentPage = 0;
-    private final boolean[] isFullScreen = {false};
-    private ImageView backOption, nextOption;
     private int resumePage = -1;
     private int resumeLine = -1;
-    private boolean isNavigatingInsideApp = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,6 @@ public class PandiwaLesson extends AppCompatActivity {
             if (status == TextToSpeech.SUCCESS) {
 
                 Locale filLocale = new Locale.Builder().setLanguage("fil").setRegion("PH").build();
-
                 int result = textToSpeech.setLanguage(filLocale);
 
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {

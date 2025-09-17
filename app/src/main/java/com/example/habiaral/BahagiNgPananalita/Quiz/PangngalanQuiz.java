@@ -39,15 +39,26 @@ import com.example.habiaral.Cache.LessonProgressCache;
 
 public class PangngalanQuiz extends AppCompatActivity {
 
-    private List<Map<String, Object>> quizList = new ArrayList<>();
+    private List<Map<String, Object>> allQuizList = new ArrayList<>();
     private Button answer1, answer2, answer3, nextButton, introButton;
+    private List<Map<String, Object>> quizList = new ArrayList<>();
+    private Drawable redDrawable, orangeDrawable, greenDrawable;
+    private int greenSoundId, orangeSoundId, redSoundId;
     private TextView questionText, questionTitle;
     private CountDownTimer countDownTimer;
     private long timeLeftInMillis = 30000;
     private boolean quizFinished = false;
+    private boolean orangePlayed = false;
+    private boolean greenPlayed = false;
     private boolean isAnswered = false;
     private String correctAnswer = "";
+    private boolean redPlayed = false;
     private AlertDialog resultDialog;
+    private MediaPlayer resultPlayer;
+    private int currentStreamId = -1;
+    private MediaPlayer mediaPlayer;
+    private MediaPlayer readyPlayer;
+    private int lastColorStage = 3;
     private String lessonName = "";
     private int correctAnswers = 0;
     private int totalQuestions = 0;
@@ -55,21 +66,8 @@ public class PangngalanQuiz extends AppCompatActivity {
     private int currentIndex = -1;
     private ProgressBar timerBar;
     private FirebaseFirestore db;
-    private MediaPlayer mediaPlayer;
-    private View background;
-    private int lastColorStage = 3;
-    private MediaPlayer resultPlayer;
     private SoundPool soundPool;
-    private int greenSoundId, orangeSoundId, redSoundId;
-    private Drawable redDrawable, orangeDrawable, greenDrawable;
-    private boolean redPlayed = false;
-    private boolean orangePlayed = false;
-    private boolean greenPlayed = false;
-
-    private int currentStreamId = -1;
-    private MediaPlayer readyPlayer;
-
-    private List<Map<String, Object>> allQuizList = new ArrayList<>();
+    private View background;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,10 +85,9 @@ public class PangngalanQuiz extends AppCompatActivity {
         orangeDrawable = AppPreloader.orangeDrawable;
         greenDrawable = AppPreloader.greenDrawable;
 
-
         questionTitle = findViewById(R.id.questionTitle);
-        questionText = findViewById(R.id.pangngalan_questionText);
-        nextButton = findViewById(R.id.pangngalanNextButton);
+        questionText = findViewById(R.id.pangngalan_questionText); // !!
+        nextButton = findViewById(R.id.pangngalanNextButton); // !!
         timerBar = findViewById(R.id.timerBar);
         introButton = findViewById(R.id.intro_button);
         background = findViewById(R.id.bottomBar);
@@ -191,19 +188,12 @@ public class PangngalanQuiz extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadQuestion() {
-        // Start audio once
         playReadySound();
 
-        // Show "3" agad
         questionText.setText("3");
-
-        // After 1s → show "2"
         new Handler().postDelayed(() -> questionText.setText("2"), 1000);
-
-        // After 2s → show "1"
         new Handler().postDelayed(() -> questionText.setText("1"), 2000);
 
-        // After 3s → remove text + load question
         new Handler().postDelayed(() -> {
             questionText.setText("");
             currentIndex = 0;
@@ -226,14 +216,11 @@ public class PangngalanQuiz extends AppCompatActivity {
                         introText = doc.getString("intro");
                         lessonName = doc.getString("lesson");
 
-                        // Kunin lahat ng tanong
                         allQuizList = (List<Map<String, Object>>) doc.get("Quizzes");
 
                         if (allQuizList != null && !allQuizList.isEmpty()) {
-                            // Shuffle lahat muna
                             Collections.shuffle(allQuizList);
 
-                            // First attempt: 10 questions lang
                             int limit = Math.min(10, allQuizList.size());
                             quizList = new ArrayList<>(allQuizList.subList(0, limit));
                         }
@@ -283,7 +270,6 @@ public class PangngalanQuiz extends AppCompatActivity {
 
         lastColorStage = 3;
 
-        // reset sound flags
         redPlayed = false;
         orangePlayed = false;
         greenPlayed = false;
@@ -331,7 +317,6 @@ public class PangngalanQuiz extends AppCompatActivity {
                 disableAnswers();
                 nextButton.setEnabled(true);
 
-                // stop sound loop
                 if (currentStreamId != -1) {
                     soundPool.stop(currentStreamId);
                     currentStreamId = -1;
@@ -434,7 +419,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         resultDialog.setOnShowListener(d -> {
             releaseResultPlayer();
             int soundRes = passed ? R.raw.success : R.raw.game_over;
-            resultPlayer = MediaPlayer.create(PangngalanQuiz.this, soundRes);
+            resultPlayer = MediaPlayer.create(PangngalanQuiz.this, soundRes); // !!
             if (resultPlayer != null) {
                 resultPlayer.setVolume(0.6f, 0.6f);
                 resultPlayer.setOnCompletionListener(mp -> releaseResultPlayer());
@@ -464,7 +449,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         taposButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
-            navigateToLesson(PandiwaLesson.class);
+            navigateToLesson(PandiwaLesson.class); // !!
         });
 
         homeButton.setOnClickListener(v -> {
@@ -519,12 +504,11 @@ public class PangngalanQuiz extends AppCompatActivity {
         loadQuestion(currentIndex);
     }
 
-
     private void navigateToLesson(Class<?> lessonActivityClass) {
         stopTimerSound();
         releaseResultPlayer();
 
-        Intent intent = new Intent(PangngalanQuiz.this, lessonActivityClass);
+        Intent intent = new Intent(PangngalanQuiz.this, lessonActivityClass); // !!
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
@@ -547,7 +531,7 @@ public class PangngalanQuiz extends AppCompatActivity {
     }
 
     private void unlockNextLesson() {
-        Toast.makeText(this, "Next Lesson Unlocked: Pandiwa!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Next Lesson Unlocked: Pandiwa!", Toast.LENGTH_SHORT).show(); // !!
     }
 
     private void saveQuizResultToFirestore() {
@@ -592,7 +576,6 @@ public class PangngalanQuiz extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        // hinaan o i-mute lahat ng tunog
         if (currentStreamId != -1 && soundPool != null) {
             soundPool.setVolume(currentStreamId, 0f, 0f);
         }
@@ -652,5 +635,4 @@ public class PangngalanQuiz extends AppCompatActivity {
             readyPlayer = null;
         }
     }
-
 }

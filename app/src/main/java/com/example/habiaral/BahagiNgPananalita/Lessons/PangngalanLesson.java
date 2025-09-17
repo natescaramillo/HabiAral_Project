@@ -49,18 +49,18 @@ public class PangngalanLesson extends AppCompatActivity {
 
     private android.os.Handler textHandler = new android.os.Handler();
     private Map<Integer, List<String>> pageLines = new HashMap<>();
+    private final boolean[] isFullScreen = {false};
+    private boolean isNavigatingInsideApp = false;
     private boolean waitForResumeChoice = false;
+    private ImageView backOption, nextOption;
     private boolean isLessonDone = false;
     private boolean isFirstTime = true;
     private TextToSpeech textToSpeech;
     private ImageView imageView;
     private Button unlockButton;
     private int currentPage = 0;
-    private final boolean[] isFullScreen = {false};
-    private ImageView backOption, nextOption;
     private int resumePage = -1;
     private int resumeLine = -1;
-    private boolean isNavigatingInsideApp = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +83,6 @@ public class PangngalanLesson extends AppCompatActivity {
             if (status == TextToSpeech.SUCCESS) {
 
                 Locale filLocale = new Locale.Builder().setLanguage("fil").setRegion("PH").build();
-
                 int result = textToSpeech.setLanguage(filLocale);
 
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
@@ -123,14 +122,13 @@ public class PangngalanLesson extends AppCompatActivity {
             }
         });
 
-
         checkLessonStatus();
 
         unlockButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             isNavigatingInsideApp = true;
             stopTTS();
-            startActivity(new Intent(PangngalanLesson.this, PangngalanQuiz.class));
+            startActivity(new Intent(this, PangngalanQuiz.class));
         });
 
         backOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });

@@ -117,6 +117,15 @@ public class PalaroDalubhasa extends AppCompatActivity {
         errorIcon = findViewById(R.id.error_icon);
         errorTooltip = findViewById(R.id.errorTooltip);
 
+        Button btnSuriin = findViewById(R.id.SuriinButton);
+        btnSuriin.setVisibility(View.VISIBLE);
+        btnTapos.setVisibility(View.GONE);
+
+        btnSuriin.setOnClickListener(v -> {
+            playButtonClickSound();
+            checkGrammar();
+        });
+
         btnUmalis.setOnClickListener(v -> {
             playButtonClickSound();
             showUmalisDialog();
@@ -139,6 +148,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
             if (hasSubmitted) {
 
                 nextQuestion();
+                btnTapos.setVisibility(View.GONE);
+                findViewById(R.id.SuriinButton).setVisibility(View.VISIBLE);
+                userSentenceInput.setEnabled(true);
                 userSentenceInput.setEnabled(true);
                 userSentenceInput.setText("");
                 btnTapos.setEnabled(true);
@@ -277,8 +289,17 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                 loadCharacterLine("MDCL2");
 
-                new Handler().postDelayed(this::nextQuestion, 4000);
-            } else {
+                errorTooltip.setVisibility(View.GONE);
+                errorIcon.setVisibility(View.GONE);
+                errorTooltip.setText("");
+
+                findViewById(R.id.SuriinButton).setVisibility(View.GONE);
+                btnTapos.setVisibility(View.VISIBLE);
+
+                userSentenceInput.setEnabled(false);
+                hasSubmitted = true;
+            }
+            else {
                 if (matches.length() == 1) {
                     scoreForThisSentence = 13;
                 } else {
@@ -424,7 +445,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         if (currentQuestionNumber < instructionList.size()) {
             String instruction = instructionList.get(currentQuestionNumber);
-            dalubhasaInstruction.setText(instruction); // ✅ text lang, no TTS
+            dalubhasaInstruction.setText(instruction);
             currentKeywords = keywordList.get(currentQuestionNumber);
             currentDalubhasaID = "D" + (currentQuestionNumber + 1);
 
@@ -434,6 +455,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
             hasSubmitted = false;
             grammarFeedbackText.setText("");
             currentQuestionNumber++;
+
+            errorTooltip.setVisibility(View.GONE);
+            errorIcon.setVisibility(View.GONE);
+            errorTooltip.setText("");
+
             startTimer();
         } else {
             if (countDownTimer != null) countDownTimer.cancel();

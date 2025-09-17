@@ -3,7 +3,9 @@ package com.example.habiaral.BahagiNgPananalita.Quiz;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -19,10 +21,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
 import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.BahagiNgPananalita.Lessons.PangawingLesson;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.AppPreloader;
 import com.example.habiaral.Utils.SoundClickUtils;
+import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,15 +41,26 @@ import java.util.Map;
 
 public class PandamdamQuiz extends AppCompatActivity {
 
-    private List<Map<String, Object>> quizList = new ArrayList<>();
+    private List<Map<String, Object>> allQuizList = new ArrayList<>();
     private Button answer1, answer2, answer3, nextButton, introButton;
+    private List<Map<String, Object>> quizList = new ArrayList<>();
+    private Drawable redDrawable, orangeDrawable, greenDrawable;
+    private int greenSoundId, orangeSoundId, redSoundId;
     private TextView questionText, questionTitle;
     private CountDownTimer countDownTimer;
     private long timeLeftInMillis = 30000;
     private boolean quizFinished = false;
+    private boolean orangePlayed = false;
+    private boolean greenPlayed = false;
     private boolean isAnswered = false;
     private String correctAnswer = "";
+    private boolean redPlayed = false;
     private AlertDialog resultDialog;
+    private MediaPlayer resultPlayer;
+    private int currentStreamId = -1;
+    private MediaPlayer mediaPlayer;
+    private MediaPlayer readyPlayer;
+    private int lastColorStage = 3;
     private String lessonName = "";
     private int correctAnswers = 0;
     private int totalQuestions = 0;
@@ -52,16 +68,24 @@ public class PandamdamQuiz extends AppCompatActivity {
     private int currentIndex = -1;
     private ProgressBar timerBar;
     private FirebaseFirestore db;
-    private MediaPlayer mediaPlayer;
+    private SoundPool soundPool;
     private View background;
-    private int lastColorStage = 3;
-    private MediaPlayer resultPlayer;
-    private List<Map<String, Object>> allQuizList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bahagi_ng_pananalita_pandamdam_quiz);
+
+        AppPreloader.init(this);
+
+        soundPool = AppPreloader.soundPool;
+        greenSoundId = AppPreloader.greenSoundId;
+        orangeSoundId = AppPreloader.orangeSoundId;
+        redSoundId = AppPreloader.redSoundId;
+
+        redDrawable = AppPreloader.redDrawable;
+        orangeDrawable = AppPreloader.orangeDrawable;
+        greenDrawable = AppPreloader.greenDrawable;
 
         questionTitle = findViewById(R.id.questionTitle);
         questionText = findViewById(R.id.pandamdam_questionText);
@@ -89,6 +113,7 @@ public class PandamdamQuiz extends AppCompatActivity {
 
         introButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
+
 
             showCountdownThenLoadQuestion();
         });
@@ -165,26 +190,25 @@ public class PandamdamQuiz extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadQuestion() {
-        questionText.setText("3");
-        new Handler().postDelayed(() -> {
-            questionText.setText("2");
-            new Handler().postDelayed(() -> {
-                questionText.setText("1");
-                new Handler().postDelayed(() -> {
-                    questionText.setText("");
-                    currentIndex = 0;
-                    loadQuestion(currentIndex);
+        playReadySound();
 
-                    introButton.setVisibility(View.GONE);
-                    answer1.setVisibility(View.VISIBLE);
-                    answer2.setVisibility(View.VISIBLE);
-                    answer3.setVisibility(View.VISIBLE);
-                    timerBar.setVisibility(View.VISIBLE);
-                    nextButton.setVisibility(View.VISIBLE);
-                    background.setVisibility(View.VISIBLE);
-                }, 8500);
-            }, 8500);
-        }, 8500);
+        questionText.setText("3");
+        new Handler().postDelayed(() -> questionText.setText("2"), 1000);
+        new Handler().postDelayed(() -> questionText.setText("1"), 2000);
+
+        new Handler().postDelayed(() -> {
+            questionText.setText("");
+            currentIndex = 0;
+            loadQuestion(currentIndex);
+
+            introButton.setVisibility(View.GONE);
+            answer1.setVisibility(View.VISIBLE);
+            answer2.setVisibility(View.VISIBLE);
+            answer3.setVisibility(View.VISIBLE);
+            timerBar.setVisibility(View.VISIBLE);
+            nextButton.setVisibility(View.VISIBLE);
+            background.setVisibility(View.VISIBLE);
+        }, 3000);
     }
 
     private void loadQuizDocument() {
@@ -194,14 +218,11 @@ public class PandamdamQuiz extends AppCompatActivity {
                         introText = doc.getString("intro");
                         lessonName = doc.getString("lesson");
 
-                        // Kunin lahat ng tanong
                         allQuizList = (List<Map<String, Object>>) doc.get("Quizzes");
 
                         if (allQuizList != null && !allQuizList.isEmpty()) {
-                            // Shuffle lahat muna
                             Collections.shuffle(allQuizList);
 
-                            // First attempt: 10 questions lang
                             int limit = Math.min(10, allQuizList.size());
                             quizList = new ArrayList<>(allQuizList.subList(0, limit));
                         }
@@ -251,6 +272,10 @@ public class PandamdamQuiz extends AppCompatActivity {
 
         lastColorStage = 3;
 
+        redPlayed = false;
+        orangePlayed = false;
+        greenPlayed = false;
+
         timerBar.setMax((int) timeLeftInMillis);
         timerBar.setProgress((int) timeLeftInMillis);
 
@@ -259,35 +284,33 @@ public class PandamdamQuiz extends AppCompatActivity {
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
 
-                int progress = (int) millisUntilFinished;
-
-                ObjectAnimator animation = ObjectAnimator.ofInt(timerBar, "progress", timerBar.getProgress(), progress);
-                animation.setDuration(50);
-                animation.setInterpolator(new LinearInterpolator());
-                animation.start();
+                int progress = (int) Math.min(millisUntilFinished, Integer.MAX_VALUE);
+                timerBar.setProgress(progress);
 
                 int percent = (int) ((timeLeftInMillis * 100) / 30000);
 
-                if (percent <= 25 && lastColorStage == 1) {
-                    timerBar.setProgressDrawable(
-                            ContextCompat.getDrawable(PandamdamQuiz.this, R.drawable.timer_color_red)
-                    );
-                    playTimerSound(R.raw.red_timer);
+                if (percent <= 25 && lastColorStage > 0) {
+                    timerBar.setProgressDrawable(redDrawable);
+                    playLoopingSound(redSoundId);
                     lastColorStage = 0;
-                } else if (percent <= 50 && lastColorStage == 2) {
-                    timerBar.setProgressDrawable(
-                            ContextCompat.getDrawable(PandamdamQuiz.this, R.drawable.timer_color_orange)
-                    );
-                    playTimerSound(R.raw.orange_timer);
-                    lastColorStage--;
-                } else if (percent > 50 && lastColorStage == 3) {
-                    timerBar.setProgressDrawable(
-                            ContextCompat.getDrawable(PandamdamQuiz.this, R.drawable.timer_color_green)
-                    );
-                    playTimerSound(R.raw.green_timer);
-                    lastColorStage--;
+                } else if (percent <= 50 && percent > 25 && lastColorStage > 1) {
+                    timerBar.setProgressDrawable(orangeDrawable);
+                    playLoopingSound(orangeSoundId);
+                    lastColorStage = 1;
+                } else if (percent > 50 && lastColorStage > 2) {
+                    timerBar.setProgressDrawable(greenDrawable);
+                    playLoopingSound(greenSoundId);
+                    lastColorStage = 2;
                 }
             }
+
+            private void playLoopingSound(int soundId) {
+                if (currentStreamId != -1) {
+                    soundPool.stop(currentStreamId);
+                }
+                currentStreamId = soundPool.play(soundId, 1, 1, 0, -1, 1);
+            }
+
 
             @Override
             public void onFinish() {
@@ -295,6 +318,11 @@ public class PandamdamQuiz extends AppCompatActivity {
                 isAnswered = true;
                 disableAnswers();
                 nextButton.setEnabled(true);
+
+                if (currentStreamId != -1) {
+                    soundPool.stop(currentStreamId);
+                    currentStreamId = -1;
+                }
 
                 new Handler().postDelayed(() -> {
                     if (!quizFinished) nextButton.performClick();
@@ -311,18 +339,16 @@ public class PandamdamQuiz extends AppCompatActivity {
             mediaPlayer.release();
             mediaPlayer = null;
         }
-    }
 
-    private void playTimerSound(int resId) {
-        stopTimerSound();
+        if (currentStreamId != -1 && soundPool != null) {
+            soundPool.stop(currentStreamId);
+            currentStreamId = -1;
+        }
 
-        mediaPlayer = MediaPlayer.create(this, resId);
-        mediaPlayer.setVolume(0.5f, 0.5f);
-        mediaPlayer.setOnCompletionListener(mp -> {
-            mp.release();
-            mediaPlayer = null;
-        });
-        mediaPlayer.start();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
     }
 
     private void showExitDialog() {
@@ -339,7 +365,6 @@ public class PandamdamQuiz extends AppCompatActivity {
         yesBtn.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             stopTimerSound();
-            if (countDownTimer != null) countDownTimer.cancel();
             exitDialog.dismiss();
             finish();
         });
@@ -354,9 +379,6 @@ public class PandamdamQuiz extends AppCompatActivity {
 
     private void showResultDialog() {
         stopTimerSound();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
 
         if (resultDialog != null && resultDialog.isShowing()) {
             resultDialog.dismiss();
@@ -463,8 +485,10 @@ public class PandamdamQuiz extends AppCompatActivity {
         isAnswered = false;
         quizFinished = false;
 
-        if (quizList != null && !quizList.isEmpty()) {
-            Collections.shuffle(quizList);
+        if (allQuizList != null && !allQuizList.isEmpty()) {
+            Collections.shuffle(allQuizList);
+            int limit = Math.min(10, allQuizList.size());
+            quizList = new ArrayList<>(allQuizList.subList(0, limit));
         } else {
             Toast.makeText(this, "Walang mga tanong, subukang i-restart ang app.", Toast.LENGTH_LONG).show();
             finish();
@@ -483,9 +507,6 @@ public class PandamdamQuiz extends AppCompatActivity {
     }
 
     private void navigateToLesson(Class<?> lessonActivityClass) {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
         stopTimerSound();
         releaseResultPlayer();
 
@@ -512,7 +533,7 @@ public class PandamdamQuiz extends AppCompatActivity {
     }
 
     private void unlockNextLesson() {
-        Toast.makeText(this, "Next Lesson Unlocked: Pangawing", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Next Lesson Unlocked: Pangawing!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {
@@ -556,11 +577,31 @@ public class PandamdamQuiz extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
+
+        if (currentStreamId != -1 && soundPool != null) {
+            soundPool.setVolume(currentStreamId, 0f, 0f);
         }
-        stopTimerSound();
-        releaseResultPlayer();
+
+        if (mediaPlayer != null) mediaPlayer.setVolume(0f, 0f);
+        if (resultPlayer != null) resultPlayer.setVolume(0f, 0f);
+        if (readyPlayer != null) readyPlayer.setVolume(0f, 0f);
+
+        TimerSoundUtils.setVolume(0f);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (currentStreamId != -1 && soundPool != null) {
+            soundPool.setVolume(currentStreamId, 1f, 1f);
+        }
+
+        if (mediaPlayer != null) mediaPlayer.setVolume(1f, 1f);
+        if (resultPlayer != null) resultPlayer.setVolume(1f, 1f);
+        if (readyPlayer != null) readyPlayer.setVolume(1f, 1f);
+
+        TimerSoundUtils.setVolume(1f);
     }
 
     @Override
@@ -577,5 +618,23 @@ public class PandamdamQuiz extends AppCompatActivity {
         }
         stopTimerSound();
         releaseResultPlayer();
+    }
+    private void playReadySound() {
+        releaseReadyPlayer();
+        readyPlayer = MediaPlayer.create(this, R.raw.ready_start);
+        if (readyPlayer != null) {
+            readyPlayer.setOnCompletionListener(mp -> releaseReadyPlayer());
+            readyPlayer.start();
+        }
+    }
+
+    private void releaseReadyPlayer() {
+        if (readyPlayer != null) {
+            if (readyPlayer.isPlaying()) {
+                readyPlayer.stop();
+            }
+            readyPlayer.release();
+            readyPlayer = null;
+        }
     }
 }
