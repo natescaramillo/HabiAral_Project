@@ -121,6 +121,8 @@ public class SettingsFragment extends Fragment {
 
                     Map<String, Object> update = new HashMap<>();
                     update.put("nickname", newNickname);
+                    update.put("updatedAt", com.google.firebase.Timestamp.now()); // Firestore Timestamp
+
 
                     db.collection("students").document(userId)
                             .update(update)

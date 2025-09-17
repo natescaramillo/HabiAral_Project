@@ -150,7 +150,8 @@ public class WelcomeActivity extends AppCompatActivity {
                     goToIntroduction();
                 }
             } else {
-                db.collection("students").get().addOnSuccessListener(allDocs -> {
+                db.collection("students")  .orderBy("studentId")  // 🔹 order by studentId
+                        .get().addOnSuccessListener(allDocs -> {
                     int maxNumber = 0;
                     for (DocumentSnapshot document : allDocs) {
                         String sid = document.getString("studentId");
@@ -167,6 +168,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     Map<String, Object> student = new HashMap<>();
                     student.put("email", email);
                     student.put("studentId", generatedId);
+
 
                     docRef.set(student)
                             .addOnSuccessListener(unused -> goToIntroduction())

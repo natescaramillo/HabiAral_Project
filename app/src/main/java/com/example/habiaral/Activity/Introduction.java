@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.habiaral.Cache.LessonProgressCache; // ✅ Added
 import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.R;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -112,7 +113,7 @@ public class Introduction extends AppCompatActivity {
 
         Map<String, Object> update = new HashMap<>();
         update.put("nickname", nickname);
-        update.put("updatedAt", System.currentTimeMillis());
+        update.put("updatedAt", Timestamp.now());
 
         studentRef.set(update, SetOptions.merge())
                 .addOnSuccessListener(unused -> {
