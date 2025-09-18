@@ -1,4 +1,4 @@
-package com.example.habiaral.PagUnawa.Stories;
+package com.example.habiaral.PagUnawa.Alamat.Stories;
 
 import android.content.Intent;
 import android.os.Bundle;

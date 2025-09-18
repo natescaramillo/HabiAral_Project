@@ -1,4 +1,4 @@
-package com.example.habiaral.PagUnawa.Stories;
+package com.example.habiaral.PagUnawa.Alamat.Stories;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.PagUnawa.PagUnawa;
-import com.example.habiaral.PagUnawa.Alamat.Quiz.Kwento2Quiz;
+import com.example.habiaral.PagUnawa.Alamat.Quiz.Kwento3Quiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,20 +21,20 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Kwento2 extends AppCompatActivity {
+public class Kwento3 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.agila_01, R.drawable.agila_02, R.drawable.agila_03,
-            R.drawable.agila_04, R.drawable.agila_05, R.drawable.agila_06,
-            R.drawable.agila_07, R.drawable.agila_08, R.drawable.agila_09,
-            R.drawable.agila_10, R.drawable.agila_11, R.drawable.agila_12,
-            R.drawable.agila_13, R.drawable.agila_14, R.drawable.agila_15,
-            R.drawable.agila_16, R.drawable.agila_17, R.drawable.agila_18,
-            R.drawable.agila_19, R.drawable.agila_20, R.drawable.agila_21,
-            R.drawable.agila_21, R.drawable.agila_22, R.drawable.agila_23,
-            R.drawable.agila_24, R.drawable.agila_25, R.drawable.agila_26,
-            R.drawable.agila_27, R.drawable.agila_28, R.drawable.agila_29,
-            R.drawable.agila_30
+            R.drawable.juan_01, R.drawable.juan_02, R.drawable.juan_03,
+            R.drawable.juan_04, R.drawable.juan_05, R.drawable.juan_06,
+            R.drawable.juan_07, R.drawable.juan_08, R.drawable.juan_09,
+            R.drawable.juan_10, R.drawable.juan_11, R.drawable.juan_12,
+            R.drawable.juan_13, R.drawable.juan_14, R.drawable.juan_15,
+            R.drawable.juan_16, R.drawable.juan_17, R.drawable.juan_18,
+            R.drawable.juan_19, R.drawable.juan_20, R.drawable.juan_21,
+            R.drawable.juan_22, R.drawable.juan_23, R.drawable.juan_24,
+            R.drawable.juan_25, R.drawable.juan_26, R.drawable.juan_27,
+            R.drawable.juan_28, R.drawable.juan_29, R.drawable.juan_30,
+            R.drawable.juan_31
     };
     private boolean isLessonDone = false;
     private ImageView storyImage;
@@ -44,10 +44,10 @@ public class Kwento2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_kwento2);
+        setContentView(R.layout.pag_unawa_kwento3);
 
-        storyImage = findViewById(R.id.imageViewComic2);
-        unlockButton = findViewById(R.id.UnlockButtonKwento2);
+        storyImage = findViewById(R.id.imageViewComic3);
+        unlockButton = findViewById(R.id.UnlockButtonKwento3);
 
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
@@ -72,14 +72,14 @@ public class Kwento2 extends AppCompatActivity {
 
         unlockButton.setOnClickListener(v -> {
             if (isLessonDone) {
-                Intent intent = new Intent(Kwento2.this, Kwento2Quiz.class);
+                Intent intent = new Intent(Kwento3.this, Kwento3Quiz.class);
                 startActivity(intent);
             }
         });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() {
-                startActivity(new Intent(Kwento2.this, PagUnawa.class)
+                startActivity(new Intent(Kwento3.this, PagUnawa.class)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                 finish();
             }
@@ -127,9 +127,9 @@ public class Kwento2 extends AppCompatActivity {
                         if (module3 != null) {
                             Map<String, Object> lessons = (Map<String, Object>) module3.get("lessons");
                             if (lessons != null) {
-                                Map<String, Object> kwento2 = (Map<String, Object>) lessons.get("kwento2");
-                                if (kwento2 != null) {
-                                    String status = (String) kwento2.get("status");
+                                Map<String, Object> kwento3 = (Map<String, Object>) lessons.get("kwento3");
+                                if (kwento3 != null) {
+                                    String status = (String) kwento3.get("status");
                                     if ("in_progress".equals(status) || "completed".equals(status)) {
                                         isLessonDone = true;
                                         unlockButton.setEnabled(true);
@@ -149,16 +149,16 @@ public class Kwento2 extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> kwento2Status = new HashMap<>();
-        kwento2Status.put("status", "in_progress");
+        Map<String, Object> kwento3Status = new HashMap<>();
+        kwento3Status.put("status", "in_progress");
 
         Map<String, Object> lessonMap = new HashMap<>();
-        lessonMap.put("kwento2", kwento2Status);
+        lessonMap.put("kwento3", kwento3Status);
 
         Map<String, Object> progressMap = new HashMap<>();
         progressMap.put("modulename", "Pag-Unawa");
         progressMap.put("status", "in_progress");
-        progressMap.put("current_lesson", "kwento2");
+        progressMap.put("current_lesson", "kwento3");
         progressMap.put("lessons", lessonMap);
 
         db.collection("module_progress")
