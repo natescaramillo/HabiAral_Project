@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -44,6 +45,13 @@ public class Talasalitaan extends AppCompatActivity {
         wordContainer = findViewById(R.id.word_container);
         searchBar = findViewById(R.id.searchBarId);
         inflater = LayoutInflater.from(this);
+
+        ImageView talasalitaanBack = findViewById(R.id.talasalitaan_back);
+
+        talasalitaanBack.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            finish();
+        });
 
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override

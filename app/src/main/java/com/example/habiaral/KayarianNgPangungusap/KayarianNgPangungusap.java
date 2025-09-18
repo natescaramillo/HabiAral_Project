@@ -3,6 +3,7 @@ package com.example.habiaral.KayarianNgPangungusap;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import com.example.habiaral.KayarianNgPangungusap.Lessons.HugnayanLesson;
 import com.example.habiaral.KayarianNgPangungusap.Lessons.LangkapanLesson;
 import com.example.habiaral.R;
 import com.example.habiaral.Cache.LessonProgressCache;
+import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -36,6 +38,13 @@ public class KayarianNgPangungusap extends AppCompatActivity {
 
         initViews();
         lockAllButtons();
+
+        ImageView kayarianBack = findViewById(R.id.kayarian_back);
+
+        kayarianBack.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            finish();
+        });
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;

@@ -83,6 +83,7 @@ public class Palaro extends AppCompatActivity {
         currentEnergyText = findViewById(R.id.current_energy2);
         energyTimerText = findViewById(R.id.time_energy);
         palaroProgress = findViewById(R.id.palaro_progress);
+        ImageView palaroBack = findViewById(R.id.palaro_back);
 
         prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         editor = prefs.edit();
@@ -99,6 +100,11 @@ public class Palaro extends AppCompatActivity {
         checkLocks();
         startEnergyRegeneration();
         loadTotalScoreFromFirestore();
+
+        palaroBack.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            finish();
+        });
 
         gameMechanicsIcon.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);

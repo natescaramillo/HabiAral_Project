@@ -3,6 +3,7 @@ package com.example.habiaral.Panitikan;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,13 +23,20 @@ public class Panitikan extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa);
+        setContentView(R.layout.panitikan);
 
         epikoBtn = findViewById(R.id.epiko);
         parabulaBtn = findViewById(R.id.parabula);
         pabulaBtn = findViewById(R.id.pabula);
         maiklingKuwentoBtn = findViewById(R.id.maikling_kuwento);
         alamatBtn = findViewById(R.id.alamat);
+
+        ImageView panitikanBack = findViewById(R.id.panitikan_back);
+
+        panitikanBack.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            finish();
+        });
 
         alamatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
