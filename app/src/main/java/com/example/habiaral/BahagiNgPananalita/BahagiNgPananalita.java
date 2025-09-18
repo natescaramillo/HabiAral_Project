@@ -120,7 +120,6 @@ public class BahagiNgPananalita extends AppCompatActivity {
         boolean padamdamDone = isCompleted(lessons, "pandamdam");
         boolean pangawingDone = isCompleted(lessons, "pangawing");
 
-        // Unlock buttons based on completion
         unlockButton(btnPangngalan, true, pangngalanLock);
         unlockButton(btnPandiwa, pangngalanDone, pandiwaLock);
         unlockButton(btnPangUri, pandiwaDone, pangUriLock);
