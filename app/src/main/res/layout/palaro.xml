@@ -311,15 +311,15 @@
 
             <ImageView
                 android:id="@+id/trophy_image"
-                android:layout_width="225dp"
-                android:layout_height="172dp"
-                android:layout_marginStart="188dp"
+                android:layout_width="191dp"
+                android:layout_height="137dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/guideline2"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.202"
+                app:layout_constraintStart_toStartOf="@+id/guideline7"
                 app:layout_constraintTop_toTopOf="@+id/guideline3"
-                app:layout_constraintVertical_bias="0.01"
+                app:layout_constraintVertical_bias="0.031"
                 app:srcCompat="@drawable/trophy_unranked" />
 
             <androidx.constraintlayout.widget.Guideline
@@ -350,8 +350,8 @@
         android:layout_marginStart="68dp"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/view1"
-        app:layout_constraintEnd_toStartOf="@+id/title"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toStartOf="@+id/textView18"
         app:layout_constraintHorizontal_bias="0.227"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

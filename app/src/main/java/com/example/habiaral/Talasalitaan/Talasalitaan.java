@@ -39,7 +39,7 @@ public class Talasalitaan extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dictionary);
+        setContentView(R.layout.talasalitaan);
 
         wordContainer = findViewById(R.id.word_container);
         searchBar = findViewById(R.id.searchBarId);

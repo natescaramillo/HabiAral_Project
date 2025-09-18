@@ -43,6 +43,27 @@
         app:layout_constraintVertical_bias="0.87"
         app:srcCompat="@drawable/back_button" />
 
+    <!-- Word List Scrollable Container -->
+
+    <ScrollView
+        android:layout_width="534dp"
+        android:layout_height="1020dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchBarId">
+
+        <LinearLayout
+            android:id="@+id/word_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+        </LinearLayout>
+    </ScrollView>
+
 
 
 
@@ -59,5 +80,22 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.95" />
+
+    <EditText
+        android:id="@+id/searchBarId"
+        android:layout_width="325dp"
+        android:layout_height="49dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/search_bar"
+        android:hint=" Search"
+        android:padding="10dp"
+        android:textCursorDrawable="@drawable/custom_caret"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view1"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
