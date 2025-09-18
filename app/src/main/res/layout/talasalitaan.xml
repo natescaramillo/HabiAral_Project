@@ -46,8 +46,8 @@
     <!-- Word List Scrollable Container -->
 
     <ScrollView
-        android:layout_width="531dp"
-        android:layout_height="997dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:fillViewport="true"
         android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
