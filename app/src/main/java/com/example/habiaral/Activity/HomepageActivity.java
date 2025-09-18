@@ -23,7 +23,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HomepageActivity extends AppCompatActivity {
+public class  HomepageActivity extends AppCompatActivity {
 
     private final Map<Integer, Fragment> fragmentMap = new HashMap<>();
     private final Handler handler = new Handler();

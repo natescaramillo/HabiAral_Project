@@ -25,242 +25,210 @@
         android:layout_margin="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/view1"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/view1"
-        app:layout_constraintTop_toBottomOf="@+id/view1">
+        app:layout_constraintTop_toBottomOf="@+id/view1"
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/kwento1"
-                android:layout_width="330dp"
-                android:layout_height="193dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_rect"
+            <!-- BUTTON 1 -->
+            <LinearLayout
+                android:id="@+id/epiko"
+                android:layout_width="match_parent"
+                android:layout_height="115dp"
+                android:layout_margin="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="70dp"
+                android:background="@drawable/button_color"
                 android:clickable="true"
-                android:clipToOutline="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                app:layout_constraintEnd_toStartOf="@+id/verticalLine2"
+                app:layout_constraintStart_toStartOf="@+id/verticalLine1"
+                app:layout_constraintTop_toBottomOf="@+id/view1">
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/kwento1Image"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:adjustViewBounds="true"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/rounded_image"
+                    android:clipToOutline="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/tarsier_kwento1"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:src="@drawable/home_bahagi"
                     app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
 
                 <TextView
-                    android:id="@+id/kwento1Title"
-                    android:layout_width="230dp"
-                    android:layout_height="30dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="ANG ALAMAT NG ROSAS"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    android:text="Epiko"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-                <FrameLayout
-                    android:id="@+id/kwento1Lock"
-                    android:layout_width="49dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/square"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/kwento1Image"
-                    app:layout_constraintStart_toStartOf="@+id/kwento1Image"
-                    app:layout_constraintTop_toTopOf="@+id/kwento1Image">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/design_lock" />
-                </FrameLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/kwento2"
-                android:layout_width="330dp"
-                android:layout_height="193dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_rect"
+            <!-- BUTTON 2 -->
+            <LinearLayout
+                android:id="@+id/parabula"
+                android:layout_width="match_parent"
+                android:layout_height="115dp"
+                android:layout_margin="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="70dp"
+                android:background="@drawable/button_color"
                 android:clickable="true"
-                android:clipToOutline="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                app:layout_constraintEnd_toStartOf="@+id/verticalLine2"
+                app:layout_constraintStart_toStartOf="@+id/verticalLine1"
+                app:layout_constraintTop_toBottomOf="@+id/view1">
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/kwento2Image"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:adjustViewBounds="true"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/rounded_image"
+                    android:clipToOutline="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/agila"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:src="@drawable/home_bahagi"
                     app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
 
                 <TextView
-                    android:id="@+id/kwento2Title"
-                    android:layout_width="226dp"
-                    android:layout_height="45dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="ANG KALAPATI AT ANG AGILA"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    android:text="Parabula"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-                <FrameLayout
-                    android:id="@+id/kwento2Lock"
-                    android:layout_width="49dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/square"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/kwento2Image"
-                    app:layout_constraintHorizontal_bias="0.942"
-                    app:layout_constraintStart_toStartOf="@+id/kwento2Image"
-                    app:layout_constraintTop_toTopOf="@+id/kwento2Image"
-                    app:layout_constraintVertical_bias="0.483">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/design_lock" />
-                </FrameLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/kwento3"
-                android:layout_width="330dp"
-                android:layout_height="193dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_rect"
+            <!-- BUTTON 3 -->
+            <LinearLayout
+                android:id="@+id/pabula"
+                android:layout_width="match_parent"
+                android:layout_height="115dp"
+                android:layout_margin="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="70dp"
+                android:background="@drawable/button_color"
                 android:clickable="true"
-                android:clipToOutline="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                app:layout_constraintEnd_toStartOf="@+id/verticalLine2"
+                app:layout_constraintStart_toStartOf="@+id/verticalLine1"
+                app:layout_constraintTop_toBottomOf="@+id/view1">
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/kwento3Image"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:adjustViewBounds="true"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/rounded_image"
+                    android:clipToOutline="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/kakanin"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:src="@drawable/home_bahagi"
                     app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
 
                 <TextView
-                    android:id="@+id/kwento3Title"
-                    android:layout_width="233dp"
-                    android:layout_height="43dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="NAGTITINDA NG KAKANIN SI JUAN PUSONG"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    android:text="Pabula"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-                <FrameLayout
-                    android:id="@+id/kwento3Lock"
-                    android:layout_width="49dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/square"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/kwento3Image"
-                    app:layout_constraintHorizontal_bias="0.942"
-                    app:layout_constraintStart_toStartOf="@+id/kwento3Image"
-                    app:layout_constraintTop_toTopOf="@+id/kwento3Image">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/design_lock" />
-                </FrameLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/kwento4"
-                android:layout_width="330dp"
-                android:layout_height="193dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_rect"
+            <!-- BUTTON 2 -->
+            <LinearLayout
+                android:id="@+id/maikling_kuwento"
+                android:layout_width="match_parent"
+                android:layout_height="115dp"
+                android:layout_margin="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="70dp"
+                android:background="@drawable/button_color"
                 android:clickable="true"
-                android:clipToOutline="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                app:layout_constraintEnd_toStartOf="@+id/verticalLine2"
+                app:layout_constraintStart_toStartOf="@+id/verticalLine1"
+                app:layout_constraintTop_toBottomOf="@+id/view1">
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/kwento4Image"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:adjustViewBounds="true"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/rounded_image"
+                    android:clipToOutline="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/sulayman"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:src="@drawable/home_bahagi"
                     app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
 
                 <TextView
-                    android:id="@+id/kwento4Title"
-                    android:layout_width="233dp"
-                    android:layout_height="43dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="INDARAPATRA AT SULAYMAN"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    android:text="Maikling kwento"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-                <FrameLayout
-                    android:id="@+id/kwento4Lock"
-                    android:layout_width="49dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/square"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/kwento4Image"
-                    app:layout_constraintHorizontal_bias="0.942"
-                    app:layout_constraintStart_toStartOf="@+id/kwento4Image"
-                    app:layout_constraintTop_toTopOf="@+id/kwento4Image">
+            <!-- BUTTON 5 -->
+            <LinearLayout
+                android:id="@+id/alamat"
+                android:layout_width="match_parent"
+                android:layout_height="115dp"
+                android:layout_margin="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="70dp"
+                android:background="@drawable/button_color"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                app:layout_constraintEnd_toStartOf="@+id/verticalLine2"
+                app:layout_constraintStart_toStartOf="@+id/verticalLine1"
+                app:layout_constraintTop_toBottomOf="@+id/view1">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/design_lock" />
-                </FrameLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/rounded_image"
+                    android:clipToOutline="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/home_bahagi"
+                    app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:gravity="center"
+                    android:text="Alamat"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
 
         </LinearLayout>

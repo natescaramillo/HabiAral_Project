@@ -26,6 +26,7 @@ import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.PagUnawa.PagUnawa;
 import com.example.habiaral.Palaro.Palaro;
+import com.example.habiaral.Talasalitaan.Talasalitaan;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,6 +65,7 @@ public class HomeFragment extends Fragment {
         lessonMap.put(R.id.bahagi, BahagiNgPananalita.class);
         lessonMap.put(R.id.komprehensyon, PagUnawa.class);
         lessonMap.put(R.id.kayarian, KayarianNgPangungusap.class);
+        lessonMap.put(R.id.talasalitaan, Talasalitaan.class);
         lessonMap.put(R.id.palaro, Palaro.class);
 
         for (Map.Entry<Integer, Class<?>> entry : lessonMap.entrySet()) {

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -26,12 +27,10 @@ import java.util.Map;
 
 public class PagUnawa extends AppCompatActivity {
 
-    ConstraintLayout btnKwento1, btnKwento2, btnKwento3, btnKwento4;
-    FrameLayout kwento1Lock, kwento2Lock, kwento3Lock, kwento4Lock;
+    LinearLayout btnEpiko, btnParabula, btnPabula, btnMaiklingKuwento, btnAlamat;
     FirebaseFirestore db;
     String uid;
     private MediaPlayer mediaPlayer;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +82,6 @@ public class PagUnawa extends AppCompatActivity {
         }
     }
 
-
     private void loadLessonProgressFromFirestore() {
         db.collection("module_progress").document(uid)
                 .get()
@@ -112,17 +110,19 @@ public class PagUnawa extends AppCompatActivity {
 
         Map<String, Object> lessons = (Map<String, Object>) lessonsObj;
 
-        boolean kwento1Done = isCompleted(lessons, "kwento1");
-        boolean kwento2Done = isCompleted(lessons, "kwento2");
-        boolean kwento3Done = isCompleted(lessons, "kwento3");
-        boolean kwento4Done = isCompleted(lessons, "kwento4");
+        boolean epikoDone = isCompleted(lessons, "epiko");
+        boolean parabulaDone = isCompleted(lessons, "parabula");
+        boolean pabulaDone = isCompleted(lessons, "pabula");
+        boolean maiklingKuwentoDone = isCompleted(lessons, "maikling_kuwento");
+        boolean alamatDone = isCompleted(lessons, "alamat");
 
-        unlockButton(btnKwento1, true, kwento1Lock);
-        unlockButton(btnKwento2, kwento1Done, kwento2Lock);
-        unlockButton(btnKwento3, kwento2Done, kwento3Lock);
-        unlockButton(btnKwento4, kwento3Done,kwento4Lock);
+        unlockButton(btnEpiko, true);
+        unlockButton(btnParabula, epikoDone);
+        unlockButton(btnPabula, parabulaDone);
+        unlockButton(btnMaiklingKuwento, pabulaDone);
+        unlockButton(btnAlamat, maiklingKuwentoDone);
 
-        checkAndCompleteModule(kwento1Done, kwento2Done, kwento3Done, kwento4Done);
+        checkAndCompleteModule(epikoDone, parabulaDone, pabulaDone, maiklingKuwentoDone, alamatDone);
     }
 
     private boolean isCompleted(Map<String, Object> lessons, String key) {
@@ -133,47 +133,48 @@ public class PagUnawa extends AppCompatActivity {
         return "completed".equals(lessonData.get("status"));
     }
 
-    private void unlockButton(ConstraintLayout layout, boolean isUnlocked, FrameLayout lock) {
+    private void unlockButton(LinearLayout layout, boolean isUnlocked) {
         layout.setEnabled(isUnlocked);
         layout.setClickable(isUnlocked);
         layout.setAlpha(isUnlocked ? 1.0f : 0.5f);
-        lock.setVisibility(isUnlocked ? FrameLayout.GONE : FrameLayout.VISIBLE);
     }
 
     private void initViews() {
-        btnKwento1 = findViewById(R.id.kwento1);
-        btnKwento2 = findViewById(R.id.kwento2);
-        btnKwento3 = findViewById(R.id.kwento3);
-        btnKwento4 = findViewById(R.id.kwento4);
+        btnEpiko = findViewById(R.id.epiko);
+        btnParabula = findViewById(R.id.parabula);
+        btnPabula = findViewById(R.id.pabula);
+        btnMaiklingKuwento = findViewById(R.id.maikling_kuwento);
+        btnAlamat = findViewById(R.id.alamat);
 
-        kwento1Lock = findViewById(R.id.kwento1Lock);
-        kwento2Lock = findViewById(R.id.kwento2Lock);
-        kwento3Lock = findViewById(R.id.kwento3Lock);
-        kwento4Lock = findViewById(R.id.kwento4Lock);
-
-        btnKwento1.setOnClickListener(v -> {
+        btnEpiko.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             startActivity(new Intent(this, Kwento1.class));
         });
 
-        btnKwento2.setOnClickListener(v -> {
+        btnParabula.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             startActivity(new Intent(this, Kwento2.class));
         });
 
-        btnKwento3.setOnClickListener(v -> {
+        btnPabula.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             startActivity(new Intent(this, Kwento3.class));
         });
 
-        btnKwento4.setOnClickListener(v -> {
+        btnMaiklingKuwento.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             startActivity(new Intent(this, Kwento4.class));
         });
+
+        btnAlamat.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            // TODO: Add corresponding activity for Alamat
+        });
     }
 
-    private void checkAndCompleteModule(boolean kwento1Done, boolean kwento2Done, boolean kwento3Done, boolean kwento4Done) {
-        boolean allDone = kwento1Done && kwento2Done && kwento3Done && kwento4Done;
+    private void checkAndCompleteModule(boolean epikoDone, boolean parabulaDone,
+                                        boolean pabulaDone, boolean maiklingKuwentoDone, boolean alamatDone) {
+        boolean allDone = epikoDone && parabulaDone && pabulaDone && maiklingKuwentoDone && alamatDone;
 
         Map<String, Object> update = new HashMap<>();
         Map<String, Object> module3Updates = new HashMap<>();
@@ -187,12 +188,13 @@ public class PagUnawa extends AppCompatActivity {
     }
 
     private void lockAllButtons() {
-        lockButton(btnKwento2);
-        lockButton(btnKwento3);
-        lockButton(btnKwento4);
+        lockButton(btnParabula);
+        lockButton(btnPabula);
+        lockButton(btnMaiklingKuwento);
+        lockButton(btnAlamat);
     }
 
-    private void lockButton(ConstraintLayout button) {
+    private void lockButton(LinearLayout button) {
         button.setClickable(false);
         button.setAlpha(0.5f);
     }

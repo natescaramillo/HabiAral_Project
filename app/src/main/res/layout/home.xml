@@ -187,6 +187,42 @@
 
                 <!-- BUTTON 4 -->
                 <LinearLayout
+                    android:id="@+id/talasalitaan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/button_color"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/home_talasalitaan_image"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/home_pagunawa"
+                        android:background="@drawable/rounded_image"
+                        android:clipToOutline="true"
+                        app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/special"
+                        android:gravity="center"
+                        android:text="Talasalitaan"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <!-- BUTTON 5 -->
+                <LinearLayout
                     android:id="@+id/palaro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
