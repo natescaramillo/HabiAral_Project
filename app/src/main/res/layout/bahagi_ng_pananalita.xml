@@ -452,7 +452,7 @@
     </ScrollView>
 
     <ImageView
-        android:id="@+id/imageView14"
+        android:id="@+id/bahagi_back"
         android:layout_width="28dp"
         android:layout_height="25dp"
         android:layout_marginBottom="24dp"
