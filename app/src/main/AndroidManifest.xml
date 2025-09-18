@@ -42,6 +42,12 @@
             android:name=".Palaro.Palaro"
             android:screenOrientation="portrait"
             android:exported="false" />
+
+        <activity
+            android:name=".Talasalitaan.Talasalitaan"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
         <activity
             android:name=".KayarianNgPangungusap.KayarianNgPangungusap"
             android:screenOrientation="portrait"
