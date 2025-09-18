@@ -4,6 +4,22 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="default_web_client_id">612860240418-6j94e06tc5be4gc75bsafprrt67lqahb.apps.googleusercontent.com</string>
 
+    <string name ="about_us_goal">
+        Sa HabiAral, layunin naming bigyang-kapangyarihan ang mga mag-aaral sa pamamagitan
+        ng madaling gamiting plataporma para sa epektibong pagkatuto at pagsubaybay ng kanilang pag-unlad.
+    </string>
+
+    <string name ="about_us_thanks">
+        Salamat sa pagpili ng HabiAral! Nawa’y maging kapaki-pakinabang ito sa inyo gaya ng kasiyahang nadama
+        namin sa paggawa nito.
+    </string>
+
+    <string name ="about_us_information">
+        Ang HabiAral ay binubuo ng mga estudyanteng designer at developer upang itaguyod ang pagkatuto, pagtutulungan,
+        at tagumpay sa larangan ng edukasyong Pilipinona naglalayong paunlarin ang kasanayan sa pagbuo ng pangungusap at
+        pag-unawa.
+    </string>
+
     <!-- Payak -->
 
     <string name ="payak_description"> Ang payak na pangungusap ay pinakasimpleng anyo ng pangungusap.
