@@ -13,11 +13,6 @@
         android:id="@+id/progressbar_nav"
         app:iconSize="15dp"/>
     <item
-        android:title="Diksiyonaryo"
-        android:icon="@drawable/nav_menu_dictionary"
-        android:id="@+id/dictionary_nav"
-        app:iconSize="15dp"/>
-    <item
         android:title="Parangal"
         android:icon="@drawable/nav_menu_achievement"
         android:id="@+id/achievement_nav"

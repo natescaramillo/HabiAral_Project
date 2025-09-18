@@ -85,7 +85,6 @@ public class  HomepageActivity extends AppCompatActivity {
         fragmentMap.put(R.id.progressbar_nav, progressFragment);
         fragmentMap.put(R.id.achievement_nav, achievementFragment);
         fragmentMap.put(R.id.settings_nav, settingsFragment);
-        fragmentMap.put(R.id.dictionary_nav, dictionaryFragment);
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, homeFragment, "HOME")
@@ -96,7 +95,6 @@ public class  HomepageActivity extends AppCompatActivity {
                 .add(R.id.fragment_container, progressFragment, "PROGRESS").hide(progressFragment)
                 .add(R.id.fragment_container, achievementFragment, "ACHIEVEMENT").hide(achievementFragment)
                 .add(R.id.fragment_container, settingsFragment, "SETTINGS").hide(settingsFragment)
-                .add(R.id.fragment_container, dictionaryFragment, "DICTIONARY").hide(dictionaryFragment)
                 .commit();
 
         ViewCompat.setOnApplyWindowInsetsListener(bottomNavigationView, (v, insets) -> {
