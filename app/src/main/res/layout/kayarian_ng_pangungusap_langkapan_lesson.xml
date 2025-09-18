@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background">
+    android:background="@drawable/gradient_background"
+    tools:context=".LangkapanActivity">
 
+    <!-- Title -->
     <TextView
         android:id="@+id/title_Text_langkapan"
         android:layout_width="0dp"
-        android:layout_height="101dp"
+        android:layout_height="wrap_content"
         android:autoSizeMaxTextSize="30sp"
         android:autoSizeMinTextSize="15sp"
         android:autoSizeStepGranularity="2sp"
@@ -18,151 +20,92 @@
         android:backgroundTint="#A27B5C"
         android:fontFamily="@font/special"
         android:gravity="center"
+        android:padding="12dp"
         android:text="Langkapan"
         android:textColor="#fff"
         android:textSize="25sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Description -->
     <TextView
         android:id="@+id/description_text_langkapan"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:autoSizeMaxTextSize="24sp"
-        android:autoSizeMinTextSize="12sp"
+        android:autoSizeMaxTextSize="22sp"
+        android:autoSizeMinTextSize="14sp"
         android:autoSizeStepGranularity="2sp"
         android:autoSizeTextType="uniform"
-        android:background="@drawable/search_bar"
-        android:fontFamily="@font/special"
-        android:justificationMode="inter_character"
-        android:padding="20dp"
-        android:textColor="#000"
-        android:textSize="20sp"
+        android:background="@drawable/background_with_border"
+        android:justificationMode="inter_word"
+        android:padding="16dp"
         android:text="@string/langkapan_description"
-        app:layout_constraintBottom_toTopOf="@+id/guideline52"
+        android:textColor="#000"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_Text_langkapan"
-        app:layout_constraintVertical_bias="0.475" />
+        app:layout_constraintTop_toBottomOf="@id/title_Text_langkapan" />
 
+    <!-- Example -->
     <TextView
         android:id="@+id/example_Text_langkapan"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:autoSizeMaxTextSize="24sp"
-        android:autoSizeMinTextSize="12sp"
+        android:autoSizeMaxTextSize="22sp"
+        android:autoSizeMinTextSize="14sp"
         android:autoSizeStepGranularity="2sp"
         android:autoSizeTextType="uniform"
-        android:background="@drawable/search_bar"
-        android:fontFamily="@font/special"
-        android:padding="20dp"
+        android:background="@drawable/background_with_border"
+        android:justificationMode="inter_word"
+        android:padding="16dp"
         android:text="@string/langkapan_example"
         android:textColor="#000"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline53"
-        app:layout_constraintEnd_toStartOf="@+id/verticalLine2"
-        app:layout_constraintHorizontal_bias="0.6"
-        app:layout_constraintStart_toStartOf="@+id/verticalLine1"
-        app:layout_constraintTop_toBottomOf="@+id/description_text_langkapan"
-        app:layout_constraintVertical_bias="0.0" />
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/description_text_langkapan" />
 
-    <Button
-        android:id="@+id/UnlockButtonLangkapan"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@drawable/rounded_button_achievement"
-        android:fontFamily="@font/special"
-        android:padding="25dp"
-        android:text="Pagsusulit"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/guideline56"
-        app:layout_constraintEnd_toStartOf="@+id/verticalLine2"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline55"
-        app:layout_constraintTop_toBottomOf="@+id/example_Text_langkapan"
-        app:layout_constraintVertical_bias="0.459" />
-
+    <!-- Image -->
     <ImageView
         android:id="@+id/imageView_langkapan"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline56"
-        app:layout_constraintEnd_toStartOf="@+id/guideline55"
-        app:layout_constraintHorizontal_bias="0.794"
-        app:layout_constraintStart_toStartOf="@+id/guideline54"
-        app:layout_constraintTop_toBottomOf="@+id/example_Text_langkapan"
-        app:layout_constraintVertical_bias="1.0"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline57"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/example_Text_langkapan"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/tarsier_logo" />
 
-    <!-- Guidelines -->
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/horizontalLine1"
+    <!-- Button -->
+    <Button
+        android:id="@+id/UnlockButtonLangkapan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.0" />
+        android:layout_marginTop="68dp"
+        android:background="@drawable/rounded_button_achievement"
+        android:fontFamily="@font/special"
+        android:padding="5dp"
+        android:text="Pagsusulit"
+        android:textColor="#000"
+        android:textSize="15sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.846"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/example_Text_langkapan" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/horizontalLine2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="1" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/verticalLine1"
+        android:id="@+id/guideline57"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.0" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/verticalLine2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="1" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline52"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline53"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline54"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.02" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline55"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.65" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline56"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.9" />
+        app:layout_constraintGuide_percent="0.56" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
