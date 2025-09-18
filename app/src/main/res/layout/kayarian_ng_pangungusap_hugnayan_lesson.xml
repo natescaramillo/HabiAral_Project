@@ -2,32 +2,167 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/Pangngalan"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
-    android:fitsSystemWindows="false"
-    tools:context=".Activity.IntroActivity">
+    android:background="@drawable/gradient_background">
 
-
-    <!-- Instruction text -->
-
-
-    <Button
-        android:id="@+id/UnlockButtonPangngalan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/rounded_button_achievement"
+    <TextView
+        android:id="@+id/title_Text_hugnayan"
+        android:layout_width="0dp"
+        android:layout_height="101dp"
+        android:autoSizeMaxTextSize="30sp"
+        android:autoSizeMinTextSize="15sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        android:background="@drawable/description_pop_up"
+        android:backgroundTint="#A27B5C"
         android:fontFamily="@font/special"
-        android:text="Pagsusulit"
-        android:visibility="visible"
+        android:gravity="center"
+        android:text="Hugnayan"
+        android:textColor="#fff"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.907"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.982" />
+        app:layout_constraintVertical_bias="0.0" />
 
+    <TextView
+        android:id="@+id/description_text_hugnayan"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        android:background="@drawable/search_bar"
+        android:fontFamily="@font/special"
+        android:padding="20dp"
+        android:text="Ang hugnayan na pangungusap ay binubuo ng isang sugnay na makapagsasarili at isa o higit pang di-makapagsasariling sugnay. Ang mga di-makapagsasariling sugnay ay nangangailangan ng suporta mula sa pangunahing sugnay upang makabuo ng kumpletong mensahe. Karaniwang gumagamit ito ng mga pangatnig tulad ng dahil, kapag, kung, nang, sapagkat, upang, habang. Ginagamit ito kapag nais ipakita ang sanhi, kondisyon, o panahon ng isang pangyayari."
+        android:textSize="20sp"
+        android:textColor="#000"
+        android:justificationMode="inter_character"
+        app:layout_constraintBottom_toTopOf="@+id/guideline52"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_Text_hugnayan" />
+
+    <TextView
+        android:id="@+id/example_Text_hugnayan"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        android:background="@drawable/search_bar"
+        android:fontFamily="@font/special"
+        android:padding="20dp"
+        android:text="Halimbawa\n\n• Umalis siya dahil gabi na.\n• Masaya ako kapag kasama kita.\n• Hindi siya pumasok sapagkat masama ang pakiramdam niya.\n• Naghintay sila hanggang dumating ang guro.\n• Kumakanta siya habang nagluluto ang nanay niya."
+        android:textColor="#000"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline53"
+        app:layout_constraintEnd_toStartOf="@+id/verticalLine2"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="@+id/verticalLine1"
+        app:layout_constraintTop_toBottomOf="@+id/description_text_hugnayan"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/UnlockButtonHugnayan"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/rounded_button_achievement"
+        android:fontFamily="@font/special"
+        android:padding="25dp"
+        android:text="Pagsusulit"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/guideline56"
+        app:layout_constraintEnd_toStartOf="@+id/verticalLine2"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline55"
+        app:layout_constraintTop_toBottomOf="@+id/example_Text_hugnayan"
+        app:layout_constraintVertical_bias="0.459" />
+
+    <ImageView
+        android:id="@+id/imageView_hugnayan"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline56"
+        app:layout_constraintEnd_toStartOf="@+id/guideline55"
+        app:layout_constraintHorizontal_bias="0.794"
+        app:layout_constraintStart_toStartOf="@+id/guideline54"
+        app:layout_constraintTop_toBottomOf="@+id/example_Text_hugnayan"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/tarsier_logo" />
+
+    <!-- Guidelines -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontalLine1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontalLine2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticalLine1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticalLine2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline52"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline53"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline54"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.02" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline55"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.65" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline56"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

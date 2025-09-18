@@ -2,200 +2,167 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/Pangngalan"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
-    android:fitsSystemWindows="false"
-    tools:context=".Activity.IntroActivity">
+    android:background="@drawable/gradient_background">
 
-
-    <!-- Instruction text -->
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="429dp"
-        android:background="@drawable/lessons_design"
-        app:layout_constraintBottom_toTopOf="@+id/guideline31"
+    <TextView
+        android:id="@+id/title_Text_tambalan"
+        android:layout_width="0dp"
+        android:layout_height="101dp"
+        android:autoSizeMaxTextSize="30sp"
+        android:autoSizeMinTextSize="15sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        android:background="@drawable/description_pop_up"
+        android:backgroundTint="#A27B5C"
+        android:fontFamily="@font/special"
+        android:gravity="center"
+        android:text="Tambalan"
+        android:textColor="#fff"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.0" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelinehorizontal2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.05" />
+    <TextView
+        android:id="@+id/description_text_tambalan"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        android:background="@drawable/search_bar"
+        android:fontFamily="@font/special"
+        android:padding="20dp"
+        android:text="Ang tambalan na pangungusap ay binubuo ng dalawa o higit pang payak na pangungusap na pinagsama sa tulong ng mga pangatnig tulad ng at, ngunit, subalit, o, kaya, dahil. Dahil dito, nailalahad nito ang dalawa o higit pang kaisipan sa isang pangungusap, at nagpapakita ng ugnayan sa pagitan ng mga ideya. Karaniwan itong ginagamit kapag gusto nating ipakita ang pagkakasunod o relasyon ng mga pangyayari."
+        android:textSize="20sp"
+        android:textColor="#000"
+        android:justificationMode="inter_character"
+        app:layout_constraintBottom_toTopOf="@+id/guideline52"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_Text_tambalan" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.95" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="206dp" />
-
-        <ImageView
-            android:id="@+id/imageViewPangngalan"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_margin="0dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/pangngalan01"
-            app:layout_constraintBottom_toTopOf="@id/option_bar"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="@+id/guidelinehorizontal2" />
-
-        <LinearLayout
-            android:id="@+id/option_bar"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:background="#99A27B5C"
-            android:gravity="end|center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="@+id/imageViewPangngalan"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toStartOf="@+id/imageViewPangngalan"
-            app:layout_constraintTop_toBottomOf="@id/imageViewPangngalan">
-
-            <ImageView
-                android:id="@+id/back_option"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="5dp"
-                android:adjustViewBounds="true"
-                android:background="#CAA885"
-                android:scaleType="fitCenter"
-                android:src="@drawable/back_button" />
-
-            <ImageView
-                android:id="@+id/next_option"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="5dp"
-                android:adjustViewBounds="true"
-                android:background="#CAA885"
-                android:scaleType="fitCenter"
-                android:src="@drawable/next_button" />
-
-            <ImageView
-                android:id="@+id/full_screen_option"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="5dp"
-                android:adjustViewBounds="true"
-                android:background="#CAA885"
-                android:scaleType="fitCenter"
-                android:src="@drawable/full_screen" />
-        </LinearLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/instructionContainer"
-            android:layout_width="match_parent"
-            android:layout_height="119dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/rounded_rect"
-            android:backgroundTint="#FFEFEA"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.903">
-
-
-            <TextView
-                android:id="@+id/instructionText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:fontFamily="@font/special"
-                android:gravity="start"
-                android:justificationMode="inter_word"
-                android:lineSpacingExtra="2dp"
-                android:textColor="#000000"
-                android:textSize="13sp"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+    <TextView
+        android:id="@+id/example_Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:background="@drawable/search_bar"
+        android:fontFamily="@font/special"
+        android:padding="20dp"
+        android:text="Halimbawa\n\n• Nag-aral siya at nagsulat ng takdang-aralin.\n• Nagsipilyo siya at natulog agad.\n• Nag-aral si Mark, ngunit hindi pa rin siya nakapasa.\n• Kumain si Ana o uminom ng gatas si Pedro.\n• Nagluto si Nanay kaya busog kaming lahat."
+        android:textColor="#000"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline53"
+        app:layout_constraintEnd_toStartOf="@+id/verticalLine2"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="@+id/verticalLine1"
+        app:layout_constraintTop_toBottomOf="@+id/description_text_tambalan"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
-        android:id="@+id/UnlockButtonPangngalan"
-        android:layout_width="wrap_content"
+        android:id="@+id/UnlockButtonTambalan"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:background="@drawable/rounded_button_achievement"
         android:fontFamily="@font/special"
+        android:padding="25dp"
         android:text="Pagsusulit"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/vertical_line2"
-        app:layout_constraintHorizontal_bias="0.937"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.957"
-        android:layout_marginBottom="24dp"/>
+        app:layout_constraintBottom_toTopOf="@+id/guideline56"
+        app:layout_constraintEnd_toStartOf="@+id/verticalLine2"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline55"
+        app:layout_constraintTop_toBottomOf="@+id/example_Text"
+        app:layout_constraintVertical_bias="0.459" />
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="201dp"
-        android:layout_height="213dp"
-        android:src="@drawable/tarsier_3d"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.673" />
+        android:id="@+id/imageView13"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline56"
+        app:layout_constraintEnd_toStartOf="@+id/guideline55"
+        app:layout_constraintHorizontal_bias="0.794"
+        app:layout_constraintStart_toStartOf="@+id/guideline54"
+        app:layout_constraintTop_toBottomOf="@+id/example_Text"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/tarsier_logo" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline31"
+        android:id="@+id/horizontalLine1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontalLine2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticalLine1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticalLine2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline52"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline53"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/vertical_line1"
+        android:id="@+id/guideline54"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.04" />
+        app:layout_constraintGuide_percent="0.02" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/vertical_line2"
+        android:id="@+id/guideline55"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.96107054" />
+        app:layout_constraintGuide_percent="0.65" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline56"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+

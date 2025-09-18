@@ -179,7 +179,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/special"
                         android:gravity="center"
-                        android:text="Pag-Unawa"
+                        android:text="Panitikan"
                         android:textColor="#FFFFFF"
                         android:textSize="18sp" />
 
