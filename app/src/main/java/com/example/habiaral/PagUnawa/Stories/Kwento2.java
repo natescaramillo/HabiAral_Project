@@ -10,10 +10,8 @@ import android.widget.ImageView;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
 import com.example.habiaral.PagUnawa.PagUnawa;
-import com.example.habiaral.PagUnawa.Quiz.Kwento2Quiz;
+import com.example.habiaral.PagUnawa.Alamat.Quiz.Kwento2Quiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

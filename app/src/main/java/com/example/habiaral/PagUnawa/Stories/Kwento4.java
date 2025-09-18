@@ -11,8 +11,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.PagUnawa.PagUnawa;
-import com.example.habiaral.PagUnawa.Quiz.Kwento3Quiz;
-import com.example.habiaral.PagUnawa.Quiz.Kwento4Quiz;
+import com.example.habiaral.PagUnawa.Alamat.Quiz.Kwento4Quiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

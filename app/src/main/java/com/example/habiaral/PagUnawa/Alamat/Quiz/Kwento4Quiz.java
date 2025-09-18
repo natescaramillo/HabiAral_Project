@@ -1,4 +1,4 @@
-package com.example.habiaral.PagUnawa.Quiz;
+package com.example.habiaral.PagUnawa.Alamat.Quiz;
 
 import android.app.AlertDialog;
 import android.content.Intent;

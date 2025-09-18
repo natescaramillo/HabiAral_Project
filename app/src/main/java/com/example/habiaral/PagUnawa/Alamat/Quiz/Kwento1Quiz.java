@@ -1,4 +1,4 @@
-package com.example.habiaral.PagUnawa.Quiz;
+package com.example.habiaral.PagUnawa.Alamat.Quiz;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.PagUnawa.PagUnawa;
-import com.example.habiaral.PagUnawa.Stories.Kwento3;
+import com.example.habiaral.PagUnawa.Stories.Kwento2;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,13 +22,13 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Kwento2Quiz extends AppCompatActivity {
+public class Kwento1Quiz extends AppCompatActivity {
     Button nextButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_kwento2_quiz);
+        setContentView(R.layout.pag_unawa_kwento1_quiz);
 
         nextButton = findViewById(R.id.nextButton);
 
@@ -63,7 +63,7 @@ public class Kwento2Quiz extends AppCompatActivity {
 
         taposButton.setOnClickListener(v -> {
             dialog.dismiss();
-            Intent intent = new Intent(Kwento2Quiz.this, Kwento3.class);
+            Intent intent = new Intent(Kwento1Quiz.this, Kwento2.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
@@ -71,7 +71,7 @@ public class Kwento2Quiz extends AppCompatActivity {
 
         homeButton.setOnClickListener(v -> {
             dialog.dismiss();
-            Intent intent = new Intent(Kwento2Quiz.this, PagUnawa.class);
+            Intent intent = new Intent(Kwento1Quiz.this, PagUnawa.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
@@ -79,7 +79,7 @@ public class Kwento2Quiz extends AppCompatActivity {
     }
 
     private void unlockNextLesson() {
-        Toast.makeText(this, "Next Lesson Unlocked: Kwento3!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Next Lesson Unlocked: Kwento2!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {
@@ -89,15 +89,15 @@ public class Kwento2Quiz extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> kwento2Status = new HashMap<>();
-        kwento2Status.put("status", "completed");
+        Map<String, Object> kwento1Status = new HashMap<>();
+        kwento1Status.put("status", "completed");
 
         Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("kwento2", kwento2Status);
+        lessonsMap.put("kwento1", kwento1Status);
 
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "kwento2");
+        updateMap.put("current_lesson", "kwento1");
 
         Map<String, Object> moduleUpdate = Map.of("module_3", updateMap);
 
@@ -114,7 +114,7 @@ public class Kwento2Quiz extends AppCompatActivity {
 
             Map<String, Object> cachedModule3 = (Map<String, Object>) cachedData.get("module_3");
             cachedModule3.put("lessons", lessonsMap);
-            cachedModule3.put("current_lesson", "kwento2");
+            cachedModule3.put("current_lesson", "kwento1");
 
             LessonProgressCache.setData(cachedData);
         }
