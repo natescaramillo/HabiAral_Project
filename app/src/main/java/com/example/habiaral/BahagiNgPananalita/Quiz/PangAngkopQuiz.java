@@ -399,7 +399,7 @@ public class PangAngkopQuiz extends AppCompatActivity {
         progressBar.setProgress(correctAnswers);
         scoreNumber.setText(correctAnswers + "/" + totalQuestions);
 
-        boolean passed = correctAnswers >= 1;
+        boolean passed = correctAnswers >= 6;
         if (passed) {
             resultText.setText("Ikaw ay nakapasa!");
             taposButton.setEnabled(true);
