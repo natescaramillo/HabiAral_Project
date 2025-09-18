@@ -4,4 +4,76 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="default_web_client_id">612860240418-6j94e06tc5be4gc75bsafprrt67lqahb.apps.googleusercontent.com</string>
 
+    <!-- Payak -->
+
+    <string name ="payak_description"> Ang payak na pangungusap ay pinakasimpleng anyo ng pangungusap.
+        Binubuo ito ng isang sugnay lamang at naglalaman ng isang buong kaisipan. Kahit maikli, sapat na ito
+        upang maipahayag ang mensahe nang malinaw at direkta. Madalas itong ginagamit sa pang-araw-araw na
+        komunikasyon, tulad ng pagsasalaysay ng simpleng pangyayari o pagbibigay ng impormasyon. </string>
+
+    <string name ="payak_example">
+      Halimbawa\n\n
+        • Kumain si Ana.\n
+        • Malinis ang silid.\n
+        • Tumutunog ang kampana.\n
+        • Tumakbo ang aso sa parke.\n
+        • Nagsalita ang guro tungkol sa aralin."\n
+    </string>
+
+    <!-- Tambalan -->
+
+    <string name = "tambalan_description"> Ang tambalan na pangungusap ay binubuo ng dalawa o higit
+        pang payak na pangungusap na pinagsama sa tulong ng mga pangatnig tulad ng at, ngunit, subalit, o,
+        kaya, dahil. Dahil dito, nailalahad nito ang dalawa o higit pang kaisipan sa isang pangungusap, at
+        nagpapakita ng ugnayan sa pagitan ng mga ideya. Karaniwan itong ginagamit kapag gusto nating ipakita ang
+        pagkakasunod o relasyon ng mga pangyayari."
+
+</string>
+    <string name ="tambalan_example">
+        Halimbawa\n\n
+        • Nag-aral siya at nagsulat ng takdang-aralin.\n
+        • Nagsipilyo siya at natulog agad.\n
+        • Nag-aral si Mark, ngunit hindi pa rin siya nakapasa.\n
+        • Kumain si Ana o uminom ng gatas si Pedro.\n
+        • Nagluto si Nanay kaya busog kaming lahat.
+    </string>
+
+    <!-- Langkapan -->
+
+    <string name ="langkapan_description">
+        Ang langkapan na pangungusap ay pinakamalawak at pinakakomplikado sa lahat. Binubuo
+        ito ng dalawa o higit pang makapagsasariling sugnay at isa o higit pang di-makapagsasariling sugnay,
+        kaya pinagsasama nito ang katangian ng tambalan at hugnayan. Dahil dito, mas mahaba at detalyado ang
+        pangungusap, at mas malinaw ang pagkakaayos ng mga ideya. Karaniwan itong ginagamit sa mga pormal na sulatin
+        o kapag nais ipahayag ang mas kumplikadong mensahe.
+
+    </string>
+
+    <string name ="langkapan_example">
+        Halimbawa\n\n
+        • Kumain na kami at nanood ng sine dahil walang pasok bukas.\n
+        • Nagluto si Lola at naghanda ng mesa habang naglalaro ang mga bata.\n
+        • Nag-aral siya at nakinig sa guro dahil may pagsusulit kinabukasan.\n
+        • Nagsimba sila at nagpunta sa palengke habang umuulan nang malakas.\n
+        • Naglaro ang mga bata at kumain ng kendi nang dumating ang kanilang mga magulang.
+    </string>
+
+    <!-- Hugnayan -->
+
+    <string name ="hugnayan_description">
+        Ang hugnayan na pangungusap ay binubuo ng isang sugnay na makapagsasarili at isa o higit pang
+        di-makapagsasariling sugnay. Ang mga di-makapagsasariling sugnay ay nangangailangan ng suporta mula sa
+        pangunahing sugnay upang makabuo ng kumpletong mensahe. Karaniwang gumagamit ito ng mga pangatnig tulad ng
+        dahil, kapag, kung, nang, sapagkat, upang, habang. Ginagamit ito kapag nais ipakita ang sanhi, kondisyon,
+        o panahon ng isang pangyayari."
+    </string>
+
+    <string name="hugnayan_example">
+        Halimbawa\n\n
+        • Umalis siya dahil gabi na.\n
+        • Masaya ako kapag kasama kita.\n
+        • Hindi siya pumasok sapagkat masama ang pakiramdam niya.\n
+        • Naghintay sila hanggang dumating ang guro.\n
+        • Kumakanta siya habang nagluluto ang nanay niya.
+    </string>
 </resources>
