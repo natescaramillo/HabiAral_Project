@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,10 +17,8 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
 import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.BahagiNgPananalita.Lessons.PandamdamLesson;
 import com.example.habiaral.R;
@@ -402,7 +399,7 @@ public class PangAngkopQuiz extends AppCompatActivity {
         progressBar.setProgress(correctAnswers);
         scoreNumber.setText(correctAnswers + "/" + totalQuestions);
 
-        boolean passed = correctAnswers >= 6;
+        boolean passed = correctAnswers >= 1;
         if (passed) {
             resultText.setText("Ikaw ay nakapasa!");
             taposButton.setEnabled(true);
@@ -543,15 +540,15 @@ public class PangAngkopQuiz extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> pandamdamStatus = new HashMap<>();
-        pandamdamStatus.put("status", "completed");
+        Map<String, Object> pangangkopStatus = new HashMap<>();
+        pangangkopStatus.put("status", "completed");
 
         Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("pandamdam", pandamdamStatus);
+        lessonsMap.put("pangangkop", pangangkopStatus);
 
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "pandamdam");
+        updateMap.put("current_lesson", "pangangkop");
 
         Map<String, Object> moduleUpdate = Map.of("module_1", updateMap);
 
@@ -568,7 +565,7 @@ public class PangAngkopQuiz extends AppCompatActivity {
 
             Map<String, Object> cachedModule1 = (Map<String, Object>) cachedData.get("module_1");
             cachedModule1.put("lessons", lessonsMap);
-            cachedModule1.put("current_lesson", "pandamdam");
+            cachedModule1.put("current_lesson", "pangangkop");
 
             LessonProgressCache.setData(cachedData);
         }
