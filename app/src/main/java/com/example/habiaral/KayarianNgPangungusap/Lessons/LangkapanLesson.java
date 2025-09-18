@@ -33,19 +33,19 @@ import java.util.Map;
 
 public class LangkapanLesson extends AppCompatActivity {
 
-    private final int[] pangngalanLesson = {
-            R.drawable.pangngalan01, R.drawable.pangngalan02, R.drawable.pangngalan03,
-            R.drawable.pangngalan04, R.drawable.pangngalan05, R.drawable.pangngalan06,
-            R.drawable.pangngalan07, R.drawable.pangngalan08, R.drawable.pangngalan09,
-            R.drawable.pangngalan10, R.drawable.pangngalan11, R.drawable.pangngalan12,
-            R.drawable.pangngalan13, R.drawable.pangngalan14, R.drawable.pangngalan15,
-            R.drawable.pangngalan16, R.drawable.pangngalan17, R.drawable.pangngalan18,
-            R.drawable.pangngalan19, R.drawable.pangngalan20, R.drawable.pangngalan21,
-            R.drawable.pangngalan22, R.drawable.pangngalan23, R.drawable.pangngalan24,
-            R.drawable.pangngalan25, R.drawable.pangngalan26, R.drawable.pangngalan27,
-            R.drawable.pangngalan28, R.drawable.pangngalan29, R.drawable.pangngalan30,
-            R.drawable.pangngalan31
-    };
+//    private final int[] pangngalanLesson = {
+//            R.drawable.pangngalan01, R.drawable.pangngalan02, R.drawable.pangngalan03,
+//            R.drawable.pangngalan04, R.drawable.pangngalan05, R.drawable.pangngalan06,
+//            R.drawable.pangngalan07, R.drawable.pangngalan08, R.drawable.pangngalan09,
+//            R.drawable.pangngalan10, R.drawable.pangngalan11, R.drawable.pangngalan12,
+//            R.drawable.pangngalan13, R.drawable.pangngalan14, R.drawable.pangngalan15,
+//            R.drawable.pangngalan16, R.drawable.pangngalan17, R.drawable.pangngalan18,
+//            R.drawable.pangngalan19, R.drawable.pangngalan20, R.drawable.pangngalan21,
+//            R.drawable.pangngalan22, R.drawable.pangngalan23, R.drawable.pangngalan24,
+//            R.drawable.pangngalan25, R.drawable.pangngalan26, R.drawable.pangngalan27,
+//            R.drawable.pangngalan28, R.drawable.pangngalan29, R.drawable.pangngalan30,
+//            R.drawable.pangngalan31
+//    };
 
     private android.os.Handler textHandler = new android.os.Handler();
     private Map<Integer, List<String>> pageLines = new HashMap<>();
@@ -67,54 +67,54 @@ public class LangkapanLesson extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.kayarian_ng_pangungusap_langkapan_lesson);
 
-        unlockButton = findViewById(R.id.UnlockButtonPangngalan);
-        imageView = findViewById(R.id.imageViewPangngalan);
-
-        backOption = findViewById(R.id.back_option);
-        nextOption = findViewById(R.id.next_option);
-
-        ImageView fullScreenOption = findViewById(R.id.full_screen_option);
-        ImageView imageView2 = findViewById(R.id.imageView2);
+//        unlockButton = findViewById(R.id.UnlockButtonPangngalan);
+//        imageView = findViewById(R.id.imageViewPangngalan);
+//
+//        backOption = findViewById(R.id.back_option);
+//        nextOption = findViewById(R.id.next_option);
+//
+//        ImageView fullScreenOption = findViewById(R.id.full_screen_option);
+//        ImageView imageView2 = findViewById(R.id.imageView2);
 
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
-        textToSpeech = new TextToSpeech(this, status -> {
-            if (status == TextToSpeech.SUCCESS) {
-                textToSpeech.setLanguage(new Locale("tl", "PH"));
-                textToSpeech.setSpeechRate(1.0f);
-                SoundManager.setTts(textToSpeech);
-                loadCharacterLines();
-            }
-        });
+//        textToSpeech = new TextToSpeech(this, status -> {
+//            if (status == TextToSpeech.SUCCESS) {
+//                textToSpeech.setLanguage(new Locale("tl", "PH"));
+//                textToSpeech.setSpeechRate(1.0f);
+//                SoundManager.setTts(textToSpeech);
+//                loadCharacterLines();
+//            }
+//        });
 
         checkLessonStatus();
 
         unlockButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             isNavigatingInsideApp = true;
-            stopTTS();
+//            stopTTS();
             startActivity(new Intent(this, LangkapanQuiz.class));
         });
 
-        backOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
-        nextOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); nextPage(); });
-
-        fullScreenOption.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click);
-            FullScreenUtils.toggleFullScreen(
-                    this,
-                    isFullScreen,
-                    fullScreenOption,
-                    imageView,
-                    imageView2,
-                    unlockButton
-            );
-        });
+//        backOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
+//        nextOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); nextPage(); });
+//
+//        fullScreenOption.setOnClickListener(v -> {
+//            SoundClickUtils.playClickSound(this, R.raw.button_click);
+//            FullScreenUtils.toggleFullScreen(
+//                    this,
+//                    isFullScreen,
+//                    fullScreenOption,
+//                    imageView,
+//                    imageView2,
+//                    unlockButton
+//            );
+//        });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() {
-                stopTTS();
+//                stopTTS();
                 startActivity(new Intent(LangkapanLesson.this, KayarianNgPangungusap.class)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                 finish();
@@ -122,55 +122,55 @@ public class LangkapanLesson extends AppCompatActivity {
         });
     }
 
-    private void nextPage() {
-        if (currentPage < pangngalanLesson.length - 1 ) {
-            currentPage++;
-            updatePage();
-        }
-        if (currentPage == pangngalanLesson.length - 1) {
-            unlockButton.setEnabled(true);
-            unlockButton.setAlpha(1f);
-        }
-    }
-
-    private void previousPage() {
-        if (currentPage > 0) {
-            currentPage--;
-            updatePage();
-        }
-    }
-
-    private void updateNavigationButtons() {
-        if (currentPage == 0) {
-            backOption.setEnabled(false);
-            backOption.setAlpha(0.5f);
-        } else {
-            backOption.setEnabled(true);
-            backOption.setAlpha(1f);
-        }
-
-        if (currentPage == pangngalanLesson.length - 1) {
-            nextOption.setEnabled(false);
-            nextOption.setAlpha(0.5f);
-        } else {
-            nextOption.setEnabled(true);
-            nextOption.setAlpha(1f);
-        }
-    }
-
-    private void updatePage() {
-        imageView.setImageResource(pangngalanLesson[currentPage]);
-        KayarianFirestoreUtils.saveLessonProgress(KayarianFirestoreUtils.getCurrentUser().getUid(),
-                "langkapan", currentPage, isLessonDone);
-
-        stopSpeaking();
-        updateNavigationButtons();
-
-        List<String> lines = pageLines.get(currentPage);
-        if (lines != null && !lines.isEmpty()) {
-            speakSequentialLines(lines, () -> {});
-        }
-    }
+//    private void nextPage() {
+//        if (currentPage < pangngalanLesson.length - 1 ) {
+//            currentPage++;
+//            updatePage();
+//        }
+//        if (currentPage == pangngalanLesson.length - 1) {
+//            unlockButton.setEnabled(true);
+//            unlockButton.setAlpha(1f);
+//        }
+//    }
+//
+//    private void previousPage() {
+//        if (currentPage > 0) {
+//            currentPage--;
+//            updatePage();
+//        }
+//    }
+//
+//    private void updateNavigationButtons() {
+//        if (currentPage == 0) {
+//            backOption.setEnabled(false);
+//            backOption.setAlpha(0.5f);
+//        } else {
+//            backOption.setEnabled(true);
+//            backOption.setAlpha(1f);
+//        }
+//
+//        if (currentPage == pangngalanLesson.length - 1) {
+//            nextOption.setEnabled(false);
+//            nextOption.setAlpha(0.5f);
+//        } else {
+//            nextOption.setEnabled(true);
+//            nextOption.setAlpha(1f);
+//        }
+//    }
+//
+//    private void updatePage() {
+//        imageView.setImageResource(pangngalanLesson[currentPage]);
+//        KayarianFirestoreUtils.saveLessonProgress(KayarianFirestoreUtils.getCurrentUser().getUid(),
+//                "langkapan", currentPage, isLessonDone);
+//
+//        stopSpeaking();
+//        updateNavigationButtons();
+//
+//        List<String> lines = pageLines.get(currentPage);
+//        if (lines != null && !lines.isEmpty()) {
+//            speakSequentialLines(lines, () -> {});
+//        }
+//    }
 
     private void checkLessonStatus() {
         FirebaseUser user = KayarianFirestoreUtils.getCurrentUser();
@@ -193,126 +193,126 @@ public class LangkapanLesson extends AppCompatActivity {
                                         unlockButton.setEnabled(true);
                                         unlockButton.setAlpha(1f);
                                     }
-                                    showResumeDialog(currentPage);
+//                                    showResumeDialog(currentPage);
                                     waitForResumeChoice = true;
                                 }
                             }
                         }
                     } else {
                         currentPage = 0;
-                        imageView.setImageResource(pangngalanLesson[currentPage]);
+//                        imageView.setImageResource(pangngalanLesson[currentPage]);
                         isFirstTime = true;
                     }
                     KayarianFirestoreUtils.saveLessonProgress(user.getUid(), "langkapan", currentPage, isLessonDone);
                 });
     }
 
-    private void loadCharacterLines() {
-        FirebaseFirestore.getInstance().collection("lesson_character_lines").document("LCL1").get()
-                .addOnSuccessListener(doc -> {
-                    if (!doc.exists()) return;
-                    List<Map<String, Object>> pages = (List<Map<String, Object>>) doc.get("pages");
-                    if (pages != null) {
-                        for (Map<String, Object> page : pages) {
-                            Long pageNum = (Long) page.get("page");
-                            List<String> lines = (List<String>) page.get("line");
-                            if (pageNum != null && lines != null) {
-                                pageLines.put(pageNum.intValue() - 1, lines);
-                            }
-                        }
-                    }
-                    List<String> introLines = (List<String>) doc.get("intro");
-                    if (!waitForResumeChoice) {
-                        if (introLines != null && isFirstTime && !introLines.isEmpty()) {
-                            isFirstTime = false;
-                            speakSequentialLines(introLines, this::updatePage);
-                        } else updatePage();
-                    }
-                });
-    }
-
-    private void speakSequentialLines(List<String> lines, Runnable onComplete) {
-        if (lines == null || lines.isEmpty()) return;
-        final int[] index = {0};
-        String utterancePage = "page_" + currentPage;
-
-        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
-            @Override public void onStart(String s) {}
-            @Override public void onDone(String utteranceId) {
-                runOnUiThread(() -> {
-                    if (!utteranceId.startsWith(utterancePage)) return;
-                    index[0]++;
-                    if (index[0] < lines.size()) {
-                        if (!SoundManager.isMuted(LangkapanLesson.this)) {
-                            speak(lines.get(index[0]), utterancePage + "_" + index[0]);
-                        }
-                    } else onComplete.run();
-                });
-            }
-
-            @Override public void onError(String s) {}
-        });
-
-        if (!SoundManager.isMuted(this)) {
-            speak(lines.get(0), utterancePage + "_0");
-        }
-    }
-
-    private void speak(String text, String id) {
-        if (textToSpeech != null && !text.isEmpty())
-            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, id);
-    }
-
-    private void showResumeDialog(int checkpoint) {
-        AlertDialog dialog = ResumeDialogUtils.showResumeDialog(this, new ResumeDialogUtils.ResumeDialogListener() {
-            @Override public void onResumeLesson() {
-                currentPage = checkpoint;
-                updatePage();
-                waitForResumeChoice = false;
-            }
-            @Override public void onRestartLesson() {
-                currentPage = 0;
-                updatePage();
-                waitForResumeChoice = false;
-            }
-        });
-    }
-
-    private void stopSpeaking() {
-        if (textToSpeech != null) textToSpeech.stop();
-        textHandler.removeCallbacksAndMessages(null);
-    }
-
-    private void stopTTS() {
-        if (textToSpeech != null) {
-            textToSpeech.stop();
-            textToSpeech.shutdown();
-        }
-        textHandler.removeCallbacksAndMessages(null);
-    }
-
-    @Override protected void onDestroy() { stopTTS(); super.onDestroy(); }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (!isNavigatingInsideApp) {
-            resumePage = currentPage;
-        }
-
-        stopSpeaking();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (resumePage != -1) {
-            currentPage = resumePage;
-            updatePage();
-            resumePage = -1;
-            resumeLine = -1;
-        }
-    }
+//    private void loadCharacterLines() {
+//        FirebaseFirestore.getInstance().collection("lesson_character_lines").document("LCL1").get()
+//                .addOnSuccessListener(doc -> {
+//                    if (!doc.exists()) return;
+//                    List<Map<String, Object>> pages = (List<Map<String, Object>>) doc.get("pages");
+//                    if (pages != null) {
+//                        for (Map<String, Object> page : pages) {
+//                            Long pageNum = (Long) page.get("page");
+//                            List<String> lines = (List<String>) page.get("line");
+//                            if (pageNum != null && lines != null) {
+//                                pageLines.put(pageNum.intValue() - 1, lines);
+//                            }
+//                        }
+//                    }
+//                    List<String> introLines = (List<String>) doc.get("intro");
+//                    if (!waitForResumeChoice) {
+//                        if (introLines != null && isFirstTime && !introLines.isEmpty()) {
+//                            isFirstTime = false;
+//                            speakSequentialLines(introLines, this::updatePage);
+//                        } else updatePage();
+//                    }
+//                });
+//    }
+//
+//    private void speakSequentialLines(List<String> lines, Runnable onComplete) {
+//        if (lines == null || lines.isEmpty()) return;
+//        final int[] index = {0};
+//        String utterancePage = "page_" + currentPage;
+//
+//        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+//            @Override public void onStart(String s) {}
+//            @Override public void onDone(String utteranceId) {
+//                runOnUiThread(() -> {
+//                    if (!utteranceId.startsWith(utterancePage)) return;
+//                    index[0]++;
+//                    if (index[0] < lines.size()) {
+//                        if (!SoundManager.isMuted(LangkapanLesson.this)) {
+//                            speak(lines.get(index[0]), utterancePage + "_" + index[0]);
+//                        }
+//                    } else onComplete.run();
+//                });
+//            }
+//
+//            @Override public void onError(String s) {}
+//        });
+//
+//        if (!SoundManager.isMuted(this)) {
+//            speak(lines.get(0), utterancePage + "_0");
+//        }
+//    }
+//
+//    private void speak(String text, String id) {
+//        if (textToSpeech != null && !text.isEmpty())
+//            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, id);
+//    }
+//
+//    private void showResumeDialog(int checkpoint) {
+//        AlertDialog dialog = ResumeDialogUtils.showResumeDialog(this, new ResumeDialogUtils.ResumeDialogListener() {
+//            @Override public void onResumeLesson() {
+//                currentPage = checkpoint;
+//                updatePage();
+//                waitForResumeChoice = false;
+//            }
+//            @Override public void onRestartLesson() {
+//                currentPage = 0;
+//                updatePage();
+//                waitForResumeChoice = false;
+//            }
+//        });
+//    }
+//
+//    private void stopSpeaking() {
+//        if (textToSpeech != null) textToSpeech.stop();
+//        textHandler.removeCallbacksAndMessages(null);
+//    }
+//
+//    private void stopTTS() {
+//        if (textToSpeech != null) {
+//            textToSpeech.stop();
+//            textToSpeech.shutdown();
+//        }
+//        textHandler.removeCallbacksAndMessages(null);
+//    }
+//
+//    @Override protected void onDestroy() { stopTTS(); super.onDestroy(); }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//
+//        if (!isNavigatingInsideApp) {
+//            resumePage = currentPage;
+//        }
+//
+//        stopSpeaking();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        if (resumePage != -1) {
+//            currentPage = resumePage;
+//            updatePage();
+//            resumePage = -1;
+//            resumeLine = -1;
+//        }
+//    }
 }
