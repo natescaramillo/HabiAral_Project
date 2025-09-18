@@ -37,6 +37,46 @@
 
             <!-- BUTTON 1 -->
             <LinearLayout
+                android:id="@+id/alamat"
+                android:layout_width="match_parent"
+                android:layout_height="115dp"
+                android:layout_margin="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="70dp"
+                android:background="@drawable/button_color"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                app:layout_constraintEnd_toStartOf="@+id/verticalLine2"
+                app:layout_constraintStart_toStartOf="@+id/verticalLine1"
+                app:layout_constraintTop_toBottomOf="@+id/view1">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/rounded_image"
+                    android:clipToOutline="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/home_bahagi"
+                    app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:gravity="center"
+                    android:text="Alamat"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+
+            <!-- BUTTON 2 -->
+            <LinearLayout
                 android:id="@+id/epiko"
                 android:layout_width="match_parent"
                 android:layout_height="115dp"
@@ -72,11 +112,12 @@
                     android:text="Epiko"
                     android:textColor="#ffffff"
                     android:textSize="18sp" />
+
             </LinearLayout>
 
-            <!-- BUTTON 2 -->
+            <!-- BUTTON 3 -->
             <LinearLayout
-                android:id="@+id/parabula"
+                android:id="@+id/maikling_kuwento"
                 android:layout_width="match_parent"
                 android:layout_height="115dp"
                 android:layout_margin="10dp"
@@ -108,12 +149,13 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="Parabula"
+                    android:text="Maikling kwento"
                     android:textColor="#ffffff"
                     android:textSize="18sp" />
+
             </LinearLayout>
 
-            <!-- BUTTON 3 -->
+            <!-- BUTTON 4 -->
             <LinearLayout
                 android:id="@+id/pabula"
                 android:layout_width="match_parent"
@@ -152,48 +194,9 @@
                     android:textSize="18sp" />
             </LinearLayout>
 
-            <!-- BUTTON 2 -->
-            <LinearLayout
-                android:id="@+id/maikling_kuwento"
-                android:layout_width="match_parent"
-                android:layout_height="115dp"
-                android:layout_margin="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="70dp"
-                android:background="@drawable/button_color"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="12dp"
-                app:layout_constraintEnd_toStartOf="@+id/verticalLine2"
-                app:layout_constraintStart_toStartOf="@+id/verticalLine1"
-                app:layout_constraintTop_toBottomOf="@+id/view1">
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:background="@drawable/rounded_image"
-                    android:clipToOutline="true"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/home_bahagi"
-                    app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/special"
-                    android:gravity="center"
-                    android:text="Maikling kwento"
-                    android:textColor="#ffffff"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
             <!-- BUTTON 5 -->
             <LinearLayout
-                android:id="@+id/alamat"
+                android:id="@+id/parabula"
                 android:layout_width="match_parent"
                 android:layout_height="115dp"
                 android:layout_margin="10dp"
@@ -225,7 +228,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="Alamat"
+                    android:text="Parabula"
                     android:textColor="#ffffff"
                     android:textSize="18sp" />
             </LinearLayout>
