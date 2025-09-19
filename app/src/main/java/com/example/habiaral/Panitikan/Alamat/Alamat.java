@@ -35,7 +35,7 @@ public class Alamat extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_alamat);
+        setContentView(R.layout.panitikan_alamat);
 
         initViews();
         lockAllButtons();

@@ -11,7 +11,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.habiaral.Fragment.AchievementFragment;
-import com.example.habiaral.Fragment.DictionaryFragment;
 import com.example.habiaral.Fragment.HomeFragment;
 import com.example.habiaral.Fragment.ProgressBarFragment;
 import com.example.habiaral.Fragment.SettingsFragment;
@@ -79,7 +78,6 @@ public class  HomepageActivity extends AppCompatActivity {
         Fragment progressFragment = new ProgressBarFragment();
         Fragment achievementFragment = new AchievementFragment();
         Fragment settingsFragment = new SettingsFragment();
-        Fragment dictionaryFragment = new DictionaryFragment();
 
         fragmentMap.put(R.id.home_nav, homeFragment);
         fragmentMap.put(R.id.progressbar_nav, progressFragment);

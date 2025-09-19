@@ -44,7 +44,7 @@ public class MaiklingKwento2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_kwento2);
+        setContentView(R.layout.panitikan_kwento2);
 
         storyImage = findViewById(R.id.imageViewComic2);
         unlockButton = findViewById(R.id.UnlockButtonKwento2);

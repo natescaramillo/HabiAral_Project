@@ -44,7 +44,7 @@ public class ParabulaKwento3 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_kwento3);
+        setContentView(R.layout.panitikan_kwento3);
 
         storyImage = findViewById(R.id.imageViewComic3);
         unlockButton = findViewById(R.id.UnlockButtonKwento3);

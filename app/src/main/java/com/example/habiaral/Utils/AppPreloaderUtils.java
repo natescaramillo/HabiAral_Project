@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.R;
 
-public class AppPreloader {
+public class AppPreloaderUtils {
     public static SoundPool soundPool;
     public static int greenSoundId, orangeSoundId, redSoundId;
     public static Drawable redDrawable, orangeDrawable, greenDrawable;

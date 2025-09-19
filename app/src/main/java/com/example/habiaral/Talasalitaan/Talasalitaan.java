@@ -19,16 +19,17 @@ import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.SoundClickUtils;
+import com.example.habiaral.Utils.TalasalitaanUtils;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
 public class Talasalitaan extends AppCompatActivity {
 
-    private FirebaseFirestore db;
     private LinearLayout wordContainer;
     private LayoutInflater inflater;
 
@@ -36,6 +37,8 @@ public class Talasalitaan extends AppCompatActivity {
     private EditText searchBar;
     private List<DocumentSnapshot> allWords = new ArrayList<>();
     private boolean hasShownNoResults = false;
+    private ImageView activeSpeakerIcon = null;
+    private boolean isSpeakerActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +50,6 @@ public class Talasalitaan extends AppCompatActivity {
         inflater = LayoutInflater.from(this);
 
         ImageView talasalitaanBack = findViewById(R.id.talasalitaan_back);
-
         talasalitaanBack.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             finish();
@@ -56,18 +58,35 @@ public class Talasalitaan extends AppCompatActivity {
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 filterWords(s.toString().trim());
             }
-
             @Override
             public void afterTextChanged(Editable s) {}
         });
 
-        db = FirebaseFirestore.getInstance();
-        loadWordsFromFirestore();
+        if (TalasalitaanUtils.isLoaded()) {
+            allWords.clear();
+            allWords.addAll(TalasalitaanUtils.getCachedWords());
+
+            Collections.sort(allWords, new Comparator<DocumentSnapshot>() {
+                @Override
+                public int compare(DocumentSnapshot d1, DocumentSnapshot d2) {
+                    String w1 = d1.getString("word");
+                    String w2 = d2.getString("word");
+                    if (w1 == null) w1 = "";
+                    if (w2 == null) w2 = "";
+                    return w1.compareToIgnoreCase(w2);
+                }
+            });
+
+            displayWords(allWords);
+
+        } else {
+            Toast.makeText(this, "Loading words...", Toast.LENGTH_SHORT).show();
+            TalasalitaanUtils.preloadWords(this);
+        }
 
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
@@ -79,27 +98,15 @@ public class Talasalitaan extends AppCompatActivity {
         });
     }
 
-    private void loadWordsFromFirestore() {
-        db.collection("diksiyonaryo")
-                .orderBy("wordID")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    allWords.clear();
-                    allWords.addAll(queryDocumentSnapshots.getDocuments());
-                    displayWords(allWords);
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to load words", Toast.LENGTH_SHORT).show();
-                });
-    }
-
     private void displayWords(List<DocumentSnapshot> words) {
         wordContainer.removeAllViews();
 
         for (DocumentSnapshot doc : words) {
             String word = doc.getString("word");
             String meaning = doc.getString("meaning");
-            addWordToLayout(word, meaning);
+            if (word != null && meaning != null) {
+                addWordToLayout(word, meaning);
+            }
         }
     }
 
@@ -135,23 +142,38 @@ public class Talasalitaan extends AppCompatActivity {
         wordText.setText(word);
         meaningText.setText(meaning);
 
-        // Default white tint
-        speakerIcon.setColorFilter(ContextCompat.getColor(this, R.color.white));
+        speakerIcon.setImageResource(R.drawable.speaker_off);
 
-        speakerIcon.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                speakerIcon.setColorFilter(ContextCompat.getColor(this, R.color.black));
-            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
-                speakerIcon.setColorFilter(ContextCompat.getColor(this, R.color.white));
+        speakerIcon.setOnClickListener(v -> {
+            playButtonClickSound();
 
-                playButtonClickSound();
+            if (activeSpeakerIcon != null && activeSpeakerIcon != speakerIcon) {
+                activeSpeakerIcon.setImageResource(R.drawable.speaker_off);
+                isSpeakerActive = false;
+                if (textToSpeech != null) {
+                    textToSpeech.stop();
+                }
+            }
+
+            if (!isSpeakerActive || activeSpeakerIcon != speakerIcon) {
+                activeSpeakerIcon = speakerIcon;
+                isSpeakerActive = true;
+                speakerIcon.setImageResource(R.drawable.speaker_on);
 
                 if (textToSpeech != null) {
                     String toSpeak = word + ". Ang kahulugan nito ay: " + meaning;
                     textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
                 }
+
+            } else {
+                speakerIcon.setImageResource(R.drawable.speaker_off);
+                isSpeakerActive = false;
+                activeSpeakerIcon = null;
+
+                if (textToSpeech != null) {
+                    textToSpeech.stop();
+                }
             }
-            return true;
         });
 
         wordContainer.addView(wordItemView);

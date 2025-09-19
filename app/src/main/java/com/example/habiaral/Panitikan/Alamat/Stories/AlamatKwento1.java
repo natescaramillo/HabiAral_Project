@@ -40,7 +40,7 @@ public class AlamatKwento1 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_kwento1);
+        setContentView(R.layout.panitikan_kwento1);
 
         storyImage = findViewById(R.id.imageViewComic);
         unlockButton = findViewById(R.id.UnlockButtonKwento1);

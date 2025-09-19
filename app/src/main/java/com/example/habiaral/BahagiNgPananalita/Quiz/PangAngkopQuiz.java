@@ -1,6 +1,5 @@
 package com.example.habiaral.BahagiNgPananalita.Quiz;
 
-import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -22,7 +21,7 @@ import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.BahagiNgPananalita.Lessons.PandamdamLesson;
 import com.example.habiaral.R;
-import com.example.habiaral.Utils.AppPreloader;
+import com.example.habiaral.Utils.AppPreloaderUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -73,16 +72,16 @@ public class PangAngkopQuiz extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bahagi_ng_pananalita_pangangkop_quiz);
 
-        AppPreloader.init(this);
+        AppPreloaderUtils.init(this);
 
-        soundPool = AppPreloader.soundPool;
-        greenSoundId = AppPreloader.greenSoundId;
-        orangeSoundId = AppPreloader.orangeSoundId;
-        redSoundId = AppPreloader.redSoundId;
+        soundPool = AppPreloaderUtils.soundPool;
+        greenSoundId = AppPreloaderUtils.greenSoundId;
+        orangeSoundId = AppPreloaderUtils.orangeSoundId;
+        redSoundId = AppPreloaderUtils.redSoundId;
 
-        redDrawable = AppPreloader.redDrawable;
-        orangeDrawable = AppPreloader.orangeDrawable;
-        greenDrawable = AppPreloader.greenDrawable;
+        redDrawable = AppPreloaderUtils.redDrawable;
+        orangeDrawable = AppPreloaderUtils.orangeDrawable;
+        greenDrawable = AppPreloaderUtils.greenDrawable;
 
         questionTitle = findViewById(R.id.questionTitle);
         questionText = findViewById(R.id.pangangkop_questionText);
