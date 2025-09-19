@@ -70,18 +70,18 @@ public class MaiklingKuwento extends AppCompatActivity {
                     if (module3 == null) return;
 
                     Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
-                    if (categories != null && categories.get("MaiklingKuwento") instanceof Map) {
-                        Map<String, Object> maiklingKuwentoCat = (Map<String, Object>) categories.get("MaiklingKuwento");
+                    if (categories != null && categories.get("Maikling Kuwento") instanceof Map) {
+                        Map<String, Object> maiklingKuwentoCat = (Map<String, Object>) categories.get("Maikling Kuwento");
                         String status = (String) maiklingKuwentoCat.get("status");
                         if ("completed".equals(status)) return;
                     }
 
                     Map<String, Object> categoryUpdate = new HashMap<>();
-                    categoryUpdate.put("categoryname", "MaiklingKuwento");
+                    categoryUpdate.put("categoryname", "Maikling Kuwento");
                     categoryUpdate.put("status", "in_progress");
 
                     db.collection("module_progress").document(uid)
-                            .set(Map.of("module_3", Map.of("categories", Map.of("MaiklingKuwento", categoryUpdate))),
+                            .set(Map.of("module_3", Map.of("categories", Map.of("Maikling Kuwento", categoryUpdate))),
                                     SetOptions.merge());
                 });
     }
@@ -203,11 +203,11 @@ public class MaiklingKuwento extends AppCompatActivity {
         if (uid == null) return;
 
         Map<String, Object> categoryUpdate = new HashMap<>();
-        categoryUpdate.put("categoryname", "MaiklingKuwento");
+        categoryUpdate.put("categoryname", "Maikling Kuwento");
         categoryUpdate.put("status", "completed");
 
         db.collection("module_progress").document(uid)
-                .set(Map.of("module_3", Map.of("categories", Map.of("MaiklingKuwento", categoryUpdate))),
+                .set(Map.of("module_3", Map.of("categories", Map.of("Maikling Kuwento", categoryUpdate))),
                         SetOptions.merge());
     }
 }

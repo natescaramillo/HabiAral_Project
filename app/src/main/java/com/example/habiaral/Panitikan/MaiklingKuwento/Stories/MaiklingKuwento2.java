@@ -133,7 +133,7 @@ public class MaiklingKuwento2 extends AppCompatActivity {
                     Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                     if (categories == null) return;
 
-                    Map<String, Object> maiklingKuwento = (Map<String, Object>) categories.get("MaiklingKuwento");
+                    Map<String, Object> maiklingKuwento = (Map<String, Object>) categories.get("Maikling Kuwento");
                     if (maiklingKuwento == null) return;
 
                     Map<String, Object> stories = (Map<String, Object>) maiklingKuwento.get("stories");
@@ -167,7 +167,7 @@ public class MaiklingKuwento2 extends AppCompatActivity {
                         if (module3 != null) {
                             Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                             if (categories != null) {
-                                Map<String, Object> maiklingKuwento = (Map<String, Object>) categories.get("MaiklingKuwento");
+                                Map<String, Object> maiklingKuwento = (Map<String, Object>) categories.get("Maikling Kuwento");
                                 if (maiklingKuwento != null) {
                                     Map<String, Object> stories = (Map<String, Object>) maiklingKuwento.get("stories");
                                     if (stories != null) {
@@ -190,7 +190,7 @@ public class MaiklingKuwento2 extends AppCompatActivity {
                     maiklingKuwentoData.put("stories", Map.of(STORY_ID, storyData));
 
                     Map<String, Object> categories = new HashMap<>();
-                    categories.put("MaiklingKuwento", maiklingKuwentoData);
+                    categories.put("Maikling Kuwento", maiklingKuwentoData);
 
                     Map<String, Object> module3 = new HashMap<>();
                     module3.put("categories", categories);

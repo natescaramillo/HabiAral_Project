@@ -86,8 +86,8 @@ public class MaiklingKuwento2Quiz extends AppCompatActivity {
         if (uid == null) return;
 
         Map<String, Object> updates = new HashMap<>();
-        updates.put("module_3.categories.MaiklingKuwento.stories." + STORY_ID + ".title", STORY_TITLE);
-        updates.put("module_3.categories.MaiklingKuwento.stories." + STORY_ID + ".status", "completed");
+        updates.put("module_3.categories.Maikling Kuwento.stories." + STORY_ID + ".title", STORY_TITLE);
+        updates.put("module_3.categories.Maikling Kuwento.stories." + STORY_ID + ".status", "completed");
 
         db.collection("module_progress").document(uid).update(updates)
                 .addOnSuccessListener(unused -> {
