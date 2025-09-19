@@ -10,8 +10,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.habiaral.Panitikan.Alamat.Stories.AlamatKwento1;
 import com.example.habiaral.Panitikan.Alamat.Stories.AlamatKwento2;
-import com.example.habiaral.Panitikan.Alamat.Stories.AlamatKwento3;
-import com.example.habiaral.Panitikan.Alamat.Stories.AlamatKwento4;
 import com.example.habiaral.R;
 import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.Utils.SoundClickUtils;
@@ -46,31 +44,39 @@ public class Alamat extends AppCompatActivity {
         uid = user.getUid();
         db = FirebaseFirestore.getInstance();
 
-        Map<String, Object> cachedData = LessonProgressCache.getData();
-        if (cachedData != null) {
-            updateUIFromProgress(cachedData);
-        }
+        // 🔹 Load progress from Firestore first
+        loadLessonProgressFromFirestore();
+    }
 
-        db.collection("students").document(uid).get()
-                .addOnSuccessListener(studentSnap -> {
-                    if (studentSnap.exists()) {
-                        if (studentSnap.contains("studentId")) {
-                            String studentID = studentSnap.getString("studentId");
-                            Map<String, Object> update = new HashMap<>();
-                            update.put("studentId", studentID);
+    private void markCategoryInProgressIfNeeded() {
+        if (uid == null) return;
 
-                            db.collection("module_progress").document(uid)
-                                    .set(update, SetOptions.merge())
-                                    .addOnSuccessListener(unused -> loadLessonProgressFromFirestore())
-                                    .addOnFailureListener(e -> loadLessonProgressFromFirestore());
-                        } else {
-                            loadLessonProgressFromFirestore();
-                        }
-                    } else {
-                        loadLessonProgressFromFirestore();
+        db.collection("module_progress").document(uid).get()
+                .addOnSuccessListener(snapshot -> {
+                    if (!snapshot.exists()) return;
+
+                    Map<String, Object> data = snapshot.getData();
+                    if (data == null) return;
+
+                    Map<String, Object> module3 = (Map<String, Object>) data.get("module_3");
+                    if (module3 == null) return;
+
+                    Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
+                    if (categories != null && categories.get("Alamat") instanceof Map) {
+                        Map<String, Object> alamatCat = (Map<String, Object>) categories.get("Alamat");
+                        String status = (String) alamatCat.get("status");
+                        if ("completed".equals(status)) return; // already completed
                     }
-                })
-                .addOnFailureListener(e -> loadLessonProgressFromFirestore());
+
+                    // mark in_progress only if not completed
+                    Map<String, Object> categoryUpdate = new HashMap<>();
+                    categoryUpdate.put("categoryname", "Alamat");
+                    categoryUpdate.put("status", "in_progress");
+
+                    db.collection("module_progress").document(uid)
+                            .set(Map.of("module_3", Map.of("categories", Map.of("Alamat", categoryUpdate))),
+                                    SetOptions.merge());
+                });
     }
 
     @Override
@@ -81,7 +87,6 @@ public class Alamat extends AppCompatActivity {
             mediaPlayer = null;
         }
     }
-
 
     private void loadLessonProgressFromFirestore() {
         db.collection("module_progress").document(uid)
@@ -97,31 +102,26 @@ public class Alamat extends AppCompatActivity {
 
         LessonProgressCache.setData(data);
         updateUIFromProgress(data);
+
+        // 🔹 Mark category in-progress if not completed
+        markCategoryInProgressIfNeeded();
     }
 
     private void updateUIFromProgress(Map<String, Object> data) {
         if (data == null) return;
 
-        Object module3Obj = data.get("module_3");
-        if (!(module3Obj instanceof Map)) return;
+        Map<String, Object> module3 = (Map<String, Object>) data.get("module_3");
+        if (module3 == null) return;
 
-        Map<String, Object> module3 = (Map<String, Object>) module3Obj;
-        Object lessonsObj = module3.get("lessons");
-        if (!(lessonsObj instanceof Map)) return;
-
-        Map<String, Object> lessons = (Map<String, Object>) lessonsObj;
+        Map<String, Object> lessons = (Map<String, Object>) module3.get("lessons");
+        if (lessons == null) return;
 
         boolean kwento1Done = isCompleted(lessons, "kwento1");
         boolean kwento2Done = isCompleted(lessons, "kwento2");
-        boolean kwento3Done = isCompleted(lessons, "kwento3");
-        boolean kwento4Done = isCompleted(lessons, "kwento4");
 
+        // 🔓 Unlocking chain
         unlockButton(btnKwento1, true, kwento1Lock);
         unlockButton(btnKwento2, kwento1Done, kwento2Lock);
-        unlockButton(btnKwento3, kwento2Done, kwento3Lock);
-        unlockButton(btnKwento4, kwento3Done,kwento4Lock);
-
-        checkAndCompleteModule(kwento1Done, kwento2Done, kwento3Done, kwento4Done);
     }
 
     private boolean isCompleted(Map<String, Object> lessons, String key) {
@@ -150,39 +150,13 @@ public class Alamat extends AppCompatActivity {
         kwento3Lock = findViewById(R.id.kwento3Lock);
         kwento4Lock = findViewById(R.id.kwento4Lock);
 
-        btnKwento1.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click);
-            startActivity(new Intent(this, AlamatKwento1.class));
-        });
-
-        btnKwento2.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click);
-            startActivity(new Intent(this, AlamatKwento2.class));
-        });
-
-        btnKwento3.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click);
-            startActivity(new Intent(this, AlamatKwento3.class));
-        });
-
-        btnKwento4.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click);
-            startActivity(new Intent(this, AlamatKwento4.class));
-        });
+        btnKwento1.setOnClickListener(v -> openStory(AlamatKwento1.class));
+        btnKwento2.setOnClickListener(v -> openStory(AlamatKwento2.class));
     }
 
-    private void checkAndCompleteModule(boolean kwento1Done, boolean kwento2Done, boolean kwento3Done, boolean kwento4Done) {
-        boolean allDone = kwento1Done && kwento2Done && kwento3Done && kwento4Done;
-
-        Map<String, Object> update = new HashMap<>();
-        Map<String, Object> module3Updates = new HashMap<>();
-
-        module3Updates.put("modulename", "Alamat");
-        module3Updates.put("status", allDone ? "completed" : "in_progress");
-
-        update.put("module_3", module3Updates);
-
-        db.collection("module_progress").document(uid).set(update, SetOptions.merge());
+    private void openStory(Class<?> cls) {
+        SoundClickUtils.playClickSound(this, R.raw.button_click);
+        startActivity(new Intent(this, cls));
     }
 
     private void lockAllButtons() {
@@ -194,5 +168,40 @@ public class Alamat extends AppCompatActivity {
     private void lockButton(ConstraintLayout button) {
         button.setClickable(false);
         button.setAlpha(0.5f);
+    }
+
+    private void checkIfAllStoriesCompleted() {
+        db.collection("module_progress").document(uid).get()
+                .addOnSuccessListener(snapshot -> {
+                    if (!snapshot.exists()) return;
+
+                    Map<String, Object> data = snapshot.getData();
+                    if (data == null) return;
+
+                    Map<String, Object> module3 = (Map<String, Object>) data.get("module_3");
+                    if (module3 == null) return;
+
+                    Map<String, Object> lessons = (Map<String, Object>) module3.get("lessons");
+                    if (lessons == null) return;
+
+                    boolean kwento1Done = isCompleted(lessons, "kwento1");
+                    boolean kwento2Done = isCompleted(lessons, "kwento2");
+
+                    if (kwento1Done && kwento2Done) {
+                        markCategoryCompleted();
+                    }
+                });
+    }
+
+    private void markCategoryCompleted() {
+        if (uid == null) return;
+
+        Map<String, Object> categoryUpdate = new HashMap<>();
+        categoryUpdate.put("categoryname", "Alamat");
+        categoryUpdate.put("status", "completed");
+
+        db.collection("module_progress").document(uid)
+                .set(Map.of("module_3", Map.of("categories", Map.of("Alamat", categoryUpdate))),
+                        SetOptions.merge());
     }
 }

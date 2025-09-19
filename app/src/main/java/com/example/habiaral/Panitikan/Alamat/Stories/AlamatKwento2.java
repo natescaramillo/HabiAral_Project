@@ -31,15 +31,21 @@ public class AlamatKwento2 extends AppCompatActivity {
             R.drawable.agila_13, R.drawable.agila_14, R.drawable.agila_15,
             R.drawable.agila_16, R.drawable.agila_17, R.drawable.agila_18,
             R.drawable.agila_19, R.drawable.agila_20, R.drawable.agila_21,
-            R.drawable.agila_21, R.drawable.agila_22, R.drawable.agila_23,
-            R.drawable.agila_24, R.drawable.agila_25, R.drawable.agila_26,
-            R.drawable.agila_27, R.drawable.agila_28, R.drawable.agila_29,
-            R.drawable.agila_30
+            R.drawable.agila_22, R.drawable.agila_23, R.drawable.agila_24,
+            R.drawable.agila_25, R.drawable.agila_26, R.drawable.agila_27,
+            R.drawable.agila_28, R.drawable.agila_29, R.drawable.agila_30
     };
+
+    private static final String STORY_ID = "AlamatKwento2";
+    private static final String STORY_TITLE = "Ang Agila";
+
     private boolean isLessonDone = false;
     private ImageView storyImage;
     private Button unlockButton;
     private int currentPage = 0;
+
+    private FirebaseFirestore db;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,10 @@ public class AlamatKwento2 extends AppCompatActivity {
 
         storyImage = findViewById(R.id.imageViewComic2);
         unlockButton = findViewById(R.id.UnlockButtonKwento2);
+
+        db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) uid = user.getUid();
 
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
@@ -58,22 +68,15 @@ public class AlamatKwento2 extends AppCompatActivity {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 float x = event.getX();
                 float width = storyImage.getWidth();
-
-                if (x < width / 2) {
-                    previousPage();
-                } else {
-                    nextPage();
-                }
+                if (x < width / 2) previousPage();
+                else nextPage();
             }
             return true;
         });
 
-        checkLessonStatusFromFirestore();
-
         unlockButton.setOnClickListener(v -> {
             if (isLessonDone) {
-                Intent intent = new Intent(AlamatKwento2.this, AlamatKwento2Quiz.class);
-                startActivity(intent);
+                startActivity(new Intent(AlamatKwento2.this, AlamatKwento2Quiz.class));
             }
         });
 
@@ -84,21 +87,24 @@ public class AlamatKwento2 extends AppCompatActivity {
                 finish();
             }
         });
+
+        // Load current progress on start
+        loadCurrentProgress();
     }
 
     private void nextPage() {
         if (currentPage < comicPages.length - 1) {
             currentPage++;
-
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
             storyImage.setImageResource(comicPages[currentPage]);
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
 
+            updateCheckpoint(currentPage);
+
             if (currentPage == comicPages.length - 1) {
-                isLessonDone = true;
+                isLessonDone = true;  // <-- Fix here
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
-                saveProgressToFirestore();
             }
         }
     }
@@ -106,63 +112,100 @@ public class AlamatKwento2 extends AppCompatActivity {
     private void previousPage() {
         if (currentPage > 0) {
             currentPage--;
-
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
             storyImage.setImageResource(comicPages[currentPage]);
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
+
+            updateCheckpoint(currentPage);
         }
     }
 
-    private void checkLessonStatusFromFirestore() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = user.getUid();
+    private void loadCurrentProgress() {
+        if (uid == null) return;
 
         db.collection("module_progress").document(uid).get()
                 .addOnSuccessListener(snapshot -> {
+                    if (!snapshot.exists()) return;
+
+                    Map<String, Object> module3 = (Map<String, Object>) snapshot.get("module_3");
+                    if (module3 == null) return;
+
+                    Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
+                    if (categories == null) return;
+
+                    Map<String, Object> alamat = (Map<String, Object>) categories.get("Alamat");
+                    if (alamat == null) return;
+
+                    Map<String, Object> stories = (Map<String, Object>) alamat.get("stories");
+                    if (stories == null) return;
+
+                    Map<String, Object> story = (Map<String, Object>) stories.get(STORY_ID);
+                    if (story == null) return;
+
+                    Object checkpointObj = story.get("checkpoint");
+                    Object statusObj = story.get("status");
+
+                    if (checkpointObj instanceof Number) currentPage = ((Number) checkpointObj).intValue();
+                    storyImage.setImageResource(comicPages[currentPage]);
+
+                    if ("completed".equals(statusObj)) {
+                        isLessonDone = true;
+                        unlockButton.setEnabled(true);
+                        unlockButton.setAlpha(1f);
+                    }
+                });
+    }
+
+    private void updateCheckpoint(int checkpoint) {
+        if (uid == null) return;
+
+        db.collection("module_progress").document(uid).get()
+                .addOnSuccessListener(snapshot -> {
+                    String currentStatus = "in_progress";
                     if (snapshot.exists()) {
                         Map<String, Object> module3 = (Map<String, Object>) snapshot.get("module_3");
                         if (module3 != null) {
-                            Map<String, Object> lessons = (Map<String, Object>) module3.get("lessons");
-                            if (lessons != null) {
-                                Map<String, Object> kwento2 = (Map<String, Object>) lessons.get("kwento2");
-                                if (kwento2 != null) {
-                                    String status = (String) kwento2.get("status");
-                                    if ("in_progress".equals(status) || "completed".equals(status)) {
-                                        isLessonDone = true;
-                                        unlockButton.setEnabled(true);
-                                        unlockButton.setAlpha(1f);
+                            Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
+                            if (categories != null) {
+                                Map<String, Object> alamat = (Map<String, Object>) categories.get("Alamat");
+                                if (alamat != null) {
+                                    Map<String, Object> stories = (Map<String, Object>) alamat.get("stories");
+                                    if (stories != null) {
+                                        Map<String, Object> story = (Map<String, Object>) stories.get(STORY_ID);
+                                        if (story != null && story.get("status") != null) {
+                                            currentStatus = story.get("status").toString();
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+
+                    Map<String, Object> storyData = new HashMap<>();
+                    storyData.put("checkpoint", checkpoint);
+                    storyData.put("title", STORY_TITLE);
+                    storyData.put("status", currentStatus);
+
+                    Map<String, Object> alamatData = new HashMap<>();
+                    alamatData.put("stories", Map.of(STORY_ID, storyData));
+
+                    Map<String, Object> categories = new HashMap<>();
+                    categories.put("Alamat", alamatData);
+
+                    Map<String, Object> module3 = new HashMap<>();
+                    module3.put("categories", categories);
+
+                    db.collection("module_progress")
+                            .document(uid)
+                            .set(Map.of("module_3", module3), SetOptions.merge());
+
+                    // Enable button at last page regardless of completion
+                    if (checkpoint == comicPages.length - 1) {
+                        isLessonDone = true; // <-- Fix here too
+                        unlockButton.setEnabled(true);
+                        unlockButton.setAlpha(1f);
+                    }
+
                 });
-    }
-
-    private void saveProgressToFirestore() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = user.getUid();
-
-        Map<String, Object> kwento2Status = new HashMap<>();
-        kwento2Status.put("status", "in_progress");
-
-        Map<String, Object> lessonMap = new HashMap<>();
-        lessonMap.put("kwento2", kwento2Status);
-
-        Map<String, Object> progressMap = new HashMap<>();
-        progressMap.put("modulename", "Alamat");
-        progressMap.put("status", "in_progress");
-        progressMap.put("current_lesson", "kwento2");
-        progressMap.put("lessons", lessonMap);
-
-        db.collection("module_progress")
-                .document(uid)
-                .set(Map.of("module_3", progressMap), SetOptions.merge());
     }
 }

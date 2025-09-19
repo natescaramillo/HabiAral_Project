@@ -10,9 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.Panitikan.Alamat.Alamat;
-import com.example.habiaral.Panitikan.Alamat.Stories.AlamatKwento3;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,26 +21,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AlamatKwento2Quiz extends AppCompatActivity {
-    Button nextButton;
+    private Button nextButton;
+    private FirebaseFirestore db;
+    private String uid;
+
+    private static final String STORY_ID = "AlamatKwento2";
+    private static final String STORY_TITLE = "Ang Agila";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pag_unawa_kwento2_quiz);
 
-        nextButton = findViewById(R.id.nextButton);
+        db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) uid = user.getUid();
 
+        nextButton = findViewById(R.id.nextButton);
         nextButton.setOnClickListener(view -> {
-            unlockNextLesson();
-            saveQuizResultToFirestore();
+            markStoryCompleted();
             showResultDialog();
         });
     }
 
     private void showResultDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_box_quiz_score, null);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_box_quiz_score, null);
         builder.setView(dialogView);
         builder.setCancelable(false);
 
@@ -63,7 +67,7 @@ public class AlamatKwento2Quiz extends AppCompatActivity {
 
         taposButton.setOnClickListener(v -> {
             dialog.dismiss();
-            Intent intent = new Intent(AlamatKwento2Quiz.this, AlamatKwento3.class);
+            Intent intent = new Intent(AlamatKwento2Quiz.this, Alamat.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
@@ -78,45 +82,81 @@ public class AlamatKwento2Quiz extends AppCompatActivity {
         });
     }
 
-    private void unlockNextLesson() {
-        Toast.makeText(this, "Next Lesson Unlocked: Kwento3!", Toast.LENGTH_SHORT).show();
+    private void markStoryCompleted() {
+        if (uid == null) return;
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("module_3.categories.Alamat.stories." + STORY_ID + ".title", STORY_TITLE);
+        updates.put("module_3.categories.Alamat.stories." + STORY_ID + ".status", "completed");
+
+        db.collection("module_progress").document(uid).update(updates)
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(this, "Next Lesson Unlocked: Kwento3!", Toast.LENGTH_SHORT).show();
+                    checkIfCategoryCompleted("Alamat");
+                })
+                .addOnFailureListener(e ->
+                        db.collection("module_progress").document(uid).set(updates, SetOptions.merge()));
     }
 
-    private void saveQuizResultToFirestore() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
+    private void checkIfCategoryCompleted(String categoryName) {
+        db.collection("module_progress").document(uid).get()
+                .addOnSuccessListener(snapshot -> {
+                    Map<String, Object> stories = (Map<String, Object>)
+                            snapshot.get("module_3.categories." + categoryName + ".stories");
+                    if (stories == null) return;
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = user.getUid();
+                    // Only 2 stories now
+                    String[] requiredStories = {"AlamatKwento1", "AlamatKwento2"};
 
-        Map<String, Object> kwento2Status = new HashMap<>();
-        kwento2Status.put("status", "completed");
+                    boolean allCompleted = true;
+                    for (String storyKey : requiredStories) {
+                        Object storyObj = stories.get(storyKey);
+                        if (!(storyObj instanceof Map)) {
+                            allCompleted = false;
+                            break;
+                        }
+                        Map<String, Object> storyData = (Map<String, Object>) storyObj;
+                        if (!"completed".equals(storyData.get("status"))) {
+                            allCompleted = false;
+                            break;
+                        }
+                    }
 
-        Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("kwento2", kwento2Status);
+                    if (allCompleted) {
+                        // Mark Alamat category as completed
+                        db.collection("module_progress").document(uid)
+                                .set(Map.of("module_3",
+                                        Map.of("categories",
+                                                Map.of(categoryName, Map.of("status", "completed"))
+                                        )), SetOptions.merge())
+                                .addOnSuccessListener(unused -> checkIfModuleCompleted());
+                    }
+                });
+    }
 
-        Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "kwento2");
 
-        Map<String, Object> moduleUpdate = Map.of("module_3", updateMap);
+    private void checkIfModuleCompleted() {
+        db.collection("module_progress").document(uid).get()
+                .addOnSuccessListener(snapshot -> {
+                    Map<String, Object> categories =
+                            (Map<String, Object>) snapshot.get("module_3.categories");
+                    if (categories == null) return;
 
-        db.collection("module_progress")
-                .document(uid)
-                .set(moduleUpdate, SetOptions.merge());
+                    boolean allCompleted = true;
+                    for (Object catObj : categories.values()) {
+                        if (catObj instanceof Map) {
+                            Map<String, Object> catData = (Map<String, Object>) catObj;
+                            if (!"completed".equals(catData.get("status"))) {
+                                allCompleted = false;
+                                break;
+                            }
+                        }
+                    }
 
-        if (LessonProgressCache.getData() != null) {
-            Map<String, Object> cachedData = LessonProgressCache.getData();
-
-            if (!cachedData.containsKey("module_3")) {
-                cachedData.put("module_3", new HashMap<String, Object>());
-            }
-
-            Map<String, Object> cachedModule3 = (Map<String, Object>) cachedData.get("module_3");
-            cachedModule3.put("lessons", lessonsMap);
-            cachedModule3.put("current_lesson", "kwento2");
-
-            LessonProgressCache.setData(cachedData);
-        }
+                    if (allCompleted) {
+                        db.collection("module_progress").document(uid)
+                                .set(Map.of("module_3", Map.of("status", "completed")), SetOptions.merge());
+                    }
+                });
     }
 }
