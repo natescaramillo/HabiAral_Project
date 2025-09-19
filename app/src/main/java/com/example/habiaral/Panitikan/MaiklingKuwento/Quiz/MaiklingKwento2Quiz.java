@@ -28,7 +28,7 @@ public class MaiklingKwento2Quiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_kwento2_quiz);
+        setContentView(R.layout.panitikan_kwento2_quiz);
 
         nextButton = findViewById(R.id.nextButton);
 

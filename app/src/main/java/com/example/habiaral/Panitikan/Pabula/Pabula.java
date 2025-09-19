@@ -35,7 +35,7 @@ public class Pabula extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_pabula);
+        setContentView(R.layout.panitikan_pabula);
 
         initViews();
         lockAllButtons();

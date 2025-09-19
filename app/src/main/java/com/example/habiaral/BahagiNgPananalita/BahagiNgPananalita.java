@@ -3,6 +3,7 @@ package com.example.habiaral.BahagiNgPananalita;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,6 +43,12 @@ public class BahagiNgPananalita extends AppCompatActivity {
 
         initViews();
         lockAllButtons();
+        ImageView bahagiBack = findViewById(R.id.bahagi_back);
+
+        bahagiBack.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click); // 🔊 optional sound
+            finish();
+        });
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;

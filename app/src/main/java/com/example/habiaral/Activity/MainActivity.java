@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.TalasalitaanUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        TalasalitaanUtils.preloadWords(this);
 
         InternetCheckerUtils.checkInternet(this, () -> goToWelcome());
     }

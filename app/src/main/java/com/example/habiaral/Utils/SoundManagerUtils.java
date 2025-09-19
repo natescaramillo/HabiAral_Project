@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.speech.tts.TextToSpeech;
 
-public class SoundManager {
+public class SoundManagerUtils {
     private static final String PREFS_NAME = "AppPrefs";
     private static final String KEY_MUTED = "isMuted";
 
@@ -23,7 +23,7 @@ public class SoundManager {
     }
 
     public static void toggleMute(Context context) {
-        boolean currentMuted = isMuted(context); // kunin latest value
+        boolean currentMuted = isMuted(context);
         boolean newMuted = !currentMuted;
 
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);

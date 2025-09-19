@@ -35,7 +35,7 @@ public class Parabula extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_parabula);
+        setContentView(R.layout.panitikan_parabula);
 
         initViews();
         lockAllButtons();

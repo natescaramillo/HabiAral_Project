@@ -41,7 +41,7 @@ public class PabulaKwento4 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_kwento4);
+        setContentView(R.layout.panitikan_kwento4);
 
         storyImage = findViewById(R.id.imageViewComic4);
         unlockButton = findViewById(R.id.UnlockButtonKwento4);

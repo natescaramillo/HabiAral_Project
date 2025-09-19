@@ -1,6 +1,5 @@
 package com.example.habiaral.BahagiNgPananalita.Quiz;
 
-import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -18,7 +17,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -27,12 +25,11 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.R;
-import com.example.habiaral.Utils.AppPreloader;
+import com.example.habiaral.Utils.AppPreloaderUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.Timestamp;
@@ -84,16 +81,16 @@ public class PangawingQuiz extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bahagi_ng_pananalita_pangawing_quiz);
 
-        AppPreloader.init(this);
+        AppPreloaderUtils.init(this);
 
-        soundPool = AppPreloader.soundPool;
-        greenSoundId = AppPreloader.greenSoundId;
-        orangeSoundId = AppPreloader.orangeSoundId;
-        redSoundId = AppPreloader.redSoundId;
+        soundPool = AppPreloaderUtils.soundPool;
+        greenSoundId = AppPreloaderUtils.greenSoundId;
+        orangeSoundId = AppPreloaderUtils.orangeSoundId;
+        redSoundId = AppPreloaderUtils.redSoundId;
 
-        redDrawable = AppPreloader.redDrawable;
-        orangeDrawable = AppPreloader.orangeDrawable;
-        greenDrawable = AppPreloader.greenDrawable;
+        redDrawable = AppPreloaderUtils.redDrawable;
+        orangeDrawable = AppPreloaderUtils.orangeDrawable;
+        greenDrawable = AppPreloaderUtils.greenDrawable;
 
         questionTitle = findViewById(R.id.questionTitle);
         questionText = findViewById(R.id.pangawing_questionText);

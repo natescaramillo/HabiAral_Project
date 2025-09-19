@@ -9,12 +9,10 @@ import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangUkolQuiz;
@@ -23,8 +21,7 @@ import com.example.habiaral.Utils.ResumeDialogUtils;
 import com.example.habiaral.Utils.BahagiFirestoreUtils;
 import com.example.habiaral.Utils.FullScreenUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
-import com.example.habiaral.Utils.SoundManager;
-import com.example.habiaral.Utils.TextAnimationUtils;
+import com.example.habiaral.Utils.SoundManagerUtils;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -109,7 +106,7 @@ public class PangUkolLesson extends AppCompatActivity {
                     }
 
                     textToSpeech.setSpeechRate(1.0f);
-                    SoundManager.setTts(textToSpeech);
+                    SoundManagerUtils.setTts(textToSpeech);
                     loadCharacterLines();
                 }
             } else {
@@ -272,7 +269,7 @@ public class PangUkolLesson extends AppCompatActivity {
                     if (!utteranceId.startsWith(utterancePage)) return;
                     index[0]++;
                     if (index[0] < lines.size()) {
-                        if (!SoundManager.isMuted(PangUkolLesson.this)) {
+                        if (!SoundManagerUtils.isMuted(PangUkolLesson.this)) {
                             speak(lines.get(index[0]), utterancePage + "_" + index[0]);
                         }
                     } else onComplete.run();
@@ -282,7 +279,7 @@ public class PangUkolLesson extends AppCompatActivity {
             @Override public void onError(String s) {}
         });
 
-        if (!SoundManager.isMuted(this)) {
+        if (!SoundManagerUtils.isMuted(this)) {
             speak(lines.get(0), utterancePage + "_0");
         }
     }

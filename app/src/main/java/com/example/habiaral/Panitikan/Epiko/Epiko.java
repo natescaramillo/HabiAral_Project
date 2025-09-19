@@ -34,7 +34,7 @@ public class Epiko extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_epiko);
+        setContentView(R.layout.panitikan_epiko);
 
         initViews();
         lockAllButtons();

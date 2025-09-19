@@ -28,7 +28,7 @@ public class ParabulaKwento3Quiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_kwento3_quiz);
+        setContentView(R.layout.panitikan_kwento3_quiz);
 
         nextButton = findViewById(R.id.nextButton);
 

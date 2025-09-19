@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.KayarianNgPangungusap.Quiz.HugnayanQuiz;
 import com.example.habiaral.R;
 
@@ -21,6 +23,14 @@ public class HugnayanLesson extends AppCompatActivity {
         quizButton.setOnClickListener(v -> {
             Intent intent = new Intent(HugnayanLesson.this, HugnayanQuiz.class);
             startActivity(intent);
+        });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override public void handleOnBackPressed() {
+                startActivity(new Intent(HugnayanLesson.this, KayarianNgPangungusap.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+                finish();
+            }
         });
     }
 }

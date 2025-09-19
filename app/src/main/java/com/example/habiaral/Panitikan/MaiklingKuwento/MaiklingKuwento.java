@@ -34,7 +34,7 @@ public class MaiklingKuwento extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pag_unawa_maikling_kuwento);
+        setContentView(R.layout.panitikan_maikling_kuwento);
 
         initViews();
         lockAllButtons();

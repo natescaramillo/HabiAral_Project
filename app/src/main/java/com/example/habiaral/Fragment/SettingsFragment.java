@@ -23,7 +23,7 @@ import com.example.habiaral.Activity.WelcomeActivity;
 import com.example.habiaral.Activity.AboutUsActivity;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.SoundClickUtils;
-import com.example.habiaral.Utils.SoundManager;
+import com.example.habiaral.Utils.SoundManagerUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -55,7 +55,7 @@ public class SettingsFragment extends Fragment {
         btnSound = view.findViewById(R.id.imageView11);
 
         SharedPreferences prefs = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
-        isMuted = SoundManager.isMuted(requireContext());
+        isMuted = SoundManagerUtils.isMuted(requireContext());
         updateSoundIcon();
 
         btnLogout.setOnClickListener(v -> {
@@ -73,8 +73,8 @@ public class SettingsFragment extends Fragment {
         });
 
         btnSounds.setOnClickListener(v -> {
-            SoundManager.toggleMute(requireContext());
-            isMuted = SoundManager.isMuted(requireContext());
+            SoundManagerUtils.toggleMute(requireContext());
+            isMuted = SoundManagerUtils.isMuted(requireContext());
             updateSoundIcon();
         });
 
