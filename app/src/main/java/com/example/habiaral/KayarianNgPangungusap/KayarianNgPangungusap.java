@@ -40,7 +40,6 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         lockAllButtons();
 
         ImageView kayarianBack = findViewById(R.id.kayarian_back);
-
         kayarianBack.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             finish();
@@ -52,48 +51,57 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         uid = user.getUid();
         db = FirebaseFirestore.getInstance();
 
-        // Load from cache first
+        // Load cached progress first
         Map<String, Object> cachedData = LessonProgressCache.getData();
         if (cachedData != null) {
             updateUIFromProgress(cachedData);
         }
 
+        // Ensure module_2 exists in Firestore
+        ensureModule2Exists();
+
+        // Save studentId to module_progress if available
         db.collection("students").document(uid).get()
                 .addOnSuccessListener(studentSnap -> {
-                    if (studentSnap.exists()) {
-                        if (studentSnap.contains("studentId")) {
-                            String studentID = studentSnap.getString("studentId");
-                            android.util.Log.d("STUDENT_ID_FETCHED", "Fetched studentId: " + studentID);
+                    if (studentSnap.exists() && studentSnap.contains("studentId")) {
+                        String studentID = studentSnap.getString("studentId");
+                        Map<String, Object> update = new HashMap<>();
+                        update.put("studentId", studentID);
 
-                            Map<String, Object> update = new HashMap<>();
-                            update.put("studentId", studentID);
-
-                            db.collection("module_progress").document(uid)
-                                    .set(update, SetOptions.merge())
-                                    .addOnSuccessListener(unused -> {
-                                        android.util.Log.d("STUDENT_ID_SAVED", "Saved to module_progress: " + studentID);
-                                        loadLessonProgressFromFirestore();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        android.util.Log.e("SAVE_FAIL", "Failed saving studentId", e);
-                                        loadLessonProgressFromFirestore();
-                                    });
-                        } else {
-                            android.util.Log.w("MISSING_FIELD", "studentId field missing in students/" + uid);
-                            loadLessonProgressFromFirestore();
-                        }
+                        db.collection("module_progress").document(uid)
+                                .set(update, SetOptions.merge())
+                                .addOnSuccessListener(unused -> loadModuleProgress())
+                                .addOnFailureListener(e -> loadModuleProgress());
                     } else {
-                        android.util.Log.w("NO_DOC", "No student document found for uid: " + uid);
-                        loadLessonProgressFromFirestore();
+                        loadModuleProgress();
                     }
                 })
-                .addOnFailureListener(e -> {
-                    android.util.Log.e("FETCH_FAIL", "Error fetching student doc", e);
-                    loadLessonProgressFromFirestore();
+                .addOnFailureListener(e -> loadModuleProgress());
+    }
+
+    private void ensureModule2Exists() {
+        db.collection("module_progress").document(uid)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (!snapshot.exists() || !snapshot.contains("module_2")) {
+                        Map<String, Object> module2Map = new HashMap<>();
+                        module2Map.put("modulename", "Kayarian ng Pangungusap");
+                        module2Map.put("status", "in_progress");
+
+                        Map<String, Object> update = new HashMap<>();
+                        update.put("module_2", module2Map);
+
+                        db.collection("module_progress").document(uid)
+                                .set(update, SetOptions.merge())
+                                .addOnSuccessListener(unused -> {
+                                    LessonProgressCache.setData(update);
+                                    updateUIFromProgress(update);
+                                });
+                    }
                 });
     }
 
-    private void loadLessonProgressFromFirestore() {
+    private void loadModuleProgress() {
         db.collection("module_progress").document(uid)
                 .get()
                 .addOnSuccessListener(this::handleFirestoreData);
@@ -101,14 +109,9 @@ public class KayarianNgPangungusap extends AppCompatActivity {
 
     private void handleFirestoreData(DocumentSnapshot snapshot) {
         if (!snapshot.exists()) return;
-
         Map<String, Object> data = snapshot.getData();
         if (data == null) return;
-
-        // Update cache
         LessonProgressCache.setData(data);
-
-        // Update UI
         updateUIFromProgress(data);
     }
 
@@ -119,31 +122,14 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         if (!(module2Obj instanceof Map)) return;
 
         Map<String, Object> module2 = (Map<String, Object>) module2Obj;
-        Object lessonsObj = module2.get("lessons");
-        if (!(lessonsObj instanceof Map)) return;
 
-        Map<String, Object> lessons = (Map<String, Object>) lessonsObj;
-
-        boolean payakDone = isCompleted(lessons, "payak");
-        boolean tambalanDone = isCompleted(lessons, "tambalan");
-        boolean hugnayanDone = isCompleted(lessons, "hugnayan");
-        boolean langkapanDone = isCompleted(lessons, "langkapan");
-
-        // Unlock logic
+        // Unlock buttons based on status
+        String status = (String) module2.get("status");
+        boolean isInProgress = "in_progress".equals(status);
         unlockButton(btnPayak, true, payakLock);
-        unlockButton(btnTambalan, payakDone, tambalanLock);
-        unlockButton(btnHugnayan, tambalanDone, hugnayanLock);
-        unlockButton(btnLangkapan, hugnayanDone, langkapanLock);
-
-        checkAndCompleteModule(payakDone, tambalanDone, hugnayanDone, langkapanDone);
-    }
-
-    private boolean isCompleted(Map<String, Object> lessons, String key) {
-        Object lessonObj = lessons.get(key);
-        if (!(lessonObj instanceof Map)) return false;
-
-        Map<String, Object> lessonData = (Map<String, Object>) lessonObj;
-        return "completed".equals(lessonData.get("status"));
+        unlockButton(btnTambalan, isInProgress, tambalanLock);
+        unlockButton(btnHugnayan, isInProgress, hugnayanLock);
+        unlockButton(btnLangkapan, isInProgress, langkapanLock);
     }
 
     private void unlockButton(LinearLayout layout, boolean isUnlocked, FrameLayout lock) {
@@ -170,20 +156,6 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         btnLangkapan.setOnClickListener(v -> startActivity(new Intent(this, LangkapanLesson.class)));
     }
 
-    private void checkAndCompleteModule(boolean payakDone, boolean tambalanDone, boolean hugnayanDone, boolean langkapanDone) {
-        boolean allDone = payakDone && tambalanDone && hugnayanDone && langkapanDone;
-
-        Map<String, Object> update = new HashMap<>();
-        Map<String, Object> module2Updates = new HashMap<>();
-
-        module2Updates.put("modulename", "Kayarian ng Pangungusap");
-        module2Updates.put("status", allDone ? "completed" : "in_progress");
-
-        update.put("module_2", module2Updates);
-
-        db.collection("module_progress").document(uid).set(update, SetOptions.merge());
-    }
-
     private void lockAllButtons() {
         lockButton(btnTambalan);
         lockButton(btnHugnayan);
@@ -195,6 +167,3 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         button.setAlpha(0.5f);
     }
 }
-
-
-

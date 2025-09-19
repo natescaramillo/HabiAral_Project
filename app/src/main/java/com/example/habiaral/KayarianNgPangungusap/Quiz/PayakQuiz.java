@@ -101,12 +101,17 @@ public class PayakQuiz extends AppCompatActivity{
         Map<String, Object> lessonsMap = new HashMap<>();
         lessonsMap.put("payak", payakStatus);
 
+        Map<String, Object> module2Map = new HashMap<>();
+        module2Map.put("lessons", lessonsMap);
+        module2Map.put("status", "in_progress"); // Keep module status in-progress for now; will auto-complete when all lessons done
+
         Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "payak");
+        updateMap.put("module_2", module2Map);
 
         db.collection("module_progress")
                 .document(uid)
-                .set(Map.of("module_2", updateMap), SetOptions.merge());
+                .set(updateMap, SetOptions.merge())
+                .addOnSuccessListener(unused -> Toast.makeText(this, "Lesson Payak marked completed!", Toast.LENGTH_SHORT).show());
     }
+
 }
