@@ -118,23 +118,34 @@ public class Parabula extends AppCompatActivity {
         Map<String, Object> module3 = (Map<String, Object>) data.get("module_3");
         if (module3 == null) return;
 
-        Map<String, Object> lessons = (Map<String, Object>) module3.get("lessons");
-        if (lessons == null) return;
+        Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
+        if (categories == null) return;
 
-        boolean kwento1Done = isCompleted(lessons, "kwento1");
-        boolean kwento2Done = isCompleted(lessons, "kwento2");
+        Map<String, Object> parabulaCat = (Map<String, Object>) categories.get("Parabula");
+        if (parabulaCat == null) return;
+
+        Map<String, Object> stories = (Map<String, Object>) parabulaCat.get("stories");
+        if (stories == null) return;
+
+        boolean kwento1Done = isCompleted(stories, "ParabulaKwento1");
+        boolean kwento2Done = isCompleted(stories, "ParabulaKwento2");
 
         unlockButton(btnKwento1, true, kwento1Lock);
         unlockButton(btnKwento2, kwento1Done, kwento2Lock);
+
+        if (kwento1Done && kwento2Done) {
+            markCategoryCompleted();
+        }
     }
 
-    private boolean isCompleted(Map<String, Object> lessons, String key) {
-        Object lessonObj = lessons.get(key);
-        if (!(lessonObj instanceof Map)) return false;
+    private boolean isCompleted(Map<String, Object> stories, String key) {
+        Object storyObj = stories.get(key);
+        if (!(storyObj instanceof Map)) return false;
 
-        Map<String, Object> lessonData = (Map<String, Object>) lessonObj;
-        return "completed".equals(lessonData.get("status"));
+        Map<String, Object> storyData = (Map<String, Object>) storyObj;
+        return "completed".equals(storyData.get("status"));
     }
+
 
     private void unlockButton(ConstraintLayout layout, boolean isUnlocked, FrameLayout lock) {
         layout.setEnabled(isUnlocked);

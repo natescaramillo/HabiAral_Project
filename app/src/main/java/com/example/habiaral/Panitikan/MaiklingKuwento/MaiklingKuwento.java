@@ -119,25 +119,36 @@ public class MaiklingKuwento extends AppCompatActivity {
         Map<String, Object> module3 = (Map<String, Object>) data.get("module_3");
         if (module3 == null) return;
 
-        Map<String, Object> lessons = (Map<String, Object>) module3.get("lessons");
-        if (lessons == null) return;
+        Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
+        if (categories == null) return;
 
-        boolean kwento1Done = isCompleted(lessons, "kwento1");
-        boolean kwento2Done = isCompleted(lessons, "kwento2");
-        boolean kwento3Done = isCompleted(lessons, "kwento3");
+        Map<String, Object> maiklingKuwentoCat = (Map<String, Object>) categories.get("Maikling Kuwento");
+        if (maiklingKuwentoCat == null) return;
+
+        Map<String, Object> stories = (Map<String, Object>) maiklingKuwentoCat.get("stories");
+        if (stories == null) return;
+
+        boolean kwento1Done = isCompleted(stories, "MaiklingKuwento1");
+        boolean kwento2Done = isCompleted(stories, "MaiklingKuwento2");
+        boolean kwento3Done = isCompleted(stories, "MaiklingKuwento3");
 
         unlockButton(btnKwento1, true, kwento1Lock);
         unlockButton(btnKwento2, kwento1Done, kwento2Lock);
         unlockButton(btnKwento3, kwento2Done, kwento3Lock);
+
+        if (kwento1Done && kwento2Done && kwento3Done) {
+            markCategoryCompleted();
+        }
     }
 
-    private boolean isCompleted(Map<String, Object> lessons, String key) {
-        Object lessonObj = lessons.get(key);
-        if (!(lessonObj instanceof Map)) return false;
+    private boolean isCompleted(Map<String, Object> stories, String key) {
+        Object storyObj = stories.get(key);
+        if (!(storyObj instanceof Map)) return false;
 
-        Map<String, Object> lessonData = (Map<String, Object>) lessonObj;
-        return "completed".equals(lessonData.get("status"));
+        Map<String, Object> storyData = (Map<String, Object>) storyObj;
+        return "completed".equals(storyData.get("status"));
     }
+
 
     private void unlockButton(ConstraintLayout layout, boolean isUnlocked, FrameLayout lock) {
         layout.setEnabled(isUnlocked);
