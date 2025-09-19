@@ -26,7 +26,7 @@ public class AlamatKwento2Quiz extends AppCompatActivity {
     private String uid;
 
     private static final String STORY_ID = "AlamatKwento2";
-    private static final String STORY_TITLE = "Ang Agila";
+    private static final String STORY_TITLE = "Alamat ng Unggoy";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +105,6 @@ public class AlamatKwento2Quiz extends AppCompatActivity {
                             snapshot.get("module_3.categories." + categoryName + ".stories");
                     if (stories == null) return;
 
-                    // Only 2 stories now
                     String[] requiredStories = {"AlamatKwento1", "AlamatKwento2"};
 
                     boolean allCompleted = true;
@@ -123,7 +122,6 @@ public class AlamatKwento2Quiz extends AppCompatActivity {
                     }
 
                     if (allCompleted) {
-                        // Mark Alamat category as completed
                         db.collection("module_progress").document(uid)
                                 .set(Map.of("module_3",
                                         Map.of("categories",
@@ -133,7 +131,6 @@ public class AlamatKwento2Quiz extends AppCompatActivity {
                     }
                 });
     }
-
 
     private void checkIfModuleCompleted() {
         db.collection("module_progress").document(uid).get()

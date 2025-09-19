@@ -33,7 +33,7 @@ public class BahagiNgPananalita extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private String uid;
-    private MediaPlayer mediaPlayer; // 🔊 para sa sound
+    private MediaPlayer mediaPlayer;
 
 
     @Override
@@ -46,7 +46,7 @@ public class BahagiNgPananalita extends AppCompatActivity {
         ImageView bahagiBack = findViewById(R.id.bahagi_back);
 
         bahagiBack.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click); // 🔊 optional sound
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             finish();
         });
 

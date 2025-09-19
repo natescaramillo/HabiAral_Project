@@ -4,14 +4,14 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.habiaral.Panitikan.MaiklingKuwento.Stories.MaiklingKwento1;
-import com.example.habiaral.Panitikan.MaiklingKuwento.Stories.MaiklingKwento2;
-import com.example.habiaral.Panitikan.MaiklingKuwento.Stories.MaiklingKwento3;
-import com.example.habiaral.Panitikan.MaiklingKuwento.Stories.MaiklingKwento4;
+import com.example.habiaral.Panitikan.MaiklingKuwento.Stories.MaiklingKuwento1;
+import com.example.habiaral.Panitikan.MaiklingKuwento.Stories.MaiklingKuwento2;
+import com.example.habiaral.Panitikan.MaiklingKuwento.Stories.MaiklingKuwento3;
 import com.example.habiaral.R;
 import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.Utils.SoundClickUtils;
@@ -25,8 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MaiklingKuwento extends AppCompatActivity {
-    ConstraintLayout btnKwento1, btnKwento2, btnKwento3, btnKwento4;
-    FrameLayout kwento1Lock, kwento2Lock, kwento3Lock, kwento4Lock;
+
+    ConstraintLayout btnKwento1, btnKwento2, btnKwento3;
+    FrameLayout kwento1Lock, kwento2Lock, kwento3Lock;
     FirebaseFirestore db;
     String uid;
     private MediaPlayer mediaPlayer;
@@ -39,37 +40,50 @@ public class MaiklingKuwento extends AppCompatActivity {
         initViews();
         lockAllButtons();
 
+        ImageView maiklingKuwentoBack = findViewById(R.id.maikling_kuwento_back);
+
+        maiklingKuwentoBack.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            finish();
+        });
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
         uid = user.getUid();
         db = FirebaseFirestore.getInstance();
 
-        Map<String, Object> cachedData = LessonProgressCache.getData();
-        if (cachedData != null) {
-            updateUIFromProgress(cachedData);
-        }
+        loadLessonProgressFromFirestore();
+    }
 
-        db.collection("students").document(uid).get()
-                .addOnSuccessListener(studentSnap -> {
-                    if (studentSnap.exists()) {
-                        if (studentSnap.contains("studentId")) {
-                            String studentID = studentSnap.getString("studentId");
-                            Map<String, Object> update = new HashMap<>();
-                            update.put("studentId", studentID);
+    private void markCategoryInProgressIfNeeded() {
+        if (uid == null) return;
 
-                            db.collection("module_progress").document(uid)
-                                    .set(update, SetOptions.merge())
-                                    .addOnSuccessListener(unused -> loadLessonProgressFromFirestore())
-                                    .addOnFailureListener(e -> loadLessonProgressFromFirestore());
-                        } else {
-                            loadLessonProgressFromFirestore();
-                        }
-                    } else {
-                        loadLessonProgressFromFirestore();
+        db.collection("module_progress").document(uid).get()
+                .addOnSuccessListener(snapshot -> {
+                    if (!snapshot.exists()) return;
+
+                    Map<String, Object> data = snapshot.getData();
+                    if (data == null) return;
+
+                    Map<String, Object> module3 = (Map<String, Object>) data.get("module_3");
+                    if (module3 == null) return;
+
+                    Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
+                    if (categories != null && categories.get("MaiklingKuwento") instanceof Map) {
+                        Map<String, Object> maiklingKuwentoCat = (Map<String, Object>) categories.get("MaiklingKuwento");
+                        String status = (String) maiklingKuwentoCat.get("status");
+                        if ("completed".equals(status)) return;
                     }
-                })
-                .addOnFailureListener(e -> loadLessonProgressFromFirestore());
+
+                    Map<String, Object> categoryUpdate = new HashMap<>();
+                    categoryUpdate.put("categoryname", "MaiklingKuwento");
+                    categoryUpdate.put("status", "in_progress");
+
+                    db.collection("module_progress").document(uid)
+                            .set(Map.of("module_3", Map.of("categories", Map.of("MaiklingKuwento", categoryUpdate))),
+                                    SetOptions.merge());
+                });
     }
 
     @Override
@@ -80,7 +94,6 @@ public class MaiklingKuwento extends AppCompatActivity {
             mediaPlayer = null;
         }
     }
-
 
     private void loadLessonProgressFromFirestore() {
         db.collection("module_progress").document(uid)
@@ -96,31 +109,26 @@ public class MaiklingKuwento extends AppCompatActivity {
 
         LessonProgressCache.setData(data);
         updateUIFromProgress(data);
+
+        markCategoryInProgressIfNeeded();
     }
 
     private void updateUIFromProgress(Map<String, Object> data) {
         if (data == null) return;
 
-        Object module3Obj = data.get("module_3");
-        if (!(module3Obj instanceof Map)) return;
+        Map<String, Object> module3 = (Map<String, Object>) data.get("module_3");
+        if (module3 == null) return;
 
-        Map<String, Object> module3 = (Map<String, Object>) module3Obj;
-        Object lessonsObj = module3.get("lessons");
-        if (!(lessonsObj instanceof Map)) return;
-
-        Map<String, Object> lessons = (Map<String, Object>) lessonsObj;
+        Map<String, Object> lessons = (Map<String, Object>) module3.get("lessons");
+        if (lessons == null) return;
 
         boolean kwento1Done = isCompleted(lessons, "kwento1");
         boolean kwento2Done = isCompleted(lessons, "kwento2");
         boolean kwento3Done = isCompleted(lessons, "kwento3");
-        boolean kwento4Done = isCompleted(lessons, "kwento4");
 
         unlockButton(btnKwento1, true, kwento1Lock);
         unlockButton(btnKwento2, kwento1Done, kwento2Lock);
         unlockButton(btnKwento3, kwento2Done, kwento3Lock);
-        unlockButton(btnKwento4, kwento3Done,kwento4Lock);
-
-        checkAndCompleteModule(kwento1Done, kwento2Done, kwento3Done, kwento4Done);
     }
 
     private boolean isCompleted(Map<String, Object> lessons, String key) {
@@ -142,56 +150,64 @@ public class MaiklingKuwento extends AppCompatActivity {
         btnKwento1 = findViewById(R.id.kwento1);
         btnKwento2 = findViewById(R.id.kwento2);
         btnKwento3 = findViewById(R.id.kwento3);
-        btnKwento4 = findViewById(R.id.kwento4);
 
         kwento1Lock = findViewById(R.id.kwento1Lock);
         kwento2Lock = findViewById(R.id.kwento2Lock);
         kwento3Lock = findViewById(R.id.kwento3Lock);
-        kwento4Lock = findViewById(R.id.kwento4Lock);
 
-        btnKwento1.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click);
-            startActivity(new Intent(this, MaiklingKwento1.class));
-        });
-
-        btnKwento2.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click);
-            startActivity(new Intent(this, MaiklingKwento2.class));
-        });
-
-        btnKwento3.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click);
-            startActivity(new Intent(this, MaiklingKwento3.class));
-        });
-
-        btnKwento4.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click);
-            startActivity(new Intent(this, MaiklingKwento4.class));
-        });
+        btnKwento1.setOnClickListener(v -> openStory(MaiklingKuwento1.class));
+        btnKwento2.setOnClickListener(v -> openStory(MaiklingKuwento2.class));
+        btnKwento3.setOnClickListener(v -> openStory(MaiklingKuwento3.class));
     }
 
-    private void checkAndCompleteModule(boolean kwento1Done, boolean kwento2Done, boolean kwento3Done, boolean kwento4Done) {
-        boolean allDone = kwento1Done && kwento2Done && kwento3Done && kwento4Done;
-
-        Map<String, Object> update = new HashMap<>();
-        Map<String, Object> module3Updates = new HashMap<>();
-
-        module3Updates.put("modulename", "Epiko");
-        module3Updates.put("status", allDone ? "completed" : "in_progress");
-
-        update.put("module_3", module3Updates);
-
-        db.collection("module_progress").document(uid).set(update, SetOptions.merge());
+    private void openStory(Class<?> cls) {
+        SoundClickUtils.playClickSound(this, R.raw.button_click);
+        startActivity(new Intent(this, cls));
     }
 
     private void lockAllButtons() {
         lockButton(btnKwento2);
         lockButton(btnKwento3);
-        lockButton(btnKwento4);
     }
 
     private void lockButton(ConstraintLayout button) {
         button.setClickable(false);
         button.setAlpha(0.5f);
+    }
+
+    private void checkIfAllStoriesCompleted() {
+        db.collection("module_progress").document(uid).get()
+                .addOnSuccessListener(snapshot -> {
+                    if (!snapshot.exists()) return;
+
+                    Map<String, Object> data = snapshot.getData();
+                    if (data == null) return;
+
+                    Map<String, Object> module3 = (Map<String, Object>) data.get("module_3");
+                    if (module3 == null) return;
+
+                    Map<String, Object> lessons = (Map<String, Object>) module3.get("lessons");
+                    if (lessons == null) return;
+
+                    boolean kwento1Done = isCompleted(lessons, "kwento1");
+                    boolean kwento2Done = isCompleted(lessons, "kwento2");
+                    boolean kwento3Done = isCompleted(lessons, "kwento3");
+
+                    if (kwento1Done && kwento2Done && kwento3Done) {
+                        markCategoryCompleted();
+                    }
+                });
+    }
+
+    private void markCategoryCompleted() {
+        if (uid == null) return;
+
+        Map<String, Object> categoryUpdate = new HashMap<>();
+        categoryUpdate.put("categoryname", "MaiklingKuwento");
+        categoryUpdate.put("status", "completed");
+
+        db.collection("module_progress").document(uid)
+                .set(Map.of("module_3", Map.of("categories", Map.of("MaiklingKuwento", categoryUpdate))),
+                        SetOptions.merge());
     }
 }

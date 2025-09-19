@@ -24,13 +24,13 @@ import java.util.Map;
 public class AlamatKwento1 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.kwento1_page01, R.drawable.kwento1_page02, R.drawable.kwento1_page03,
-            R.drawable.kwento1_page04, R.drawable.kwento1_page05, R.drawable.kwento1_page06,
-            R.drawable.kwento1_page07, R.drawable.kwento1_page08, R.drawable.kwento1_page09,
-            R.drawable.kwento1_page10, R.drawable.kwento1_page11, R.drawable.kwento1_page12,
-            R.drawable.kwento1_page13, R.drawable.kwento1_page14, R.drawable.kwento1_page15,
-            R.drawable.kwento1_page16, R.drawable.kwento1_page17, R.drawable.kwento1_page18,
-            R.drawable.kwento1_page19
+            R.drawable.cover_page_rosas, R.drawable.kwento1_page01, R.drawable.kwento1_page02,
+            R.drawable.kwento1_page03, R.drawable.kwento1_page04, R.drawable.kwento1_page05,
+            R.drawable.kwento1_page06, R.drawable.kwento1_page07, R.drawable.kwento1_page08,
+            R.drawable.kwento1_page09, R.drawable.kwento1_page10, R.drawable.kwento1_page11,
+            R.drawable.kwento1_page12, R.drawable.kwento1_page13, R.drawable.kwento1_page14,
+            R.drawable.kwento1_page15, R.drawable.kwento1_page16, R.drawable.kwento1_page17,
+            R.drawable.kwento1_page18, R.drawable.kwento1_page19
     };
 
     private static final String STORY_ID = "AlamatKwento1";
@@ -86,7 +86,6 @@ public class AlamatKwento1 extends AppCompatActivity {
             }
         });
 
-        // Load current progress on start
         loadCurrentProgress();
     }
 
@@ -97,17 +96,14 @@ public class AlamatKwento1 extends AppCompatActivity {
             storyImage.setImageResource(comicPages[currentPage]);
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
 
-            // Update checkpoint, but do NOT mark story completed here
             updateCheckpoint(currentPage);
 
-            // Enable quiz button only at the last page
             if (currentPage == comicPages.length - 1) {
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
             }
         }
     }
-
 
     private void previousPage() {
         if (currentPage > 0) {
@@ -199,7 +195,7 @@ public class AlamatKwento1 extends AppCompatActivity {
                             .document(uid)
                             .set(Map.of("module_3", module3), SetOptions.merge());
 
-                    if ("completed".equals(currentStatus) || checkpoint == comicPages.length - 1) {
+                    if (checkpoint == comicPages.length - 1) {
                         isLessonDone = true;
                         unlockButton.setEnabled(true);
                         unlockButton.setAlpha(1f);

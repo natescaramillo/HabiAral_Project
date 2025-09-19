@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -24,8 +25,8 @@ import java.util.Map;
 
 public class Alamat extends AppCompatActivity {
 
-    ConstraintLayout btnKwento1, btnKwento2, btnKwento3, btnKwento4;
-    FrameLayout kwento1Lock, kwento2Lock, kwento3Lock, kwento4Lock;
+    ConstraintLayout btnKwento1, btnKwento2;
+    FrameLayout kwento1Lock, kwento2Lock;
     FirebaseFirestore db;
     String uid;
     private MediaPlayer mediaPlayer;
@@ -38,13 +39,19 @@ public class Alamat extends AppCompatActivity {
         initViews();
         lockAllButtons();
 
+        ImageView alamatBack = findViewById(R.id.alamat_back);
+
+        alamatBack.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            finish();
+        });
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
         uid = user.getUid();
         db = FirebaseFirestore.getInstance();
 
-        // 🔹 Load progress from Firestore first
         loadLessonProgressFromFirestore();
     }
 
@@ -65,10 +72,9 @@ public class Alamat extends AppCompatActivity {
                     if (categories != null && categories.get("Alamat") instanceof Map) {
                         Map<String, Object> alamatCat = (Map<String, Object>) categories.get("Alamat");
                         String status = (String) alamatCat.get("status");
-                        if ("completed".equals(status)) return; // already completed
+                        if ("completed".equals(status)) return;
                     }
 
-                    // mark in_progress only if not completed
                     Map<String, Object> categoryUpdate = new HashMap<>();
                     categoryUpdate.put("categoryname", "Alamat");
                     categoryUpdate.put("status", "in_progress");
@@ -103,7 +109,6 @@ public class Alamat extends AppCompatActivity {
         LessonProgressCache.setData(data);
         updateUIFromProgress(data);
 
-        // 🔹 Mark category in-progress if not completed
         markCategoryInProgressIfNeeded();
     }
 
@@ -119,7 +124,6 @@ public class Alamat extends AppCompatActivity {
         boolean kwento1Done = isCompleted(lessons, "kwento1");
         boolean kwento2Done = isCompleted(lessons, "kwento2");
 
-        // 🔓 Unlocking chain
         unlockButton(btnKwento1, true, kwento1Lock);
         unlockButton(btnKwento2, kwento1Done, kwento2Lock);
     }
@@ -142,13 +146,9 @@ public class Alamat extends AppCompatActivity {
     private void initViews() {
         btnKwento1 = findViewById(R.id.kwento1);
         btnKwento2 = findViewById(R.id.kwento2);
-        btnKwento3 = findViewById(R.id.kwento3);
-        btnKwento4 = findViewById(R.id.kwento4);
 
         kwento1Lock = findViewById(R.id.kwento1Lock);
         kwento2Lock = findViewById(R.id.kwento2Lock);
-        kwento3Lock = findViewById(R.id.kwento3Lock);
-        kwento4Lock = findViewById(R.id.kwento4Lock);
 
         btnKwento1.setOnClickListener(v -> openStory(AlamatKwento1.class));
         btnKwento2.setOnClickListener(v -> openStory(AlamatKwento2.class));
@@ -161,8 +161,6 @@ public class Alamat extends AppCompatActivity {
 
     private void lockAllButtons() {
         lockButton(btnKwento2);
-        lockButton(btnKwento3);
-        lockButton(btnKwento4);
     }
 
     private void lockButton(ConstraintLayout button) {

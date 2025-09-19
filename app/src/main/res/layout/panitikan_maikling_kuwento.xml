@@ -51,7 +51,7 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="ANG ALAMAT NG ROSAS"
+                    android:text="SUYUAN SA TUBIGAN"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -111,7 +111,7 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="ANG KALAPATI AT ANG AGILA"
+                    android:text="TAHANAN NG ISANG SUGAROL"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -171,7 +171,7 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/special"
                     android:gravity="center"
-                    android:text="NAGTITINDA NG KAKANIN SI JUAN PUSONG"
+                    android:text="SINO ANG NAGKALOOB?"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -196,66 +196,6 @@
                         android:src="@drawable/design_lock" />
                 </FrameLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- Story 4 -->
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/kwento4"
-                android:layout_width="330dp"
-                android:layout_height="193dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_rect"
-                android:clickable="true"
-                android:clipToOutline="true"
-                android:focusable="true">
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/kwento4Image"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/sulayman"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
-
-                <TextView
-                    android:id="@+id/kwento4Title"
-                    android:layout_width="233dp"
-                    android:layout_height="43dp"
-                    android:layout_marginBottom="16dp"
-                    android:fontFamily="@font/special"
-                    android:gravity="center"
-                    android:text="INDARAPATRA AT SULAYMAN"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <FrameLayout
-                    android:id="@+id/kwento4Lock"
-                    android:layout_width="49dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/square"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/kwento4Image"
-                    app:layout_constraintHorizontal_bias="0.942"
-                    app:layout_constraintStart_toStartOf="@+id/kwento4Image"
-                    app:layout_constraintTop_toTopOf="@+id/kwento4Image">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/design_lock" />
-                </FrameLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         </LinearLayout>
     </ScrollView>

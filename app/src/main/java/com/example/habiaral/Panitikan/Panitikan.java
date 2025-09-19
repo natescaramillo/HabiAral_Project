@@ -37,19 +37,15 @@ public class Panitikan extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) uid = user.getUid();
 
-        // ✅ Mark module_3 as in_progress
         markModuleInProgress();
 
-        // ✅ Load from cache if available
         Map<String, Object> cachedData = LessonProgressCache.getData();
         if (cachedData != null) {
             updateUIFromProgress(cachedData);
         }
 
-        // ✅ Save studentId and load progress
         saveStudentIdAndLoadProgress();
 
-        // ✅ Init buttons
         initViews();
     }
 
@@ -69,13 +65,10 @@ public class Panitikan extends AppCompatActivity {
 
     private void openCategory(Class<?> cls, String categoryName) {
         try {
-            // ✅ Play click sound
             SoundClickUtils.playClickSound(Panitikan.this, R.raw.button_click);
 
-            // ✅ Update Firestore category progress
             markCategoryInProgress(categoryName);
 
-            // ✅ Open the Activity
             startActivity(new Intent(Panitikan.this, cls));
 
         } catch (Exception e) {
@@ -83,7 +76,6 @@ public class Panitikan extends AppCompatActivity {
         }
     }
 
-    // 🔹 Save studentId then load lesson progress
     private void saveStudentIdAndLoadProgress() {
         if (uid == null) return;
 
@@ -105,7 +97,6 @@ public class Panitikan extends AppCompatActivity {
                 .addOnFailureListener(e -> loadLessonProgressFromFirestore());
     }
 
-    // 🔹 Mark module_3 progress
     private void markModuleInProgress() {
         if (uid == null) return;
 
@@ -117,7 +108,6 @@ public class Panitikan extends AppCompatActivity {
                 .set(Map.of("module_3", moduleUpdate), SetOptions.merge());
     }
 
-    // 🔹 Mark category progress
     private void markCategoryInProgress(String categoryName) {
         if (uid == null) return;
 
@@ -132,12 +122,7 @@ public class Panitikan extends AppCompatActivity {
                         )), SetOptions.merge());
     }
 
-    // 🔹 Placeholder functions para hindi mag-crash
-    private void updateUIFromProgress(Map<String, Object> progressData) {
-        // TODO: gamitin progressData para i-update yung UI
-    }
+    private void updateUIFromProgress(Map<String, Object> progressData) {}
 
-    private void loadLessonProgressFromFirestore() {
-        // TODO: i-fetch module_3 data from Firestore at update UI
-    }
+    private void loadLessonProgressFromFirestore() {}
 }

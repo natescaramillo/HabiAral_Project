@@ -1,4 +1,4 @@
-package com.example.habiaral.Panitikan.Alamat.Stories;
+package com.example.habiaral.Panitikan.MaiklingKuwento.Stories;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.Panitikan.Alamat.Alamat;
-import com.example.habiaral.Panitikan.Alamat.Quiz.AlamatKwento2Quiz;
+import com.example.habiaral.Panitikan.MaiklingKuwento.MaiklingKuwento;
+import com.example.habiaral.Panitikan.MaiklingKuwento.Quiz.MaiklingKuwento2Quiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,7 +21,7 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AlamatKwento2 extends AppCompatActivity {
+public class MaiklingKuwento2 extends AppCompatActivity {
 
     private final int[] comicPages = {
             R.drawable.agila_01, R.drawable.agila_02, R.drawable.agila_03,
@@ -36,8 +36,8 @@ public class AlamatKwento2 extends AppCompatActivity {
             R.drawable.agila_28, R.drawable.agila_29, R.drawable.agila_30
     };
 
-    private static final String STORY_ID = "AlamatKwento2";
-    private static final String STORY_TITLE = "Alamat ng Unggoy";
+    private static final String STORY_ID = "MaiklingKuwento2";
+    private static final String STORY_TITLE = "Tahanan ng Isang Sugarol";
 
     private boolean isLessonDone = false;
     private ImageView storyImage;
@@ -76,14 +76,14 @@ public class AlamatKwento2 extends AppCompatActivity {
 
         unlockButton.setOnClickListener(v -> {
             if (isLessonDone) {
-                startActivity(new Intent(AlamatKwento2.this, AlamatKwento2Quiz.class));
+                startActivity(new Intent(MaiklingKuwento2.this, MaiklingKuwento2Quiz.class));
             }
         });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                startActivity(new Intent(AlamatKwento2.this, Alamat.class)
+                startActivity(new Intent(MaiklingKuwento2.this, MaiklingKuwento.class)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                 finish();
             }
@@ -133,10 +133,10 @@ public class AlamatKwento2 extends AppCompatActivity {
                     Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                     if (categories == null) return;
 
-                    Map<String, Object> alamat = (Map<String, Object>) categories.get("Alamat");
-                    if (alamat == null) return;
+                    Map<String, Object> maiklingKuwento = (Map<String, Object>) categories.get("MaiklingKuwento");
+                    if (maiklingKuwento == null) return;
 
-                    Map<String, Object> stories = (Map<String, Object>) alamat.get("stories");
+                    Map<String, Object> stories = (Map<String, Object>) maiklingKuwento.get("stories");
                     if (stories == null) return;
 
                     Map<String, Object> story = (Map<String, Object>) stories.get(STORY_ID);
@@ -167,9 +167,9 @@ public class AlamatKwento2 extends AppCompatActivity {
                         if (module3 != null) {
                             Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                             if (categories != null) {
-                                Map<String, Object> alamat = (Map<String, Object>) categories.get("Alamat");
-                                if (alamat != null) {
-                                    Map<String, Object> stories = (Map<String, Object>) alamat.get("stories");
+                                Map<String, Object> maiklingKuwento = (Map<String, Object>) categories.get("MaiklingKuwento");
+                                if (maiklingKuwento != null) {
+                                    Map<String, Object> stories = (Map<String, Object>) maiklingKuwento.get("stories");
                                     if (stories != null) {
                                         Map<String, Object> story = (Map<String, Object>) stories.get(STORY_ID);
                                         if (story != null && story.get("status") != null) {
@@ -186,11 +186,11 @@ public class AlamatKwento2 extends AppCompatActivity {
                     storyData.put("title", STORY_TITLE);
                     storyData.put("status", currentStatus);
 
-                    Map<String, Object> alamatData = new HashMap<>();
-                    alamatData.put("stories", Map.of(STORY_ID, storyData));
+                    Map<String, Object> maiklingKuwentoData = new HashMap<>();
+                    maiklingKuwentoData.put("stories", Map.of(STORY_ID, storyData));
 
                     Map<String, Object> categories = new HashMap<>();
-                    categories.put("Alamat", alamatData);
+                    categories.put("MaiklingKuwento", maiklingKuwentoData);
 
                     Map<String, Object> module3 = new HashMap<>();
                     module3.put("categories", categories);

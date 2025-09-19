@@ -105,8 +105,7 @@ public class AlamatKwento1Quiz extends AppCompatActivity {
                             snapshot.get("module_3.categories." + categoryName + ".stories");
                     if (stories == null) return;
 
-                    // 🔹 Expected stories lang ang iti-check
-                    String[] requiredStories = {"AlamatKwento1", "AlamatKwento2", "AlamatKwento3", "AlamatKwento4"};
+                    String[] requiredStories = {"AlamatKwento1", "AlamatKwento2"};
 
                     boolean allCompleted = true;
                     for (String storyKey : requiredStories) {

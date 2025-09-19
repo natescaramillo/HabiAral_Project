@@ -1,4 +1,4 @@
-package com.example.habiaral.Panitikan.Epiko.Quiz;
+package com.example.habiaral.Panitikan.MaiklingKuwento.Quiz;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -10,8 +10,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.Panitikan.Epiko.Epiko;
-import com.example.habiaral.Panitikan.Epiko.Stories.EpikoKwento2;
+import com.example.habiaral.Panitikan.MaiklingKuwento.MaiklingKuwento;
+import com.example.habiaral.Panitikan.MaiklingKuwento.Stories.MaiklingKuwento2;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,13 +21,13 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EpikoKwento1Quiz extends AppCompatActivity {
+public class MaiklingKuwento1Quiz extends AppCompatActivity {
     Button nextButton;
     private FirebaseFirestore db;
     private String uid;
 
-    private static final String STORY_ID = "EpikoKwento1";
-    private static final String STORY_TITLE = "Indarapatra at Sulayman";
+    private static final String STORY_ID = "MaiklingKuwento1";
+    private static final String STORY_TITLE = "Suyuan sa Tubigan";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +69,14 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
 
         taposButton.setOnClickListener(v -> {
             dialog.dismiss();
-            startActivity(new Intent(this, EpikoKwento2.class)
+            startActivity(new Intent(this, MaiklingKuwento2.class)
                     .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
             finish();
         });
 
         homeButton.setOnClickListener(v -> {
             dialog.dismiss();
-            startActivity(new Intent(this, Epiko.class)
+            startActivity(new Intent(this, MaiklingKuwento.class)
                     .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
             finish();
         });
@@ -86,13 +86,13 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
         if (uid == null) return;
 
         Map<String, Object> updates = new HashMap<>();
-        updates.put("module_3.categories.Epiko.stories." + STORY_ID + ".title", STORY_TITLE);
-        updates.put("module_3.categories.Epiko.stories." + STORY_ID + ".status", "completed");
+        updates.put("module_3.categories.MaiklingKuwento.stories." + STORY_ID + ".title", STORY_TITLE);
+        updates.put("module_3.categories.MaiklingKuwento.stories." + STORY_ID + ".status", "completed");
 
         db.collection("module_progress").document(uid).update(updates)
                 .addOnSuccessListener(unused -> {
                     Toast.makeText(this, "Next Lesson Unlocked: Kwento2!", Toast.LENGTH_SHORT).show();
-                    checkIfCategoryCompleted("Epiko");
+                    checkIfCategoryCompleted("Maikling Kuwento");
                 })
                 .addOnFailureListener(e ->
                         db.collection("module_progress").document(uid).set(updates, SetOptions.merge()));
@@ -105,7 +105,7 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
                             snapshot.get("module_3.categories." + categoryName + ".stories");
                     if (stories == null) return;
 
-                    String[] requiredStories = {"EpikoKwento1", "EpikoKwento2"};
+                    String[] requiredStories = {"MaiklingKuwento1", "MaiklingKuwento2", "MaiklingKuwento3"};
 
                     boolean allCompleted = true;
                     for (String storyKey : requiredStories) {
