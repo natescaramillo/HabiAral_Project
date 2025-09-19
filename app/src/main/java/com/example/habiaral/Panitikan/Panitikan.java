@@ -2,6 +2,7 @@ package com.example.habiaral.Panitikan;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +48,13 @@ public class Panitikan extends AppCompatActivity {
         saveStudentIdAndLoadProgress();
 
         initViews();
+
+        ImageView panitikanBack = findViewById(R.id.panitikan_back);
+
+        panitikanBack.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            finish();
+        });
     }
 
     private void initViews() {
