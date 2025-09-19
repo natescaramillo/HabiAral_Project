@@ -8,10 +8,52 @@
     tools:context=".HugnayanActivity">
 
     <!-- Title -->
+
+
+
+    <TextView
+        android:id="@+id/description_text_hugnayan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/background_with_border"
+        android:ellipsize="none"
+        android:inputType="textMultiLine"
+        android:justificationMode="inter_word"
+        android:paddingVertical="15dp"
+        android:paddingStart="10dp"
+        android:singleLine="false"
+        android:text=""
+        android:textColor="#000"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_Text_hugnayan" />
+
+    <TextView
+        android:id="@+id/example_Text_hugnayan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:autoSizeMaxTextSize="22sp"
+        android:autoSizeMinTextSize="14sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        android:background="@drawable/background_with_border"
+        android:justificationMode="inter_word"
+        android:paddingVertical="15dp"
+        android:paddingStart="10dp"
+        android:text=""
+        android:textColor="#000"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description_text_hugnayan" />
+
     <TextView
         android:id="@+id/title_Text_hugnayan"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:autoSizeMaxTextSize="30sp"
         android:autoSizeMinTextSize="15sp"
         android:autoSizeStepGranularity="2sp"
@@ -28,67 +70,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Description -->
-    <TextView
-        android:id="@+id/description_text_hugnayan"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:autoSizeMaxTextSize="22sp"
-        android:autoSizeMinTextSize="14sp"
-        android:autoSizeStepGranularity="2sp"
-        android:autoSizeTextType="uniform"
-        android:background="@drawable/background_with_border"
-        android:justificationMode="inter_word"
-        android:padding="16dp"
-        android:text="@string/hugnayan_description"
-        android:textColor="#000"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_Text_hugnayan" />
-
-    <!-- Example -->
-    <TextView
-        android:id="@+id/example_Text_hugnayan"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:autoSizeMaxTextSize="22sp"
-        android:autoSizeMinTextSize="14sp"
-        android:autoSizeStepGranularity="2sp"
-        android:autoSizeTextType="uniform"
-        android:background="@drawable/background_with_border"
-        android:justificationMode="inter_word"
-        android:padding="16dp"
-        android:text="@string/hugnayan_example"
-        android:textColor="#000"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/description_text_hugnayan" />
-
-    <!-- Image -->
-    <ImageView
-        android:id="@+id/imageView_hugnayan"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline57"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/example_Text_hugnayan"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/tarsier_logo" />
 
     <!-- Button -->
     <Button
         android:id="@+id/UnlockButtonHugnayan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
         android:background="@drawable/rounded_button_achievement"
         android:fontFamily="@font/special"
         android:padding="5dp"
@@ -96,16 +83,11 @@
         android:textColor="#000"
         android:textSize="15sp"
         android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.846"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/example_Text_hugnayan" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline57"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.56" />
+        app:layout_constraintTop_toBottomOf="@+id/title_Text_hugnayan"
+        app:layout_constraintVertical_bias="0.936" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,7 +28,6 @@
                 android:layout_height="193dp"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"
-                android:background="@drawable/rounded_rect"
                 android:clickable="true"
                 android:focusable="true"
                 android:clipToOutline="true">
@@ -47,8 +46,8 @@
 
                 <TextView
                     android:id="@+id/kwento1Title"
-                    android:layout_width="230dp"
-                    android:layout_height="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/special"
                     android:gravity="center"
@@ -87,7 +86,6 @@
                 android:layout_height="193dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_rect"
                 android:clickable="true"
                 android:clipToOutline="true"
                 android:focusable="true">
@@ -107,8 +105,8 @@
 
                 <TextView
                     android:id="@+id/kwento2Title"
-                    android:layout_width="226dp"
-                    android:layout_height="45dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/special"
                     android:gravity="center"
@@ -156,12 +154,11 @@
         android:id="@+id/epiko_back"
         android:layout_width="28dp"
         android:layout_height="25dp"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/view1"
+        app:layout_constraintBottom_toBottomOf="@+id/title"
         app:layout_constraintEnd_toStartOf="@+id/title"
         app:layout_constraintHorizontal_bias="0.227"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title"
         app:layout_constraintVertical_bias="0.87"
         app:srcCompat="@drawable/back_button" />
 

@@ -2,49 +2,51 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background"
     tools:context=".KayarianNgPangungusap.KayarianNgPangungusap">
 
-    <View
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/view1"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:alpha="0.6"
         android:background="#A27B5C"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:text="Kayarian ng Pangungusap"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@id/view1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/view1" />
 
-    <ImageView
-        android:id="@+id/kayarian_back"
-        android:layout_width="28dp"
-        android:layout_height="25dp"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/view1"
-        app:layout_constraintEnd_toStartOf="@+id/title"
-        app:layout_constraintHorizontal_bias="0.227"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.87"
-        app:srcCompat="@drawable/back_button" />
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/special"
+            android:gravity="center"
+            android:text="Kayarian ng Pangungusap"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/kayarian_back"
+            android:layout_width="28dp"
+            android:layout_height="25dp"
+            app:layout_constraintBottom_toBottomOf="@+id/title"
+            app:layout_constraintEnd_toStartOf="@+id/title"
+            app:layout_constraintHorizontal_bias="0.456"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/title"
+            app:layout_constraintVertical_bias="0.555"
+            app:srcCompat="@drawable/back_button" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/payak"
@@ -234,4 +236,5 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.70" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

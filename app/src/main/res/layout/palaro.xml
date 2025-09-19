@@ -3,16 +3,52 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@drawable/gradient_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".Palaro.Palaro">
 
+    <!-- ================== HEADER BAR ================== -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/view"
+        android:layout_width="0dp"
+        android:layout_height="93dp"
+        android:background="#99A27B5C"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/special"
+            android:gravity="center"
+            android:text="Palaro"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/palaro_back"
+            android:layout_width="28dp"
+            android:layout_height="25dp"
+            app:srcCompat="@drawable/back_button"
+            app:layout_constraintTop_toTopOf="@id/textView18"
+            app:layout_constraintBottom_toBottomOf="@id/textView18"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/textView18" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ================== MAIN CONTENT ================== -->
     <FrameLayout
         android:id="@+id/frameLayout_palaro"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -21,31 +57,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- Energy Bar and Icons -->
+            <!-- ===== Energy Bar Section ===== -->
 
             <View
                 android:id="@+id/view15"
-                android:layout_width="325dp"
+                android:layout_width="0dp"
                 android:layout_height="43dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginEnd="16dp"
                 android:background="@drawable/energy_bar"
-                app:layout_constraintEnd_toStartOf="@+id/guideline2"
-                app:layout_constraintHorizontal_bias="0.44"
+                app:layout_constraintEnd_toStartOf="@id/guideline2"
+                app:layout_constraintHorizontal_bias="0.504"
                 app:layout_constraintStart_toStartOf="@id/guideline"
-                app:layout_constraintTop_toTopOf="@+id/guideline3" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="43dp"
                 android:layout_height="37dp"
-                app:layout_constraintBottom_toBottomOf="@+id/view15"
-                app:layout_constraintEnd_toEndOf="@+id/view15"
-                app:layout_constraintHorizontal_bias="0.093"
-                app:layout_constraintStart_toStartOf="@+id/view15"
-                app:layout_constraintTop_toTopOf="@+id/view15"
-                app:layout_constraintVertical_bias="0.562"
+                app:layout_constraintBottom_toBottomOf="@id/view15"
+                app:layout_constraintStart_toStartOf="@id/view15"
+                app:layout_constraintTop_toTopOf="@id/view15"
                 app:srcCompat="@drawable/design_energy" />
-
 
             <TextView
                 android:id="@+id/textView4"
@@ -55,30 +89,26 @@
                 android:text="Enerhiya"
                 android:textColor="#FC4D2B06"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="@+id/view15"
-                app:layout_constraintEnd_toEndOf="@+id/view15"
-                app:layout_constraintHorizontal_bias="0.283"
-                app:layout_constraintStart_toStartOf="@+id/view15"
-                app:layout_constraintTop_toTopOf="@+id/view15" />
-
+                app:layout_constraintBottom_toBottomOf="@id/view15"
+                app:layout_constraintStart_toEndOf="@id/imageView"
+                app:layout_constraintTop_toTopOf="@id/view15" />
 
             <LinearLayout
+                android:id="@+id/linearLayout2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="@+id/view15"
-                app:layout_constraintEnd_toEndOf="@+id/view15"
-                app:layout_constraintHorizontal_bias="0.81"
-                app:layout_constraintStart_toStartOf="@+id/view15"
-                app:layout_constraintTop_toTopOf="@+id/view15"
-                app:layout_constraintVertical_bias="0.357">
+                app:layout_constraintBottom_toBottomOf="@id/view15"
+                app:layout_constraintEnd_toEndOf="@id/view15"
+                app:layout_constraintTop_toTopOf="@id/view15">
 
                 <TextView
                     android:id="@+id/current_energy2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginStart="15dp"
                     android:fontFamily="@font/special"
                     android:text="38"
                     android:textColor="#FC4D2B06"
@@ -89,189 +119,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="0dp"
                     android:fontFamily="@font/special"
                     android:text="/100"
                     android:textColor="#FC4D2B06"
                     android:textSize="15sp" />
-
             </LinearLayout>
-
-            <!-- Progress Bar -->
-
-            <ProgressBar
-                android:id="@+id/palaro_progress"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="288dp"
-                android:layout_height="38dp"
-                android:layout_marginTop="12dp"
-                android:max="100"
-                android:progress="0"
-                android:progressDrawable="@drawable/custom_palaro_bar"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/view15"
-                app:layout_constraintHorizontal_bias="0.396"
-                app:layout_constraintStart_toStartOf="@+id/view15"
-                app:layout_constraintTop_toBottomOf="@+id/view15"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <ImageView
-                android:id="@+id/game_mechanic_icon"
-                android:layout_width="35dp"
-                android:layout_height="34dp"
-                android:layout_marginTop="100dp"
-                android:clickable="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.944"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/design_game_mechanics" />
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/button"
-                android:layout_width="0dp"
-                android:layout_height="105dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/button_color"
-                android:fontFamily="@font/special"
-                android:gravity="center"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/guideline2"
-                app:layout_constraintHorizontal_bias="0.537"
-                app:layout_constraintStart_toStartOf="@+id/guideline"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.417">
-
-                <TextView
-                    android:id="@+id/BAGUHAN_TEXT"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/special"
-                    android:gravity="center"
-                    android:text="BAGUHAN"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/white"
-                    android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.069"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/bahuhanImg"
-                    android:layout_width="120dp"
-                    android:layout_height="85dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/bahugan" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/button2"
-                android:layout_width="0dp"
-                android:layout_height="105dp"
-                android:background="@drawable/button_color"
-                android:fontFamily="@font/special"
-                android:gravity="center"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/button"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/button"
-                app:layout_constraintTop_toBottomOf="@+id/button"
-                app:layout_constraintVertical_bias="0.059">
-
-                <TextView
-                    android:id="@+id/husay_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/special"
-                    android:gravity="center"
-                    android:text="HUSAY"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/white"
-                    android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.064"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/husayImg"
-                    android:layout_width="120dp"
-                    android:layout_height="85dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/husay" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/button3"
-                android:layout_width="0dp"
-                android:layout_height="105dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/button_color"
-                android:fontFamily="@font/special"
-                android:gravity="center"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/button2"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/button2"
-                app:layout_constraintTop_toBottomOf="@+id/button2"
-                app:layout_constraintVertical_bias="0.017">
-
-                <TextView
-                    android:id="@+id/dalubhasa_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/special"
-                    android:gravity="center"
-                    android:text="DALUBHASA"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/white"
-                    android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.075"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/dalubhasaImg"
-                    android:layout_width="120dp"
-                    android:layout_height="85dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/dalubhasa" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/user_point"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/special"
-                android:text="0"
-                android:textColor="#ffffff"
-                app:layout_constraintBottom_toBottomOf="@+id/palaro_progress"
-                app:layout_constraintEnd_toEndOf="@+id/palaro_progress"
-                app:layout_constraintStart_toStartOf="@+id/palaro_progress"
-                app:layout_constraintTop_toTopOf="@+id/palaro_progress" />
 
             <TextView
                 android:id="@+id/time_energy"
@@ -281,12 +133,172 @@
                 android:text="0:00"
                 android:textColor="#FC4D2B06"
                 android:textSize="10sp"
-                app:layout_constraintBottom_toBottomOf="@+id/view15"
-                app:layout_constraintEnd_toEndOf="@+id/view15"
-                app:layout_constraintHorizontal_bias="0.777"
-                app:layout_constraintStart_toStartOf="@+id/view15"
-                app:layout_constraintTop_toTopOf="@+id/view15"
-                app:layout_constraintVertical_bias="0.88" />
+                app:layout_constraintBottom_toBottomOf="@id/view15"
+                app:layout_constraintEnd_toEndOf="@+id/linearLayout2"
+                app:layout_constraintStart_toStartOf="@+id/linearLayout2" />
+
+            <!-- ===== Progress Bar ===== -->
+            <ProgressBar
+                android:id="@+id/palaro_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_marginTop="12dp"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/custom_palaro_bar"
+                app:layout_constraintEnd_toEndOf="@id/view15"
+                app:layout_constraintStart_toStartOf="@id/view15"
+                app:layout_constraintTop_toBottomOf="@id/view15" />
+
+            <TextView
+                android:id="@+id/user_point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/special"
+                android:text="0"
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="@id/palaro_progress"
+                app:layout_constraintEnd_toEndOf="@id/palaro_progress"
+                app:layout_constraintStart_toStartOf="@id/palaro_progress"
+                app:layout_constraintTop_toTopOf="@id/palaro_progress" />
+
+            <!-- ===== Trophy ===== -->
+
+            <!-- ===== Game Mechanic Icon ===== -->
+
+            <ImageView
+                android:id="@+id/trophy_image"
+                android:layout_width="105dp"
+                android:layout_height="87dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="@+id/user_point"
+                app:layout_constraintEnd_toEndOf="@+id/palaro_progress"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/palaro_progress"
+                app:layout_constraintTop_toTopOf="@+id/palaro_progress"
+                app:layout_constraintVertical_bias="0.431"
+                app:srcCompat="@drawable/trophy_unranked" />
+
+            <!-- ===== Buttons Section ===== -->
+
+            <!-- ===== Guidelines ===== -->
+
+            <ImageView
+                android:id="@+id/game_mechanic_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                app:layout_constraintBottom_toTopOf="@+id/view15"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline7"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:srcCompat="@drawable/design_game_mechanics" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/button"
+                android:layout_width="0dp"
+                android:layout_height="105dp"
+                android:layout_marginTop="88dp"
+                android:background="@drawable/button_color"
+                app:layout_constraintEnd_toStartOf="@id/guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/guideline"
+                app:layout_constraintTop_toTopOf="@+id/guideline3">
+
+                <TextView
+                    android:id="@+id/BAGUHAN_TEXT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/special"
+                    android:text="BAGUHAN"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/bahuhanImg"
+                    android:layout_width="120dp"
+                    android:layout_height="85dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/bahugan" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/button2"
+                android:layout_width="0dp"
+                android:layout_height="105dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/button_color"
+                app:layout_constraintEnd_toEndOf="@id/button"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@id/button"
+                app:layout_constraintTop_toBottomOf="@id/button">
+
+                <TextView
+                    android:id="@+id/husay_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/special"
+                    android:text="HUSAY"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/husayImg"
+                    android:layout_width="120dp"
+                    android:layout_height="85dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/husay" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/button3"
+                android:layout_width="0dp"
+                android:layout_height="105dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/button_color"
+                app:layout_constraintEnd_toEndOf="@id/button2"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@id/button2"
+                app:layout_constraintTop_toBottomOf="@id/button2">
+
+                <TextView
+                    android:id="@+id/dalubhasa_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/special"
+                    android:text="DALUBHASA"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/dalubhasaImg"
+                    android:layout_width="120dp"
+                    android:layout_height="85dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/dalubhasa" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"
@@ -309,19 +321,6 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.15" />
 
-            <ImageView
-                android:id="@+id/trophy_image"
-                android:layout_width="191dp"
-                android:layout_height="137dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.202"
-                app:layout_constraintStart_toStartOf="@+id/guideline7"
-                app:layout_constraintTop_toTopOf="@+id/guideline3"
-                app:layout_constraintVertical_bias="0.031"
-                app:srcCompat="@drawable/trophy_unranked" />
-
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline7"
                 android:layout_width="wrap_content"
@@ -329,49 +328,6 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.5" />
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="0dp"
-        android:layout_height="93dp"
-        android:alpha="0.6"
-        android:background="#A27B5C"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
-        android:id="@+id/palaro_back"
-        android:layout_width="28dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="68dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/view"
-        app:layout_constraintEnd_toStartOf="@+id/textView18"
-        app:layout_constraintHorizontal_bias="0.227"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.87"
-        app:srcCompat="@drawable/back_button" />
-
-    <TextView
-        android:id="@+id/textView18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/special"
-        android:text="Palaro"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/view"
-        app:layout_constraintStart_toStartOf="@+id/view"
-        app:layout_constraintBottom_toBottomOf="@+id/view"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.5"
-        android:gravity="center"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
