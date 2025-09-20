@@ -60,7 +60,10 @@ public class Panitikan extends AppCompatActivity {
             finish();
         });
 
-        showDescriptionDialog();
+        if (isFirstTime()) {
+            showDescriptionDialog();
+            setFirstTimeShown();
+        }
 
         ImageView helpBtn = findViewById(R.id.imageView14);
         helpBtn.setOnClickListener(v -> showDescriptionDialog());
@@ -82,6 +85,18 @@ public class Panitikan extends AppCompatActivity {
         });
 
         descriptionDialog.show();
+    }
+
+    private boolean isFirstTime() {
+        return getSharedPreferences("PanitikanPrefs", MODE_PRIVATE)
+                .getBoolean("isFirstTime", true);
+    }
+
+    private void setFirstTimeShown() {
+        getSharedPreferences("PanitikanPrefs", MODE_PRIVATE)
+                .edit()
+                .putBoolean("isFirstTime", false)
+                .apply();
     }
 
     private void initViews() {
