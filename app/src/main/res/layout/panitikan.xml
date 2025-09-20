@@ -23,13 +23,21 @@
         android:id="@+id/panitikan_back"
         android:layout_width="28dp"
         android:layout_height="25dp"
-        app:layout_constraintBottom_toBottomOf="@+id/title"
-        app:layout_constraintEnd_toStartOf="@+id/title"
-        app:layout_constraintHorizontal_bias="0.456"
+        android:layout_marginStart="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/view1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/title"
-        app:layout_constraintVertical_bias="0.555"
+        app:layout_constraintTop_toTopOf="@+id/view1"
         app:srcCompat="@drawable/back_button" />
+
+    <ImageView
+        android:id="@+id/imageView14"
+        android:layout_width="33dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/view1"
+        app:layout_constraintEnd_toEndOf="@+id/view1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/white_question_mark" />
 
     <ScrollView
         android:layout_width="0dp"
