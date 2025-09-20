@@ -122,38 +122,17 @@ public class EpikoKwento2Quiz extends AppCompatActivity {
                     }
 
                     if (allCompleted) {
+                        // Mark only the category as completed
                         db.collection("module_progress").document(uid)
                                 .set(Map.of("module_3",
                                         Map.of("categories",
                                                 Map.of(categoryName, Map.of("status", "completed"))
-                                        )), SetOptions.merge())
-                                .addOnSuccessListener(unused -> checkIfModuleCompleted());
+                                        )), SetOptions.merge());
+
+                        // Huwag nang tawagin yung checkIfModuleCompleted()
                     }
                 });
     }
 
-    private void checkIfModuleCompleted() {
-        db.collection("module_progress").document(uid).get()
-                .addOnSuccessListener(snapshot -> {
-                    Map<String, Object> categories =
-                            (Map<String, Object>) snapshot.get("module_3.categories");
-                    if (categories == null) return;
 
-                    boolean allCompleted = true;
-                    for (Object catObj : categories.values()) {
-                        if (catObj instanceof Map) {
-                            Map<String, Object> catData = (Map<String, Object>) catObj;
-                            if (!"completed".equals(catData.get("status"))) {
-                                allCompleted = false;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (allCompleted) {
-                        db.collection("module_progress").document(uid)
-                                .set(Map.of("module_3", Map.of("status", "completed")), SetOptions.merge());
-                    }
-                });
-    }
 }

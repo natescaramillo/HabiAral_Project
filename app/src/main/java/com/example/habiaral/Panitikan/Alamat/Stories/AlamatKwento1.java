@@ -1,11 +1,15 @@
 package com.example.habiaral.Panitikan.Alamat.Stories;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.view.MotionEvent;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,12 +17,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.habiaral.Panitikan.Alamat.Alamat;
 import com.example.habiaral.Panitikan.Alamat.Quiz.AlamatKwento1Quiz;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.SoundManagerUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class AlamatKwento1 extends AppCompatActivity {
@@ -37,12 +44,21 @@ public class AlamatKwento1 extends AppCompatActivity {
     private static final String STORY_TITLE = "Alamat ng Rosas";
 
     private boolean isLessonDone = false;
+    private boolean introFinished = false; // ✅ bago makapag-next sa cover
     private ImageView storyImage;
     private Button unlockButton;
     private int currentPage = 0;
 
     private FirebaseFirestore db;
     private String uid;
+
+    // ✅ TTS
+    private TextToSpeech textToSpeech;
+    private List<String> introLines;
+    private int currentIntroIndex = 0;
+
+    private List<String> pageLines;
+    private int currentLineIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +77,10 @@ public class AlamatKwento1 extends AppCompatActivity {
 
         storyImage.setImageResource(comicPages[currentPage]);
 
+        // ✅ setup TTS
+        initTTS();
+
+        // ✅ click page
         storyImage.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 float x = event.getX();
@@ -89,7 +109,104 @@ public class AlamatKwento1 extends AppCompatActivity {
         loadCurrentProgress();
     }
 
+    private void initTTS() {
+        textToSpeech = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                Locale filLocale = new Locale.Builder().setLanguage("fil").setRegion("PH").build();
+                int result = textToSpeech.setLanguage(filLocale);
+
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Toast.makeText(this,
+                            "Kailangan i-download ang Filipino voice sa Text-to-Speech settings.",
+                            Toast.LENGTH_LONG).show();
+                    try {
+                        Intent installIntent = new Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                        startActivity(installIntent);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(this,
+                                "Hindi ma-open ang installer ng TTS.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    // piliin FIL voice kung available
+                    Voice selected = null;
+                    for (Voice v : textToSpeech.getVoices()) {
+                        Locale vLocale = v.getLocale();
+                        if (vLocale != null && vLocale.getLanguage().equals("fil")) {
+                            selected = v;
+                            break;
+                        } else if (v.getName().toLowerCase().contains("fil")) {
+                            selected = v;
+                            break;
+                        }
+                    }
+                    if (selected != null) {
+                        textToSpeech.setVoice(selected);
+                    }
+
+                    textToSpeech.setSpeechRate(1.0f);
+                    SoundManagerUtils.setTts(textToSpeech);
+
+                    // ✅ load intro mula Firestore (LCL15)
+                    loadIntroLines();
+                }
+            } else {
+                Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void loadIntroLines() {
+        if (introFinished) return; // ✅ skip agad kung tapos na dati
+
+        db.collection("lesson_character_lines").document("LCL15").get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        introLines = (List<String>) snapshot.get("intro");
+                        if (introLines != null && !introLines.isEmpty()) {
+                            currentIntroIndex = 0;
+                            speakIntro();
+                        }
+                    }
+                });
+    }
+
+
+    private void speakIntro() {
+        if (introLines != null && currentIntroIndex < introLines.size()) {
+            String line = introLines.get(currentIntroIndex);
+            textToSpeech.speak(line, TextToSpeech.QUEUE_FLUSH, null, "INTRO_" + currentIntroIndex);
+
+            // ✅ pag natapos isang line → sunod agad
+            textToSpeech.setOnUtteranceProgressListener(new android.speech.tts.UtteranceProgressListener() {
+                @Override
+                public void onStart(String utteranceId) {}
+                @Override
+                public void onError(String utteranceId) {}
+                @Override
+                public void onDone(String utteranceId) {
+                    runOnUiThread(() -> {
+                        currentIntroIndex++;
+                        if (currentIntroIndex < introLines.size()) {
+                            speakIntro();
+                        } else {
+                            // ✅ tapos na intro, allow next page
+                            introFinished = true;
+                        }
+                    });
+                }
+            });
+        } else {
+            introFinished = true;
+        }
+    }
+
     private void nextPage() {
+        if (currentPage == 0 && !introFinished) {
+            Toast.makeText(this, "Hintayin munang matapos ang intro.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (currentPage < comicPages.length - 1) {
             currentPage++;
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
@@ -98,10 +215,59 @@ public class AlamatKwento1 extends AppCompatActivity {
 
             updateCheckpoint(currentPage);
 
+                loadPageLines(currentPage);
+
+
             if (currentPage == comicPages.length - 1) {
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
             }
+        }
+    }
+
+    private void loadPageLines(int page) {
+        db.collection("lesson_character_lines").document("LCL15").get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        List<Map<String, Object>> pages = (List<Map<String, Object>>) snapshot.get("pages");
+                        if (pages != null) {
+                            for (Map<String, Object> p : pages) {
+                                Object pageNumObj = p.get("page");
+                                if (pageNumObj instanceof Number && ((Number) pageNumObj).intValue() == page) {
+                                    pageLines = (List<String>) p.get("line");
+                                    if (pageLines != null && !pageLines.isEmpty()) {
+                                        currentLineIndex = 0;
+                                        speakPageLine();
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
+
+    private void speakPageLine() {
+        if (pageLines != null && currentLineIndex < pageLines.size()) {
+            String line = pageLines.get(currentLineIndex);
+            textToSpeech.speak(line, TextToSpeech.QUEUE_FLUSH, null, "PAGE_" + currentLineIndex);
+
+            textToSpeech.setOnUtteranceProgressListener(new android.speech.tts.UtteranceProgressListener() {
+                @Override
+                public void onStart(String utteranceId) {}
+                @Override
+                public void onError(String utteranceId) {}
+                @Override
+                public void onDone(String utteranceId) {
+                    runOnUiThread(() -> {
+                        currentLineIndex++;
+                        if (currentLineIndex < pageLines.size()) {
+                            speakPageLine();
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -113,6 +279,8 @@ public class AlamatKwento1 extends AppCompatActivity {
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
 
             updateCheckpoint(currentPage);
+            loadPageLines(currentPage);
+
         }
     }
 
@@ -141,8 +309,15 @@ public class AlamatKwento1 extends AppCompatActivity {
                     Object checkpointObj = story.get("checkpoint");
                     Object statusObj = story.get("status");
 
-                    if (checkpointObj instanceof Number) currentPage = ((Number) checkpointObj).intValue();
+                    if (checkpointObj instanceof Number) {
+                        currentPage = ((Number) checkpointObj).intValue();
+                    }
                     storyImage.setImageResource(comicPages[currentPage]);
+
+                    // ✅ kung hindi nasa cover page o completed na, huwag nang ulitin ang intro
+                    if (currentPage > 0 || "completed".equals(statusObj)) {
+                        introFinished = true;
+                    }
 
                     if ("completed".equals(statusObj)) {
                         isLessonDone = true;
@@ -151,6 +326,7 @@ public class AlamatKwento1 extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void updateCheckpoint(int checkpoint) {
         if (uid == null) return;
@@ -203,4 +379,12 @@ public class AlamatKwento1 extends AppCompatActivity {
                 });
     }
 
+    @Override
+    protected void onDestroy() {
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
+        super.onDestroy();
+    }
 }
