@@ -31,7 +31,7 @@ public class MaiklingKuwento3Quiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.panitikan_kwento1_quiz);
+        setContentView(R.layout.panitikan_alamat_kwento1_quiz);
 
         db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

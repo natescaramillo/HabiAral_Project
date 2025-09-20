@@ -31,7 +31,7 @@ public class PabulaKwento2Quiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.panitikan_kwento2_quiz);
+        setContentView(R.layout.panitikan_alamat_kwento2_quiz);
 
         db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

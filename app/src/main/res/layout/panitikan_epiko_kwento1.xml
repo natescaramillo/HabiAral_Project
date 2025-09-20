@@ -8,13 +8,13 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/imageViewComic4"
+        android:id="@+id/imageViewComic3"
         android:layout_width="334dp"
         android:layout_height="517dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/sulayman_01"
-        app:layout_constraintBottom_toTopOf="@+id/UnlockButtonKwento4"
+        android:src="@drawable/juan_01"
+        app:layout_constraintBottom_toTopOf="@+id/UnlockButtonEpikoKwento1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
         app:layout_constraintVertical_bias="0.342" />
 
     <Button
-        android:id="@+id/UnlockButtonKwento4"
+        android:id="@+id/UnlockButtonEpikoKwento1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_button_achievement"
