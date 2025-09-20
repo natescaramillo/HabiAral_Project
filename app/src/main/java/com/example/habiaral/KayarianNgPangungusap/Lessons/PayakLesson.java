@@ -51,11 +51,9 @@ public class PayakLesson extends AppCompatActivity {
         descriptionTextView = findViewById(R.id.description_text_payak);
         exampleTextView = findViewById(R.id.example_Text_payak);
 
-        // Initially hide TextViews
         descriptionTextView.setVisibility(View.GONE);
         exampleTextView.setVisibility(View.GONE);
 
-        // MARK LESSON AS IN_PROGRESS on open
         markLessonInProgress();
 
         Button quizButton = findViewById(R.id.UnlockButtonPayak);
@@ -157,9 +155,7 @@ public class PayakLesson extends AppCompatActivity {
                         List<String> descriptionLines = (List<String>) document.get("description_line");
                         List<String> exampleLines = (List<String>) document.get("example_line");
 
-                        // Step 1: Speak intro lines only (no TextView)
                         speakIntroLines(introLines, () -> {
-                            // Step 2: Speak remaining lines with pop-up
                             List<LineItem> remainingLines = new ArrayList<>();
                             if (descriptionLines != null)
                                 for (String s : descriptionLines) remainingLines.add(new LineItem(s, descriptionTextView));
@@ -222,7 +218,6 @@ public class PayakLesson extends AppCompatActivity {
     }
 
     private void animatePopUp(TextView textView, String text) {
-        // Append new text while keeping previous lines
         String existingText = textView.getText().toString();
         if (!existingText.isEmpty()) existingText += "\n\n";
         textView.setText(existingText + text);
