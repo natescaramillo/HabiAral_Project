@@ -31,29 +31,14 @@ import java.util.Map;
 public class EpikoKwento1 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.sulayman_01,
-            R.drawable.sulayman_02,
-            R.drawable.sulayman_03,
-            R.drawable.sulayman_04,
-            R.drawable.sulayman_05,
-            R.drawable.sulayman_06,
-            R.drawable.sulayman_07,
-            R.drawable.sulayman_08,
-            R.drawable.sulayman_09,
-            R.drawable.sulayman_10,
-            R.drawable.sulayman_11,
-            R.drawable.sulayman_12,
-            R.drawable.sulayman_13,
-            R.drawable.sulayman_14,
-            R.drawable.sulayman_15,
-            R.drawable.sulayman_16,
-            R.drawable.sulayman_17,
-            R.drawable.sulayman_18,
-            R.drawable.sulayman_19,
-            R.drawable.sulayman_20,
-            R.drawable.sulayman_21,
-            R.drawable.sulayman_22,
-            R.drawable.sulayman_23
+            R.drawable.sulayman_01, R.drawable.sulayman_02, R.drawable.sulayman_03,
+            R.drawable.sulayman_04, R.drawable.sulayman_05, R.drawable.sulayman_06,
+            R.drawable.sulayman_07, R.drawable.sulayman_08, R.drawable.sulayman_09,
+            R.drawable.sulayman_10, R.drawable.sulayman_11, R.drawable.sulayman_12,
+            R.drawable.sulayman_13, R.drawable.sulayman_14, R.drawable.sulayman_15,
+            R.drawable.sulayman_16, R.drawable.sulayman_17, R.drawable.sulayman_18,
+            R.drawable.sulayman_19, R.drawable.sulayman_20, R.drawable.sulayman_21,
+            R.drawable.sulayman_22, R.drawable.sulayman_23
     };
 
     private static final String STORY_ID = "EpikoKwento1";

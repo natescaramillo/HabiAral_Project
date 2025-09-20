@@ -108,12 +108,25 @@ public class Panitikan extends AppCompatActivity {
     private void markModuleInProgress() {
         if (uid == null) return;
 
-        Map<String, Object> moduleUpdate = new HashMap<>();
-        moduleUpdate.put("modulename", "Panitikan");
-        moduleUpdate.put("status", "in_progress");
+        db.collection("module_progress").document(uid).get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        Map<String, Object> module3 = (Map<String, Object>) snapshot.get("module_3");
+                        if (module3 != null) {
+                            String status = (String) module3.get("status");
+                            if ("completed".equals(status)) {
+                                return;
+                            }
+                        }
+                    }
 
-        db.collection("module_progress").document(uid)
-                .set(Map.of("module_3", moduleUpdate), SetOptions.merge());
+                    Map<String, Object> moduleUpdate = new HashMap<>();
+                    moduleUpdate.put("modulename", "Panitikan");
+                    moduleUpdate.put("status", "in_progress");
+
+                    db.collection("module_progress").document(uid)
+                            .set(Map.of("module_3", moduleUpdate), SetOptions.merge());
+                });
     }
 
     private void markCategoryInProgress(String categoryName) {

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.habiaral.Panitikan.Epiko.Epiko;
 import com.example.habiaral.Panitikan.Epiko.Stories.EpikoKwento2;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.AchievementM3Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -139,20 +140,31 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
                             (Map<String, Object>) snapshot.get("module_3.categories");
                     if (categories == null) return;
 
+                    String[] requiredCategories = {"Alamat", "Epiko", "Maikling Kuwento", "Pabula", "Parabula"};
+
                     boolean allCompleted = true;
-                    for (Object catObj : categories.values()) {
-                        if (catObj instanceof Map) {
-                            Map<String, Object> catData = (Map<String, Object>) catObj;
-                            if (!"completed".equals(catData.get("status"))) {
-                                allCompleted = false;
-                                break;
-                            }
+                    for (String categoryKey : requiredCategories) {
+                        Object catObj = categories.get(categoryKey);
+                        if (!(catObj instanceof Map)) {
+                            allCompleted = false;
+                            break;
+                        }
+                        Map<String, Object> catData = (Map<String, Object>) catObj;
+                        if (!"completed".equals(catData.get("status"))) {
+                            allCompleted = false;
+                            break;
                         }
                     }
 
                     if (allCompleted) {
                         db.collection("module_progress").document(uid)
-                                .set(Map.of("module_3", Map.of("status", "completed")), SetOptions.merge());
+                                .set(Map.of("module_3", Map.of(
+                                        "status", "completed",
+                                        "modulename", "Panitikan"
+                                )), SetOptions.merge())
+                                .addOnSuccessListener(unused -> {
+                                    AchievementM3Utils.checkAndUnlockAchievement(this, db, uid);
+                                });
                     }
                 });
     }
