@@ -8,7 +8,7 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/imageViewComic4"
+        android:id="@+id/imageViewComic"
         android:layout_width="334dp"
         android:layout_height="517dp"
         android:adjustViewBounds="true"

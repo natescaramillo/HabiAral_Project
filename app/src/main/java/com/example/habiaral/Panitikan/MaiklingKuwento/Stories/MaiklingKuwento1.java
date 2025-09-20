@@ -47,10 +47,10 @@ public class MaiklingKuwento1 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.panitikan_alamat_kwento1);
+        setContentView(R.layout.panitikan_maikling_kwento_kwento1);
 
-        storyImage = findViewById(R.id.imageViewComic);
-        unlockButton = findViewById(R.id.UnlockButtonKwento1);
+        storyImage = findViewById(R.id.imageViewComic4);
+        unlockButton = findViewById(R.id.UnlockButton);
 
         db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

@@ -52,8 +52,8 @@ public class AlamatKwento2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.panitikan_alamat_kwento2);
 
-        storyImage = findViewById(R.id.imageViewComic2);
-        unlockButton = findViewById(R.id.UnlockButtonKwento2);
+        storyImage = findViewById(R.id.imageViewComic);
+        unlockButton = findViewById(R.id.UnlockButton);
 
         db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
