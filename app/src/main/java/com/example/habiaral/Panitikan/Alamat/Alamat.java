@@ -84,12 +84,12 @@ public class Alamat extends AppCompatActivity {
     }
 
     private boolean isFirstTime() {
-        return getSharedPreferences("PanitikanPrefs", MODE_PRIVATE)
+        return getSharedPreferences("AlamatPrefs", MODE_PRIVATE)
                 .getBoolean("isFirstTime", true);
     }
 
     private void setFirstTimeShown() {
-        getSharedPreferences("PanitikanPrefs", MODE_PRIVATE)
+        getSharedPreferences("AlamatPrefs", MODE_PRIVATE)
                 .edit()
                 .putBoolean("isFirstTime", false)
                 .apply();

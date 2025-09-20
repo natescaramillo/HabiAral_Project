@@ -84,12 +84,12 @@ public class Parabula extends AppCompatActivity {
     }
 
     private boolean isFirstTime() {
-        return getSharedPreferences("PanitikanPrefs", MODE_PRIVATE)
+        return getSharedPreferences("ParabulaPrefs", MODE_PRIVATE)
                 .getBoolean("isFirstTime", true);
     }
 
     private void setFirstTimeShown() {
-        getSharedPreferences("PanitikanPrefs", MODE_PRIVATE)
+        getSharedPreferences("ParabulaPrefs", MODE_PRIVATE)
                 .edit()
                 .putBoolean("isFirstTime", false)
                 .apply();

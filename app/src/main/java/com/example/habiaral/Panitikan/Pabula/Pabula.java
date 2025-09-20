@@ -84,12 +84,12 @@ public class Pabula extends AppCompatActivity {
     }
 
     private boolean isFirstTime() {
-        return getSharedPreferences("PanitikanPrefs", MODE_PRIVATE)
+        return getSharedPreferences("PabulaPrefs", MODE_PRIVATE)
                 .getBoolean("isFirstTime", true);
     }
 
     private void setFirstTimeShown() {
-        getSharedPreferences("PanitikanPrefs", MODE_PRIVATE)
+        getSharedPreferences("PabulaPrefs", MODE_PRIVATE)
                 .edit()
                 .putBoolean("isFirstTime", false)
                 .apply();

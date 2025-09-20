@@ -85,12 +85,12 @@ public class MaiklingKuwento extends AppCompatActivity {
     }
 
     private boolean isFirstTime() {
-        return getSharedPreferences("PanitikanPrefs", MODE_PRIVATE)
+        return getSharedPreferences("MaiklingKuwentoPrefs", MODE_PRIVATE)
                 .getBoolean("isFirstTime", true);
     }
 
     private void setFirstTimeShown() {
-        getSharedPreferences("PanitikanPrefs", MODE_PRIVATE)
+        getSharedPreferences("MaiklingKuwentoPrefs", MODE_PRIVATE)
                 .edit()
                 .putBoolean("isFirstTime", false)
                 .apply();

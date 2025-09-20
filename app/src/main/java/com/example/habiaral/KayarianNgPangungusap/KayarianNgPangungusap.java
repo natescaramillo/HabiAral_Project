@@ -108,12 +108,12 @@ public class KayarianNgPangungusap extends AppCompatActivity {
     }
 
     private boolean isFirstTime() {
-        return getSharedPreferences("PanitikanPrefs", MODE_PRIVATE)
+        return getSharedPreferences("KayarianPrefs", MODE_PRIVATE)
                 .getBoolean("isFirstTime", true);
     }
 
     private void setFirstTimeShown() {
-        getSharedPreferences("PanitikanPrefs", MODE_PRIVATE)
+        getSharedPreferences("KayarianPrefs", MODE_PRIVATE)
                 .edit()
                 .putBoolean("isFirstTime", false)
                 .apply();
