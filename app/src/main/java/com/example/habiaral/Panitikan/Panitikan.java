@@ -14,6 +14,8 @@ import com.example.habiaral.Panitikan.MaiklingKuwento.MaiklingKuwento;
 import com.example.habiaral.Panitikan.Pabula.Pabula;
 import com.example.habiaral.Panitikan.Parabula.Parabula;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.AchievementDialogUtils;
+import com.example.habiaral.Utils.AchievementM3Utils;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -76,6 +78,8 @@ public class Panitikan extends AppCompatActivity {
             SoundClickUtils.playClickSound(Panitikan.this, R.raw.button_click);
 
             markCategoryInProgress(categoryName);
+
+            AchievementM3Utils.checkAndUnlockAchievement(this, db, uid);
 
             startActivity(new Intent(Panitikan.this, cls));
 
@@ -142,6 +146,9 @@ public class Panitikan extends AppCompatActivity {
                                 Map.of(categoryName, categoryUpdate)
                         )), SetOptions.merge());
     }
+
+
+
 
     private void updateUIFromProgress(Map<String, Object> progressData) {}
 
