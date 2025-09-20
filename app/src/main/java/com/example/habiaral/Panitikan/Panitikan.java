@@ -1,7 +1,9 @@
 package com.example.habiaral.Panitikan;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -57,6 +59,29 @@ public class Panitikan extends AppCompatActivity {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             finish();
         });
+
+        showDescriptionDialog();
+
+        ImageView helpBtn = findViewById(R.id.imageView14);
+        helpBtn.setOnClickListener(v -> showDescriptionDialog());
+    }
+
+    private void showDescriptionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_description, null);
+        builder.setView(dialogView);
+
+        AlertDialog descriptionDialog = builder.create();
+        descriptionDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
+
+        closeBtn.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            descriptionDialog.dismiss();
+        });
+
+        descriptionDialog.show();
     }
 
     private void initViews() {
