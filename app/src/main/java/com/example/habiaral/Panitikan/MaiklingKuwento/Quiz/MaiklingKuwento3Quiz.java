@@ -37,7 +37,7 @@ public class MaiklingKuwento3Quiz extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) uid = user.getUid();
 
-        nextButton = findViewById(R.id.nextButton);
+        nextButton = findViewById(R.id.kwento1NextButton);
         nextButton.setOnClickListener(view -> {
             markStoryCompleted();
             showResultDialog();
