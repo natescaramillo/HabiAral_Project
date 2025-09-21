@@ -28,6 +28,8 @@ import java.util.Locale;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.FinishDialogUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
@@ -98,6 +100,9 @@ public class PalaroBaguhan extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.palaro_baguhan);
+
+        ImageView imageView = findViewById(R.id.characterIcon);
+        Glide.with(this).asGif().load(R.drawable.idle).into(imageView);
 
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
@@ -174,6 +179,20 @@ public class PalaroBaguhan extends AppCompatActivity {
                                     correctStreak++;
                                     handleCorrectStreak(correctStreak);
 
+                                    Glide.with(this)
+                                            .asGif()
+                                            .load(R.drawable.right_1)
+                                            .transition(DrawableTransitionOptions.withCrossFade(300))
+                                            .into(imageView);
+
+                                    new Handler().postDelayed(() -> {
+                                        Glide.with(this)
+                                                .asGif()
+                                                .load(R.drawable.idle)
+                                                .transition(DrawableTransitionOptions.withCrossFade(300))
+                                                .into(imageView);
+                                    }, 3000);
+
                                     MediaPlayer correctSound = MediaPlayer.create(this, R.raw.correct);
                                     correctSound.setOnCompletionListener(MediaPlayer::release);
                                     correctSound.start();
@@ -190,6 +209,12 @@ public class PalaroBaguhan extends AppCompatActivity {
                                     MediaPlayer wrongSound = MediaPlayer.create(this, R.raw.wrong);
                                     wrongSound.setOnCompletionListener(MediaPlayer::release);
                                     wrongSound.start();
+
+                                    Glide.with(this).asGif().load(R.drawable.wrong).into(imageView);
+
+                                    new Handler().postDelayed(() -> {
+                                        Glide.with(this).asGif().load(R.drawable.idle).transition(DrawableTransitionOptions.withCrossFade(300)).into(imageView);
+                                    }, 2300);
 
                                     loadCharacterLine(remainingHearts > 0 ? LINE_WRONG : LINE_WRONG_2);
                                     Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
@@ -580,12 +605,9 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                 currentQuestionNumber = 0;
 
-                if (beepPlayer == null) {
-                    beepPlayer = MediaPlayer.create(this, R.raw.start_3tones);
-                }
-
                 final Handler countdownHandler = new Handler();
                 final int[] countdown = {3};
+                final MediaPlayer[] beepPlayer = {null};
 
                 countdownHandler.post(new Runnable() {
                     @Override
@@ -595,14 +617,23 @@ public class PalaroBaguhan extends AppCompatActivity {
                         if (countdown[0] > 0) {
                             baguhanQuestion.setText(String.valueOf(countdown[0]));
 
-                            if (beepPlayer != null) {
-                                beepPlayer.start();
+                            // Play beep sound
+                            if (beepPlayer[0] != null) {
+                                beepPlayer[0].release();
                             }
+                            beepPlayer[0] = MediaPlayer.create(PalaroBaguhan.this, R.raw.beep);
+                            beepPlayer[0].setOnCompletionListener(mp -> mp.release());
+                            beepPlayer[0].start();
 
                             countdown[0]--;
                             countdownHandler.postDelayed(this, 1000);
                         } else {
                             baguhanQuestion.setText("");
+                            // Release beep player if still exists
+                            if (beepPlayer[0] != null) {
+                                beepPlayer[0].release();
+                                beepPlayer[0] = null;
+                            }
                             loadBaguhanQuestion();
                             startTimer(timeLeft);
                         }

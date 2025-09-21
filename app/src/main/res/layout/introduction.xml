@@ -6,28 +6,50 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background">
 
+    <Button
+        android:id="@+id/patuloy"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="65dp"
+        android:layout_marginEnd="66dp"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/rounded_button_white"
+        android:backgroundTint="#E4C49C"
+        android:fontFamily="@font/special"
+        android:text="Patuloy"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ImageView
         android:id="@+id/imageView6"
-        android:layout_width="273dp"
-        android:layout_height="334dp"
+        android:layout_width="550dp"
+        android:layout_height="450dp"
+        android:adjustViewBounds="false"
+        android:cropToPadding="false"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.297"
-        app:srcCompat="@drawable/tarsier_2d" />
+        app:srcCompat="@drawable/hello" />
 
     <EditText
         android:id="@+id/nickname"
-        android:layout_width="242dp"
-        android:layout_height="46dp"
+        android:layout_width="280dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/rounded_edittext_background"
+        android:elevation="4dp"
         android:ems="10"
+        android:hint="Enter your nickname"
         android:inputType="text"
-        android:hint="Nickname"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="16dp"
+        android:textColorHint="#80000000"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/patuloy"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.813" />
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

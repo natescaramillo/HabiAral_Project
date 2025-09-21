@@ -3,7 +3,6 @@ package com.example.habiaral.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -219,7 +218,7 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void goToIntroduction() {
-        Intent intent = new Intent(this, Introduction.class);
+        Intent intent = new Intent(this, IntroductionActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

@@ -32,8 +32,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.habiaral.GrammarChecker.GrammarChecker;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -63,6 +66,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private EditText userSentenceInput;
     private ProgressBar timerBar;
     private Button btnTapos;
+    private Button btnSuriin;
     private CountDownTimer countDownTimer;
     private static final long TOTAL_TIME = 60000;
     private long timeLeft = TOTAL_TIME;
@@ -90,6 +94,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private MediaPlayer orangeTimerSoundPlayer;
     private MediaPlayer redTimerSoundPlayer;
     private String lastTimerZone = "";
+    private ImageView characterIcon;
+    private Handler internetHandler = new Handler();
+    private Runnable internetRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,18 +120,13 @@ public class PalaroDalubhasa extends AppCompatActivity {
         userSentenceInput = findViewById(R.id.dalubhasa_answer);
         timerBar = findViewById(R.id.timerBar);
         btnTapos = findViewById(R.id.UnlockButtonPalaro);
+        btnSuriin = findViewById(R.id.btnSuriin);
         Button btnUmalis = findViewById(R.id.UnlockButtonPalaro1);
         errorIcon = findViewById(R.id.error_icon);
         errorTooltip = findViewById(R.id.errorTooltip);
+        characterIcon = findViewById(R.id.characterIcon);
 
-        Button btnSuriin = findViewById(R.id.SuriinButton);
-        btnSuriin.setVisibility(View.VISIBLE);
-        btnTapos.setVisibility(View.GONE);
-
-        btnSuriin.setOnClickListener(v -> {
-            playButtonClickSound();
-            checkGrammar();
-        });
+        Glide.with(this).asGif().load(R.drawable.idle).into(characterIcon);
 
         btnUmalis.setOnClickListener(v -> {
             playButtonClickSound();
@@ -142,15 +144,12 @@ public class PalaroDalubhasa extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         userSentenceInput.setEnabled(false);
-        btnTapos.setEnabled(false);
+        btnTapos.setVisibility(View.GONE);
 
         btnTapos.setOnClickListener(v -> {
             if (hasSubmitted) {
 
                 nextQuestion();
-                btnTapos.setVisibility(View.GONE);
-                findViewById(R.id.SuriinButton).setVisibility(View.VISIBLE);
-                userSentenceInput.setEnabled(true);
                 userSentenceInput.setEnabled(true);
                 userSentenceInput.setText("");
                 btnTapos.setEnabled(true);
@@ -163,6 +162,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
             } else {
                 showErrorTooltip("Pakipindot ang Enter para i-check ang grammar muna.");
             }
+        });
+
+        btnSuriin.setOnClickListener(v -> {
+            playButtonClickSound();
+            checkGrammar();
         });
 
         userSentenceInput.setOnEditorActionListener((v, actionId, event) -> {
@@ -181,15 +185,43 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 showBackConfirmationDialog();
             }
         });
+
     }
 
     private void checkGrammar() {
         String sentence = userSentenceInput.getText().toString().trim();
         if (sentence.isEmpty()) {
             showErrorTooltip("Pakisulat ang iyong pangungusap.");
+            Glide.with(this)
+                    .asGif()
+                    .load(R.drawable.wrong)
+                    .transition(DrawableTransitionOptions.withCrossFade(300))
+                    .into(characterIcon);
+            new Handler().postDelayed(() -> {
+                Glide.with(this)
+                        .asGif()
+                        .load(R.drawable.idle)
+                        .transition(DrawableTransitionOptions.withCrossFade(300))
+                        .into(characterIcon);
+            }, 2300);
+
             return;
         } else if (!sentence.endsWith(".")) {
             showErrorTooltip("Siguraduhing nagtatapos ang pangungusap sa tuldok (.)");
+
+            Glide.with(this)
+                    .asGif()
+                    .load(R.drawable.wrong)
+                    .transition(DrawableTransitionOptions.withCrossFade(300))
+                    .into(characterIcon);
+            new Handler().postDelayed(() -> {
+                Glide.with(this)
+                        .asGif()
+                        .load(R.drawable.idle)
+                        .transition(DrawableTransitionOptions.withCrossFade(300))
+                        .into(characterIcon);
+            }, 2300);
+
             return;
         }
 
@@ -207,6 +239,20 @@ public class PalaroDalubhasa extends AppCompatActivity {
             errorTooltip.setText(details);
             speakLine("Wala ka ng kinakailangang bahagi sa iyong sagot. Pakibasa muli ang mga panuto.");
             loadCharacterLine(currentDalubhasaID);
+
+            Glide.with(this)
+                    .asGif()
+                    .load(R.drawable.wrong)
+                    .transition(DrawableTransitionOptions.withCrossFade(300))
+                    .into(characterIcon);
+            new Handler().postDelayed(() -> {
+                Glide.with(this)
+                        .asGif()
+                        .load(R.drawable.idle)
+                        .transition(DrawableTransitionOptions.withCrossFade(300))
+                        .into(characterIcon);
+            }, 2300);
+
             return;
         }
 
@@ -214,19 +260,58 @@ public class PalaroDalubhasa extends AppCompatActivity {
             @Override
             public void onResult(String response) {
                 runOnUiThread(() -> {
-                    highlightGrammarIssues(response, sentence);
-                    hasSubmitted = true;
-                    userSentenceInput.setEnabled(false);
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        JSONArray matches = jsonObject.getJSONArray("matches");
+                        currentErrorCount = matches.length();
+
+                        if (matches.length() > 0 && !hasSubmitted) {
+                            Toast.makeText(PalaroDalubhasa.this, "Mali ang grammar! Heart deducted.", Toast.LENGTH_SHORT).show();
+                            deductHeart();
+                        }
+
+                        highlightGrammarIssues(response, sentence);
+                        hasSubmitted = true;
+                        userSentenceInput.setEnabled(false);
+                        btnTapos.setVisibility(View.VISIBLE);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        grammarFeedbackText.setText("Invalid grammar response format.");
+                    }
                 });
             }
 
             @Override
             public void onError(String error) {
-                runOnUiThread(() ->
-                        Toast.makeText(PalaroDalubhasa.this, "Grammar Check Failed: " + error, Toast.LENGTH_SHORT).show()
-                );
+                runOnUiThread(() -> {
+                    Toast.makeText(PalaroDalubhasa.this, "Grammar Check Failed: " + error, Toast.LENGTH_SHORT).show();
+
+                    Glide.with(PalaroDalubhasa.this)
+                            .asGif()
+                            .load(R.drawable.wrong)
+                            .transition(DrawableTransitionOptions.withCrossFade(300))
+                            .into(characterIcon);
+                    new Handler().postDelayed(() -> {
+                        Glide.with(PalaroDalubhasa.this)
+                                .asGif()
+                                .load(R.drawable.idle)
+                                .transition(DrawableTransitionOptions.withCrossFade(300))
+                                .into(characterIcon);
+                    }, 2300);
+                });
             }
         });
+    }
+
+    // Add this helper to restart the timer and sound
+    private void restartTimer() {
+        // Stop any existing timer and sound
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        stopAllTimerSounds();
+        startTimer();
     }
 
     private void showErrorTooltip(String message) {
@@ -277,7 +362,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONArray matches = jsonObject.getJSONArray("matches");
-
             currentErrorCount = matches.length();
             int scoreForThisSentence;
 
@@ -286,20 +370,23 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 dalubhasaScore += scoreForThisSentence;
                 perfectAnswerCount++;
                 playCorrectSound();
+                Glide.with(this)
+                        .asGif()
+                        .load(R.drawable.right_1)
+                        .transition(DrawableTransitionOptions.withCrossFade(300))
+                        .into(characterIcon);
+                new Handler().postDelayed(() -> {
+                    Glide.with(this)
+                            .asGif()
+                            .load(R.drawable.idle)
+                            .transition(DrawableTransitionOptions.withCrossFade(300))
+                            .into(characterIcon);
+                }, 3000);
 
                 loadCharacterLine("MDCL2");
 
-                errorTooltip.setVisibility(View.GONE);
-                errorIcon.setVisibility(View.GONE);
-                errorTooltip.setText("");
-
-                findViewById(R.id.SuriinButton).setVisibility(View.GONE);
-                btnTapos.setVisibility(View.VISIBLE);
-
-                userSentenceInput.setEnabled(false);
-                hasSubmitted = true;
-            }
-            else {
+                new Handler().postDelayed(this::nextQuestion, 4000);
+            } else {
                 if (matches.length() == 1) {
                     scoreForThisSentence = 13;
                 } else {
@@ -309,6 +396,18 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 dalubhasaScore += scoreForThisSentence;
 
                 playWrongSound();
+                Glide.with(this)
+                        .asGif()
+                        .load(R.drawable.wrong)
+                        .transition(DrawableTransitionOptions.withCrossFade(300))
+                        .into(characterIcon);
+                new Handler().postDelayed(() -> {
+                    Glide.with(this)
+                            .asGif()
+                            .load(R.drawable.idle)
+                            .transition(DrawableTransitionOptions.withCrossFade(300))
+                            .into(characterIcon);
+                }, 2300);
 
                 if (scoreForThisSentence == 13 || scoreForThisSentence == 15) {
                     perfectAnswerCount++;
@@ -321,10 +420,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 }
 
                 loadCharacterLine("MDCL3");
-
-                if (matches.length() >= 2) {
-                    deductHeart();
-                }
 
                 new Handler().postDelayed(() -> {
                     try {
@@ -451,15 +546,12 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
             userSentenceInput.setText("");
             userSentenceInput.setEnabled(true);
-            btnTapos.setEnabled(true);
+            btnTapos.setVisibility(View.GONE);
             hasSubmitted = false;
             grammarFeedbackText.setText("");
             currentQuestionNumber++;
 
-            errorTooltip.setVisibility(View.GONE);
-            errorIcon.setVisibility(View.GONE);
-            errorTooltip.setText("");
-
+            // Only reset the timer here, not after every grammar check
             startTimer();
         } else {
             if (countDownTimer != null) countDownTimer.cancel();
@@ -469,7 +561,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadInstruction() {
-        MediaPlayer readyGoSound = MediaPlayer.create(this, R.raw.start_3tones);
+        // Use a short beep sound for each countdown tick
+        final MediaPlayer[] beepPlayer = {null};
 
         final Handler countdownHandler = new Handler();
         final int[] countdown = {3};
@@ -479,26 +572,39 @@ public class PalaroDalubhasa extends AppCompatActivity {
             public void run() {
                 if (countdown[0] > 0) {
                     dalubhasaInstruction.setText(String.valueOf(countdown[0]));
+
+                    // Play beep sound
+                    if (beepPlayer[0] != null) {
+                        beepPlayer[0].release();
+                    }
+                    beepPlayer[0] = MediaPlayer.create(PalaroDalubhasa.this, R.raw.beep);
+                    beepPlayer[0].setOnCompletionListener(mp -> mp.release());
+                    beepPlayer[0].start();
+
                     countdown[0]--;
                     countdownHandler.postDelayed(this, 1000);
                 } else {
                     dalubhasaInstruction.setText("");
+                    // Release beep player if still exists
+                    if (beepPlayer[0] != null) {
+                        beepPlayer[0].release();
+                        beepPlayer[0] = null;
+                    }
+                    loadAllDalubhasaInstructions();
+                    startTimer();
                 }
             }
         };
         countdownHandler.post(countdownRunnable);
-
-        readyGoSound.setOnCompletionListener(mp -> {
-            mp.release();
-            loadAllDalubhasaInstructions();
-            startTimer();
-        });
-
-        readyGoSound.start();
     }
 
     private void startTimer() {
+
+        timeLeft = TOTAL_TIME;
+        lastTimerZone = "";
+
         if (countDownTimer != null) countDownTimer.cancel();
+        stopAllTimerSounds();
 
         countDownTimer = new CountDownTimer(TOTAL_TIME, 100) {
             @Override
@@ -520,7 +626,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             public void onFinish() {
                 timerBar.setProgress(0);
                 userSentenceInput.setEnabled(false);
-                btnTapos.setEnabled(false);
+                btnTapos.setVisibility(View.GONE);
 
                 stopAllTimerSounds();
 
@@ -640,13 +746,15 @@ public class PalaroDalubhasa extends AppCompatActivity {
             heartPop.setOnCompletionListener(MediaPlayer::release);
             heartPop.start();
 
-            heartIcons[remainingHearts].setVisibility(View.INVISIBLE);
+            if (heartIcons != null && remainingHearts >= 0 && remainingHearts < heartIcons.length) {
+                heartIcons[remainingHearts].setVisibility(View.INVISIBLE);
+            }
 
             if (remainingHearts == 0) {
                 Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
                 if (countDownTimer != null) countDownTimer.cancel();
                 userSentenceInput.setEnabled(false);
-                btnTapos.setEnabled(false);
+                btnTapos.setVisibility(View.GONE);
 
                 loadCharacterLine("MCL5");
 
@@ -665,6 +773,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
         if (tts != null) {
             tts.stop();
             tts.shutdown();
+        }
+        // Stop periodic internet check
+        if (internetHandler != null && internetRunnable != null) {
+            internetHandler.removeCallbacks(internetRunnable);
         }
     }
 

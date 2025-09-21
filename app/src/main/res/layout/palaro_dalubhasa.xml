@@ -9,64 +9,44 @@
     tools:context=".Activity.PalaroDalubhasa">
 
 
-    <TextView
-        android:id="@+id/dalubhasa_instructionText"
-        android:layout_width="0dp"
-        android:layout_height="84dp"
-        android:layout_weight="1"
-        android:background="@drawable/rounded_rect"
-        android:backgroundTint="#FFEFEA"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline11"
-        app:layout_constraintEnd_toStartOf="@+id/guideline20"
-        app:layout_constraintHorizontal_bias="0.52"
-        app:layout_constraintStart_toStartOf="@+id/guideline15"
-        app:layout_constraintTop_toTopOf="@+id/guideline19"
-        app:layout_constraintVertical_bias="0.065" />
-
-
     <ImageView
         android:id="@+id/characterIcon"
-        android:layout_width="292dp"
-        android:layout_height="260dp"
-        android:src="@drawable/tarsier_3d"
-        app:layout_constraintBottom_toTopOf="@+id/guideline11"
-        app:layout_constraintEnd_toStartOf="@+id/guideline20"
-        app:layout_constraintHorizontal_bias="0.481"
-        app:layout_constraintStart_toStartOf="@+id/guideline15"
-        app:layout_constraintTop_toTopOf="@+id/guideline19"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_width="450dp"
+        android:layout_height="350dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/idle"
+        app:layout_constraintDimensionRatio="16:11"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dalubhasa_instructionText"
+        app:layout_constraintWidth_percent="0.85" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomBar"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline11"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_wrapBehaviorInParent="vertical_only">
 
 
         <LinearLayout
             android:id="@+id/heartsRow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/timerBar"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="@+id/guideline12"
-            app:layout_constraintTop_toTopOf="@id/bottomBar"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/heart01"
@@ -119,17 +99,16 @@
             android:id="@+id/dalubhasa_answer"
             android:layout_width="0dp"
             android:layout_height="128dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/rounded_rect"
             android:gravity="top|start"
             android:hint="Ilagay ang iyong sagot dito..."
             android:inputType="textMultiLine"
             android:padding="12dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/UnlockButtonPalaro"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline12"
-            app:layout_constraintTop_toTopOf="@+id/heartsRow"
-            app:layout_constraintVertical_bias="0.573" />
+            app:layout_constraintStart_toStartOf="@+id/guideline12" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline12"
@@ -149,22 +128,22 @@
             android:id="@+id/answerLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:fontFamily="@font/special"
             android:text="Sagot mo:"
             android:textColor="#000"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/dalubhasa_answer"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.029"
-            app:layout_constraintStart_toStartOf="@+id/guideline12"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.347" />
+            app:layout_constraintStart_toStartOf="@+id/guideline12" />
 
         <ProgressBar
             android:id="@+id/timerBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
             android:background="@null"
             android:backgroundTint="#E0E0E0"
             android:clipToOutline="true"
@@ -172,12 +151,10 @@
             android:max="100"
             android:progress="100"
             android:progressDrawable="@drawable/timer_color_green"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/answerLabel"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline12"
-            app:layout_constraintTop_toBottomOf="@+id/heartsRow"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintStart_toStartOf="@+id/guideline12" />
 
 
         <androidx.constraintlayout.widget.Guideline
@@ -191,45 +168,27 @@
             android:id="@+id/UnlockButtonPalaro1"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/rounded_button_achievement"
             android:fontFamily="@font/special"
             android:text="Umalis"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline12"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.949" />
-
-        <Button
-            android:id="@+id/SuriinButton"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_button_achievement"
-            android:fontFamily="@font/special"
-            android:text="Suriin"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline13"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline12"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.949" />
+            app:layout_constraintStart_toStartOf="@+id/guideline12" />
 
         <Button
             android:id="@+id/UnlockButtonPalaro"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/rounded_button_achievement"
             android:fontFamily="@font/special"
             android:text="Tapos"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline12"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.949" />
+            app:layout_constraintStart_toStartOf="@+id/guideline12" />
 
         <ImageView
             android:id="@+id/error_icon"
@@ -247,7 +206,7 @@
         <TextView
             android:id="@+id/errorTooltip"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="wrap_content "
             android:layout_marginBottom="5dp"
             android:background="@drawable/tooltip_bubble"
             android:padding="8dp"
@@ -261,7 +220,38 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
 
+        <Button
+            android:id="@+id/btnSuriin"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_button_achievement"
+            android:fontFamily="@font/special"
+            android:text="Suriin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline13"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline12" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/dalubhasa_instructionText"
+        android:layout_width="0dp"
+        android:layout_height="84dp"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_rect"
+        android:backgroundTint="#FFEFEA"
+        android:fontFamily="@font/special"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline20"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toStartOf="@+id/guideline15"
+        app:layout_constraintTop_toTopOf="@+id/guideline19" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline11"

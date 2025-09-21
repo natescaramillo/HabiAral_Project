@@ -133,15 +133,15 @@
     <!-- Character / mascot image -->
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="337dp"
-        android:layout_height="213dp"
-        android:src="@drawable/tarsier_3d"
+        android:layout_width="600dp"
+        android:layout_height="450dp"
+        android:scaleType="centerCrop"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.675" />
+        app:layout_constraintVertical_bias="0.673" />
 
     <!-- Guidelines -->
     <androidx.constraintlayout.widget.Guideline

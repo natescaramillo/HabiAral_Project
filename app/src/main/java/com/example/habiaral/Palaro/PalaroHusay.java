@@ -47,6 +47,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+
 public class PalaroHusay extends AppCompatActivity {
 
     private Button answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9;
@@ -79,6 +82,7 @@ public class PalaroHusay extends AppCompatActivity {
     private boolean playedOrange = false;
     private boolean playedRed = false;
     private String lastTimerZone = "";
+    private ImageView characterIcon;
 
 
     @Override
@@ -128,6 +132,9 @@ public class PalaroHusay extends AppCompatActivity {
                 new Handler().postDelayed(this::showCountdownThenLoadWords, 4000);
             }
         });
+
+        characterIcon = findViewById(R.id.characterIcon);
+        Glide.with(this).asGif().load(R.drawable.idle).into(characterIcon);
 
         setupAnswerSelection();
         setupBackConfirmation();
@@ -192,7 +199,6 @@ public class PalaroHusay extends AppCompatActivity {
                         if (documentSnapshot.exists()) {
                             String correctAnswer = documentSnapshot.getString("correctAnswer");
 
-
                             long endTime = System.currentTimeMillis();
                             long elapsedTimeInSeconds = (endTime - startTime) / 1000;
 
@@ -200,6 +206,18 @@ public class PalaroHusay extends AppCompatActivity {
                                 MediaPlayer correctSound = MediaPlayer.create(this, R.raw.correct);
                                 correctSound.setOnCompletionListener(MediaPlayer::release);
                                 correctSound.start();
+                                Glide.with(this)
+                                        .asGif()
+                                        .load(R.drawable.right_1)
+                                        .transition(DrawableTransitionOptions.withCrossFade(300))
+                                        .into(characterIcon);
+                                new Handler().postDelayed(() -> {
+                                    Glide.with(this)
+                                            .asGif()
+                                            .load(R.drawable.idle)
+                                            .transition(DrawableTransitionOptions.withCrossFade(300))
+                                            .into(characterIcon);
+                                }, 3000); // Use your correct GIF duration
 
                                 correctAnswerCount++;
                                 husayScore += 3;
@@ -225,6 +243,18 @@ public class PalaroHusay extends AppCompatActivity {
                                 MediaPlayer wrongSound = MediaPlayer.create(this, R.raw.wrong);
                                 wrongSound.setOnCompletionListener(MediaPlayer::release);
                                 wrongSound.start();
+                                Glide.with(this)
+                                        .asGif()
+                                        .load(R.drawable.wrong)
+                                        .transition(DrawableTransitionOptions.withCrossFade(300))
+                                        .into(characterIcon);
+                                new Handler().postDelayed(() -> {
+                                    Glide.with(this)
+                                            .asGif()
+                                            .load(R.drawable.idle)
+                                            .transition(DrawableTransitionOptions.withCrossFade(300))
+                                            .into(characterIcon);
+                                }, 2300);
 
                                 correctStreak = 0;
                                 deductHeart();
@@ -395,7 +425,7 @@ public class PalaroHusay extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadWords() {
-        MediaPlayer readyGoSound = MediaPlayer.create(this, R.raw.start_3tones);
+        MediaPlayer readyGoSound = MediaPlayer.create(this, R.raw.beep);
 
         final Handler countdownHandler = new Handler();
         final int[] countdown = {3};

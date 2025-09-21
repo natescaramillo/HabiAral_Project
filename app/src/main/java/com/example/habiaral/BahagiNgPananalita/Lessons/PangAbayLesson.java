@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangAbayQuiz;
 import com.example.habiaral.R;
@@ -53,10 +55,22 @@ public class PangAbayLesson extends AppCompatActivity {
     private int resumeLine = -1;
     private boolean isNavigatingInsideApp = false;
 
+    private Handler idleGifHandler = new Handler();
+    private Runnable idleGifRunnable;
+    private boolean isActivityActive = false;
+    private ImageView imageView2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bahagi_ng_pananalita_pangabay_lesson);
+
+        imageView2 = findViewById(R.id.imageView2);
+        if (!isFinishing() && !isDestroyed()) {
+            Glide.with(this).asGif().load(R.drawable.idle).into(imageView2);
+        }
+
+        startIdleGifRandomizer();
 
         unlockButton = findViewById(R.id.UnlockButtonPangabay);
         imageView = findViewById(R.id.imageViewPangabay);
@@ -317,7 +331,45 @@ public class PangAbayLesson extends AppCompatActivity {
         textHandler.removeCallbacksAndMessages(null);
     }
 
-    @Override protected void onDestroy() { stopTTS(); super.onDestroy(); }
+    private void startIdleGifRandomizer() {
+        isActivityActive = true;
+        idleGifRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (!isActivityActive || imageView2 == null || isFinishing() || isDestroyed()) return;
+                int delay = 2000;
+                if (Math.random() < 0.4) {
+                    if (!isFinishing() && !isDestroyed()) {
+                        Glide.with(PangAbayLesson.this).asGif().load(R.drawable.right_2).into(imageView2);
+                    }
+                    idleGifHandler.postDelayed(() -> {
+                        if (isActivityActive && imageView2 != null && !isFinishing() && !isDestroyed()) {
+                            Glide.with(PangAbayLesson.this).asGif().load(R.drawable.idle).into(imageView2);
+                        }
+                        idleGifHandler.postDelayed(idleGifRunnable, delay);
+                    }, 2000);
+                } else {
+                    idleGifHandler.postDelayed(idleGifRunnable, delay);
+                }
+            }
+        };
+        idleGifHandler.postDelayed(idleGifRunnable, 2000);
+    }
+
+    private void stopIdleGifRandomizer() {
+        isActivityActive = false;
+        idleGifHandler.removeCallbacksAndMessages(null);
+        if (imageView2 != null && !isFinishing() && !isDestroyed()) {
+            Glide.with(this).asGif().load(R.drawable.idle).into(imageView2);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopIdleGifRandomizer();
+        stopTTS();
+        super.onDestroy();
+    }
 
     @Override
     protected void onPause() {
