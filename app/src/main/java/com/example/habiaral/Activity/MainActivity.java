@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
         TalasalitaanUtils.preloadWords(this);
 
-        InternetCheckerUtils.checkInternet(this, () -> goToWelcome());
+        goToWelcome();
     }
 
     private void goToWelcome() {

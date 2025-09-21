@@ -52,32 +52,13 @@ public class IntroductionActivity extends AppCompatActivity {
                 saveNickname();
             }
         });
-        startInternetChecking();
-    }
-
-    private void startInternetChecking() {
-        internetCheckRunnable = new Runnable() {
-            @Override
-            public void run() {
-                InternetCheckerUtils.checkInternet(IntroductionActivity.this, () -> {
-                    if (!activityInitialized) {
-                        RunActivity();
-                        activityInitialized = true;
-                    }
-                });
-
-                handler.postDelayed(this, 3000);
-            }
-        };
-
-        handler.post(internetCheckRunnable);
+        RunActivity();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(internetCheckRunnable);
-        InternetCheckerUtils.resetDialogFlag();
     }
 
     private void RunActivity() {

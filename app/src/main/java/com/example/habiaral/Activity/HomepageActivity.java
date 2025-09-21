@@ -51,24 +51,13 @@ public class  HomepageActivity extends AppCompatActivity {
         }
 
         RunActivity();
-        startInternetChecking();
-    }
 
-    private void startInternetChecking() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                InternetCheckerUtils.checkInternet(HomepageActivity.this, () -> {});
-                handler.postDelayed(this, 3000);
-            }
-        }, 0);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
-        InternetCheckerUtils.resetDialogFlag();
     }
 
     private void RunActivity() {

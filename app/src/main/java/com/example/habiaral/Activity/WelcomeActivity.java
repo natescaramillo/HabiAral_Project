@@ -39,25 +39,7 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
 
-        startInternetChecking();
-    }
-
-    private void startInternetChecking() {
-        internetCheckRunnable = new Runnable() {
-            @Override
-            public void run() {
-                InternetCheckerUtils.checkInternet(WelcomeActivity.this, () -> {
-                    if (!activityInitialized) {
-                        RunActivity();
-                        activityInitialized = true;
-                    }
-                });
-
-                handler.postDelayed(this, 3000);
-            }
-        };
-
-        handler.post(internetCheckRunnable);
+        RunActivity();
     }
 
     @Override
