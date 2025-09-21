@@ -27,20 +27,19 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@id/view1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/view1" />
+        app:layout_constraintHorizontal_bias="0.432"
+        app:layout_constraintStart_toEndOf="@+id/talasalitaan_back"
+        app:layout_constraintTop_toTopOf="@id/view1"
+        app:layout_constraintVertical_bias="0.518" />
 
     <ImageView
         android:id="@+id/talasalitaan_back"
         android:layout_width="28dp"
         android:layout_height="25dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginStart="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/view1"
-        app:layout_constraintEnd_toStartOf="@+id/title"
-        app:layout_constraintHorizontal_bias="0.227"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.87"
         app:srcCompat="@drawable/back_button" />
 
     <!-- Word List Scrollable Container -->
