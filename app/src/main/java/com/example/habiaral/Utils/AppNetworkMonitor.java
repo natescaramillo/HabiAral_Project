@@ -85,9 +85,8 @@ public class AppNetworkMonitor extends BroadcastReceiver {
             if (!isConnected) {
                 showNoInternetDialog();
             } else {
-                if (isDialogShowing) {
-                    dismissNoInternetDialog();
-                }
+                // Instead of dismissing immediately, do a real internet check
+                checkInternetConnection(context);
             }
         });
     }
