@@ -36,7 +36,7 @@
             android:id="@+id/nickname_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="@font/special"
             android:gravity="center"
             android:text="Mark"
@@ -44,6 +44,7 @@
             android:textSize="20sp" />
     </LinearLayout>
 
+    <!-- Brown overlay starting halfway down the image -->
     <ImageView
         android:id="@+id/imageView7"
         android:layout_width="295dp"
@@ -54,7 +55,6 @@
         android:adjustViewBounds="true"
         android:src="@drawable/happy_tarsier" />
 
-    <!-- Brown overlay starting halfway down the image -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
