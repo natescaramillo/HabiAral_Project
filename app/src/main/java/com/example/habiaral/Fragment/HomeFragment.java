@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.Panitikan.Panitikan;
@@ -55,10 +57,17 @@ public class HomeFragment extends Fragment {
 
     private MediaPlayer mediaPlayer;
 
+    private Handler idleGifHandler = new Handler();
+    private Runnable idleGifRunnable;
+    private ImageView imageView;
+    private boolean isFragmentActive = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home, container, false);
+
+        imageView = view.findViewById(R.id.imageView7);
+        Glide.with(this).asGif().load(R.drawable.idle).into(imageView);
 
         nicknameTextView = view.findViewById(R.id.nickname_id);
 
@@ -87,7 +96,48 @@ public class HomeFragment extends Fragment {
             prefs.edit().putString("nickname", nickname).apply();
         });
 
+        startIdleGifRandomizer();
+
         return view;
+    }
+
+    private void startIdleGifRandomizer() {
+        isFragmentActive = true;
+        idleGifRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (!isFragmentActive || imageView == null) return;
+
+                int delay = 3000 + (int) (Math.random() * 5000);
+
+                if (Math.random() < 0.5) {
+                    Glide.with(HomeFragment.this).asGif().load(R.drawable.right_2).into(imageView);
+                    idleGifHandler.postDelayed(() -> {
+                        if (isFragmentActive && imageView != null) {
+                            Glide.with(HomeFragment.this).asGif().load(R.drawable.idle).into(imageView);
+                        }
+                        idleGifHandler.postDelayed(idleGifRunnable, delay);
+                    }, 2000);
+                } else {
+                    idleGifHandler.postDelayed(idleGifRunnable, delay);
+                }
+            }
+        };
+        idleGifHandler.postDelayed(idleGifRunnable, 2000);
+    }
+
+    private void stopIdleGifRandomizer() {
+        isFragmentActive = false;
+        idleGifHandler.removeCallbacksAndMessages(null);
+        if (imageView != null) {
+            Glide.with(this).asGif().load(R.drawable.idle).into(imageView);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        stopIdleGifRandomizer();
     }
 
     @Override
