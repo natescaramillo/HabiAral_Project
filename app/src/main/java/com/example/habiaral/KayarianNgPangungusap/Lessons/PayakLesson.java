@@ -227,7 +227,7 @@ public class PayakLesson extends AppCompatActivity {
 
 
     private void appendLineWithTypewriter(TextView textView, String newText, long delay, Runnable onComplete) {
-        textView.setVisibility(View.VISIBLE); // ← ito ang kulang
+        textView.setVisibility(View.VISIBLE);
 
         String existingText = textView.getText().toString();
         String prefix = existingText.isEmpty() ? "" : existingText + "\n\n";
@@ -241,15 +241,12 @@ public class PayakLesson extends AppCompatActivity {
                     index[0]++;
                     textView.postDelayed(this, delay);
                 } else {
-                    // kapag tapos na mag-typewriter → trigger next action
                     if (onComplete != null) onComplete.run();
                 }
             }
         };
         textView.post(characterAdder);
     }
-
-
 
     @Override
     protected void onDestroy() {
