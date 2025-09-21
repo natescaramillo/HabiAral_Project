@@ -186,25 +186,28 @@ public class PangUriQuiz extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadQuestion() {
-        playReadySound();
+        new CountDownTimer(3000, 1000) {
+            int count = 3;
+            @Override
+            public void onTick(long millisUntilFinished) {
+                questionText.setText(String.valueOf(count--));
+                playReadySound();
+            }
+            @Override
+            public void onFinish() {
+                questionText.setText("");
+                currentIndex = 0;
+                loadQuestion(currentIndex);
 
-        questionText.setText("3");
-        new Handler().postDelayed(() -> questionText.setText("2"), 1000);
-        new Handler().postDelayed(() -> questionText.setText("1"), 2000);
-
-        new Handler().postDelayed(() -> {
-            questionText.setText("");
-            currentIndex = 0;
-            loadQuestion(currentIndex);
-
-            introButton.setVisibility(View.GONE);
-            answer1.setVisibility(View.VISIBLE);
-            answer2.setVisibility(View.VISIBLE);
-            answer3.setVisibility(View.VISIBLE);
-            timerBar.setVisibility(View.VISIBLE);
-            nextButton.setVisibility(View.VISIBLE);
-            background.setVisibility(View.VISIBLE);
-        }, 3000);
+                introButton.setVisibility(View.GONE);
+                answer1.setVisibility(View.VISIBLE);
+                answer2.setVisibility(View.VISIBLE);
+                answer3.setVisibility(View.VISIBLE);
+                timerBar.setVisibility(View.VISIBLE);
+                nextButton.setVisibility(View.VISIBLE);
+                background.setVisibility(View.VISIBLE);
+            }
+        }.start();
     }
 
     private void loadQuizDocument() {
@@ -617,7 +620,7 @@ public class PangUriQuiz extends AppCompatActivity {
     }
     private void playReadySound() {
         releaseReadyPlayer();
-        readyPlayer = MediaPlayer.create(this, R.raw.ready_start);
+        readyPlayer = MediaPlayer.create(this, R.raw.beep);
         if (readyPlayer != null) {
             readyPlayer.setOnCompletionListener(mp -> releaseReadyPlayer());
             readyPlayer.start();
