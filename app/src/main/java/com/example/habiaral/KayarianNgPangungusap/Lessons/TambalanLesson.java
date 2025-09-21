@@ -12,6 +12,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
+import com.example.habiaral.KayarianNgPangungusap.Quiz.PayakQuiz;
 import com.example.habiaral.KayarianNgPangungusap.Quiz.TambalanQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,7 +58,12 @@ public class TambalanLesson extends AppCompatActivity {
         markLessonInProgress();
 
         Button quizButton = findViewById(R.id.UnlockButtonTambalan);
-        quizButton.setOnClickListener(v -> startActivity(new Intent(TambalanLesson.this, TambalanQuiz.class)));
+        quizButton.setOnClickListener(v -> {
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+            }
+            startActivity(new Intent(TambalanLesson.this, TambalanQuiz.class));
+        });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -250,6 +256,14 @@ public class TambalanLesson extends AppCompatActivity {
         LineItem(String text, TextView targetView) {
             this.text = text;
             this.targetView = targetView;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (textToSpeech != null) {
+            textToSpeech.stop();
         }
     }
 }

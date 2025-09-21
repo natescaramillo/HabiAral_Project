@@ -58,7 +58,12 @@ public class PayakLesson extends AppCompatActivity {
         markLessonInProgress();
 
         Button quizButton = findViewById(R.id.UnlockButtonPayak);
-        quizButton.setOnClickListener(v -> startActivity(new Intent(PayakLesson.this, PayakQuiz.class)));
+        quizButton.setOnClickListener(v -> {
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+            }
+            startActivity(new Intent(PayakLesson.this, PayakQuiz.class));
+        });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -263,4 +268,13 @@ public class PayakLesson extends AppCompatActivity {
             this.targetView = targetView;
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+        }
+    }
+
 }

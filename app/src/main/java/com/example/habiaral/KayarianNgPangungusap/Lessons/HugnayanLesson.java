@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.KayarianNgPangungusap.Quiz.HugnayanQuiz;
+import com.example.habiaral.KayarianNgPangungusap.Quiz.PayakQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -57,7 +58,12 @@ public class HugnayanLesson extends AppCompatActivity {
         markLessonInProgress();
 
         Button quizButton = findViewById(R.id.UnlockButtonHugnayan);
-        quizButton.setOnClickListener(v -> startActivity(new Intent(HugnayanLesson.this, HugnayanQuiz.class)));
+        quizButton.setOnClickListener(v -> {
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+            }
+            startActivity(new Intent(HugnayanLesson.this, HugnayanQuiz.class));
+        });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -69,6 +75,7 @@ public class HugnayanLesson extends AppCompatActivity {
         });
 
         initTextToSpeech();
+
     }
 
     private void markLessonInProgress() {
@@ -250,6 +257,14 @@ public class HugnayanLesson extends AppCompatActivity {
         LineItem(String text, TextView targetView) {
             this.text = text;
             this.targetView = targetView;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (textToSpeech != null) {
+            textToSpeech.stop();
         }
     }
 }

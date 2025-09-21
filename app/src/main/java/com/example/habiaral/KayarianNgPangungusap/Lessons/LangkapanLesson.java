@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.KayarianNgPangungusap.Quiz.LangkapanQuiz;
+import com.example.habiaral.KayarianNgPangungusap.Quiz.PayakQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -57,7 +58,12 @@ public class LangkapanLesson extends AppCompatActivity {
         markLessonInProgress();
 
         Button quizButton = findViewById(R.id.UnlockButtonLangkapan);
-        quizButton.setOnClickListener(v -> startActivity(new Intent(LangkapanLesson.this, LangkapanQuiz.class)));
+        quizButton.setOnClickListener(v -> {
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+            }
+            startActivity(new Intent(LangkapanLesson.this, LangkapanQuiz.class));
+        });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -250,6 +256,14 @@ public class LangkapanLesson extends AppCompatActivity {
         LineItem(String text, TextView targetView) {
             this.text = text;
             this.targetView = targetView;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (textToSpeech != null) {
+            textToSpeech.stop();
         }
     }
 }
