@@ -51,6 +51,7 @@ public class PayakLesson extends AppCompatActivity {
         descriptionTextView = findViewById(R.id.description_text_payak);
         exampleTextView = findViewById(R.id.example_Text_payak);
 
+
         descriptionTextView.setVisibility(View.GONE);
         exampleTextView.setVisibility(View.GONE);
 
@@ -207,33 +208,43 @@ public class PayakLesson extends AppCompatActivity {
         textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
-                runOnUiThread(() -> animatePopUp(item.targetView, item.text));
+                runOnUiThread(() -> {
+                    appendLineWithTypewriter(item.targetView, item.text, 40, null);
+                });
             }
             @Override
             public void onDone(String utteranceId) { runOnUiThread(() -> speakNext(iterator)); }
             @Override public void onError(String utteranceId) {}
         });
 
-        textToSpeech.speak(item.text, TextToSpeech.QUEUE_FLUSH, null, item.text);
+        textToSpeech.speak(item.text, TextToSpeech.QUEUE_ADD, null, item.text);
     }
 
-    private void animatePopUp(TextView textView, String text) {
+
+    private void appendLineWithTypewriter(TextView textView, String newText, long delay, Runnable onComplete) {
+        textView.setVisibility(View.VISIBLE); // ← ito ang kulang
+
         String existingText = textView.getText().toString();
-        if (!existingText.isEmpty()) existingText += "\n\n";
-        textView.setText(existingText + text);
+        String prefix = existingText.isEmpty() ? "" : existingText + "\n\n";
 
-        textView.setAlpha(0f);
-        textView.setScaleX(0.8f);
-        textView.setScaleY(0.8f);
-        textView.setVisibility(View.VISIBLE);
-
-        textView.animate()
-                .alpha(1f)
-                .scaleX(1f)
-                .scaleY(1f)
-                .setDuration(500)
-                .start();
+        final int[] index = {0};
+        Runnable characterAdder = new Runnable() {
+            @Override
+            public void run() {
+                if (index[0] < newText.length()) {
+                    textView.setText(prefix + newText.substring(0, index[0] + 1));
+                    index[0]++;
+                    textView.postDelayed(this, delay);
+                } else {
+                    // kapag tapos na mag-typewriter → trigger next action
+                    if (onComplete != null) onComplete.run();
+                }
+            }
+        };
+        textView.post(characterAdder);
     }
+
+
 
     @Override
     protected void onDestroy() {
