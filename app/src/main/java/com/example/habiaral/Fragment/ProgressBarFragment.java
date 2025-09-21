@@ -21,6 +21,7 @@ public class ProgressBarFragment extends Fragment {
 
     private ProgressBar progressBarBahagi, progressBarPagUnawa, progressBarKayarian;
     private TextView progressPercentageBahagi, progressPercentagePagUnawa, progressPercentageKayarian;
+    private TextView bahagiDescription, pagUnawaDescription, kayarianDescription;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -28,12 +29,15 @@ public class ProgressBarFragment extends Fragment {
 
         progressBarBahagi = view.findViewById(R.id.progressBarBahagi);
         progressPercentageBahagi = view.findViewById(R.id.progressPercentageBahagi);
+        bahagiDescription = view.findViewById(R.id.bahagi_progress_description);
 
         progressBarPagUnawa = view.findViewById(R.id.progressBarPagUnawa);
         progressPercentagePagUnawa = view.findViewById(R.id.progressPercentagePagUnawa);
+        pagUnawaDescription = view.findViewById(R.id.pag_unawa_progress_description);
 
         progressBarKayarian = view.findViewById(R.id.progressBarKayarian);
         progressPercentageKayarian = view.findViewById(R.id.progressPercentageKayarian);
+        kayarianDescription = view.findViewById(R.id.kayarian_progress_description);
 
         updateProgressFromFirestore();
     }
@@ -51,70 +55,100 @@ public class ProgressBarFragment extends Fragment {
                 .addOnSuccessListener(snapshot -> {
                     if (!snapshot.exists()) return;
 
-                    // ===== Bahagi (Module 1) =====
+                    // ===== Module 1: Bahagi =====
                     Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
                     if (module1 != null) {
                         Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
                         if (lessons != null) {
-                            String[] bahagiKeys = {
-                                    "pangngalan", "pandiwa", "panguri", "panghalip", "pangabay",
-                                    "pangatnig", "pangukol", "pangakop", "padamdam", "pangawing"
-                            };
-                            int bahagiCompleted = 0;
-                            for (String key : bahagiKeys) {
-                                Map<String, Object> lessonData = (Map<String, Object>) lessons.get(key);
+                            int totalLessons = lessons.size();
+                            int completedCount = 0;
+
+                            for (Map.Entry<String, Object> entry : lessons.entrySet()) {
+                                Map<String, Object> lessonData = (Map<String, Object>) entry.getValue();
                                 if (lessonData != null && "completed".equals(lessonData.get("status"))) {
-                                    bahagiCompleted++;
+                                    completedCount++;
                                 }
                             }
-                            int bahagiProgress = (bahagiCompleted * 100) / bahagiKeys.length;
-                            progressBarBahagi.setProgress(bahagiProgress);
-                            progressPercentageBahagi.setText(bahagiProgress + "%");
+
+                            int progress = (completedCount * 100) / totalLessons;
+                            progressBarBahagi.setProgress(progress);
+                            progressPercentageBahagi.setText(progress + "%");
+                            bahagiDescription.setText(getDescription(progress));
                         }
                     }
 
-                    // ===== Pag Unawa (Module 3) =====
-                    Map<String, Object> module2 = (Map<String, Object>) snapshot.get("module_3");
+                    // ===== Module 2: Kayarian =====
+                    Map<String, Object> module2 = (Map<String, Object>) snapshot.get("module_2");
                     if (module2 != null) {
                         Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
                         if (lessons != null) {
-                            String[] pagunawaKeys = {
-                                    "kwento1", "kwento2", "kwento3"
-                            };
-                            int pagunawaCompleted = 0;
-                            for (String key : pagunawaKeys) {
-                                Map<String, Object> lessonData = (Map<String, Object>) lessons.get(key);
+                            int totalLessons = lessons.size();
+                            int completedCount = 0;
+
+                            for (Map.Entry<String, Object> entry : lessons.entrySet()) {
+                                Map<String, Object> lessonData = (Map<String, Object>) entry.getValue();
                                 if (lessonData != null && "completed".equals(lessonData.get("status"))) {
-                                    pagunawaCompleted++;
+                                    completedCount++;
                                 }
                             }
-                            int pagunawaProgress = (pagunawaCompleted * 100) / pagunawaKeys.length;
-                            progressBarPagUnawa.setProgress(pagunawaProgress);
-                            progressPercentagePagUnawa.setText(pagunawaProgress + "%");
+
+                            int progress = (completedCount * 100) / totalLessons;
+                            progressBarKayarian.setProgress(progress);
+                            progressPercentageKayarian.setText(progress + "%");
+                            kayarianDescription.setText(getDescription(progress));
                         }
                     }
 
-                    // ===== Kayarian (Module 2) =====
-                    Map<String, Object> module3 = (Map<String, Object>) snapshot.get("module_2");
+                    // ===== Module 3: Panitikan =====
+                    Map<String, Object> module3 = (Map<String, Object>) snapshot.get("module_3");
                     if (module3 != null) {
-                        Map<String, Object> lessons = (Map<String, Object>) module3.get("lessons");
-                        if (lessons != null) {
-                            String[] kayarianKeys = {
-                                    "payak", "tambalan", "hugnayan", "langkapan"
-                            };
-                            int kayarianCompleted = 0;
-                            for (String key : kayarianKeys) {
-                                Map<String, Object> lessonData = (Map<String, Object>) lessons.get(key);
-                                if (lessonData != null && "completed".equals(lessonData.get("status"))) {
-                                    kayarianCompleted++;
+                        Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
+                        if (categories != null) {
+                            int totalStories = 0;
+                            int completedStories = 0;
+
+                            for (Map.Entry<String, Object> categoryEntry : categories.entrySet()) {
+                                Map<String, Object> categoryData = (Map<String, Object>) categoryEntry.getValue();
+                                if (categoryData != null) {
+                                    Map<String, Object> stories = (Map<String, Object>) categoryData.get("stories");
+                                    if (stories != null) {
+                                        for (Map.Entry<String, Object> storyEntry : stories.entrySet()) {
+                                            Map<String, Object> storyData = (Map<String, Object>) storyEntry.getValue();
+                                            if (storyData != null) {
+                                                totalStories++;
+                                                if ("completed".equals(storyData.get("status"))) {
+                                                    completedStories++;
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
-                            int kayarianProgress = (kayarianCompleted * 100) / kayarianKeys.length;
-                            progressBarKayarian.setProgress(kayarianProgress);
-                            progressPercentageKayarian.setText(kayarianProgress + "%");
+
+                            if (totalStories > 0) {
+                                int progress = (completedStories * 100) / totalStories;
+                                progressBarPagUnawa.setProgress(progress);
+                                progressPercentagePagUnawa.setText(progress + "%");
+                                pagUnawaDescription.setText(getDescription(progress));
+                            }
                         }
                     }
                 });
+    }
+
+    /** Magbigay ng description depende sa percentage **/
+    private String getDescription(int progress) {
+        if (progress == 100) {
+            return "Tapos na!";
+        } else if (progress >= 70) {
+            return "Malapit nang matapos...";
+        } else if (progress >= 40) {
+            return "Patuloy lang, kalahati na!";
+        } else if (progress > 0) {
+            return "Kakaumpisa pa lang.";
+        } else {
+            return "Wala pang progreso.";
+        }
     }
 
     @Override
