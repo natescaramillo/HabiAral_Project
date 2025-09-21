@@ -52,9 +52,16 @@ public class AppNetworkMonitor extends BroadcastReceiver {
                 dismissNoInternetDialog();
                 currentActivity = activity;
             }
-            @Override public void onActivityResumed(Activity activity) {
+            @Override
+            public void onActivityResumed(Activity activity) {
                 dismissNoInternetDialog();
                 currentActivity = activity;
+
+                mainHandler.postDelayed(() -> {
+                    if (currentActivity != null) {
+                        checkInternetConnection(currentActivity);
+                    }
+                }, 1000);
             }
             @Override public void onActivityPaused(Activity activity) {
 
