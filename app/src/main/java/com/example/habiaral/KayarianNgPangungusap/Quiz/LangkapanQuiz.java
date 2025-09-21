@@ -26,9 +26,11 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habiaral.BahagiNgPananalita.Quiz.PangawingQuiz;
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.AppPreloaderUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.example.habiaral.Utils.TimerSoundUtils;
@@ -578,34 +580,6 @@ public class LangkapanQuiz extends AppCompatActivity {
         }
     }
 
-    private void showAchievementUnlockedDialog(String title, int imageRes) {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View toastView = inflater.inflate(R.layout.achievement_unlocked, null);
-
-        ImageView iv = toastView.findViewById(R.id.imageView19);
-        TextView tv = toastView.findViewById(R.id.textView14);
-
-        iv.setImageResource(imageRes);
-        String line1 = "Nakamit mo na ang parangal:\n";
-        String line2 = title;
-
-        SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
-
-        ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        int start = line1.length();
-        int end = line1.length() + line2.length();
-        ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        ssb.setSpan(new RelativeSizeSpan(1.3f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        tv.setText(ssb);
-        Toast toast = new Toast(this);
-        toast.setView(toastView);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
-        toast.show();
-    }
 
     private void checkAndUnlockAchievement() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -674,7 +648,7 @@ public class LangkapanQuiz extends AppCompatActivity {
                         .document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            showAchievementUnlockedDialog(title, R.drawable.achievement12);
+                            AchievementDialogUtils.showAchievementUnlockedDialog(LangkapanQuiz.this, title, R.drawable.achievement11);
                         }));
             });
         });

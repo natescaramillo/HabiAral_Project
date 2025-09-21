@@ -25,11 +25,13 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
+import com.example.habiaral.BahagiNgPananalita.Quiz.PangawingQuiz;
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.Panitikan.Panitikan;
 import com.example.habiaral.Palaro.Palaro;
 import com.example.habiaral.Talasalitaan.Talasalitaan;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -257,7 +259,7 @@ public class HomeFragment extends Fragment {
                 db.collection("student_achievements").document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> requireActivity().runOnUiThread(() -> {
-                            showAchievementUnlockedDialog(title, R.drawable.achievement06);
+                            AchievementDialogUtils.showAchievementUnlockedDialog(requireContext(), title, R.drawable.achievement11);
                         }));
             });
         });
@@ -288,50 +290,6 @@ public class HomeFragment extends Fragment {
                 });
     }
 
-
-    private void showAchievementUnlockedDialog(String title, int imageRes) {
-        LayoutInflater inflater = LayoutInflater.from(requireContext());
-        View dialogView = inflater.inflate(R.layout.achievement_unlocked, null);
-
-        ImageView iv = dialogView.findViewById(R.id.imageView19);
-        TextView tv = dialogView.findViewById(R.id.textView14);
-
-        iv.setImageResource(imageRes);
-        String line1 = "Nakamit mo na ang parangal:\n";
-        String line2 = title;
-
-        SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
-        ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        int start = line1.length();
-        int end = line1.length() + line2.length();
-        ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ssb.setSpan(new RelativeSizeSpan(1.1f), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        tv.setText(ssb);
-
-        AlertDialog dialog = new AlertDialog.Builder(requireContext())
-                .setView(dialogView)
-                .setCancelable(true)
-                .create();
-
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            dialog.getWindow().setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-
-            WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-            params.y = 50; // offset mula sa taas (px)
-            dialog.getWindow().setAttributes(params);
-        }
-
-        dialog.setOnShowListener(d -> {
-            MediaPlayer mediaPlayer = MediaPlayer.create(requireContext(), R.raw.achievement_pop);
-            mediaPlayer.setVolume(0.5f, 0.5f);
-            mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-            mediaPlayer.start();
-        });
-
-        dialog.show();
-    }
 
 
     private void loadNicknameFromPrefs() {

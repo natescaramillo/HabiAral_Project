@@ -30,7 +30,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.example.habiaral.KayarianNgPangungusap.Quiz.LangkapanQuiz;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.FinishDialogUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.example.habiaral.Utils.TimerSoundUtils;
@@ -426,7 +428,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                 db.collection("student_achievements").document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            showAchievementUnlockedDialog(title, R.drawable.achievement08);
+                            AchievementDialogUtils.showAchievementUnlockedDialog(PalaroBaguhan.this, title, R.drawable.achievement11);
                         }));
             });
         });
@@ -469,56 +471,13 @@ public class PalaroBaguhan extends AppCompatActivity {
                     db.collection("student_achievements").document(uid)
                             .set(wrapper, SetOptions.merge())
                             .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                showAchievementUnlockedDialog(title,R.drawable.achievement04);
+                                AchievementDialogUtils.showAchievementUnlockedDialog(PalaroBaguhan.this, title, R.drawable.achievement11);
                             }));
                 });
             });
         });
     }
 
-    private void showAchievementUnlockedDialog(String title, int imageRes) {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View dialogView = inflater.inflate(R.layout.achievement_unlocked, null);
-
-        ImageView iv = dialogView.findViewById(R.id.imageView19);
-        TextView tv = dialogView.findViewById(R.id.textView14);
-
-        iv.setImageResource(imageRes);
-        String line1 = "Nakamit mo na ang parangal:\n";
-        String line2 = title;
-
-        SpannableStringBuilder ssb = new SpannableStringBuilder(line1 + line2);
-        ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        int start = line1.length();
-        int end = line1.length() + line2.length();
-        ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ssb.setSpan(new RelativeSizeSpan(1.1f), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        tv.setText(ssb);
-
-        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
-                .setView(dialogView)
-                .setCancelable(true)
-                .create();
-
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            dialog.getWindow().setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-
-            WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-            params.y = 50;
-            dialog.getWindow().setAttributes(params);
-        }
-
-        dialog.setOnShowListener(d -> {
-            MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.achievement_pop);
-            mediaPlayer.setVolume(0.5f, 0.5f);
-            mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-            mediaPlayer.start();
-        });
-
-        dialog.show();
-    }
 
     private void saveBaguhanScore() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
