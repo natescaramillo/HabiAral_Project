@@ -69,7 +69,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btnGoogleLogin"
-        android:layout_width="182dp"
+        android:layout_width="wrap_content"
         android:layout_height="39dp"
         android:background="@drawable/rounded_button_white"
         android:clickable="true"
@@ -93,7 +93,7 @@
             android:contentDescription="Google Logo"
             android:src="@drawable/design_google"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textView16"
+            app:layout_constraintEnd_toStartOf="@+id/textView16"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -104,14 +104,16 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/special"
             android:gravity="center"
-            android:text="Login with Google"
+            android:layout_marginHorizontal="10dp"
+            android:text="Maglog-in gamit ang Google"
             android:textColor="#5C4033"
             android:textSize="11dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.671"
+            app:layout_constraintHorizontal_bias="0.69"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.478" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
