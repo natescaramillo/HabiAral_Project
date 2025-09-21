@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="@font/special"
-            android:text="Waiting for internet connection..."
+            android:text="Maghintay ng ilang segundo..."
             android:textColor="#A27B5C"
             android:layout_marginTop="10dp"
             android:textSize="18sp"
