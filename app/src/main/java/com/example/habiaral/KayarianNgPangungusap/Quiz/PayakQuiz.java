@@ -539,6 +539,7 @@ public class PayakQuiz extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
+        // mark Payak lesson as completed
         Map<String, Object> payakStatus = new HashMap<>();
         payakStatus.put("status", "completed");
 
@@ -549,26 +550,60 @@ public class PayakQuiz extends AppCompatActivity {
         updateMap.put("lessons", lessonsMap);
         updateMap.put("current_lesson", "payak");
 
-        Map<String, Object> moduleUpdate = Map.of("module_1", updateMap);
+        Map<String, Object> moduleUpdate = new HashMap<>();
+        moduleUpdate.put("module_2", updateMap);
 
         db.collection("module_progress")
                 .document(uid)
-                .set(moduleUpdate, SetOptions.merge());
+                .set(moduleUpdate, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    // after saving Payak lesson, check all lessons
+                    db.collection("module_progress").document(uid).get()
+                            .addOnSuccessListener(doc -> {
+                                if (doc.exists()) {
+                                    Map<String, Object> module2 = (Map<String, Object>) doc.get("module_2");
+                                    if (module2 != null) {
+                                        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
+                                        if (lessons != null) {
+                                            boolean payakDone = "completed".equals(((Map) lessons.get("payak")).get("status"));
+                                            boolean tambalanDone = lessons.containsKey("tambalan") &&
+                                                    "completed".equals(((Map) lessons.get("tambalan")).get("status"));
+                                            boolean langkapanDone = lessons.containsKey("langkapan") &&
+                                                    "completed".equals(((Map) lessons.get("langkapan")).get("status"));
 
+                                            if (payakDone && tambalanDone && langkapanDone) {
+                                                // update module_2 as completed
+                                                db.collection("module_progress").document(uid)
+                                                        .update("module_2.status", "completed",
+                                                                "module_2.modulename", "Kayarian ng Pangungusap");
+                                            } else {
+                                                // still in progress
+                                                db.collection("module_progress").document(uid)
+                                                        .update("module_2.status", "in_progress",
+                                                                "module_2.modulename", "Kayarian ng Pangungusap");
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                });
+
+        // update local cache
         if (LessonProgressCache.getData() != null) {
             Map<String, Object> cachedData = LessonProgressCache.getData();
 
-            if (!cachedData.containsKey("module_1")) {
-                cachedData.put("module_1", new HashMap<String, Object>());
+            if (!cachedData.containsKey("module_2")) {
+                cachedData.put("module_2", new HashMap<String, Object>());
             }
 
-            Map<String, Object> cachedModule1 = (Map<String, Object>) cachedData.get("module_1");
-            cachedModule1.put("lessons", lessonsMap);
-            cachedModule1.put("current_lesson", "payak");
+            Map<String, Object> cachedModule2 = (Map<String, Object>) cachedData.get("module_2");
+            cachedModule2.put("lessons", lessonsMap);
+            cachedModule2.put("current_lesson", "payak");
 
             LessonProgressCache.setData(cachedData);
         }
     }
+
 
     @Override
     protected void onPause() {

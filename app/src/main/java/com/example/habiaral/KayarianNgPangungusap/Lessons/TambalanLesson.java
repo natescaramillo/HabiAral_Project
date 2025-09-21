@@ -57,7 +57,12 @@ public class TambalanLesson extends AppCompatActivity {
         markLessonInProgress();
 
         Button quizButton = findViewById(R.id.UnlockButtonTambalan);
-        quizButton.setOnClickListener(v -> startActivity(new Intent(TambalanLesson.this, TambalanQuiz.class)));
+        quizButton.setOnClickListener(v -> {
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+            }
+            startActivity(new Intent(TambalanLesson.this, TambalanQuiz.class));
+        });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -199,40 +204,47 @@ public class TambalanLesson extends AppCompatActivity {
         speakNext(iterator);
     }
 
-    private void speakNext(Iterator<LineItem> iterator) {
+    private void speakNext(Iterator<TambalanLesson.LineItem> iterator) {
         if (!iterator.hasNext()) return;
 
-        LineItem item = iterator.next();
+        TambalanLesson.LineItem item = iterator.next();
 
         textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
-                runOnUiThread(() -> animatePopUp(item.targetView, item.text));
+                runOnUiThread(() -> {
+                    appendLineWithTypewriter(item.targetView, item.text, 40, null);
+                });
             }
             @Override
             public void onDone(String utteranceId) { runOnUiThread(() -> speakNext(iterator)); }
             @Override public void onError(String utteranceId) {}
         });
 
-        textToSpeech.speak(item.text, TextToSpeech.QUEUE_FLUSH, null, item.text);
+        textToSpeech.speak(item.text, TextToSpeech.QUEUE_ADD, null, item.text);
     }
 
-    private void animatePopUp(TextView textView, String text) {
-        String existingText = textView.getText().toString();
-        if (!existingText.isEmpty()) existingText += "\n\n";
-        textView.setText(existingText + text);
 
-        textView.setAlpha(0f);
-        textView.setScaleX(0.8f);
-        textView.setScaleY(0.8f);
+    private void appendLineWithTypewriter(TextView textView, String newText, long delay, Runnable onComplete) {
         textView.setVisibility(View.VISIBLE);
 
-        textView.animate()
-                .alpha(1f)
-                .scaleX(1f)
-                .scaleY(1f)
-                .setDuration(500)
-                .start();
+        String existingText = textView.getText().toString();
+        String prefix = existingText.isEmpty() ? "" : existingText + "\n\n";
+
+        final int[] index = {0};
+        Runnable characterAdder = new Runnable() {
+            @Override
+            public void run() {
+                if (index[0] < newText.length()) {
+                    textView.setText(prefix + newText.substring(0, index[0] + 1));
+                    index[0]++;
+                    textView.postDelayed(this, delay);
+                } else {
+                    if (onComplete != null) onComplete.run();
+                }
+            }
+        };
+        textView.post(characterAdder);
     }
 
     @Override
@@ -250,6 +262,14 @@ public class TambalanLesson extends AppCompatActivity {
         LineItem(String text, TextView targetView) {
             this.text = text;
             this.targetView = targetView;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (textToSpeech != null) {
+            textToSpeech.stop();
         }
     }
 }

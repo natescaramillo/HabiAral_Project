@@ -38,6 +38,7 @@ public class PayakLesson extends AppCompatActivity {
     TextView titleTextView;
     TextView descriptionTextView;
     TextView exampleTextView;
+    Button quizButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +51,23 @@ public class PayakLesson extends AppCompatActivity {
         titleTextView = findViewById(R.id.title_Text_payak);
         descriptionTextView = findViewById(R.id.description_text_payak);
         exampleTextView = findViewById(R.id.example_Text_payak);
-
+        quizButton = findViewById(R.id.UnlockButtonPayak);
 
         descriptionTextView.setVisibility(View.GONE);
         exampleTextView.setVisibility(View.GONE);
 
         markLessonInProgress();
 
-        Button quizButton = findViewById(R.id.UnlockButtonPayak);
-        quizButton.setOnClickListener(v -> startActivity(new Intent(PayakLesson.this, PayakQuiz.class)));
+        // 🔒 lock muna button
+        quizButton.setEnabled(false);
+        quizButton.setAlpha(0.5f);
+
+        quizButton.setOnClickListener(v -> {
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+            }
+            startActivity(new Intent(PayakLesson.this, PayakQuiz.class));
+        });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -163,7 +172,13 @@ public class PayakLesson extends AppCompatActivity {
                             if (exampleLines != null)
                                 for (String s : exampleLines) remainingLines.add(new LineItem(s, exampleTextView));
 
-                            speakLinesSequentially(remainingLines);
+                            speakLinesSequentially(remainingLines, () -> {
+                                // ✅ Unlock quiz button kapag tapos na lahat ng lines
+                                runOnUiThread(() -> {
+                                    quizButton.setEnabled(true);
+                                    quizButton.setAlpha(1.0f);
+                                });
+                            });
                         });
                     }
                 });
@@ -195,34 +210,34 @@ public class PayakLesson extends AppCompatActivity {
         textToSpeech.speak(line, TextToSpeech.QUEUE_FLUSH, null, "INTRO_" + line);
     }
 
-    private void speakLinesSequentially(List<LineItem> lines) {
+    private void speakLinesSequentially(List<LineItem> lines, Runnable onComplete) {
         Iterator<LineItem> iterator = lines.iterator();
-        speakNext(iterator);
+        speakNext(iterator, onComplete);
     }
 
-    private void speakNext(Iterator<LineItem> iterator) {
-        if (!iterator.hasNext()) return;
+    private void speakNext(Iterator<LineItem> iterator, Runnable onComplete) {
+        if (!iterator.hasNext()) {
+            if (onComplete != null) onComplete.run();
+            return;
+        }
 
         LineItem item = iterator.next();
 
         textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
-                runOnUiThread(() -> {
-                    appendLineWithTypewriter(item.targetView, item.text, 40, null);
-                });
+                runOnUiThread(() -> appendLineWithTypewriter(item.targetView, item.text, 40, null));
             }
             @Override
-            public void onDone(String utteranceId) { runOnUiThread(() -> speakNext(iterator)); }
+            public void onDone(String utteranceId) { runOnUiThread(() -> speakNext(iterator, onComplete)); }
             @Override public void onError(String utteranceId) {}
         });
 
         textToSpeech.speak(item.text, TextToSpeech.QUEUE_ADD, null, item.text);
     }
 
-
     private void appendLineWithTypewriter(TextView textView, String newText, long delay, Runnable onComplete) {
-        textView.setVisibility(View.VISIBLE); // ← ito ang kulang
+        textView.setVisibility(View.VISIBLE);
 
         String existingText = textView.getText().toString();
         String prefix = existingText.isEmpty() ? "" : existingText + "\n\n";
@@ -236,15 +251,12 @@ public class PayakLesson extends AppCompatActivity {
                     index[0]++;
                     textView.postDelayed(this, delay);
                 } else {
-                    // kapag tapos na mag-typewriter → trigger next action
                     if (onComplete != null) onComplete.run();
                 }
             }
         };
         textView.post(characterAdder);
     }
-
-
 
     @Override
     protected void onDestroy() {
@@ -263,4 +275,13 @@ public class PayakLesson extends AppCompatActivity {
             this.targetView = targetView;
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+        }
+    }
+
 }
