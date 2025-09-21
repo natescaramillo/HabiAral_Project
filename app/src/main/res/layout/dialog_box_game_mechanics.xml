@@ -77,7 +77,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:padding="12dp"
+                    android:padding="10dp"
                     android:background="@drawable/search_bar"
                     android:backgroundTint="#97684A">
 
