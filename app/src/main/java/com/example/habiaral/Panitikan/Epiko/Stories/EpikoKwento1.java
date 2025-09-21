@@ -190,20 +190,27 @@ public class EpikoKwento1 extends AppCompatActivity {
                             speakIntro();
                         } else {
                             introFinished = true; // ✅ tapos na intro
+
+                            // 👉 unlock agad kahit intro pa lang
+                            isLessonDone = true;
+                            unlockButton.setEnabled(true);
+                            unlockButton.setAlpha(1f);
                         }
                     });
                 }
             });
         } else {
             introFinished = true;
+
+            // 👉 fallback unlock kung walang intro lines
+            isLessonDone = true;
+            unlockButton.setEnabled(true);
+            unlockButton.setAlpha(1f);
         }
     }
 
+
     private void nextPage() {
-        if (currentPage == 0 && !introFinished) {
-            Toast.makeText(this, "Hintayin munang matapos ang intro.", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         if (currentPage < comicPages.length - 1) {
             currentPage++;
