@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.KayarianNgPangungusap.Quiz.LangkapanQuiz;
-import com.example.habiaral.KayarianNgPangungusap.Quiz.PayakQuiz;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +38,7 @@ public class LangkapanLesson extends AppCompatActivity {
     TextView titleTextView;
     TextView descriptionTextView;
     TextView exampleTextView;
+    Button quizButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +51,17 @@ public class LangkapanLesson extends AppCompatActivity {
         titleTextView = findViewById(R.id.title_Text_langkapan);
         descriptionTextView = findViewById(R.id.description_text_langkapan);
         exampleTextView = findViewById(R.id.example_Text_langkapan);
+        quizButton = findViewById(R.id.UnlockButtonLangkapan);
 
         descriptionTextView.setVisibility(View.GONE);
         exampleTextView.setVisibility(View.GONE);
 
         markLessonInProgress();
 
-        Button quizButton = findViewById(R.id.UnlockButtonLangkapan);
+        // 🔒 lock muna button
+        quizButton.setEnabled(false);
+        quizButton.setAlpha(0.5f);
+
         quizButton.setOnClickListener(v -> {
             if (textToSpeech != null) {
                 textToSpeech.stop();
@@ -153,7 +157,7 @@ public class LangkapanLesson extends AppCompatActivity {
     }
 
     private void loadCharacterLines() {
-        db.collection("lesson_character_lines").document("LCL11")
+        db.collection("lesson_character_lines").document("LCL14")
                 .get()
                 .addOnSuccessListener(document -> {
                     if (document.exists()) {
@@ -168,7 +172,13 @@ public class LangkapanLesson extends AppCompatActivity {
                             if (exampleLines != null)
                                 for (String s : exampleLines) remainingLines.add(new LineItem(s, exampleTextView));
 
-                            speakLinesSequentially(remainingLines);
+                            speakLinesSequentially(remainingLines, () -> {
+                                // ✅ Unlock quiz button kapag tapos na lahat ng lines
+                                runOnUiThread(() -> {
+                                    quizButton.setEnabled(true);
+                                    quizButton.setAlpha(1.0f);
+                                });
+                            });
                         });
                     }
                 });
@@ -200,31 +210,31 @@ public class LangkapanLesson extends AppCompatActivity {
         textToSpeech.speak(line, TextToSpeech.QUEUE_FLUSH, null, "INTRO_" + line);
     }
 
-    private void speakLinesSequentially(List<LineItem> lines) {
+    private void speakLinesSequentially(List<LineItem> lines, Runnable onComplete) {
         Iterator<LineItem> iterator = lines.iterator();
-        speakNext(iterator);
+        speakNext(iterator, onComplete);
     }
 
-    private void speakNext(Iterator<LangkapanLesson.LineItem> iterator) {
-        if (!iterator.hasNext()) return;
+    private void speakNext(Iterator<LineItem> iterator, Runnable onComplete) {
+        if (!iterator.hasNext()) {
+            if (onComplete != null) onComplete.run();
+            return;
+        }
 
-        LangkapanLesson.LineItem item = iterator.next();
+        LineItem item = iterator.next();
 
         textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
-                runOnUiThread(() -> {
-                    appendLineWithTypewriter(item.targetView, item.text, 40, null);
-                });
+                runOnUiThread(() -> appendLineWithTypewriter(item.targetView, item.text, 40, null));
             }
             @Override
-            public void onDone(String utteranceId) { runOnUiThread(() -> speakNext(iterator)); }
+            public void onDone(String utteranceId) { runOnUiThread(() -> speakNext(iterator, onComplete)); }
             @Override public void onError(String utteranceId) {}
         });
 
         textToSpeech.speak(item.text, TextToSpeech.QUEUE_ADD, null, item.text);
     }
-
 
     private void appendLineWithTypewriter(TextView textView, String newText, long delay, Runnable onComplete) {
         textView.setVisibility(View.VISIBLE);
@@ -273,4 +283,5 @@ public class LangkapanLesson extends AppCompatActivity {
             textToSpeech.stop();
         }
     }
+
 }
