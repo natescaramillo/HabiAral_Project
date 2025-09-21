@@ -13,29 +13,52 @@
 
     <!-- Scrollable Content -->
 
-    <View
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/view1"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:alpha="0.6"
         android:background="#A27B5C"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/special"
-        android:gravity="center"
-        android:text="Bahagi ng pananalita"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@id/view1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/view1"
-        app:layout_constraintVertical_bias="0.481" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/special"
+            android:gravity="center"
+            android:text="Bahagi ng pananalita"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/view1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/view1"
+            app:layout_constraintVertical_bias="0.481" />
+
+        <ImageView
+            android:id="@+id/bahagi_back"
+            android:layout_width="28dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/view1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/view1"
+            app:srcCompat="@drawable/back_button" />
+
+        <ImageView
+            android:id="@+id/imageView14"
+            android:layout_width="33dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="15dp"
+            app:layout_constraintBottom_toBottomOf="@+id/view1"
+            app:layout_constraintEnd_toEndOf="@+id/view1"
+            app:layout_constraintTop_toTopOf="@+id/view1"
+            app:srcCompat="@drawable/white_question_mark" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:id="@+id/scrollContent"
@@ -54,8 +77,6 @@
             android:orientation="vertical"
             android:paddingBottom="16dp">
 
-            <!-- All your pangngalan, pandiwa, panguri, etc. LinearLayouts go here -->
-            <!-- Example -->
             <LinearLayout
                 android:id="@+id/pangngalan"
                 android:layout_width="333dp"
@@ -448,24 +469,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <ImageView
-        android:id="@+id/bahagi_back"
-        android:layout_width="28dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/view1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/view1"
-        app:srcCompat="@drawable/back_button" />
 
-    <ImageView
-        android:id="@+id/imageView14"
-        android:layout_width="33dp"
-        android:layout_height="35dp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/view1"
-        app:layout_constraintEnd_toEndOf="@+id/view1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/white_question_mark" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
