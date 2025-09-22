@@ -162,15 +162,30 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         if (!(module2Obj instanceof Map)) return;
 
         Map<String, Object> module2 = (Map<String, Object>) module2Obj;
+        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
+        if (lessons == null) lessons = new HashMap<>();
 
-        // Unlock buttons based on status
-        String status = (String) module2.get("status");
-        boolean isInProgress = "in_progress".equals(status);
-        unlockButton(btnPayak, true, payakLock);
-        unlockButton(btnTambalan, isInProgress, tambalanLock);
-        unlockButton(btnHugnayan, isInProgress, hugnayanLock);
-        unlockButton(btnLangkapan, isInProgress, langkapanLock);
+        // Get each lesson's status
+        String payakStatus = getLessonStatus(lessons, "payak");
+        String tambalanStatus = getLessonStatus(lessons, "tambalan");
+        String hugnayanStatus = getLessonStatus(lessons, "hugnayan");
+        String langkapanStatus = getLessonStatus(lessons, "langkapan");
+
+        // Unlock sequentially
+        unlockButton(btnPayak, true, payakLock); // always unlocked
+        unlockButton(btnTambalan, "completed".equals(payakStatus) || "in_progress".equals(tambalanStatus), tambalanLock);
+        unlockButton(btnHugnayan, "completed".equals(tambalanStatus) || "in_progress".equals(hugnayanStatus), hugnayanLock);
+        unlockButton(btnLangkapan, "completed".equals(hugnayanStatus) || "in_progress".equals(langkapanStatus), langkapanLock);
     }
+
+    private String getLessonStatus(Map<String, Object> lessons, String lessonKey) {
+        if (lessons.containsKey(lessonKey) && lessons.get(lessonKey) instanceof Map) {
+            Map<String, Object> lessonMap = (Map<String, Object>) lessons.get(lessonKey);
+            return (String) lessonMap.getOrDefault("status", "locked");
+        }
+        return "locked";
+    }
+
 
     private void unlockButton(LinearLayout layout, boolean isUnlocked, FrameLayout lock) {
         layout.setEnabled(isUnlocked);
