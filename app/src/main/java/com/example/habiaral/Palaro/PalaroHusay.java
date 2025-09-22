@@ -767,7 +767,7 @@ public class PalaroHusay extends AppCompatActivity {
                 db.collection("student_achievements").document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            AchievementDialogUtils.showAchievementUnlockedDialog(PalaroHusay.this, title, R.drawable.achievement11);
+                            AchievementDialogUtils.showAchievementUnlockedDialog(PalaroHusay.this, title, R.drawable.achievement09);
                         }));
             });
         });
@@ -860,7 +860,7 @@ public class PalaroHusay extends AppCompatActivity {
                     db.collection("student_achievements").document(uid)
                             .set(wrapper, SetOptions.merge())
                             .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                AchievementDialogUtils.showAchievementUnlockedDialog(PalaroHusay.this, title, R.drawable.achievement11);
+                                AchievementDialogUtils.showAchievementUnlockedDialog(PalaroHusay.this, title, R.drawable.achievement05);
                             }));
                 });
             });

@@ -428,7 +428,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                 db.collection("student_achievements").document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                            AchievementDialogUtils.showAchievementUnlockedDialog(PalaroBaguhan.this, title, R.drawable.achievement11);
+                            AchievementDialogUtils.showAchievementUnlockedDialog(PalaroBaguhan.this, title, R.drawable.achievement08);
                         }));
             });
         });
@@ -471,7 +471,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                     db.collection("student_achievements").document(uid)
                             .set(wrapper, SetOptions.merge())
                             .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                AchievementDialogUtils.showAchievementUnlockedDialog(PalaroBaguhan.this, title, R.drawable.achievement11);
+                                AchievementDialogUtils.showAchievementUnlockedDialog(PalaroBaguhan.this, title, R.drawable.achievement04);
                             }));
                 });
             });
