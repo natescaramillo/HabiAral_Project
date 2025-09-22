@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -18,7 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -35,9 +34,8 @@ public class PayakLesson extends AppCompatActivity {
     String uid;
     TextToSpeech textToSpeech;
 
-    TextView titleTextView;
-    TextView descriptionTextView;
-    TextView exampleTextView;
+    ImageView descriptionImageView;
+    ImageView exampleImageView;
     Button quizButton;
 
     @Override
@@ -48,24 +46,19 @@ public class PayakLesson extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        titleTextView = findViewById(R.id.title_Text_payak);
-        descriptionTextView = findViewById(R.id.description_text_payak);
-        exampleTextView = findViewById(R.id.example_Text_payak);
+        descriptionImageView = findViewById(R.id.description_image_payak);
+        exampleImageView = findViewById(R.id.example_image_payak);
         quizButton = findViewById(R.id.UnlockButtonPayak);
 
-        descriptionTextView.setVisibility(View.GONE);
-        exampleTextView.setVisibility(View.GONE);
+        descriptionImageView.setVisibility(View.GONE);
+        exampleImageView.setVisibility(View.GONE);
 
         markLessonInProgress();
 
-        // 🔒 lock muna button
         quizButton.setEnabled(false);
         quizButton.setAlpha(0.5f);
-
         quizButton.setOnClickListener(v -> {
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-            }
+            if (textToSpeech != null) textToSpeech.stop();
             startActivity(new Intent(PayakLesson.this, PayakQuiz.class));
         });
 
@@ -84,6 +77,8 @@ public class PayakLesson extends AppCompatActivity {
     private void markLessonInProgress() {
         db.collection("module_progress").document(uid).get()
                 .addOnSuccessListener(documentSnapshot -> {
+                    boolean alreadyCompleted = false;
+
                     if (documentSnapshot.exists()) {
                         Map<String, Object> module2 = (Map<String, Object>) documentSnapshot.get("module_2");
                         if (module2 != null) {
@@ -92,29 +87,41 @@ public class PayakLesson extends AppCompatActivity {
                                 Map<String, Object> payak = (Map<String, Object>) lessons.get("payak");
                                 if (payak != null) {
                                     String status = (String) payak.get("status");
-                                    if ("completed".equals(status)) return;
+                                    if ("completed".equals(status)) {
+                                        alreadyCompleted = true;
+                                    }
                                 }
                             }
                         }
                     }
 
-                    Map<String, Object> update = new HashMap<>();
-                    Map<String, Object> payakMap = new HashMap<>();
-                    payakMap.put("status", "in_progress");
+                    // Always mark as in_progress for database if not already, but don't block quiz
+                    if (!alreadyCompleted) {
+                        Map<String, Object> update = new HashMap<>();
+                        Map<String, Object> payakMap = new HashMap<>();
+                        payakMap.put("status", "in_progress");
 
-                    Map<String, Object> lessonsMap = new HashMap<>();
-                    lessonsMap.put("payak", payakMap);
+                        Map<String, Object> lessonsMap = new HashMap<>();
+                        lessonsMap.put("payak", payakMap);
 
-                    Map<String, Object> module2Map = new HashMap<>();
-                    module2Map.put("lessons", lessonsMap);
-                    module2Map.put("current_lesson", "payak");
+                        Map<String, Object> module2Map = new HashMap<>();
+                        module2Map.put("lessons", lessonsMap);
+                        module2Map.put("current_lesson", "payak");
 
-                    update.put("module_2", module2Map);
+                        update.put("module_2", module2Map);
 
-                    db.collection("module_progress").document(uid)
-                            .set(update, SetOptions.merge());
+                        db.collection("module_progress").document(uid)
+                                .set(update, SetOptions.merge());
+                    }
+
+                    // Enable quiz button regardless of completion
+                    runOnUiThread(() -> {
+                        quizButton.setEnabled(true);
+                        quizButton.setAlpha(1.0f);
+                    });
                 });
     }
+
 
     private void initTextToSpeech() {
         textToSpeech = new TextToSpeech(this, status -> {
@@ -127,26 +134,17 @@ public class PayakLesson extends AppCompatActivity {
                             "Kailangan i-download ang Filipino voice sa Text-to-Speech settings.",
                             Toast.LENGTH_LONG).show();
                     try {
-                        Intent installIntent = new Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-                        startActivity(installIntent);
+                        startActivity(new Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA));
                     } catch (ActivityNotFoundException e) {
-                        Toast.makeText(this,
-                                "Hindi ma-open ang installer ng TTS.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Hindi ma-open ang installer ng TTS.", Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    Voice selected = null;
                     for (Voice v : textToSpeech.getVoices()) {
-                        Locale vLocale = v.getLocale();
-                        if (vLocale != null && vLocale.getLanguage().equals("fil")) {
-                            selected = v;
-                            break;
-                        } else if (v.getName().toLowerCase().contains("fil")) {
-                            selected = v;
+                        if (v.getLocale() != null && v.getLocale().getLanguage().equals("fil")) {
+                            textToSpeech.setVoice(v);
                             break;
                         }
                     }
-                    if (selected != null) textToSpeech.setVoice(selected);
-
                     textToSpeech.setSpeechRate(1.0f);
                     loadCharacterLines();
                 }
@@ -156,6 +154,7 @@ public class PayakLesson extends AppCompatActivity {
         });
     }
 
+    // Palitan ang mga direct setVisibility sa fadeInImage method
     private void loadCharacterLines() {
         db.collection("lesson_character_lines").document("LCL11")
                 .get()
@@ -165,18 +164,23 @@ public class PayakLesson extends AppCompatActivity {
                         List<String> descriptionLines = (List<String>) document.get("description_line");
                         List<String> exampleLines = (List<String>) document.get("example_line");
 
-                        speakIntroLines(introLines, () -> {
-                            List<LineItem> remainingLines = new ArrayList<>();
-                            if (descriptionLines != null)
-                                for (String s : descriptionLines) remainingLines.add(new LineItem(s, descriptionTextView));
-                            if (exampleLines != null)
-                                for (String s : exampleLines) remainingLines.add(new LineItem(s, exampleTextView));
+                        // Step 1: Speak intro lines
+                        speakLinesSequentially(introLines, () -> {
+                            // Step 2: Fade in description image
+                            runOnUiThread(() -> fadeInImage(descriptionImageView));
 
-                            speakLinesSequentially(remainingLines, () -> {
-                                // ✅ Unlock quiz button kapag tapos na lahat ng lines
-                                runOnUiThread(() -> {
-                                    quizButton.setEnabled(true);
-                                    quizButton.setAlpha(1.0f);
+                            // Step 3: Speak description lines
+                            speakLinesSequentially(descriptionLines, () -> {
+                                // Step 4: Fade in example image
+                                runOnUiThread(() -> fadeInImage(exampleImageView));
+
+                                // Step 5: Speak example lines
+                                speakLinesSequentially(exampleLines, () -> {
+                                    // Step 6: Unlock quiz button
+                                    runOnUiThread(() -> {
+                                        quizButton.setEnabled(true);
+                                        quizButton.setAlpha(1.0f);
+                                    });
                                 });
                             });
                         });
@@ -184,78 +188,40 @@ public class PayakLesson extends AppCompatActivity {
                 });
     }
 
-    private void speakIntroLines(List<String> lines, Runnable onComplete) {
-        if (lines == null || lines.isEmpty()) {
-            onComplete.run();
-            return;
-        }
-
-        Iterator<String> iterator = lines.iterator();
-        speakNextIntroLine(iterator, onComplete);
+    // Fade-in animation method
+    private void fadeInImage(View view) {
+        view.setAlpha(0f);
+        view.setVisibility(View.VISIBLE);
+        view.animate()
+                .alpha(1f)
+                .setDuration(800) // duration in milliseconds
+                .setListener(null);
     }
 
-    private void speakNextIntroLine(Iterator<String> iterator, Runnable onComplete) {
+
+    private void speakLinesSequentially(List<String> lines, Runnable onComplete) {
+        if (lines == null || lines.isEmpty()) {
+            if (onComplete != null) onComplete.run();
+            return;
+        }
+        Iterator<String> iterator = lines.iterator();
+        speakNext(iterator, onComplete);
+    }
+
+    private void speakNext(Iterator<String> iterator, Runnable onComplete) {
         if (!iterator.hasNext()) {
-            onComplete.run();
+            if (onComplete != null) onComplete.run();
             return;
         }
 
         String line = iterator.next();
         textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override public void onStart(String utteranceId) {}
-            @Override public void onDone(String utteranceId) { runOnUiThread(() -> speakNextIntroLine(iterator, onComplete)); }
+            @Override public void onDone(String utteranceId) { runOnUiThread(() -> speakNext(iterator, onComplete)); }
             @Override public void onError(String utteranceId) {}
         });
 
-        textToSpeech.speak(line, TextToSpeech.QUEUE_FLUSH, null, "INTRO_" + line);
-    }
-
-    private void speakLinesSequentially(List<LineItem> lines, Runnable onComplete) {
-        Iterator<LineItem> iterator = lines.iterator();
-        speakNext(iterator, onComplete);
-    }
-
-    private void speakNext(Iterator<LineItem> iterator, Runnable onComplete) {
-        if (!iterator.hasNext()) {
-            if (onComplete != null) onComplete.run();
-            return;
-        }
-
-        LineItem item = iterator.next();
-
-        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
-            @Override
-            public void onStart(String utteranceId) {
-                runOnUiThread(() -> appendLineWithTypewriter(item.targetView, item.text, 40, null));
-            }
-            @Override
-            public void onDone(String utteranceId) { runOnUiThread(() -> speakNext(iterator, onComplete)); }
-            @Override public void onError(String utteranceId) {}
-        });
-
-        textToSpeech.speak(item.text, TextToSpeech.QUEUE_ADD, null, item.text);
-    }
-
-    private void appendLineWithTypewriter(TextView textView, String newText, long delay, Runnable onComplete) {
-        textView.setVisibility(View.VISIBLE);
-
-        String existingText = textView.getText().toString();
-        String prefix = existingText.isEmpty() ? "" : existingText + "\n\n";
-
-        final int[] index = {0};
-        Runnable characterAdder = new Runnable() {
-            @Override
-            public void run() {
-                if (index[0] < newText.length()) {
-                    textView.setText(prefix + newText.substring(0, index[0] + 1));
-                    index[0]++;
-                    textView.postDelayed(this, delay);
-                } else {
-                    if (onComplete != null) onComplete.run();
-                }
-            }
-        };
-        textView.post(characterAdder);
+        textToSpeech.speak(line, TextToSpeech.QUEUE_ADD, null, line);
     }
 
     @Override
@@ -267,15 +233,6 @@ public class PayakLesson extends AppCompatActivity {
         }
     }
 
-    private static class LineItem {
-        String text;
-        TextView targetView;
-        LineItem(String text, TextView targetView) {
-            this.text = text;
-            this.targetView = targetView;
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -283,5 +240,4 @@ public class PayakLesson extends AppCompatActivity {
             textToSpeech.stop();
         }
     }
-
 }
