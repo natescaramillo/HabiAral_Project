@@ -58,7 +58,12 @@ public class LangkapanLesson extends AppCompatActivity {
         quizButton.setEnabled(false);
         quizButton.setAlpha(0.5f);
         quizButton.setOnClickListener(v -> {
-            if (textToSpeech != null) textToSpeech.stop();
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+                textToSpeech.shutdown();
+                textToSpeech = null;
+            }
+
             startActivity(new Intent(LangkapanLesson.this, LangkapanQuiz.class));
         });
 
