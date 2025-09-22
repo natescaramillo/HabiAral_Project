@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+
 public class Palaro extends AppCompatActivity {
 
     View button1, button2, button3;
