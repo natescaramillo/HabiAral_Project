@@ -95,7 +95,6 @@ public class PayakLesson extends AppCompatActivity {
                         }
                     }
 
-                    // Always mark as in_progress for database if not already, but don't block quiz
                     if (!alreadyCompleted) {
                         Map<String, Object> update = new HashMap<>();
                         Map<String, Object> payakMap = new HashMap<>();
@@ -114,7 +113,6 @@ public class PayakLesson extends AppCompatActivity {
                                 .set(update, SetOptions.merge());
                     }
 
-                    // Enable quiz button regardless of completion
                     runOnUiThread(() -> {
                         quizButton.setEnabled(true);
                         quizButton.setAlpha(1.0f);
@@ -154,7 +152,6 @@ public class PayakLesson extends AppCompatActivity {
         });
     }
 
-    // Palitan ang mga direct setVisibility sa fadeInImage method
     private void loadCharacterLines() {
         db.collection("lesson_character_lines").document("LCL11")
                 .get()
@@ -164,19 +161,13 @@ public class PayakLesson extends AppCompatActivity {
                         List<String> descriptionLines = (List<String>) document.get("description_line");
                         List<String> exampleLines = (List<String>) document.get("example_line");
 
-                        // Step 1: Speak intro lines
                         speakLinesSequentially(introLines, () -> {
-                            // Step 2: Fade in description image
                             runOnUiThread(() -> fadeInImage(descriptionImageView));
 
-                            // Step 3: Speak description lines
                             speakLinesSequentially(descriptionLines, () -> {
-                                // Step 4: Fade in example image
                                 runOnUiThread(() -> fadeInImage(exampleImageView));
 
-                                // Step 5: Speak example lines
                                 speakLinesSequentially(exampleLines, () -> {
-                                    // Step 6: Unlock quiz button
                                     runOnUiThread(() -> {
                                         quizButton.setEnabled(true);
                                         quizButton.setAlpha(1.0f);
@@ -188,13 +179,12 @@ public class PayakLesson extends AppCompatActivity {
                 });
     }
 
-    // Fade-in animation method
     private void fadeInImage(View view) {
         view.setAlpha(0f);
         view.setVisibility(View.VISIBLE);
         view.animate()
                 .alpha(1f)
-                .setDuration(800) // duration in milliseconds
+                .setDuration(800)
                 .setListener(null);
     }
 

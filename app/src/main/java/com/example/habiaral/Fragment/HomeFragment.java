@@ -63,6 +63,7 @@ public class HomeFragment extends Fragment {
     private Runnable idleGifRunnable;
     private ImageView imageView;
     private boolean isFragmentActive = false;
+    private int animationStep = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -112,21 +113,31 @@ public class HomeFragment extends Fragment {
 
                 int delay = 3000 + (int) (Math.random() * 5000);
 
-                if (Math.random() < 0.5) {
+                if (animationStep == 0) {
+                    Glide.with(HomeFragment.this).asGif().load(R.drawable.hello).into(imageView);
+                    idleGifHandler.postDelayed(() -> {
+                        if (isFragmentActive && imageView != null) {
+                            Glide.with(HomeFragment.this).asGif().load(R.drawable.idle).into(imageView);
+                        }
+                        animationStep = 1;
+                        idleGifHandler.postDelayed(idleGifRunnable, delay);
+                    }, 2000);
+
+                } else if (animationStep == 1) {
                     Glide.with(HomeFragment.this).asGif().load(R.drawable.right_2).into(imageView);
                     idleGifHandler.postDelayed(() -> {
                         if (isFragmentActive && imageView != null) {
                             Glide.with(HomeFragment.this).asGif().load(R.drawable.idle).into(imageView);
                         }
+                        animationStep = 0;
                         idleGifHandler.postDelayed(idleGifRunnable, delay);
                     }, 2000);
-                } else {
-                    idleGifHandler.postDelayed(idleGifRunnable, delay);
                 }
             }
         };
         idleGifHandler.postDelayed(idleGifRunnable, 2000);
     }
+
 
     private void stopIdleGifRandomizer() {
         isFragmentActive = false;

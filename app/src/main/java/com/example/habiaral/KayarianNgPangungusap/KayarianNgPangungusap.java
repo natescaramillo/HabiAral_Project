@@ -53,16 +53,13 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         uid = user.getUid();
         db = FirebaseFirestore.getInstance();
 
-        // Load cached progress first
         Map<String, Object> cachedData = LessonProgressCache.getData();
         if (cachedData != null) {
             updateUIFromProgress(cachedData);
         }
 
-        // Ensure module_2 exists in Firestore
         ensureModule2Exists();
 
-        // Save studentId to module_progress if available
         db.collection("students").document(uid).get()
                 .addOnSuccessListener(studentSnap -> {
                     if (studentSnap.exists() && studentSnap.contains("studentId")) {
@@ -165,14 +162,12 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
         if (lessons == null) lessons = new HashMap<>();
 
-        // Get each lesson's status
         String payakStatus = getLessonStatus(lessons, "payak");
         String tambalanStatus = getLessonStatus(lessons, "tambalan");
         String hugnayanStatus = getLessonStatus(lessons, "hugnayan");
         String langkapanStatus = getLessonStatus(lessons, "langkapan");
 
-        // Unlock sequentially
-        unlockButton(btnPayak, true, payakLock); // always unlocked
+        unlockButton(btnPayak, true, payakLock);
         unlockButton(btnTambalan, "completed".equals(payakStatus) || "in_progress".equals(tambalanStatus), tambalanLock);
         unlockButton(btnHugnayan, "completed".equals(tambalanStatus) || "in_progress".equals(hugnayanStatus), hugnayanLock);
         unlockButton(btnLangkapan, "completed".equals(hugnayanStatus) || "in_progress".equals(langkapanStatus), langkapanLock);
