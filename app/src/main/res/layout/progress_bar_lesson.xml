@@ -243,6 +243,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
+                            android:gravity="center"
                             android:fontFamily="@font/special"
                             android:text="Kayarian ng Pangungusap"
                             android:textColor="#FFFFFF"
