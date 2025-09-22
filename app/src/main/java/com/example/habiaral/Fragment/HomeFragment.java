@@ -259,7 +259,7 @@ public class HomeFragment extends Fragment {
                 db.collection("student_achievements").document(uid)
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> requireActivity().runOnUiThread(() -> {
-                            AchievementDialogUtils.showAchievementUnlockedDialog(requireContext(), title, R.drawable.achievement11);
+                            AchievementDialogUtils.showAchievementUnlockedDialog(requireContext(), title, R.drawable.achievement06);
                         }));
             });
         });

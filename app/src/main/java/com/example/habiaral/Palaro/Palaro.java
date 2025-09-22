@@ -240,7 +240,7 @@ public class Palaro extends AppCompatActivity {
                             db.collection("student_achievements").document(uid)
                                     .set(wrapper, SetOptions.merge())
                                     .addOnSuccessListener(unused -> runOnUiThread(() -> {
-                                        AchievementDialogUtils.showAchievementUnlockedDialog(Palaro.this, title, R.drawable.achievement11);
+                                        AchievementDialogUtils.showAchievementUnlockedDialog(Palaro.this, title, R.drawable.achievement01);
                                     }));
                         });
                     });
@@ -288,7 +288,7 @@ public class Palaro extends AppCompatActivity {
                         .set(wrapper, SetOptions.merge())
                         .addOnSuccessListener(unused -> runOnUiThread(() -> {
 
-                            AchievementDialogUtils.showAchievementUnlockedDialog(Palaro.this, title, R.drawable.achievement11);
+                            AchievementDialogUtils.showAchievementUnlockedDialog(Palaro.this, title, R.drawable.achievement07);
                         }));
             });
         });

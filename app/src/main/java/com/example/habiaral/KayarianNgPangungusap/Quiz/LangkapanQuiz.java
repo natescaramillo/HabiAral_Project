@@ -515,7 +515,10 @@ public class LangkapanQuiz extends AppCompatActivity {
 
         db.collection("module_progress")
                 .document(uid)
-                .set(moduleUpdate, SetOptions.merge());
+                .set(moduleUpdate, SetOptions.merge())
+                .addOnSuccessListener(unused -> {
+                    checkAndUnlockAchievement();
+                });
 
         if (LessonProgressCache.getData() != null) {
             Map<String, Object> cachedData = LessonProgressCache.getData();
@@ -572,6 +575,74 @@ public class LangkapanQuiz extends AppCompatActivity {
         if (countDownTimer != null) countDownTimer.cancel();
         stopTimerSound();
         releaseResultPlayer();
+    }
+
+    private void checkAndUnlockAchievement() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+        String uid = user.getUid();
+        String saCode = "SA12";
+        String achievementId = "A12";
+
+        db.collection("module_progress").document(uid).get().addOnSuccessListener(snapshot -> {
+            if (!snapshot.exists()) return;
+
+            Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_2");
+            if (module1 == null) return;
+
+            Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
+            if (lessons == null) return;
+
+            String[] lessonKeys = {
+                    "payak", "tambalan", "hugnayan", "langkapan"
+            };
+
+            for (String key : lessonKeys) {
+                Map<String, Object> lesson = (Map<String, Object>) lessons.get(key);
+                if (lesson == null || !"completed".equals(lesson.get("status"))) {
+                    return;
+                }
+            }
+
+            db.collection("student_achievements").document(uid).get().addOnSuccessListener(saSnapshot -> {
+                if (saSnapshot.exists()) {
+                    Map<String, Object> achievements = (Map<String, Object>) saSnapshot.get("achievements");
+                    if (achievements != null && achievements.containsKey(saCode)) return;
+                }
+                continueUnlockingAchievement(db, uid, saCode, achievementId);
+            });
+        });
+    }
+
+    private void continueUnlockingAchievement(FirebaseFirestore db, String uid, String saCode, String achievementID) {
+        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
+            if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
+            String studentId = studentDoc.getString("studentId");
+
+            db.collection("achievements").document(achievementID).get().addOnSuccessListener(achDoc -> {
+                if (!achDoc.exists() || !achDoc.contains("title")) return;
+                String title = achDoc.getString("title");
+
+                Map<String, Object> achievementData = new HashMap<>();
+                achievementData.put("achievementID", achievementID);
+                achievementData.put("title", title);
+                achievementData.put("unlockedAt", Timestamp.now());
+
+                Map<String, Object> achievementsMap = new HashMap<>();
+                achievementsMap.put(saCode, achievementData);
+
+                Map<String, Object> wrapper = new HashMap<>();
+                wrapper.put("studentId", studentId);
+                wrapper.put("achievements", achievementsMap);
+
+                db.collection("student_achievements")
+                        .document(uid)
+                        .set(wrapper, SetOptions.merge())
+                        .addOnSuccessListener(unused -> runOnUiThread(() -> {
+                            AchievementDialogUtils.showAchievementUnlockedDialog(LangkapanQuiz.this, title, R.drawable.achievement12);
+                        }));
+            });
+        });
     }
 }
 
