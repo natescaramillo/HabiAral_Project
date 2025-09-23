@@ -30,19 +30,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_wrapBehaviorInParent="vertical_only">
+        app:layout_constraintStart_toStartOf="parent">
 
 
         <LinearLayout
             android:id="@+id/heartsRow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginVertical="10dp"
             android:gravity="center"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/timerBar"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="@+id/guideline12"
@@ -99,16 +96,15 @@
             android:id="@+id/dalubhasa_answer"
             android:layout_width="0dp"
             android:layout_height="128dp"
-            android:layout_marginBottom="20dp"
             android:background="@drawable/rounded_rect"
             android:gravity="top|start"
             android:hint="Ilagay ang iyong sagot dito..."
             android:inputType="textMultiLine"
             android:padding="12dp"
-            app:layout_constraintBottom_toTopOf="@+id/UnlockButtonPalaro"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline12" />
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toBottomOf="@+id/answerLabel" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline12"
@@ -128,33 +124,33 @@
             android:id="@+id/answerLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:fontFamily="@font/special"
+            android:layout_marginTop="10dp"
             android:text="Sagot mo:"
             android:textColor="#000"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/dalubhasa_answer"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.029"
-            app:layout_constraintStart_toStartOf="@+id/guideline12" />
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toBottomOf="@+id/timerBar" />
 
         <ProgressBar
             android:id="@+id/timerBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginBottom="10dp"
             android:background="@null"
             android:backgroundTint="#E0E0E0"
+            android:layout_marginTop="10dp"
             android:clipToOutline="true"
             android:indeterminate="false"
             android:max="100"
             android:progress="100"
             android:progressDrawable="@drawable/timer_color_green"
-            app:layout_constraintBottom_toTopOf="@+id/answerLabel"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline12" />
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toBottomOf="@+id/heartsRow" />
 
 
         <androidx.constraintlayout.widget.Guideline
@@ -168,27 +164,29 @@
             android:id="@+id/UnlockButtonPalaro1"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginVertical="20dp"
             android:background="@drawable/rounded_button_achievement"
             android:fontFamily="@font/special"
             android:text="Umalis"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline12" />
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toBottomOf="@+id/dalubhasa_answer" />
 
         <Button
             android:id="@+id/UnlockButtonPalaro"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginVertical="20dp"
             android:background="@drawable/rounded_button_achievement"
             android:fontFamily="@font/special"
             android:text="Tapos"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline12" />
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toBottomOf="@+id/dalubhasa_answer" />
 
         <ImageView
             android:id="@+id/error_icon"
