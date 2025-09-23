@@ -319,13 +319,24 @@ public class Palaro extends AppCompatActivity {
     }
 
     private void updateUI() {
-        userPointText.setText(String.valueOf(userPoints));
+        String displayPoints;
+
+        if (userPoints < 400) {
+            displayPoints = userPoints + "/400";
+        } else if (userPoints < 800) {
+            displayPoints = userPoints + "/800";
+        } else if (userPoints < 1200) {
+            displayPoints = userPoints + "/1200";
+        } else {
+            displayPoints = String.valueOf(userPoints);
+        }
+
+        userPointText.setText(displayPoints);
         currentEnergyText.setText(String.valueOf(userEnergy));
 
         ImageView trophyImage = findViewById(R.id.trophy_image);
 
         int tierStart = 0;
-        int tierEnd = 400;
         int progressPercent = 0;
 
         if (userPoints >= 1200) {
@@ -348,6 +359,8 @@ public class Palaro extends AppCompatActivity {
         palaroProgress.setMax(100);
         palaroProgress.setProgress(progressPercent);
     }
+
+
 
     private void checkLocks() {
         button2.setEnabled(userPoints >= 400);

@@ -4,11 +4,22 @@ import android.content.Context;
 import android.media.MediaPlayer;
 
 public class SoundClickUtils {
-    public static void playClickSound(Context context, int soundResId) {
-        if (!SoundManagerUtils.isMuted(context)) {
-            MediaPlayer mediaPlayer = MediaPlayer.create(context, soundResId);
-            mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-            mediaPlayer.start();
+    private static long lastClickTime = 0;
+
+    private static boolean canPlay() {
+        long now = System.currentTimeMillis();
+        if (now - lastClickTime < 300) {
+            return false;
         }
+        lastClickTime = now;
+        return true;
+    }
+
+    public static void playClickSound(Context context, int soundResId) {
+        if (!canPlay()) return;
+
+        MediaPlayer mp = MediaPlayer.create(context, soundResId);
+        mp.setOnCompletionListener(MediaPlayer::release);
+        mp.start();
     }
 }
