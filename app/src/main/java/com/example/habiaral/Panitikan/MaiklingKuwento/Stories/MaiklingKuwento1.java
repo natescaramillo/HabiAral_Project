@@ -2,6 +2,7 @@ package com.example.habiaral.Panitikan.MaiklingKuwento.Stories;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -164,6 +165,14 @@ public class MaiklingKuwento1 extends AppCompatActivity {
 
                     textToSpeech.setSpeechRate(1.0f);
                     SoundManagerUtils.setTts(textToSpeech);
+
+                    SharedPreferences prefs = getSharedPreferences("StoryPrefs", MODE_PRIVATE);
+                    boolean isFirst = prefs.getBoolean("isFirstOpenMaikling1", true);
+
+                    if (isFirst) {
+                        loadIntroLines();
+                        prefs.edit().putBoolean("isFirstOpenMaikling1", false).apply();
+                    }
                 }
             } else {
                 Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
@@ -226,6 +235,7 @@ public class MaiklingKuwento1 extends AppCompatActivity {
 
 
     private void nextPage() {
+        SharedPreferences prefs = getSharedPreferences("StoryPrefs", MODE_PRIVATE);
 
         if (currentPage < comicPages.length - 1) {
             currentPage++;
@@ -244,6 +254,7 @@ public class MaiklingKuwento1 extends AppCompatActivity {
                 if (!introPlayed) {
                     loadPageLines(currentPage);
                     introPlayed = true;
+                    prefs.edit().putBoolean("isFirstOpenMaikling1", false).apply();
                 }
             } else {
                 loadPageLines(currentPage);
@@ -258,6 +269,8 @@ public class MaiklingKuwento1 extends AppCompatActivity {
 
 
     private void previousPage() {
+        SharedPreferences prefs = getSharedPreferences("StoryPrefs", MODE_PRIVATE);
+
         if (currentPage > 0) {
             currentPage--;
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
@@ -275,7 +288,7 @@ public class MaiklingKuwento1 extends AppCompatActivity {
                 introFinished = false;
                 introPlayed = false;
                 loadIntroLines();
-
+                prefs.edit().putBoolean("isFirstOpenMaikling1", true).apply();
             } else if (currentPage >= 2) {
                 loadPageLines(currentPage);
             }

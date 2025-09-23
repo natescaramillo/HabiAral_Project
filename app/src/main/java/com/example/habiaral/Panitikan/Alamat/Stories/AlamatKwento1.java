@@ -2,6 +2,7 @@ package com.example.habiaral.Panitikan.Alamat.Stories;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -65,6 +66,7 @@ public class AlamatKwento1 extends AppCompatActivity {
     private AudioManager audioManager;
     private int originalVolume;
     private boolean isNavigatingToQuiz = false;
+    private boolean isFirst = true;
 
 
     @Override
@@ -164,6 +166,14 @@ public class AlamatKwento1 extends AppCompatActivity {
 
                     textToSpeech.setSpeechRate(1.0f);
                     SoundManagerUtils.setTts(textToSpeech);
+
+                    SharedPreferences prefs = getSharedPreferences("StoryPrefs", MODE_PRIVATE);
+                    boolean isFirst = prefs.getBoolean("isFirstOpenAlamat1", true);
+
+                    if (isFirst) {
+                        loadIntroLines();
+                        prefs.edit().putBoolean("isFirstOpenAlamat1", false).apply();
+                    }
                 }
             } else {
                 Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
@@ -226,6 +236,7 @@ public class AlamatKwento1 extends AppCompatActivity {
 
 
     private void nextPage() {
+        SharedPreferences prefs = getSharedPreferences("StoryPrefs", MODE_PRIVATE);
 
         if (currentPage < comicPages.length - 1) {
             currentPage++;
@@ -244,6 +255,7 @@ public class AlamatKwento1 extends AppCompatActivity {
                 if (!introPlayed) {
                     loadPageLines(currentPage);
                     introPlayed = true;
+                    prefs.edit().putBoolean("isFirstOpenAlamat1", false).apply();
                 }
             } else {
                 loadPageLines(currentPage);
@@ -258,6 +270,8 @@ public class AlamatKwento1 extends AppCompatActivity {
 
 
     private void previousPage() {
+        SharedPreferences prefs = getSharedPreferences("StoryPrefs", MODE_PRIVATE);
+
         if (currentPage > 0) {
             currentPage--;
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
@@ -275,8 +289,8 @@ public class AlamatKwento1 extends AppCompatActivity {
                 introFinished = false;
                 introPlayed = false;
                 loadIntroLines();
-
-        } else if (currentPage >= 2) {
+                prefs.edit().putBoolean("isFirstOpenAlamat1", true).apply();
+            } else if (currentPage >= 2) {
                 loadPageLines(currentPage);
             }
         }
