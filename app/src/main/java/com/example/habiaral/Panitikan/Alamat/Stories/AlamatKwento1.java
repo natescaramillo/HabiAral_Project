@@ -32,14 +32,13 @@ import java.util.Map;
 public class AlamatKwento1 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.sulayman_01, R.drawable.sulayman_02, R.drawable.sulayman_03,
-            R.drawable.sulayman_04, R.drawable.sulayman_05, R.drawable.sulayman_06,
-            R.drawable.sulayman_07, R.drawable.sulayman_08, R.drawable.sulayman_09,
-            R.drawable.sulayman_10, R.drawable.sulayman_11, R.drawable.sulayman_12,
-            R.drawable.sulayman_13, R.drawable.sulayman_14, R.drawable.sulayman_15,
-            R.drawable.sulayman_16, R.drawable.sulayman_17, R.drawable.sulayman_18,
-            R.drawable.sulayman_19, R.drawable.sulayman_20, R.drawable.sulayman_21,
-            R.drawable.sulayman_22, R.drawable.sulayman_23
+            R.drawable.cover_page_rosas, R.drawable.kwento1_page01, R.drawable.kwento1_page02,
+            R.drawable.kwento1_page03, R.drawable.kwento1_page04, R.drawable.kwento1_page05,
+            R.drawable.kwento1_page06, R.drawable.kwento1_page07, R.drawable.kwento1_page08
+            , R.drawable.kwento1_page09, R.drawable.kwento1_page10, R.drawable.kwento1_page11
+            , R.drawable.kwento1_page12, R.drawable.kwento1_page13, R.drawable.kwento1_page14
+            , R.drawable.kwento1_page15, R.drawable.kwento1_page16, R.drawable.kwento1_page17
+            , R.drawable.kwento1_page18, R.drawable.kwento1_page19
     };
 
     private static final String STORY_ID = "AlamatKwento1";
@@ -246,6 +245,25 @@ public class AlamatKwento1 extends AppCompatActivity {
         }
     }
 
+    private void previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
+            storyImage.setImageResource(comicPages[currentPage]);
+            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
+
+            updateCheckpoint(currentPage);
+            if (currentPage == 1) {
+                if (!introPlayed) {
+                    loadPageLines(currentPage);
+                    introPlayed = true;
+                }
+            } else if (currentPage >= 2) {
+                loadPageLines(currentPage);
+            }
+        }
+    }
+
     private void loadPageLines(int page) {
         if (pageLines != null) {
             textToSpeech.stop();
@@ -297,25 +315,6 @@ public class AlamatKwento1 extends AppCompatActivity {
                 });
             }
         });
-    }
-
-    private void previousPage() {
-        if (currentPage > 0) {
-            currentPage--;
-            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
-            storyImage.setImageResource(comicPages[currentPage]);
-            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
-
-            updateCheckpoint(currentPage);
-            if (currentPage == 1) {
-                if (!introPlayed) {
-                    loadPageLines(currentPage);
-                    introPlayed = true;
-                }
-            } else if (currentPage >= 2) {
-                loadPageLines(currentPage);
-            }
-        }
     }
 
     private void loadCurrentProgress() {
