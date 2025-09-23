@@ -173,7 +173,12 @@ public class AlamatKwento1 extends AppCompatActivity {
     }
 
     private void loadIntroLines() {
-        if (introFinished) return;
+        if (introLines != null && !introLines.isEmpty()) {
+            // may cache na, gamitin ulit
+            currentIntroIndex = 0;
+            speakIntro();
+            return;
+        }
 
         db.collection("lesson_character_lines").document("LCL15").get()
                 .addOnSuccessListener(snapshot -> {
@@ -186,6 +191,7 @@ public class AlamatKwento1 extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void speakIntro() {
         if (introLines != null && currentIntroIndex < introLines.size()) {
@@ -267,12 +273,13 @@ public class AlamatKwento1 extends AppCompatActivity {
             }
             currentLineIndex = 0; // reset
 
-            if (currentPage == 1) {
-                if (!introPlayed) {
-                    loadPageLines(currentPage);
-                    introPlayed = true;
-                }
-            } else if (currentPage >= 2) {
+            if (currentPage == 0) {
+                // balik sa cover, ulitin intro
+                introFinished = false;
+                introPlayed = false;
+                loadIntroLines();
+
+        } else if (currentPage >= 2) {
                 loadPageLines(currentPage);
             }
         }
@@ -362,8 +369,17 @@ public class AlamatKwento1 extends AppCompatActivity {
                     }
                     storyImage.setImageResource(comicPages[currentPage]);
 
-                    if (currentPage > 0 || "completed".equals(statusObj)) {
+                    // ✅ Logic para sa intro
+                    if (currentPage == 0) {
+                        // nasa cover page pa rin → play intro
+                        introFinished = false;
+                        introPlayed = false;
+                        loadIntroLines();
+                    } else {
+                        // nasa ibang page na, huwag na i-play ang intro
                         introFinished = true;
+                        introPlayed = true;
+                        loadPageLines(currentPage);
                     }
 
                     if ("completed".equals(statusObj)) {
