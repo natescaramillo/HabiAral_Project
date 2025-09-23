@@ -72,8 +72,8 @@ public class PangUkolLesson extends AppCompatActivity {
 
         startIdleGifRandomizer();
 
-        unlockButton = findViewById(R.id.UnlockButtonPangukol);
-        imageView = findViewById(R.id.imageViewPangukol);
+        unlockButton = findViewById(R.id.UnlockButtonPangUkol);
+        imageView = findViewById(R.id.imageViewPangUkol);
 
         backOption = findViewById(R.id.back_option);
         nextOption = findViewById(R.id.next_option);

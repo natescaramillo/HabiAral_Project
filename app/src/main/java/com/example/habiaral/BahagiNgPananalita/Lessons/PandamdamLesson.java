@@ -71,7 +71,7 @@ public class PandamdamLesson extends AppCompatActivity {
         startIdleGifRandomizer();
 
         unlockButton = findViewById(R.id.UnlockButtonPandamdam);
-        imageView = findViewById(R.id.imageViewPandamdam);
+        imageView = findViewById(R.id.imageViewPadamdam);
 
         backOption = findViewById(R.id.back_option);
         nextOption = findViewById(R.id.next_option);

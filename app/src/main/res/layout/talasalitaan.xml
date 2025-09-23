@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/special"
         android:gravity="center"
-        android:text="Talasalitaan"
+        android:text="Diksyonaryo"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@id/view1"

@@ -70,8 +70,8 @@ public class PangAngkopLesson extends AppCompatActivity {
 
         startIdleGifRandomizer();
 
-        unlockButton = findViewById(R.id.UnlockButtonPangangkop);
-        imageView = findViewById(R.id.imageViewPangangkop);
+        unlockButton = findViewById(R.id.UnlockButtonPangAngkop);
+        imageView = findViewById(R.id.imageViewPangAngkop);
 
         backOption = findViewById(R.id.back_option);
         nextOption = findViewById(R.id.next_option);

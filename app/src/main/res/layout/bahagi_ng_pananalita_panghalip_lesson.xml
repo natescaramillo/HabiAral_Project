@@ -2,66 +2,55 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/Panghalip"
+    android:id="@+id/PangHalip"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background"
     android:fitsSystemWindows="false"
     tools:context=".Activity.IntroActivity">
 
-    <!-- Top container with lesson design background -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="429dp"
-        android:background="@drawable/lessons_design"
+    <!-- Character Image -->
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="600dp"
+        android:layout_height="400dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/idle"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-        <!-- Horizontal guideline for spacing -->
+        app:layout_constraintVertical_bias="0.046" />
 
-        <!-- Small top margin guideline -->
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelinehorizontal2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.05" />
+    <!-- Bottom Content -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/bottom_bar_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline31">
 
-        <!-- Vertical guidelines for left and right margins -->
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.95" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05" />
-
-        <!-- Main image -->
-
-        <!-- Option bar with smaller icons on the right -->
+        <!-- Lesson Image -->
         <ImageView
-            android:id="@+id/imageViewPanghalip"
+            android:id="@+id/imageViewPangHalip"
             android:layout_width="0dp"
             android:layout_height="200dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/rounded_ppt"
             android:clipToOutline="true"
             android:scaleType="fitXY"
             android:src="@drawable/panghalip01"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guideline3"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@id/guideline2"
-            app:layout_constraintTop_toTopOf="@id/guidelinehorizontal2"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Option Bar -->
         <LinearLayout
             android:id="@+id/option_bar"
             android:layout_width="0dp"
@@ -69,22 +58,16 @@
             android:background="#99A27B5C"
             android:gravity="end|center_vertical"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/imageViewPanghalip"
-            app:layout_constraintEnd_toStartOf="@id/guideline3"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/imageViewPanghalip"
-            app:layout_constraintTop_toBottomOf="@id/imageViewPanghalip"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintEnd_toEndOf="@+id/imageViewPangHalip"
+            app:layout_constraintStart_toStartOf="@+id/imageViewPangHalip"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewPangHalip">
 
             <ImageView
                 android:id="@+id/back_option"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginEnd="5dp"
-                android:adjustViewBounds="true"
                 android:background="#CAA885"
-                android:scaleType="fitCenter"
                 android:src="@drawable/back_button" />
 
             <ImageView
@@ -92,9 +75,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginEnd="5dp"
-                android:adjustViewBounds="true"
                 android:background="#CAA885"
-                android:scaleType="fitCenter"
                 android:src="@drawable/next_button" />
 
             <ImageView
@@ -102,47 +83,24 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginEnd="5dp"
-                android:adjustViewBounds="true"
                 android:background="#CAA885"
-                android:scaleType="fitCenter"
                 android:src="@drawable/full_screen" />
         </LinearLayout>
 
+        <!-- Quiz Button -->
+        <Button
+            android:id="@+id/UnlockButtonPangHalip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_button_achievement"
+            android:fontFamily="@font/special"
+            android:text="Pagsusulit"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Instruction text -->
-
-
-    <!-- Unlock button -->
-    <Button
-        android:id="@+id/UnlockButtonPanghalip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_button_achievement"
-        android:fontFamily="@font/special"
-        android:text="Pagsusulit"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/vertical_line2"
-        app:layout_constraintHorizontal_bias="0.937"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.957"
-        android:layout_marginBottom="24dp"/>
-
-    <!-- Character / mascot image -->
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="600dp"
-        android:layout_height="450dp"
-        android:scaleType="centerCrop"
-        android:visibility="visible"
-        android:src="@drawable/idle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.673" />
 
     <!-- Guidelines -->
     <androidx.constraintlayout.widget.Guideline
@@ -150,20 +108,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.4" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vertical_line1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.04" />
+        app:layout_constraintGuide_percent="0.05" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vertical_line2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.961" />
+        app:layout_constraintGuide_percent="0.95" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

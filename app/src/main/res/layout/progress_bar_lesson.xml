@@ -74,13 +74,15 @@
                         </FrameLayout>
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
                             android:fontFamily="@font/special"
                             android:text="Bahagi ng Pananalita"
                             android:textColor="#FFFFFF"
-                            android:textSize="20sp"
+                            android:textSize="15sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -157,13 +159,15 @@
                         </FrameLayout>
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
                             android:layout_marginTop="20dp"
                             android:fontFamily="@font/special"
-                            android:text="Pag Unawa"
+                            android:text="Panitikan"
                             android:textColor="#FFFFFF"
-                            android:textSize="20sp"
+                            android:textSize="15sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -240,14 +244,14 @@
                         </FrameLayout>
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
                             android:gravity="center"
                             android:fontFamily="@font/special"
                             android:text="Kayarian ng Pangungusap"
                             android:textColor="#FFFFFF"
-                            android:textSize="20sp"
+                            android:textSize="15sp"
                             android:textStyle="bold" />
 
                         <TextView

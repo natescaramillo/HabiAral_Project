@@ -114,7 +114,7 @@
                 <TextView
                     android:id="@+id/textDescription"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_margin="16dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/special"
@@ -155,7 +155,7 @@
                 <TextView
                     android:id="@+id/textTeamDescription"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_margin="16dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/special"
@@ -196,7 +196,7 @@
                 <TextView
                     android:id="@+id/textFinalNote"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_margin="16dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/special"

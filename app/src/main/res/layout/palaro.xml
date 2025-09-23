@@ -46,8 +46,8 @@
 
         <ImageView
             android:id="@+id/game_mechanic_icon"
-            android:layout_width="33dp"
-            android:layout_height="35dp"
+            android:layout_width="28dp"
+            android:layout_height="25dp"
             android:layout_marginEnd="15dp"
             android:clickable="true"
             app:layout_constraintBottom_toBottomOf="parent"
