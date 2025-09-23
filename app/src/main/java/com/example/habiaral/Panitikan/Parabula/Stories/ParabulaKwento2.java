@@ -252,7 +252,7 @@ public class ParabulaKwento2 extends AppCompatActivity {
             textToSpeech.stop();
         }
 
-        db.collection("lesson_character_lines").document("LCL18").get()
+        db.collection("lesson_character_lines").document("LCL25").get()
                 .addOnSuccessListener(snapshot -> {
                     if (snapshot.exists()) {
                         List<Map<String, Object>> pages = (List<Map<String, Object>>) snapshot.get("pages");

@@ -177,7 +177,7 @@ public class MaiklingKuwento3 extends AppCompatActivity {
     private void loadIntroLines() {
         if (introFinished) return;
 
-        db.collection("lesson_character_lines").document("LCL17").get()
+        db.collection("lesson_character_lines").document("LCL21").get()
                 .addOnSuccessListener(snapshot -> {
                     if (snapshot.exists()) {
                         introLines = (List<String>) snapshot.get("intro");

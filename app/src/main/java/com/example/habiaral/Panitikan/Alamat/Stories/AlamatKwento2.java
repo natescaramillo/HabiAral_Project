@@ -251,7 +251,7 @@ public class AlamatKwento2 extends AppCompatActivity {
             textToSpeech.stop();
         }
 
-        db.collection("lesson_character_lines").document("LCL17").get()
+        db.collection("lesson_character_lines").document("LCL16").get()
                 .addOnSuccessListener(snapshot -> {
                     if (snapshot.exists()) {
                         List<Map<String, Object>> pages = (List<Map<String, Object>>) snapshot.get("pages");
