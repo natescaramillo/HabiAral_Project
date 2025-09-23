@@ -2,6 +2,7 @@ package com.example.habiaral.Panitikan.Alamat.Stories;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.Voice;
@@ -31,20 +32,21 @@ import java.util.Map;
 public class AlamatKwento1 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.cover_page_rosas, R.drawable.kwento1_page01, R.drawable.kwento1_page02,
-            R.drawable.kwento1_page03, R.drawable.kwento1_page04, R.drawable.kwento1_page05,
-            R.drawable.kwento1_page06, R.drawable.kwento1_page07, R.drawable.kwento1_page08,
-            R.drawable.kwento1_page09, R.drawable.kwento1_page10, R.drawable.kwento1_page11,
-            R.drawable.kwento1_page12, R.drawable.kwento1_page13, R.drawable.kwento1_page14,
-            R.drawable.kwento1_page15, R.drawable.kwento1_page16, R.drawable.kwento1_page17,
-            R.drawable.kwento1_page18, R.drawable.kwento1_page19
+            R.drawable.sulayman_01, R.drawable.sulayman_02, R.drawable.sulayman_03,
+            R.drawable.sulayman_04, R.drawable.sulayman_05, R.drawable.sulayman_06,
+            R.drawable.sulayman_07, R.drawable.sulayman_08, R.drawable.sulayman_09,
+            R.drawable.sulayman_10, R.drawable.sulayman_11, R.drawable.sulayman_12,
+            R.drawable.sulayman_13, R.drawable.sulayman_14, R.drawable.sulayman_15,
+            R.drawable.sulayman_16, R.drawable.sulayman_17, R.drawable.sulayman_18,
+            R.drawable.sulayman_19, R.drawable.sulayman_20, R.drawable.sulayman_21,
+            R.drawable.sulayman_22, R.drawable.sulayman_23
     };
 
     private static final String STORY_ID = "AlamatKwento1";
-    private static final String STORY_TITLE = "Alamat ng Rosas";
+    private static final String STORY_TITLE = "Ang Alamat ng Rosas";
 
     private boolean isLessonDone = false;
-    private boolean introFinished = false; // ✅ bago makapag-next sa cover
+    private boolean introFinished = false;
     private ImageView storyImage;
     private Button unlockButton;
     private int currentPage = 0;
@@ -52,18 +54,28 @@ public class AlamatKwento1 extends AppCompatActivity {
     private FirebaseFirestore db;
     private String uid;
 
-    // ✅ TTS
     private TextToSpeech textToSpeech;
     private List<String> introLines;
     private int currentIntroIndex = 0;
 
     private List<String> pageLines;
     private int currentLineIndex = 0;
+    private boolean introPlayed = false;
+
+    private AudioManager audioManager;
+    private int originalVolume;
+    private boolean isNavigatingToQuiz = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.panitikan_alamat_kwento1);
+
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        if (audioManager != null) {
+            originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        }
 
         storyImage = findViewById(R.id.imageViewComic);
         unlockButton = findViewById(R.id.UnlockButtonKwento1);
@@ -77,10 +89,8 @@ public class AlamatKwento1 extends AppCompatActivity {
 
         storyImage.setImageResource(comicPages[currentPage]);
 
-        // ✅ setup TTS
         initTTS();
 
-        // ✅ click page
         storyImage.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 float x = event.getX();
@@ -93,6 +103,15 @@ public class AlamatKwento1 extends AppCompatActivity {
 
         unlockButton.setOnClickListener(v -> {
             if (isLessonDone) {
+                if (audioManager != null) {
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+                }
+
+                if (textToSpeech != null) {
+                    textToSpeech.stop();
+                }
+
+                isNavigatingToQuiz = true;
                 startActivity(new Intent(AlamatKwento1.this, AlamatKwento1Quiz.class));
             }
         });
@@ -128,7 +147,6 @@ public class AlamatKwento1 extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    // piliin FIL voice kung available
                     Voice selected = null;
                     for (Voice v : textToSpeech.getVoices()) {
                         Locale vLocale = v.getLocale();
@@ -147,7 +165,6 @@ public class AlamatKwento1 extends AppCompatActivity {
                     textToSpeech.setSpeechRate(1.0f);
                     SoundManagerUtils.setTts(textToSpeech);
 
-                    // ✅ load intro mula Firestore (LCL15)
                     loadIntroLines();
                 }
             } else {
@@ -157,7 +174,7 @@ public class AlamatKwento1 extends AppCompatActivity {
     }
 
     private void loadIntroLines() {
-        if (introFinished) return; // ✅ skip agad kung tapos na dati
+        if (introFinished) return;
 
         db.collection("lesson_character_lines").document("LCL15").get()
                 .addOnSuccessListener(snapshot -> {
@@ -171,18 +188,14 @@ public class AlamatKwento1 extends AppCompatActivity {
                 });
     }
 
-
     private void speakIntro() {
         if (introLines != null && currentIntroIndex < introLines.size()) {
             String line = introLines.get(currentIntroIndex);
             textToSpeech.speak(line, TextToSpeech.QUEUE_FLUSH, null, "INTRO_" + currentIntroIndex);
 
-            // ✅ pag natapos isang line → sunod agad
             textToSpeech.setOnUtteranceProgressListener(new android.speech.tts.UtteranceProgressListener() {
-                @Override
-                public void onStart(String utteranceId) {}
-                @Override
-                public void onError(String utteranceId) {}
+                @Override public void onStart(String utteranceId) {}
+                @Override public void onError(String utteranceId) {}
                 @Override
                 public void onDone(String utteranceId) {
                     runOnUiThread(() -> {
@@ -190,22 +203,26 @@ public class AlamatKwento1 extends AppCompatActivity {
                         if (currentIntroIndex < introLines.size()) {
                             speakIntro();
                         } else {
-                            // ✅ tapos na intro, allow next page
                             introFinished = true;
+
+                            isLessonDone = true;
+                            unlockButton.setEnabled(true);
+                            unlockButton.setAlpha(1f);
                         }
                     });
                 }
             });
         } else {
             introFinished = true;
+
+            isLessonDone = true;
+            unlockButton.setEnabled(true);
+            unlockButton.setAlpha(1f);
         }
     }
 
+
     private void nextPage() {
-        if (currentPage == 0 && !introFinished) {
-            Toast.makeText(this, "Hintayin munang matapos ang intro.", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         if (currentPage < comicPages.length - 1) {
             currentPage++;
@@ -214,10 +231,14 @@ public class AlamatKwento1 extends AppCompatActivity {
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
 
             updateCheckpoint(currentPage);
-
+            if (currentPage == 1) {
+                if (!introPlayed) {
+                    loadPageLines(currentPage);
+                    introPlayed = true;
+                }
+            } else {
                 loadPageLines(currentPage);
-
-
+            }
             if (currentPage == comicPages.length - 1) {
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
@@ -226,20 +247,28 @@ public class AlamatKwento1 extends AppCompatActivity {
     }
 
     private void loadPageLines(int page) {
-        db.collection("lesson_character_lines").document("LCL15").get()
+        if (pageLines != null) {
+            textToSpeech.stop();
+        }
+
+        db.collection("lesson_character_lines").document("LCL17").get()
                 .addOnSuccessListener(snapshot -> {
                     if (snapshot.exists()) {
                         List<Map<String, Object>> pages = (List<Map<String, Object>>) snapshot.get("pages");
                         if (pages != null) {
                             for (Map<String, Object> p : pages) {
                                 Object pageNumObj = p.get("page");
-                                if (pageNumObj instanceof Number && ((Number) pageNumObj).intValue() == page) {
-                                    pageLines = (List<String>) p.get("line");
-                                    if (pageLines != null && !pageLines.isEmpty()) {
-                                        currentLineIndex = 0;
-                                        speakPageLine();
+                                if (pageNumObj instanceof Number) {
+                                    int firestorePage = ((Number) pageNumObj).intValue();
+                                    if (firestorePage - 1 == page) {
+                                        List<String> lines = (List<String>) p.get("line");
+                                        if (lines != null && !lines.isEmpty()) {
+                                            pageLines = lines;
+                                            currentLineIndex = 0;
+                                            speakPageLine();
+                                        }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                         }
@@ -249,26 +278,25 @@ public class AlamatKwento1 extends AppCompatActivity {
 
 
     private void speakPageLine() {
-        if (pageLines != null && currentLineIndex < pageLines.size()) {
-            String line = pageLines.get(currentLineIndex);
-            textToSpeech.speak(line, TextToSpeech.QUEUE_FLUSH, null, "PAGE_" + currentLineIndex);
+        if (pageLines == null || currentLineIndex >= pageLines.size()) return;
 
-            textToSpeech.setOnUtteranceProgressListener(new android.speech.tts.UtteranceProgressListener() {
-                @Override
-                public void onStart(String utteranceId) {}
-                @Override
-                public void onError(String utteranceId) {}
-                @Override
-                public void onDone(String utteranceId) {
-                    runOnUiThread(() -> {
-                        currentLineIndex++;
-                        if (currentLineIndex < pageLines.size()) {
-                            speakPageLine();
-                        }
-                    });
-                }
-            });
-        }
+        String line = pageLines.get(currentLineIndex);
+
+        textToSpeech.speak(line, TextToSpeech.QUEUE_FLUSH, null, "PAGE_" + currentPage + "_" + currentLineIndex);
+
+        textToSpeech.setOnUtteranceProgressListener(new android.speech.tts.UtteranceProgressListener() {
+            @Override public void onStart(String utteranceId) {}
+            @Override public void onError(String utteranceId) {}
+            @Override
+            public void onDone(String utteranceId) {
+                runOnUiThread(() -> {
+                    currentLineIndex++;
+                    if (currentLineIndex < pageLines.size()) {
+                        speakPageLine();
+                    }
+                });
+            }
+        });
     }
 
     private void previousPage() {
@@ -279,8 +307,14 @@ public class AlamatKwento1 extends AppCompatActivity {
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
 
             updateCheckpoint(currentPage);
-            loadPageLines(currentPage);
-
+            if (currentPage == 1) {
+                if (!introPlayed) {
+                    loadPageLines(currentPage);
+                    introPlayed = true;
+                }
+            } else if (currentPage >= 2) {
+                loadPageLines(currentPage);
+            }
         }
     }
 
@@ -314,7 +348,6 @@ public class AlamatKwento1 extends AppCompatActivity {
                     }
                     storyImage.setImageResource(comicPages[currentPage]);
 
-                    // ✅ kung hindi nasa cover page o completed na, huwag nang ulitin ang intro
                     if (currentPage > 0 || "completed".equals(statusObj)) {
                         introFinished = true;
                     }
@@ -326,7 +359,6 @@ public class AlamatKwento1 extends AppCompatActivity {
                     }
                 });
     }
-
 
     private void updateCheckpoint(int checkpoint) {
         if (uid == null) return;
@@ -375,12 +407,35 @@ public class AlamatKwento1 extends AppCompatActivity {
                         isLessonDone = true;
                         unlockButton.setEnabled(true);
                         unlockButton.setAlpha(1f);
+
+
                     }
                 });
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (!isNavigatingToQuiz && audioManager != null) {
+            originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isNavigatingToQuiz = false;
+        if (audioManager != null) {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+        }
+    }
+
+    @Override
     protected void onDestroy() {
+        if (audioManager != null) {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+        }
         if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();

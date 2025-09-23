@@ -2,6 +2,7 @@ package com.example.habiaral.Panitikan.Epiko.Stories;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.Voice;
@@ -45,7 +46,7 @@ public class EpikoKwento1 extends AppCompatActivity {
     private static final String STORY_TITLE = "Indarapatra at Sulayman";
 
     private boolean isLessonDone = false;
-    private boolean introFinished = false; // ✅ kailangan matapos intro bago makapag-next sa cover
+    private boolean introFinished = false;
     private ImageView storyImage;
     private Button unlockButton;
     private int currentPage = 0;
@@ -53,7 +54,6 @@ public class EpikoKwento1 extends AppCompatActivity {
     private FirebaseFirestore db;
     private String uid;
 
-    // ✅ TTS
     private TextToSpeech textToSpeech;
     private List<String> introLines;
     private int currentIntroIndex = 0;
@@ -62,11 +62,20 @@ public class EpikoKwento1 extends AppCompatActivity {
     private int currentLineIndex = 0;
     private boolean introPlayed = false;
 
+    private AudioManager audioManager;
+    private int originalVolume;
+    private boolean isNavigatingToQuiz = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.panitikan_alamat_kwento1);
+
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        if (audioManager != null) {
+            originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        }
 
         storyImage = findViewById(R.id.imageViewComic);
         unlockButton = findViewById(R.id.UnlockButtonKwento1);
@@ -80,10 +89,8 @@ public class EpikoKwento1 extends AppCompatActivity {
 
         storyImage.setImageResource(comicPages[currentPage]);
 
-        // ✅ setup TTS
         initTTS();
 
-        // ✅ click page
         storyImage.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 float x = event.getX();
@@ -96,6 +103,16 @@ public class EpikoKwento1 extends AppCompatActivity {
 
         unlockButton.setOnClickListener(v -> {
             if (isLessonDone) {
+                if (audioManager != null) {
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+                }
+
+                // 🛑 Itigil muna TTS bago lumipat
+                if (textToSpeech != null) {
+                    textToSpeech.stop();
+                }
+
+                isNavigatingToQuiz = true;
                 startActivity(new Intent(EpikoKwento1.this, EpikoKwento1Quiz.class));
             }
         });
@@ -131,7 +148,6 @@ public class EpikoKwento1 extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    // piliin FIL voice kung available
                     Voice selected = null;
                     for (Voice v : textToSpeech.getVoices()) {
                         Locale vLocale = v.getLocale();
@@ -150,7 +166,6 @@ public class EpikoKwento1 extends AppCompatActivity {
                     textToSpeech.setSpeechRate(1.0f);
                     SoundManagerUtils.setTts(textToSpeech);
 
-                    // ✅ load intro mula Firestore (LCL17)
                     loadIntroLines();
                 }
             } else {
@@ -189,9 +204,8 @@ public class EpikoKwento1 extends AppCompatActivity {
                         if (currentIntroIndex < introLines.size()) {
                             speakIntro();
                         } else {
-                            introFinished = true; // ✅ tapos na intro
+                            introFinished = true;
 
-                            // 👉 unlock agad kahit intro pa lang
                             isLessonDone = true;
                             unlockButton.setEnabled(true);
                             unlockButton.setAlpha(1f);
@@ -202,7 +216,6 @@ public class EpikoKwento1 extends AppCompatActivity {
         } else {
             introFinished = true;
 
-            // 👉 fallback unlock kung walang intro lines
             isLessonDone = true;
             unlockButton.setEnabled(true);
             unlockButton.setAlpha(1f);
@@ -220,13 +233,11 @@ public class EpikoKwento1 extends AppCompatActivity {
 
             updateCheckpoint(currentPage);
             if (currentPage == 1) {
-                // ✅ Page 1 = intro (play only once)
                 if (!introPlayed) {
                     loadPageLines(currentPage);
                     introPlayed = true;
                 }
             } else {
-                // ✅ Pages 2+ = laging load narration
                 loadPageLines(currentPage);
             }
             if (currentPage == comicPages.length - 1) {
@@ -238,7 +249,7 @@ public class EpikoKwento1 extends AppCompatActivity {
 
     private void loadPageLines(int page) {
         if (pageLines != null) {
-            textToSpeech.stop(); // ✅ ihinto ang kasalukuyang speech
+            textToSpeech.stop();
         }
 
         db.collection("lesson_character_lines").document("LCL17").get()
@@ -250,7 +261,6 @@ public class EpikoKwento1 extends AppCompatActivity {
                                 Object pageNumObj = p.get("page");
                                 if (pageNumObj instanceof Number) {
                                     int firestorePage = ((Number) pageNumObj).intValue();
-                                    // ✅ Firestore page ay 1-based, comicPages array ay 0-based
                                     if (firestorePage - 1 == page) {
                                         List<String> lines = (List<String>) p.get("line");
                                         if (lines != null && !lines.isEmpty()) {
@@ -299,14 +309,14 @@ public class EpikoKwento1 extends AppCompatActivity {
 
             updateCheckpoint(currentPage);
             if (currentPage == 1) {
-                // ✅ wag ulitin intro
                 if (!introPlayed) {
                     loadPageLines(currentPage);
                     introPlayed = true;
                 }
             } else if (currentPage >= 2) {
                 loadPageLines(currentPage);
-            }        }
+            }
+        }
     }
 
     private void loadCurrentProgress() {
@@ -405,7 +415,30 @@ public class EpikoKwento1 extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        // ✅ Mute lang kapag minimize, hindi kapag lumilipat ng activity papuntang quiz
+        if (!isNavigatingToQuiz && audioManager != null) {
+            originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reset flag kapag bumalik
+        isNavigatingToQuiz = false;
+        if (audioManager != null) {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+        }
+    }
+
+    @Override
     protected void onDestroy() {
+        if (audioManager != null) {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+        }
         if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();

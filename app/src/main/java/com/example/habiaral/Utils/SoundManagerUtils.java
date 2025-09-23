@@ -2,6 +2,7 @@ package com.example.habiaral.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.speech.tts.TextToSpeech;
 
 public class SoundManagerUtils {
@@ -11,6 +12,9 @@ public class SoundManagerUtils {
     private static boolean isMuted = false;
     private static TextToSpeech tts;
 
+    // ✅ Bagong field
+    private static int originalVolume = -1;
+
     public static void init(Context context, TextToSpeech textToSpeech) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         isMuted = prefs.getBoolean(KEY_MUTED, false);
@@ -19,6 +23,14 @@ public class SoundManagerUtils {
 
         if (isMuted && tts != null) {
             tts.stop();
+        }
+
+        // ✅ Save original volume once
+        if (originalVolume == -1) {
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (audioManager != null) {
+                originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            }
         }
     }
 
@@ -56,5 +68,10 @@ public class SoundManagerUtils {
         if (isMuted && tts != null) {
             tts.stop();
         }
+    }
+
+    // ✅ Getter para sa original volume
+    public static int getOriginalVolume() {
+        return originalVolume;
     }
 }
