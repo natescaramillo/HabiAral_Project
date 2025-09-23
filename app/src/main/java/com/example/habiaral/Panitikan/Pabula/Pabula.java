@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -73,7 +74,20 @@ public class Pabula extends AppCompatActivity {
         AlertDialog descriptionDialog = builder.create();
         descriptionDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
+        TextView titleText = dialogView.findViewById(R.id.description_dialog_title);
+        TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
+
+        // Title ng popup
+        titleText.setText("Pabula");
+
+        // General explanation tungkol sa Pabula
+        contentText.setText(
+                "Ang Pabula ay isang maikling kuwento na karaniwang gumagamit ng mga hayop bilang tauhan " +
+                        "na may kakayahang magsalita at kumilos na parang tao. " +
+                        "Layunin ng pabula na magturo ng aral o mabuting asal sa pamamagitan ng mga simpleng kuwento. \n\n" +
+                        "Karaniwang may malinaw na simula, gitna, at wakas, at nag-iiwan ng mahalagang aral para sa mga mambabasa."
+        );
 
         closeBtn.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
@@ -82,6 +96,7 @@ public class Pabula extends AppCompatActivity {
 
         descriptionDialog.show();
     }
+
 
     private boolean isFirstTime() {
         return getSharedPreferences("PabulaPrefs", MODE_PRIVATE)

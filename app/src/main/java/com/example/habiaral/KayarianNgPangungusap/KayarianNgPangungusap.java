@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -94,7 +95,22 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         AlertDialog descriptionDialog = builder.create();
         descriptionDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
+        TextView titleText = dialogView.findViewById(R.id.description_dialog_title);
+        TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
+
+        // 👉 Title ng popup
+        titleText.setText("Kayarian ng Pangungusap");
+        titleText.setTextSize(18); // bawasan mo para magkasya
+
+        // 👉 General explanation lang (hindi per uri, kundi kabuuan)
+        contentText.setText(
+                "Ang Kayarian ng Pangungusap ay tumutukoy sa paraan ng pagbubuo ng mga pangungusap. " +
+                        "Ito ang nagsisilbing gabay upang maging maayos, malinaw, at epektibo ang ating pagpapahayag. " +
+                        "Sa pamamagitan ng tamang kayarian, mas madaling naipapahayag ang ideya, damdamin, at kaisipan " +
+                        "sa paraang maiintindihan ng kausap o mambabasa. " +
+                        "Mahalaga ang Kayarian ng Pangungusap dahil ito ang nagbibigay ng kaayusan at saysay sa ating komunikasyon."
+        );
 
         closeBtn.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);

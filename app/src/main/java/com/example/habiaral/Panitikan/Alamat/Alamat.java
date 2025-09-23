@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -73,7 +74,22 @@ public class Alamat extends AppCompatActivity {
         AlertDialog descriptionDialog = builder.create();
         descriptionDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
+        TextView titleText = dialogView.findViewById(R.id.description_dialog_title);
+        TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
+
+        // 👉 Title ng popup
+        titleText.setText("Alamat");
+
+        // 👉 General explanation tungkol sa Alamat
+        contentText.setText(
+                "Ang Alamat ay isang uri ng panitikan na naglalahad ng pinagmulan ng isang bagay, " +
+                        "pook, hayop, o kaugalian. Karaniwan itong kwento na nagpapaliwanag kung paano nagsimula " +
+                        "ang isang bagay sa pamamagitan ng malikhaing salaysay. \n\n" +
+                        "Layunin ng alamat na magbigay-kaalaman, magpaliwanag ng kultura, at magturo ng aral " +
+                        "sa mambabasa. Sa pamamagitan ng alamat, naipapasa ang mga tradisyon, paniniwala, at " +
+                        "kultura ng isang lipunan sa susunod na henerasyon."
+        );
 
         closeBtn.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);

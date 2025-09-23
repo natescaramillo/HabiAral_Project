@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -73,7 +74,21 @@ public class Epiko extends AppCompatActivity {
         AlertDialog descriptionDialog = builder.create();
         descriptionDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
+        TextView titleText = dialogView.findViewById(R.id.description_dialog_title);
+        TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
+
+        // 👉 Title ng popup
+        titleText.setText("Epiko");
+
+        // 👉 General explanation tungkol sa Epiko
+        contentText.setText(
+                "Ang Epiko ay isang mahabang tulang pasalaysay na naglalahad ng kabayanihan ng isang pangunahing tauhan " +
+                        "na kadalasang may kapangyarihang pambihira. Karaniwang ito ay nagpapakita ng pakikipagsapalaran, " +
+                        "paglaban sa kasamaan, at pagtatanggol sa kapwa o bayan. \n\n" +
+                        "Layunin ng epiko na magbigay-aliw, magpahayag ng katapangan at kabutihan, " +
+                        "at ipreserba ang kultura at tradisyon ng isang lipunan sa pamamagitan ng panitikan."
+        );
 
         closeBtn.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
@@ -82,6 +97,7 @@ public class Epiko extends AppCompatActivity {
 
         descriptionDialog.show();
     }
+
 
     private boolean isFirstTime() {
         return getSharedPreferences("EpikoPrefs", MODE_PRIVATE)

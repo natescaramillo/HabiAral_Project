@@ -87,13 +87,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
 
-            <TextView
-                android:id="@+id/textView24"
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="15dp"
-                android:text="description" />
+                android:fillViewport="true">
+
+                <TextView
+                    android:id="@+id/textView24"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="15dp"
+                    android:justificationMode="inter_word"
+                    android:lineSpacingExtra="6dp"
+                    android:text="description"
+                    android:textSize="15sp"
+                    android:textColor="@android:color/black"
+                    android:fontFamily="@font/special"/>
+            </ScrollView>
         </LinearLayout>
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

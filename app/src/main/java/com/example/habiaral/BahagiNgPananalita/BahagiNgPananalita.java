@@ -23,6 +23,7 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 import android.media.MediaPlayer;
+import android.widget.TextView;
 
 
 public class BahagiNgPananalita extends AppCompatActivity {
@@ -103,7 +104,20 @@ public class BahagiNgPananalita extends AppCompatActivity {
         AlertDialog descriptionDialog = builder.create();
         descriptionDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
+        TextView titleText = dialogView.findViewById(R.id.description_dialog_title);
+        TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
+
+        // 👉 Title ng popup
+        titleText.setText("Bahagi ng Pananalita");
+
+        // 👉 General explanation (hindi bawat topic, kundi kabuuan lang)
+        contentText.setText(
+                "Ang Bahagi ng Pananalita ay mga salita na may kanya-kanyang tungkulin sa pangungusap. " +
+                        "Ito ang nagsisilbing balangkas ng wika upang maging malinaw, maayos, at mabisa ang komunikasyon. " +
+                        "Sa pamamagitan ng mga bahagi ng pananalita, nagiging posible ang pagpapahayag ng ideya, " +
+                        "damdamin, at kaisipan ng tao."
+        );
 
         closeBtn.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
@@ -112,6 +126,7 @@ public class BahagiNgPananalita extends AppCompatActivity {
 
         descriptionDialog.show();
     }
+
 
     private boolean isFirstTime() {
         return getSharedPreferences("BahagiPrefs", MODE_PRIVATE)

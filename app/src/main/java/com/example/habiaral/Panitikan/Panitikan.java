@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -77,7 +78,22 @@ public class Panitikan extends AppCompatActivity {
         AlertDialog descriptionDialog = builder.create();
         descriptionDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
+        TextView titleText = dialogView.findViewById(R.id.description_dialog_title);
+        TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
+
+        // 👉 Title ng popup
+        titleText.setText("Panitikan");
+
+        // 👉 General explanation (ano ito at para saan)
+        contentText.setText(
+                "Ang Panitikan ay ang kalipunan ng mga akdang nagpapahayag ng damdamin, " +
+                        "karanasan, kaalaman, at kaisipan ng tao. Ito ay maaaring pasalita o pasulat " +
+                        "na anyo na naglalarawan ng kultura, tradisyon, at pamumuhay ng isang lipunan. \n\n" +
+                        "Layunin ng panitikan na magbigay-aliw, magturo ng aral, magpahayag ng saloobin, " +
+                        "at mapanatili ang mga karanasang makabuluhan sa kasaysayan. Sa pamamagitan nito, " +
+                        "naipapasa ang yaman ng wika at karunungan mula sa isang henerasyon tungo sa susunod."
+        );
 
         closeBtn.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
@@ -86,6 +102,7 @@ public class Panitikan extends AppCompatActivity {
 
         descriptionDialog.show();
     }
+
 
     private boolean isFirstTime() {
         return getSharedPreferences("PanitikanPrefs", MODE_PRIVATE)

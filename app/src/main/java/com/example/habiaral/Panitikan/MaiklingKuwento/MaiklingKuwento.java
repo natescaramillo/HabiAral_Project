@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -74,7 +75,21 @@ public class MaiklingKuwento extends AppCompatActivity {
         AlertDialog descriptionDialog = builder.create();
         descriptionDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
+        TextView titleText = dialogView.findViewById(R.id.description_dialog_title);
+        TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
+
+        // 👉 Title ng popup
+        titleText.setText("Maikling Kuwento");
+
+        // 👉 General explanation tungkol sa Maikling Kuwento
+        contentText.setText(
+                "Ang Maikling Kuwento ay isang maikling kathang pampanitikan na naglalahad ng isang " +
+                        "pangunahing pangyayari o karanasan ng mga tauhan. " +
+                        "Karaniwang ito ay may iisang pangunahing tema, malinaw na banghay, at kaakit-akit na wakas. \n\n" +
+                        "Layunin ng maikling kuwento na magbigay-aliw, magturo ng aral, at ipakita ang damdamin o " +
+                        "karanasan ng mga tauhan sa isang maikling panahon at espasyo."
+        );
 
         closeBtn.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);

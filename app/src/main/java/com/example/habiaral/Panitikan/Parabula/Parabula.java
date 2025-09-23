@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -73,7 +74,20 @@ public class Parabula extends AppCompatActivity {
         AlertDialog descriptionDialog = builder.create();
         descriptionDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
+        TextView titleText = dialogView.findViewById(R.id.description_dialog_title);
+        TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
+
+        // Title ng popup
+        titleText.setText("Parabula");
+
+        // General explanation tungkol sa Parabula
+        contentText.setText(
+                "Ang Parabula ay isang maikling kwento na karaniwang may moral o aral. " +
+                        "Ito ay nagpapakita ng kabutihan, kasamaan, at tamang asal ng tao sa pamamagitan ng kwento. \n\n" +
+                        "Layunin ng parabula na magbigay ng aral sa mambabasa at gabayan sila sa tamang pag-uugali. " +
+                        "Karaniwan, simple ang tauhan at pangyayari, at malinaw ang simula, gitna, at wakas."
+        );
 
         closeBtn.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
@@ -82,6 +96,7 @@ public class Parabula extends AppCompatActivity {
 
         descriptionDialog.show();
     }
+
 
     private boolean isFirstTime() {
         return getSharedPreferences("ParabulaPrefs", MODE_PRIVATE)

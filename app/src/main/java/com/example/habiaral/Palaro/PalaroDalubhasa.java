@@ -423,17 +423,32 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                 new Handler().postDelayed(() -> {
                     try {
-                        SpannableString spannable = new SpannableString(originalSentence);
+                        SpannableStringBuilder builder = new SpannableStringBuilder();
+                        builder.append("Maling salita o grammar:\n\n");
+
+// Highlight mali sa sentence
+                        SpannableString highlightedSentence = new SpannableString(originalSentence);
                         for (int i = 0; i < matches.length(); i++) {
                             JSONObject match = matches.getJSONObject(i);
                             int offset = match.getInt("offset");
                             int length = match.getInt("length");
+                            highlightedSentence.setSpan(new UnderlineSpan(), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            highlightedSentence.setSpan(new ForegroundColorSpan(Color.RED), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+                        builder.append(highlightedSentence);
+                        builder.append("\n\n");
 
-                            spannable.setSpan(new UnderlineSpan(), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            spannable.setSpan(new ForegroundColorSpan(Color.RED), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+// Add per-word explanations
+                        for (int i = 0; i < matches.length(); i++) {
+                            JSONObject match = matches.getJSONObject(i);
+                            int offset = match.getInt("offset");
+                            int length = match.getInt("length");
+                            String wrongWord = originalSentence.substring(offset, offset + length);
+                            String message = match.optString("message", "Error sa grammar");
+                            builder.append("- ").append(wrongWord).append(": ").append(message).append("\n");
                         }
 
-                        errorTooltip.setText(spannable);
+                        errorTooltip.setText(builder);
                         errorTooltip.setVisibility(View.VISIBLE);
                         errorIcon.setVisibility(View.VISIBLE);
 
