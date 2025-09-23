@@ -403,7 +403,7 @@ public class TambalanQuiz extends AppCompatActivity {
         taposButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
-            navigateToLesson(TambalanLesson.class);
+            navigateToLesson(HugnayanLesson.class);
         });
 
         homeButton.setOnClickListener(v -> {

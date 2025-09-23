@@ -413,7 +413,7 @@ public class LangkapanQuiz extends AppCompatActivity {
         taposButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
-            navigateToLesson(LangkapanLesson.class);
+            navigateToLesson(KayarianNgPangungusap.class);
         });
 
         homeButton.setOnClickListener(v -> {

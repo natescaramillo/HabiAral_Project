@@ -402,7 +402,7 @@ public class HugnayanQuiz extends AppCompatActivity {
         taposButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
-            navigateToLesson(HugnayanLesson.class);
+            navigateToLesson(LangkapanLesson.class);
         });
 
         homeButton.setOnClickListener(v -> {
