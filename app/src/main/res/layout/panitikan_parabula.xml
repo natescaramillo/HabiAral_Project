@@ -45,8 +45,8 @@
 
                 <TextView
                     android:id="@+id/kwento1Title"
-                    android:layout_width="230dp"
-                    android:layout_height="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/special"
                     android:gravity="center"
@@ -104,8 +104,8 @@
 
                 <TextView
                     android:id="@+id/kwento2Title"
-                    android:layout_width="226dp"
-                    android:layout_height="45dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/special"
                     android:gravity="center"

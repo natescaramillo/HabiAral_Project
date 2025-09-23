@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -21,7 +20,7 @@ public class FullScreenUtils {
             ImageView imageView2,
             Button unlockButton,
             ConstraintLayout bottomBar,
-            LinearLayout optionBar
+            ConstraintLayout optionBar
     ) {
         ConstraintLayout.LayoutParams imageParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
         ConstraintLayout.LayoutParams bottomBarParams = (ConstraintLayout.LayoutParams) bottomBar.getLayoutParams();

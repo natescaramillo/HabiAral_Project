@@ -141,7 +141,7 @@ public class PandamdamLesson extends AppCompatActivity {
         nextOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); nextPage(); });
 
         ConstraintLayout bottomBar = findViewById(R.id.bottom_bar);
-        LinearLayout optionBar = findViewById(R.id.option_bar);
+        ConstraintLayout optionBar = findViewById(R.id.option_bar);
 
         fullScreenOption.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);

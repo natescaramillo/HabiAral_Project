@@ -29,8 +29,10 @@
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline31">
+        app:layout_constraintTop_toTopOf="@+id/guideline31"
+        app:layout_constraintVertical_bias="0.0">
 
         <ImageView
             android:id="@+id/imageViewPadamdam"
@@ -47,41 +49,58 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/option_bar"
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:background="#99A27B5C"
-            android:gravity="end|center_vertical"
+            android:gravity="center"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="@+id/imageViewPadamdam"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/imageViewPadamdam"
             app:layout_constraintTop_toBottomOf="@+id/imageViewPadamdam">
 
-            <ImageView
-                android:id="@+id/back_option"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="5dp"
-                android:background="#CAA885"
-                android:src="@drawable/back_button" />
 
-            <ImageView
-                android:id="@+id/next_option"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="5dp"
-                android:background="#CAA885"
-                android:src="@drawable/next_button" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/back_option"
+                    android:layout_width="28dp"
+                    android:layout_height="24dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:background="#CAA885"
+                    android:src="@drawable/back_button" />
+
+                <ImageView
+                    android:id="@+id/next_option"
+                    android:layout_width="28dp"
+                    android:layout_height="24dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:background="#CAA885"
+                    android:src="@drawable/next_button" />
+            </LinearLayout>
+
 
             <ImageView
                 android:id="@+id/full_screen_option"
-                android:layout_width="24dp"
+                android:layout_width="28dp"
                 android:layout_height="24dp"
-                android:layout_marginEnd="5dp"
+                android:layout_marginEnd="20dp"
                 android:background="#CAA885"
-                android:src="@drawable/full_screen" />
-        </LinearLayout>
+                android:src="@drawable/full_screen"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
             android:id="@+id/UnlockButtonPandamdam"
