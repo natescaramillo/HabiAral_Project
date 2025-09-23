@@ -77,7 +77,7 @@ public class PalaroHusay extends AppCompatActivity {
     private boolean isTtsReady = false;
     private int attemptCount = 0;
     private boolean isGameOver = false;
-
+    private Handler handler = new Handler();
     private MediaPlayer greenSound, orangeSound, redSound;
     private boolean playedGreen = false;
     private boolean playedOrange = false;
@@ -159,10 +159,16 @@ public class PalaroHusay extends AppCompatActivity {
 
             stopAllSounds();
 
-            if (countDownTimer != null) countDownTimer.cancel();
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
+                countDownTimer = null;
+            }
+            handler.removeCallbacksAndMessages(null);
+
             dialog.dismiss();
             finish();
         });
+
 
         btnHindi.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
@@ -207,18 +213,20 @@ public class PalaroHusay extends AppCompatActivity {
                                 MediaPlayer correctSound = MediaPlayer.create(this, R.raw.correct);
                                 correctSound.setOnCompletionListener(MediaPlayer::release);
                                 correctSound.start();
-                                Glide.with(this)
-                                        .asGif()
-                                        .load(R.drawable.right_1)
-                                        .transition(DrawableTransitionOptions.withCrossFade(300))
-                                        .into(characterIcon);
-                                new Handler().postDelayed(() -> {
+                                if (!isFinishing() && !isDestroyed()) {
+                                    Glide.with(this)
+                                            .asGif()
+                                            .load(R.drawable.right_1)
+                                            .transition(DrawableTransitionOptions.withCrossFade(300))
+                                            .into(characterIcon);
+                                }
+                                if (!isFinishing() && !isDestroyed()) {
                                     Glide.with(this)
                                             .asGif()
                                             .load(R.drawable.idle)
                                             .transition(DrawableTransitionOptions.withCrossFade(300))
                                             .into(characterIcon);
-                                }, 3000); // Use your correct GIF duration
+                                }
 
                                 correctAnswerCount++;
                                 husayScore += 3;
@@ -244,18 +252,23 @@ public class PalaroHusay extends AppCompatActivity {
                                 MediaPlayer wrongSound = MediaPlayer.create(this, R.raw.wrong);
                                 wrongSound.setOnCompletionListener(MediaPlayer::release);
                                 wrongSound.start();
-                                Glide.with(this)
-                                        .asGif()
-                                        .load(R.drawable.wrong)
-                                        .transition(DrawableTransitionOptions.withCrossFade(300))
-                                        .into(characterIcon);
-                                new Handler().postDelayed(() -> {
-                                    Glide.with(this)
+                                if (!isFinishing() && !isDestroyed()) {
+                                    Glide.with(PalaroHusay.this)
                                             .asGif()
-                                            .load(R.drawable.idle)
+                                            .load(R.drawable.right_1)
                                             .transition(DrawableTransitionOptions.withCrossFade(300))
                                             .into(characterIcon);
-                                }, 2300);
+
+                                    new Handler().postDelayed(() -> {
+                                        if (!isFinishing() && !isDestroyed()) {
+                                            Glide.with(PalaroHusay.this)
+                                                    .asGif()
+                                                    .load(R.drawable.idle)
+                                                    .transition(DrawableTransitionOptions.withCrossFade(300))
+                                                    .into(characterIcon);
+                                        }
+                                    }, 2300);
+                                }
 
                                 correctStreak = 0;
                                 deductHeart();
@@ -426,8 +439,6 @@ public class PalaroHusay extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadWords() {
-        MediaPlayer readyGoSound = MediaPlayer.create(this, R.raw.beep);
-
         final Handler countdownHandler = new Handler();
         final int[] countdown = {3};
 
@@ -435,25 +446,52 @@ public class PalaroHusay extends AppCompatActivity {
             @Override
             public void run() {
                 if (countdown[0] > 0) {
+                    // Play beep kada second
+                    MediaPlayer beep = MediaPlayer.create(PalaroHusay.this, R.raw.beep);
+                    beep.setOnCompletionListener(MediaPlayer::release);
+                    beep.start();
+
                     countdown[0]--;
                     countdownHandler.postDelayed(this, 1000);
+                } else {
+                    // Pagkatapos ng countdown, load character line muna
+                    loadCharacterLineWithCallback("MHCL2", () -> {
+                        // Ito lang tatakbo pag tapos na magsalita ang TTS
+                        loadHusayWords("H1");
+                        startTimer();
+                    });
                 }
             }
         });
-
-        readyGoSound.setOnCompletionListener(mp -> {
-            mp.release();
-
-            loadCharacterLine("MHCL2");
-            new Handler().postDelayed(() -> {
-                loadHusayWords("H1");
-                startTimer();
-            }, 1400);
-        });
-
-        readyGoSound.start();
     }
 
+    private void loadCharacterLineWithCallback(String docId, Runnable onDone) {
+        db.collection("minigame_character_lines").document(docId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String line = documentSnapshot.getString("line");
+                        if (isTtsReady && tts != null) {
+                            tts.speak(line, TextToSpeech.QUEUE_FLUSH, null, docId + "_UTTERANCE");
+
+                            tts.setOnUtteranceProgressListener(new android.speech.tts.UtteranceProgressListener() {
+                                @Override
+                                public void onStart(String utteranceId) {}
+
+                                @Override
+                                public void onDone(String utteranceId) {
+                                    if ((docId + "_UTTERANCE").equals(utteranceId)) {
+                                        runOnUiThread(onDone);
+                                    }
+                                }
+
+                                @Override
+                                public void onError(String utteranceId) {}
+                            });
+                        }
+                    }
+                });
+    }
 
     private void startTimer() {
         restartTimer(timeLeft);
@@ -493,18 +531,45 @@ public class PalaroHusay extends AppCompatActivity {
             stopTimerSounds();
             timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, drawableRes));
             if (sound != null) {
-                sound.seekTo(0);
-                sound.start();
+                try {
+                    sound.seekTo(0);
+                    sound.start();
+                } catch (IllegalStateException e) {
+                    sound = MediaPlayer.create(this, R.raw.green_timer);
+                    sound.start();
+                }
             }
             lastTimerZone = zone;
         }
     }
 
+
     private void stopTimerSounds() {
-        if (greenSound.isPlaying()) greenSound.pause();
-        if (orangeSound.isPlaying()) orangeSound.pause();
-        if (redSound.isPlaying()) redSound.pause();
+        if (isMediaPlayerPlaying(greenSound)) {
+            greenSound.pause();
+            greenSound.seekTo(0);
+        }
+        if (isMediaPlayerPlaying(orangeSound)) {
+            orangeSound.pause();
+            orangeSound.seekTo(0);
+        }
+        if (isMediaPlayerPlaying(redSound)) {
+            redSound.pause();
+            redSound.seekTo(0);
+        }
     }
+
+
+
+    private boolean isMediaPlayerPlaying(MediaPlayer player) {
+        if (player == null) return false;
+        try {
+            return player.isPlaying();
+        } catch (IllegalStateException e) {
+            return false; // kung released na, wag i-crash
+        }
+    }
+
 
     private void finishQuiz() {
         if (isGameOver) return;
@@ -641,9 +706,10 @@ public class PalaroHusay extends AppCompatActivity {
             tts.stop();
             tts.shutdown();
         }
-        if (greenSound != null) greenSound.release();
-        if (orangeSound != null) orangeSound.release();
-        if (redSound != null) redSound.release();
+        if (greenSound != null) greenSound.stop();
+        if (orangeSound != null) orangeSound.stop();
+        if (redSound != null) redSound.stop();
+        handler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
     private void saveCorrectHusayAnswer(String uid, String firebaseUID, String questionId) {
