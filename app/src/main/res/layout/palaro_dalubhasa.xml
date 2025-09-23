@@ -228,7 +228,7 @@
             android:padding="8dp"
             android:textColor="@android:color/white"
             android:textSize="14sp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/dalubhasa_answer"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="1.0"

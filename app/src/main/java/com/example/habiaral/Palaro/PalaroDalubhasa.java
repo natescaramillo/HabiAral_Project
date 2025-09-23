@@ -98,6 +98,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private ImageView characterIcon;
     private Handler internetHandler = new Handler();
     private Runnable internetRunnable;
+    private Handler errorTooltipHandler = new Handler();
+    private Runnable hideErrorTooltipRunnable = () -> errorTooltip.setVisibility(View.GONE);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -269,6 +272,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
                         if (matches.length() > 0 && !hasSubmitted) {
                             Toast.makeText(PalaroDalubhasa.this, "Mali ang grammar! Heart deducted.", Toast.LENGTH_SHORT).show();
                             deductHeart();
+
+                            // Stop timer sounds after error
+                            stopAllTimerSounds(); // <--- ADD THIS
                         }
 
                         highlightGrammarIssues(response, sentence);
@@ -319,14 +325,24 @@ public class PalaroDalubhasa extends AppCompatActivity {
         errorIcon.setVisibility(View.VISIBLE);
         errorTooltip.setVisibility(View.VISIBLE);
 
-        new Handler().postDelayed(() -> errorTooltip.setVisibility(View.GONE), 2500);
+        // Cancel any previous hide requests
+        errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
+
+        // Schedule hide after 2.5 seconds
+        errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 2500);
 
         errorIcon.setOnClickListener(v -> {
-            errorTooltip.setVisibility(View.VISIBLE);
-
-            new Handler().postDelayed(() -> errorTooltip.setVisibility(View.GONE), 2500);
+            if (errorTooltip.getVisibility() == View.VISIBLE) {
+                errorTooltip.setVisibility(View.GONE);
+            } else {
+                errorTooltip.setVisibility(View.VISIBLE);
+                // Re-schedule auto-hide
+                errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
+                errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 2500);
+            }
         });
     }
+
 
     private void showUmalisDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PalaroDalubhasa.this);
@@ -370,6 +386,17 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 dalubhasaScore += scoreForThisSentence;
                 perfectAnswerCount++;
                 playCorrectSound();
+
+                // **Stop timer and sounds**
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
+                }
+                stopAllTimerSounds();
+
+                // **Toggle buttons**
+                btnSuriin.setVisibility(View.GONE);
+                btnTapos.setVisibility(View.VISIBLE);
+
                 Glide.with(this)
                         .asGif()
                         .load(R.drawable.right_1)
@@ -384,8 +411,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 }, 3000);
 
                 loadCharacterLine("MDCL2");
-
-                new Handler().postDelayed(this::nextQuestion, 4000);
             } else {
                 if (matches.length() == 1) {
                     scoreForThisSentence = 13;
@@ -452,7 +477,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
                         errorTooltip.setVisibility(View.VISIBLE);
                         errorIcon.setVisibility(View.VISIBLE);
 
-                        new Handler().postDelayed(() -> errorTooltip.setVisibility(View.GONE), 2500);
+                        errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
+                        errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 3500);
 
                         errorIcon.setOnClickListener(v -> {
                             if (errorTooltip.getVisibility() == View.VISIBLE) {
@@ -538,10 +564,33 @@ public class PalaroDalubhasa extends AppCompatActivity {
                             keywordList.add(keywords);
                         }
 
+                        // **Shuffle questions**
+                        shuffleQuestions();
+
                         nextQuestion();
                     }
                 });
     }
+
+    private void shuffleQuestions() {
+        List<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < instructionList.size(); i++) {
+            indices.add(i);
+        }
+        java.util.Collections.shuffle(indices);
+
+        List<String> shuffledInstructions = new ArrayList<>();
+        List<List<String>> shuffledKeywords = new ArrayList<>();
+
+        for (int idx : indices) {
+            shuffledInstructions.add(instructionList.get(idx));
+            shuffledKeywords.add(keywordList.get(idx));
+        }
+
+        instructionList = shuffledInstructions;
+        keywordList = shuffledKeywords;
+    }
+
     private void speakLine(String text) {
         if (text == null || text.trim().isEmpty()) return;
 
@@ -561,12 +610,16 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
             userSentenceInput.setText("");
             userSentenceInput.setEnabled(true);
+
+            // **Reset buttons visibility**
+            btnSuriin.setVisibility(View.VISIBLE);
+            btnTapos.setVisibility(View.GONE);
+
             btnTapos.setEnabled(true);
             hasSubmitted = false;
             grammarFeedbackText.setText("");
             currentQuestionNumber++;
 
-            // Only reset the timer here, not after every grammar check
             startTimer();
         } else {
             if (countDownTimer != null) countDownTimer.cancel();
@@ -767,7 +820,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
             if (remainingHearts == 0) {
                 Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
+
+                // Stop timer and sounds
                 if (countDownTimer != null) countDownTimer.cancel();
+                stopAllTimerSounds(); // <--- ADD THIS
+
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
 
@@ -784,14 +841,25 @@ public class PalaroDalubhasa extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (countDownTimer != null) countDownTimer.cancel();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+
         if (tts != null) {
             tts.stop();
             tts.shutdown();
+            tts = null;
         }
-        // Stop periodic internet check
+
+        stopAllTimerSounds();
+
         if (internetHandler != null && internetRunnable != null) {
             internetHandler.removeCallbacks(internetRunnable);
+        }
+
+        if (errorTooltipHandler != null) {
+            errorTooltipHandler.removeCallbacksAndMessages(null);
         }
     }
 
