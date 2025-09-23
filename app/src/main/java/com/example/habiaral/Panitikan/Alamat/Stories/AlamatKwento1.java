@@ -230,6 +230,12 @@ public class AlamatKwento1 extends AppCompatActivity {
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
 
             updateCheckpoint(currentPage);
+
+            if (textToSpeech != null) {
+                textToSpeech.stop();  // **Stop current TTS**
+            }
+            currentLineIndex = 0; // reset
+
             if (currentPage == 1) {
                 if (!introPlayed) {
                     loadPageLines(currentPage);
@@ -238,12 +244,14 @@ public class AlamatKwento1 extends AppCompatActivity {
             } else {
                 loadPageLines(currentPage);
             }
+
             if (currentPage == comicPages.length - 1) {
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
             }
         }
     }
+
 
     private void previousPage() {
         if (currentPage > 0) {
@@ -253,6 +261,12 @@ public class AlamatKwento1 extends AppCompatActivity {
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
 
             updateCheckpoint(currentPage);
+
+            if (textToSpeech != null) {
+                textToSpeech.stop();  // **Stop current TTS**
+            }
+            currentLineIndex = 0; // reset
+
             if (currentPage == 1) {
                 if (!introPlayed) {
                     loadPageLines(currentPage);
@@ -263,6 +277,7 @@ public class AlamatKwento1 extends AppCompatActivity {
             }
         }
     }
+
 
     private void loadPageLines(int page) {
         if (pageLines != null) {
@@ -278,7 +293,7 @@ public class AlamatKwento1 extends AppCompatActivity {
                                 Object pageNumObj = p.get("page");
                                 if (pageNumObj instanceof Number) {
                                     int firestorePage = ((Number) pageNumObj).intValue();
-                                    if (firestorePage - 1 == page) {
+                                    if (firestorePage == currentPage) {
                                         List<String> lines = (List<String>) p.get("line");
                                         if (lines != null && !lines.isEmpty()) {
                                             pageLines = lines;
