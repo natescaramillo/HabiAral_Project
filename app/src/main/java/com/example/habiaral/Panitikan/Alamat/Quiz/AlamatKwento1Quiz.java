@@ -155,12 +155,19 @@ public class AlamatKwento1Quiz extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadQuestion() {
-        playReadySoundIfAvailable();
-
         questionTitle.setText("Simula");
         questionText.setText("3");
-        new Handler().postDelayed(() -> questionText.setText("2"), 1000);
-        new Handler().postDelayed(() -> questionText.setText("1"), 2000);
+        playReadySoundIfAvailable();
+
+        new Handler().postDelayed(() -> {
+            questionText.setText("2");
+            playReadySoundIfAvailable();
+        }, 1000);
+
+        new Handler().postDelayed(() -> {
+            questionText.setText("1");
+            playReadySoundIfAvailable();
+        }, 2000);
 
         new Handler().postDelayed(() -> {
             questionTitle.setText("Unang tanong");
@@ -185,6 +192,7 @@ public class AlamatKwento1Quiz extends AppCompatActivity {
             loadQuestion(currentIndex);
         }, 3000);
     }
+
 
     private void loadQuestion(int index) {
         if (countDownTimer != null) {
@@ -490,7 +498,7 @@ public class AlamatKwento1Quiz extends AppCompatActivity {
 
     private void playReadySoundIfAvailable() {
         try {
-            com.example.habiaral.Utils.SoundClickUtils.playClickSound(this, R.raw.ready_start);
+            com.example.habiaral.Utils.SoundClickUtils.playClickSound(this, R.raw.beep);
         } catch (Exception ignored) {}
     }
 

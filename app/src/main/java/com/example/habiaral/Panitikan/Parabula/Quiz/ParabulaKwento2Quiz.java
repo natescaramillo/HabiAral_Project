@@ -155,12 +155,19 @@ public class ParabulaKwento2Quiz extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadQuestion() {
-        playReadySoundIfAvailable();
-
         questionTitle.setText("Simula");
         questionText.setText("3");
-        new Handler().postDelayed(() -> questionText.setText("2"), 1000);
-        new Handler().postDelayed(() -> questionText.setText("1"), 2000);
+        playReadySoundIfAvailable();
+
+        new Handler().postDelayed(() -> {
+            questionText.setText("2");
+            playReadySoundIfAvailable();
+        }, 1000);
+
+        new Handler().postDelayed(() -> {
+            questionText.setText("1");
+            playReadySoundIfAvailable();
+        }, 2000);
 
         new Handler().postDelayed(() -> {
             questionTitle.setText("Unang tanong");

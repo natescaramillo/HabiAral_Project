@@ -47,7 +47,7 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
     private int totalQuestions = 0;
 
     private CountDownTimer countDownTimer;
-    private long timeLeftInMillis = 30000; // 30s per question
+    private long timeLeftInMillis = 30000;
     private boolean quizFinished = false;
     private boolean isAnswered = false;
 
@@ -58,10 +58,7 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.panitikan_epiko_kwento1_quiz);
-        // --- IMPORTANT: replace "your_layout_file_name_here" with the actual layout filename
-        // e.g. R.layout.activity_epiko_kwento1_quiz or the layout you pasted.
 
-        // UI bindings - use the ids from your XML
         questionTitle = findViewById(R.id.questionTitle);
         questionText = findViewById(R.id.kwento3_questionText);
         timerBar = findViewById(R.id.timerBar);
@@ -76,7 +73,6 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) uid = user.getUid();
 
-        // Initially hide quiz UI until starter pressed
         answer1.setVisibility(View.GONE);
         answer2.setVisibility(View.GONE);
         answer3.setVisibility(View.GONE);
@@ -85,21 +81,17 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
         bottomBar.setVisibility(View.GONE);
         introButton.setVisibility(View.VISIBLE);
 
-        // Load quiz document from Firestore
         loadQuizDocument();
 
-        // Intro / start button
         introButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             showCountdownThenLoadQuestion();
         });
 
-        // Answer button listeners
         View.OnClickListener choiceClickListener = v -> {
             if (isAnswered) return;
             isAnswered = true;
             nextButton.setEnabled(true);
-            // highlight or disable UI if needed
             Button b = (Button) v;
             evaluateSelectedAnswer(b.getText().toString());
         };
@@ -108,7 +100,6 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
         answer2.setOnClickListener(choiceClickListener);
         answer3.setOnClickListener(choiceClickListener);
 
-        // Next button
         nextButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
 
@@ -125,14 +116,12 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
                 if (countDownTimer != null) countDownTimer.cancel();
 
                 if (correctAnswers >= Math.min(6, quizList.size())) {
-                    // passed threshold: call markStoryCompleted and optionally save results
                     markStoryCompleted();
                 }
                 showResultDialog();
             }
         });
 
-        // Handle back pressed -> show exit dialog
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -141,12 +130,10 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
         });
     }
 
-    // ---------- Firestore load ----------
     private void loadQuizDocument() {
         db.collection("quiz").document("Q17")
                 .get().addOnSuccessListener(doc -> {
                     if (doc.exists()) {
-                        // optional intro field
                         String intro = doc.getString("intro");
                         if (intro != null && !intro.isEmpty()) {
                             questionTitle.setText("Simula");
@@ -167,25 +154,28 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
                 });
     }
 
-    // ---------- UI flow ----------
     private void showCountdownThenLoadQuestion() {
-        // small 3..2..1 countdown inline using handlers
-        playReadySoundIfAvailable();
-
         questionTitle.setText("Simula");
         questionText.setText("3");
-        new Handler().postDelayed(() -> questionText.setText("2"), 1000);
-        new Handler().postDelayed(() -> questionText.setText("1"), 2000);
+        playReadySoundIfAvailable();
 
         new Handler().postDelayed(() -> {
-            // Start actual quiz
+            questionText.setText("2");
+            playReadySoundIfAvailable();
+        }, 1000);
+
+        new Handler().postDelayed(() -> {
+            questionText.setText("1");
+            playReadySoundIfAvailable();
+        }, 2000);
+
+        new Handler().postDelayed(() -> {
             questionTitle.setText("Unang tanong");
             currentIndex = 0;
             correctAnswers = 0;
             isAnswered = false;
             quizFinished = false;
 
-            // show UI
             introButton.setVisibility(View.GONE);
             answer1.setVisibility(View.VISIBLE);
             answer2.setVisibility(View.VISIBLE);
@@ -214,15 +204,12 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
         String question = (String) qData.get("question");
         List<String> choices = (List<String>) qData.get("choices");
 
-        // set question & choices (handle if only 3 choices present)
         questionTitle.setText(getQuestionOrdinal(index + 1));
         questionText.setText(question);
 
-        // ensure at least 3 choices exist
         if (choices == null) choices = new ArrayList<>();
         while (choices.size() < 3) choices.add("—");
 
-        // shuffle the choices for this question to avoid position bias
         List<String> shuffled = new ArrayList<>(choices);
         Collections.shuffle(shuffled);
 
@@ -230,14 +217,12 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
         answer2.setText(shuffled.get(1));
         answer3.setText(shuffled.get(2));
 
-        // reset button enabled state & next button
         answer1.setEnabled(true);
         answer2.setEnabled(true);
         answer3.setEnabled(true);
         nextButton.setEnabled(false);
         isAnswered = false;
 
-        // reset timer bar
         timerBar.setMax((int) timeLeftInMillis);
         timerBar.setProgress((int) timeLeftInMillis);
 
@@ -245,7 +230,6 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
     }
 
     private void evaluateSelectedAnswer(String selectedAnswer) {
-        // disable further presses
         answer1.setEnabled(false);
         answer2.setEnabled(false);
         answer3.setEnabled(false);
@@ -260,16 +244,13 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
 
         if (selectedAnswer.equals(correctChoice)) {
             correctAnswers++;
-            // you can play success sound here
         } else {
-            // play wrong sound if desired
         }
     }
 
-    // ---------- Timer ----------
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
-        timeLeftInMillis = 30000; // 30s per question
+        timeLeftInMillis = 30000;
 
         timerBar.setMax((int) timeLeftInMillis);
         timerBar.setProgress((int) timeLeftInMillis);
@@ -285,14 +266,12 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
             @Override
             public void onFinish() {
                 if (quizFinished) return;
-                // mark as answered (no selection)
                 isAnswered = true;
                 answer1.setEnabled(false);
                 answer2.setEnabled(false);
                 answer3.setEnabled(false);
                 nextButton.setEnabled(true);
 
-                // auto move to next after small delay
                 new Handler().postDelayed(() -> {
                     currentIndex++;
                     if (currentIndex < quizList.size()) {
@@ -306,7 +285,6 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
         }.start();
     }
 
-    // ---------- Dialogs ----------
     private void showExitDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
@@ -343,8 +321,7 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
         builder.setView(dialogView);
         builder.setCancelable(false);
 
-        TextView resultText = dialogView.findViewById(R.id.textView7); // adapt if different id
-        // set score text - dialog_box_quiz_score in your project may use different ids; adjust if needed
+        TextView resultText = dialogView.findViewById(R.id.textView7);
         TextView scoreNumber = dialogView.findViewById(R.id.textView6);
         if (scoreNumber != null) scoreNumber.setText(correctAnswers + "/" + totalQuestions);
         if (resultText != null) {
@@ -416,7 +393,6 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
         loadQuestion(currentIndex);
     }
 
-    // ---------- Progress / Module functions (reuse your existing logic) ----------
     private void markStoryCompleted() {
         if (uid == null) return;
 
@@ -497,14 +473,12 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
                                         "modulename", "Panitikan"
                                 )), SetOptions.merge())
                                 .addOnSuccessListener(unused -> {
-                                    // unlock achievement
                                     com.example.habiaral.Utils.AchievementM3Utils.checkAndUnlockAchievement(this, db, uid);
                                 });
                     }
                 });
     }
 
-    // ---------- Helpers ----------
     private String getQuestionOrdinal(int number) {
         switch (number) {
             case 1: return "Unang tanong";
