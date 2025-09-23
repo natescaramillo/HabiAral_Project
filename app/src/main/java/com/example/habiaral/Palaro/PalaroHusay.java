@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat;
 
 import android.speech.tts.TextToSpeech;
 
+import java.util.Collections;
 import java.util.Locale;
 
 import com.example.habiaral.R;
@@ -84,6 +85,8 @@ public class PalaroHusay extends AppCompatActivity {
     private boolean playedRed = false;
     private String lastTimerZone = "";
     private ImageView characterIcon;
+    private List<String> questionIds = new ArrayList<>();
+    private int currentQuestionIndex = 0;
 
 
     @Override
@@ -140,6 +143,14 @@ public class PalaroHusay extends AppCompatActivity {
         setupAnswerSelection();
         setupBackConfirmation();
         setupUnlockButton();
+
+        for (int i = 1; i <= 10; i++) {
+            questionIds.add("H" + i);
+        }
+
+        // Shuffle questions
+        Collections.shuffle(questionIds);
+
     }
 
     private void showUmalisDialog() {
@@ -280,14 +291,19 @@ public class PalaroHusay extends AppCompatActivity {
                             }
 
                             currentQuestionNumber++;
-                            if (currentQuestionNumber <= 10 && !isGameOver) {
+                            if (currentQuestionIndex < questionIds.size() && !isGameOver) {
+                                loadHusayWords(questionIds.get(currentQuestionIndex));
+
+                                currentQuestionIndex++; // move to the next question in the shuffled list
                                 new Handler().postDelayed(() -> {
-                                    if (!isGameOver) {
-                                        loadHusayWords("H" + currentQuestionNumber);
+                                    if (!isGameOver && currentQuestionIndex < questionIds.size()) {
+                                        loadHusayWords(questionIds.get(currentQuestionIndex));
                                         fullAnswerView.setText("");
                                         isAnswered = false;
                                         isTimeUp = false;
                                         startTimer();
+                                    } else {
+                                        finishQuiz();
                                     }
                                 }, 3000);
                             } else {
@@ -456,8 +472,10 @@ public class PalaroHusay extends AppCompatActivity {
                 } else {
                     // Pagkatapos ng countdown, load character line muna
                     loadCharacterLineWithCallback("MHCL2", () -> {
-                        // Ito lang tatakbo pag tapos na magsalita ang TTS
-                        loadHusayWords("H1");
+                        // Load first question mula sa shuffled list
+                        if (!questionIds.isEmpty()) {
+                            loadHusayWords(questionIds.get(currentQuestionIndex));
+                        }
                         startTimer();
                     });
                 }
@@ -503,6 +521,10 @@ public class PalaroHusay extends AppCompatActivity {
         countDownTimer = new CountDownTimer(duration, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
+                if (remainingHearts <= 0) {
+                    cancel();
+                    return;
+                }
                 timeLeft = millisUntilFinished;
                 int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(percent);
@@ -676,7 +698,12 @@ public class PalaroHusay extends AppCompatActivity {
         }
 
         if (remainingHearts <= 0) {
-            if (countDownTimer != null) countDownTimer.cancel();
+            // Stop the timer & timer sounds immediately
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
+                countDownTimer = null;
+            }
+            stopTimerSounds();
 
             Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
 
@@ -684,6 +711,7 @@ public class PalaroHusay extends AppCompatActivity {
             finishQuiz();
         }
     }
+
 
     private void speakText(String text) {
         if (text == null || text.trim().isEmpty()) return;
