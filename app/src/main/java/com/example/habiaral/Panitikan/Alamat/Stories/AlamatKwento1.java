@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.habiaral.Panitikan.Alamat.Alamat;
 import com.example.habiaral.Panitikan.Alamat.Quiz.AlamatKwento1Quiz;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.ResumeDialogUtils;
 import com.example.habiaral.Utils.SoundManagerUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -163,8 +164,6 @@ public class AlamatKwento1 extends AppCompatActivity {
 
                     textToSpeech.setSpeechRate(1.0f);
                     SoundManagerUtils.setTts(textToSpeech);
-
-                    loadIntroLines();
                 }
             } else {
                 Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
@@ -174,7 +173,6 @@ public class AlamatKwento1 extends AppCompatActivity {
 
     private void loadIntroLines() {
         if (introLines != null && !introLines.isEmpty()) {
-            // may cache na, gamitin ulit
             currentIntroIndex = 0;
             speakIntro();
             return;
@@ -238,9 +236,9 @@ public class AlamatKwento1 extends AppCompatActivity {
             updateCheckpoint(currentPage);
 
             if (textToSpeech != null) {
-                textToSpeech.stop();  // **Stop current TTS**
+                textToSpeech.stop();
             }
-            currentLineIndex = 0; // reset
+            currentLineIndex = 0;
 
             if (currentPage == 1) {
                 if (!introPlayed) {
@@ -269,12 +267,11 @@ public class AlamatKwento1 extends AppCompatActivity {
             updateCheckpoint(currentPage);
 
             if (textToSpeech != null) {
-                textToSpeech.stop();  // **Stop current TTS**
+                textToSpeech.stop();
             }
-            currentLineIndex = 0; // reset
+            currentLineIndex = 0;
 
             if (currentPage == 0) {
-                // balik sa cover, ulitin intro
                 introFinished = false;
                 introPlayed = false;
                 loadIntroLines();
@@ -339,6 +336,51 @@ public class AlamatKwento1 extends AppCompatActivity {
         });
     }
 
+    private void checkResumeDialog(int checkpoint) {
+        if (checkpoint > 0) {
+            ResumeDialogUtils.showResumeDialog(this, new ResumeDialogUtils.ResumeDialogListener() {
+                @Override
+                public void onResumeLesson() {
+                    currentPage = checkpoint;
+                    storyImage.setImageResource(comicPages[currentPage]);
+                    introFinished = currentPage != 0;
+                    introPlayed = introFinished;
+
+                    if (currentPage == 0) {
+                        loadIntroLines();
+                    } else {
+                        loadPageLines(currentPage);
+                    }
+
+                    if (currentPage == comicPages.length - 1) {
+                        isLessonDone = true;
+                        unlockButton.setEnabled(true);
+                        unlockButton.setAlpha(1f);
+                    }
+                }
+
+                @Override
+                public void onRestartLesson() {
+                    currentPage = 0;
+                    storyImage.setImageResource(comicPages[currentPage]);
+                    introFinished = false;
+                    introPlayed = false;
+                    loadIntroLines();
+                }
+            });
+        } else {
+            if (currentPage == 0) {
+                introFinished = false;
+                introPlayed = false;
+                loadIntroLines();
+            } else {
+                introFinished = true;
+                introPlayed = true;
+                loadPageLines(currentPage);
+            }
+        }
+    }
+
     private void loadCurrentProgress() {
         if (uid == null) return;
 
@@ -364,23 +406,12 @@ public class AlamatKwento1 extends AppCompatActivity {
                     Object checkpointObj = story.get("checkpoint");
                     Object statusObj = story.get("status");
 
+                    int checkpoint = 0;
                     if (checkpointObj instanceof Number) {
-                        currentPage = ((Number) checkpointObj).intValue();
+                        checkpoint = ((Number) checkpointObj).intValue();
                     }
-                    storyImage.setImageResource(comicPages[currentPage]);
 
-                    // ✅ Logic para sa intro
-                    if (currentPage == 0) {
-                        // nasa cover page pa rin → play intro
-                        introFinished = false;
-                        introPlayed = false;
-                        loadIntroLines();
-                    } else {
-                        // nasa ibang page na, huwag na i-play ang intro
-                        introFinished = true;
-                        introPlayed = true;
-                        loadPageLines(currentPage);
-                    }
+                    checkResumeDialog(checkpoint);
 
                     if ("completed".equals(statusObj)) {
                         isLessonDone = true;
@@ -389,6 +420,7 @@ public class AlamatKwento1 extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void updateCheckpoint(int checkpoint) {
         if (uid == null) return;

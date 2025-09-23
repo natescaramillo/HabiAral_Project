@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.habiaral.Panitikan.MaiklingKuwento.MaiklingKuwento;
 import com.example.habiaral.Panitikan.MaiklingKuwento.Quiz.MaiklingKuwento1Quiz;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.ResumeDialogUtils;
 import com.example.habiaral.Utils.SoundManagerUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,14 +33,13 @@ import java.util.Map;
 public class MaiklingKuwento1 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.sulayman_01, R.drawable.sulayman_02, R.drawable.sulayman_03,
-            R.drawable.sulayman_04, R.drawable.sulayman_05, R.drawable.sulayman_06,
-            R.drawable.sulayman_07, R.drawable.sulayman_08, R.drawable.sulayman_09,
-            R.drawable.sulayman_10, R.drawable.sulayman_11, R.drawable.sulayman_12,
-            R.drawable.sulayman_13, R.drawable.sulayman_14, R.drawable.sulayman_15,
-            R.drawable.sulayman_16, R.drawable.sulayman_17, R.drawable.sulayman_18,
-            R.drawable.sulayman_19, R.drawable.sulayman_20, R.drawable.sulayman_21,
-            R.drawable.sulayman_22, R.drawable.sulayman_23
+            R.drawable.cover_page_rosas, R.drawable.kwento1_page01, R.drawable.kwento1_page02,
+            R.drawable.kwento1_page03, R.drawable.kwento1_page04, R.drawable.kwento1_page05,
+            R.drawable.kwento1_page06, R.drawable.kwento1_page07, R.drawable.kwento1_page08
+            , R.drawable.kwento1_page09, R.drawable.kwento1_page10, R.drawable.kwento1_page11
+            , R.drawable.kwento1_page12, R.drawable.kwento1_page13, R.drawable.kwento1_page14
+            , R.drawable.kwento1_page15, R.drawable.kwento1_page16, R.drawable.kwento1_page17
+            , R.drawable.kwento1_page18, R.drawable.kwento1_page19
     };
 
     private static final String STORY_ID = "MaiklingKuwento1";
@@ -70,15 +70,15 @@ public class MaiklingKuwento1 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.panitikan_alamat_kwento1);
+        setContentView(R.layout.panitikan_maikling_kwento_kwento1);
 
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         if (audioManager != null) {
             originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         }
 
-        storyImage = findViewById(R.id.imageViewComic);
-        unlockButton = findViewById(R.id.UnlockButtonKwento1);
+        storyImage = findViewById(R.id.imageViewComic4);
+        unlockButton = findViewById(R.id.UnlockButton);
 
         db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -107,7 +107,6 @@ public class MaiklingKuwento1 extends AppCompatActivity {
                     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
                 }
 
-                // 🛑 Itigil muna TTS bago lumipat
                 if (textToSpeech != null) {
                     textToSpeech.stop();
                 }
@@ -165,8 +164,6 @@ public class MaiklingKuwento1 extends AppCompatActivity {
 
                     textToSpeech.setSpeechRate(1.0f);
                     SoundManagerUtils.setTts(textToSpeech);
-
-                    loadIntroLines();
                 }
             } else {
                 Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
@@ -175,7 +172,11 @@ public class MaiklingKuwento1 extends AppCompatActivity {
     }
 
     private void loadIntroLines() {
-        if (introFinished) return;
+        if (introLines != null && !introLines.isEmpty()) {
+            currentIntroIndex = 0;
+            speakIntro();
+            return;
+        }
 
         db.collection("lesson_character_lines").document("LCL19").get()
                 .addOnSuccessListener(snapshot -> {
@@ -188,6 +189,7 @@ public class MaiklingKuwento1 extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void speakIntro() {
         if (introLines != null && currentIntroIndex < introLines.size()) {
@@ -232,6 +234,12 @@ public class MaiklingKuwento1 extends AppCompatActivity {
             storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
 
             updateCheckpoint(currentPage);
+
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+            }
+            currentLineIndex = 0;
+
             if (currentPage == 1) {
                 if (!introPlayed) {
                     loadPageLines(currentPage);
@@ -240,12 +248,40 @@ public class MaiklingKuwento1 extends AppCompatActivity {
             } else {
                 loadPageLines(currentPage);
             }
+
             if (currentPage == comicPages.length - 1) {
                 unlockButton.setEnabled(true);
                 unlockButton.setAlpha(1f);
             }
         }
     }
+
+
+    private void previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
+            storyImage.setImageResource(comicPages[currentPage]);
+            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
+
+            updateCheckpoint(currentPage);
+
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+            }
+            currentLineIndex = 0;
+
+            if (currentPage == 0) {
+                introFinished = false;
+                introPlayed = false;
+                loadIntroLines();
+
+            } else if (currentPage >= 2) {
+                loadPageLines(currentPage);
+            }
+        }
+    }
+
 
     private void loadPageLines(int page) {
         if (pageLines != null) {
@@ -261,7 +297,7 @@ public class MaiklingKuwento1 extends AppCompatActivity {
                                 Object pageNumObj = p.get("page");
                                 if (pageNumObj instanceof Number) {
                                     int firestorePage = ((Number) pageNumObj).intValue();
-                                    if (firestorePage - 1 == page) {
+                                    if (firestorePage == currentPage) {
                                         List<String> lines = (List<String>) p.get("line");
                                         if (lines != null && !lines.isEmpty()) {
                                             pageLines = lines;
@@ -300,22 +336,49 @@ public class MaiklingKuwento1 extends AppCompatActivity {
         });
     }
 
-    private void previousPage() {
-        if (currentPage > 0) {
-            currentPage--;
-            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
-            storyImage.setImageResource(comicPages[currentPage]);
-            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
+    private void checkResumeDialog(int checkpoint) {
+        if (checkpoint > 0) {
+            ResumeDialogUtils.showResumeDialog(this, new ResumeDialogUtils.ResumeDialogListener() {
+                @Override
+                public void onResumeLesson() {
+                    currentPage = checkpoint;
+                    storyImage.setImageResource(comicPages[currentPage]);
+                    introFinished = currentPage != 0;
+                    introPlayed = introFinished;
 
-            updateCheckpoint(currentPage);
-            if (currentPage == 1) {
-                if (!introPlayed) {
-                    loadPageLines(currentPage);
-                    introPlayed = true;
+                    if (currentPage == 0) {
+                        loadIntroLines();
+                    } else {
+                        loadPageLines(currentPage);
+                    }
+
+                    if (currentPage == comicPages.length - 1) {
+                        isLessonDone = true;
+                        unlockButton.setEnabled(true);
+                        unlockButton.setAlpha(1f);
+                    }
                 }
-            } else if (currentPage >= 2) {
+
+                @Override
+                public void onRestartLesson() {
+                    currentPage = 0;
+                    storyImage.setImageResource(comicPages[currentPage]);
+                    introFinished = false;
+                    introPlayed = false;
+                    loadIntroLines();
+                }
+            });
+        } else {
+            if (currentPage == 0) {
+                introFinished = false;
+                introPlayed = false;
+                loadIntroLines();
+            } else {
+                introFinished = true;
+                introPlayed = true;
                 loadPageLines(currentPage);
-            }        }
+            }
+        }
     }
 
     private void loadCurrentProgress() {
@@ -331,10 +394,10 @@ public class MaiklingKuwento1 extends AppCompatActivity {
                     Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                     if (categories == null) return;
 
-                    Map<String, Object> maiklingkuwento = (Map<String, Object>) categories.get("Maikling Kuwento");
-                    if (maiklingkuwento == null) return;
+                    Map<String, Object> alamat = (Map<String, Object>) categories.get("MaiklingKuwento");
+                    if (alamat == null) return;
 
-                    Map<String, Object> stories = (Map<String, Object>) maiklingkuwento.get("stories");
+                    Map<String, Object> stories = (Map<String, Object>) alamat.get("stories");
                     if (stories == null) return;
 
                     Map<String, Object> story = (Map<String, Object>) stories.get(STORY_ID);
@@ -343,14 +406,12 @@ public class MaiklingKuwento1 extends AppCompatActivity {
                     Object checkpointObj = story.get("checkpoint");
                     Object statusObj = story.get("status");
 
+                    int checkpoint = 0;
                     if (checkpointObj instanceof Number) {
-                        currentPage = ((Number) checkpointObj).intValue();
+                        checkpoint = ((Number) checkpointObj).intValue();
                     }
-                    storyImage.setImageResource(comicPages[currentPage]);
 
-                    if (currentPage > 0 || "completed".equals(statusObj)) {
-                        introFinished = true;
-                    }
+                    checkResumeDialog(checkpoint);
 
                     if ("completed".equals(statusObj)) {
                         isLessonDone = true;
@@ -359,6 +420,7 @@ public class MaiklingKuwento1 extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void updateCheckpoint(int checkpoint) {
         if (uid == null) return;
@@ -371,7 +433,7 @@ public class MaiklingKuwento1 extends AppCompatActivity {
                         if (module3 != null) {
                             Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                             if (categories != null) {
-                                Map<String, Object> maiklingkuwento = (Map<String, Object>) categories.get("Maikling Kuwento");
+                                Map<String, Object> maiklingkuwento = (Map<String, Object>) categories.get("MaiklingKuwento");
                                 if (maiklingkuwento != null) {
                                     Map<String, Object> stories = (Map<String, Object>) maiklingkuwento.get("stories");
                                     if (stories != null) {
@@ -394,7 +456,7 @@ public class MaiklingKuwento1 extends AppCompatActivity {
                     maiklingkuwentoData.put("stories", Map.of(STORY_ID, storyData));
 
                     Map<String, Object> categories = new HashMap<>();
-                    categories.put("Maikling Kuwento", maiklingkuwentoData);
+                    categories.put("MaiklingKuwento", maiklingkuwentoData);
 
                     Map<String, Object> module3 = new HashMap<>();
                     module3.put("categories", categories);
@@ -416,7 +478,6 @@ public class MaiklingKuwento1 extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        // ✅ Mute lang kapag minimize, hindi kapag lumilipat ng activity papuntang quiz
         if (!isNavigatingToQuiz && audioManager != null) {
             originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
@@ -426,7 +487,6 @@ public class MaiklingKuwento1 extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Reset flag kapag bumalik
         isNavigatingToQuiz = false;
         if (audioManager != null) {
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);

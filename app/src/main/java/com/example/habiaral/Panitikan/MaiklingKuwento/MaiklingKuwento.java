@@ -14,7 +14,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.habiaral.Panitikan.MaiklingKuwento.Stories.MaiklingKuwento1;
 import com.example.habiaral.Panitikan.MaiklingKuwento.Stories.MaiklingKuwento2;
-import com.example.habiaral.Panitikan.MaiklingKuwento.Stories.MaiklingKuwento3;
 import com.example.habiaral.R;
 import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.Utils.SoundClickUtils;
@@ -29,8 +28,8 @@ import java.util.Map;
 
 public class MaiklingKuwento extends AppCompatActivity {
 
-    ConstraintLayout btnKwento1, btnKwento2, btnKwento3;
-    FrameLayout kwento1Lock, kwento2Lock, kwento3Lock;
+    ConstraintLayout btnKwento1, btnKwento2;
+    FrameLayout kwento1Lock, kwento2Lock;
     FirebaseFirestore db;
     String uid;
     private MediaPlayer mediaPlayer;
@@ -185,13 +184,11 @@ public class MaiklingKuwento extends AppCompatActivity {
 
         boolean kwento1Done = isCompleted(stories, "MaiklingKuwento1");
         boolean kwento2Done = isCompleted(stories, "MaiklingKuwento2");
-        boolean kwento3Done = isCompleted(stories, "MaiklingKuwento3");
 
         unlockButton(btnKwento1, true, kwento1Lock);
         unlockButton(btnKwento2, kwento1Done, kwento2Lock);
-        unlockButton(btnKwento3, kwento2Done, kwento3Lock);
 
-        if (kwento1Done && kwento2Done && kwento3Done) {
+        if (kwento1Done && kwento2Done) {
             markCategoryCompleted();
         }
     }
@@ -215,15 +212,12 @@ public class MaiklingKuwento extends AppCompatActivity {
     private void initViews() {
         btnKwento1 = findViewById(R.id.kwento1);
         btnKwento2 = findViewById(R.id.kwento2);
-        btnKwento3 = findViewById(R.id.kwento3);
 
         kwento1Lock = findViewById(R.id.kwento1Lock);
         kwento2Lock = findViewById(R.id.kwento2Lock);
-        kwento3Lock = findViewById(R.id.kwento3Lock);
 
         btnKwento1.setOnClickListener(v -> openStory(MaiklingKuwento1.class));
         btnKwento2.setOnClickListener(v -> openStory(MaiklingKuwento2.class));
-        btnKwento3.setOnClickListener(v -> openStory(MaiklingKuwento3.class));
     }
 
     private void openStory(Class<?> cls) {
@@ -233,7 +227,6 @@ public class MaiklingKuwento extends AppCompatActivity {
 
     private void lockAllButtons() {
         lockButton(btnKwento2);
-        lockButton(btnKwento3);
     }
 
     private void lockButton(ConstraintLayout button) {
@@ -257,9 +250,8 @@ public class MaiklingKuwento extends AppCompatActivity {
 
                     boolean kwento1Done = isCompleted(lessons, "kwento1");
                     boolean kwento2Done = isCompleted(lessons, "kwento2");
-                    boolean kwento3Done = isCompleted(lessons, "kwento3");
 
-                    if (kwento1Done && kwento2Done && kwento3Done) {
+                    if (kwento1Done && kwento2Done) {
                         markCategoryCompleted();
                     }
                 });
