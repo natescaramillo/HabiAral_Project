@@ -11,6 +11,7 @@ import android.speech.tts.UtteranceProgressListener;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
@@ -30,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import android.content.ActivityNotFoundException;
 import android.speech.tts.Voice;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class PangngalanLesson extends AppCompatActivity {
@@ -147,6 +149,9 @@ public class PangngalanLesson extends AppCompatActivity {
         backOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
         nextOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); nextPage(); });
 
+        ConstraintLayout bottomBar = findViewById(R.id.bottom_bar);
+        LinearLayout optionBar = findViewById(R.id.option_bar);
+
         fullScreenOption.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             FullScreenUtils.toggleFullScreen(
@@ -155,9 +160,12 @@ public class PangngalanLesson extends AppCompatActivity {
                     fullScreenOption,
                     imageView,
                     imageView2,
-                    unlockButton
+                    unlockButton,
+                    bottomBar,
+                    optionBar
             );
         });
+
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() {

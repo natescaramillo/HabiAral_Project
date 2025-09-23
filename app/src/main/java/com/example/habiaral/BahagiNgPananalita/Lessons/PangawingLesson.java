@@ -10,10 +10,12 @@ import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
@@ -137,6 +139,9 @@ public class PangawingLesson extends AppCompatActivity {
         backOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
         nextOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); nextPage(); });
 
+        ConstraintLayout bottomBar = findViewById(R.id.bottom_bar);
+        LinearLayout optionBar = findViewById(R.id.option_bar);
+
         fullScreenOption.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             FullScreenUtils.toggleFullScreen(
@@ -145,7 +150,9 @@ public class PangawingLesson extends AppCompatActivity {
                     fullScreenOption,
                     imageView,
                     imageView2,
-                    unlockButton
+                    unlockButton,
+                    bottomBar,
+                    optionBar
             );
         });
 
