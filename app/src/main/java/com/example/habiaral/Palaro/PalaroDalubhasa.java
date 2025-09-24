@@ -3,6 +3,7 @@ package com.example.habiaral.Palaro;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -89,6 +90,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private boolean greenSound = false;
     private boolean redSound = false;
     private boolean orangeSound = false;
+    private Handler countdownHandler;
+    private Runnable countdownRunnable;
+    private MediaPlayer countdownBeepPlayer;
+
     private ImageView errorIcon;
     private TextView errorTooltip;
     private MediaPlayer greenTimerSoundPlayer;
@@ -100,12 +105,30 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private Runnable internetRunnable;
     private Handler errorTooltipHandler = new Handler();
     private Runnable hideErrorTooltipRunnable = () -> errorTooltip.setVisibility(View.GONE);
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.palaro_dalubhasa);
+
+        connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            networkCallback = new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onLost(android.net.Network network) {
+                    super.onLost(network);
+                    runOnUiThread(() -> {
+                        finishQuiz();
+                    });
+                }
+            };
+            connectivityManager.registerDefaultNetworkCallback(networkCallback);
+        } else {
+        }
 
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
@@ -130,7 +153,12 @@ public class PalaroDalubhasa extends AppCompatActivity {
         errorTooltip = findViewById(R.id.errorTooltip);
         characterIcon = findViewById(R.id.characterIcon);
 
-        Glide.with(this).asGif().load(R.drawable.idle).into(characterIcon);
+        if (!isFinishing() && !isDestroyed()) {
+            Glide.with(getApplicationContext())
+                    .asGif()
+                    .load(R.drawable.idle)
+                    .into(characterIcon);
+        }
 
         btnUmalis.setOnClickListener(v -> {
             playButtonClickSound();
@@ -196,34 +224,38 @@ public class PalaroDalubhasa extends AppCompatActivity {
         String sentence = userSentenceInput.getText().toString().trim();
         if (sentence.isEmpty()) {
             showErrorTooltip("Pakisulat ang iyong pangungusap.");
-            Glide.with(this)
-                    .asGif()
-                    .load(R.drawable.wrong)
-                    .transition(DrawableTransitionOptions.withCrossFade(300))
-                    .into(characterIcon);
-            new Handler().postDelayed(() -> {
-                Glide.with(this)
-                        .asGif()
-                        .load(R.drawable.idle)
+            if (!isFinishing() && !isDestroyed()) {
+                Glide.with(this).asGif()
+                        .load(R.drawable.wrong)
                         .transition(DrawableTransitionOptions.withCrossFade(300))
                         .into(characterIcon);
+            }
+            new Handler().postDelayed(() -> {
+                if (!isFinishing() && !isDestroyed()) {
+                    Glide.with(this).asGif()
+                            .load(R.drawable.idle)
+                            .transition(DrawableTransitionOptions.withCrossFade(300))
+                            .into(characterIcon);
+                }
             }, 2300);
 
             return;
         } else if (!sentence.endsWith(".")) {
             showErrorTooltip("Siguraduhing nagtatapos ang pangungusap sa tuldok (.)");
 
-            Glide.with(this)
-                    .asGif()
-                    .load(R.drawable.wrong)
-                    .transition(DrawableTransitionOptions.withCrossFade(300))
-                    .into(characterIcon);
-            new Handler().postDelayed(() -> {
-                Glide.with(this)
-                        .asGif()
-                        .load(R.drawable.idle)
+            if (!isFinishing() && !isDestroyed()) {
+                Glide.with(this).asGif()
+                        .load(R.drawable.wrong)
                         .transition(DrawableTransitionOptions.withCrossFade(300))
                         .into(characterIcon);
+            }
+            new Handler().postDelayed(() -> {
+                if (!isFinishing() && !isDestroyed()) {
+                    Glide.with(this).asGif()
+                            .load(R.drawable.idle)
+                            .transition(DrawableTransitionOptions.withCrossFade(300))
+                            .into(characterIcon);
+                }
             }, 2300);
 
             return;
@@ -244,17 +276,19 @@ public class PalaroDalubhasa extends AppCompatActivity {
             speakLine("Wala ka ng kinakailangang bahagi sa iyong sagot. Pakibasa muli ang mga panuto.");
             loadCharacterLine(currentDalubhasaID);
 
-            Glide.with(this)
-                    .asGif()
-                    .load(R.drawable.wrong)
-                    .transition(DrawableTransitionOptions.withCrossFade(300))
-                    .into(characterIcon);
-            new Handler().postDelayed(() -> {
-                Glide.with(this)
-                        .asGif()
-                        .load(R.drawable.idle)
+            if (!isFinishing() && !isDestroyed()) {
+                Glide.with(this).asGif()
+                        .load(R.drawable.wrong)
                         .transition(DrawableTransitionOptions.withCrossFade(300))
                         .into(characterIcon);
+            }
+            new Handler().postDelayed(() -> {
+                if (!isFinishing() && !isDestroyed()) {
+                    Glide.with(this).asGif()
+                            .load(R.drawable.idle)
+                            .transition(DrawableTransitionOptions.withCrossFade(300))
+                            .into(characterIcon);
+                }
             }, 2300);
 
             return;
@@ -273,8 +307,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                             Toast.makeText(PalaroDalubhasa.this, "Mali ang grammar! Heart deducted.", Toast.LENGTH_SHORT).show();
                             deductHeart();
 
-                            // Stop timer sounds after error
-                            stopAllTimerSounds(); // <--- ADD THIS
+                            stopAllTimerSounds();
                         }
 
                         highlightGrammarIssues(response, sentence);
@@ -293,26 +326,26 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 runOnUiThread(() -> {
                     Toast.makeText(PalaroDalubhasa.this, "Grammar Check Failed: " + error, Toast.LENGTH_SHORT).show();
 
-                    Glide.with(PalaroDalubhasa.this)
-                            .asGif()
-                            .load(R.drawable.wrong)
-                            .transition(DrawableTransitionOptions.withCrossFade(300))
-                            .into(characterIcon);
-                    new Handler().postDelayed(() -> {
-                        Glide.with(PalaroDalubhasa.this)
-                                .asGif()
-                                .load(R.drawable.idle)
+                    if (!isFinishing() && !isDestroyed()) {
+                        Glide.with(PalaroDalubhasa.this).asGif()
+                                .load(R.drawable.wrong)
                                 .transition(DrawableTransitionOptions.withCrossFade(300))
                                 .into(characterIcon);
+                    }
+                    new Handler().postDelayed(() -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            Glide.with(PalaroDalubhasa.this).asGif()
+                                    .load(R.drawable.idle)
+                                    .transition(DrawableTransitionOptions.withCrossFade(300))
+                                    .into(characterIcon);
+                        }
                     }, 2300);
                 });
             }
         });
     }
 
-    // Add this helper to restart the timer and sound
     private void restartTimer() {
-        // Stop any existing timer and sound
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
@@ -325,10 +358,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
         errorIcon.setVisibility(View.VISIBLE);
         errorTooltip.setVisibility(View.VISIBLE);
 
-        // Cancel any previous hide requests
         errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
 
-        // Schedule hide after 2.5 seconds
         errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 2500);
 
         errorIcon.setOnClickListener(v -> {
@@ -336,7 +367,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 errorTooltip.setVisibility(View.GONE);
             } else {
                 errorTooltip.setVisibility(View.VISIBLE);
-                // Re-schedule auto-hide
                 errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
                 errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 2500);
             }
@@ -387,27 +417,27 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 perfectAnswerCount++;
                 playCorrectSound();
 
-                // **Stop timer and sounds**
                 if (countDownTimer != null) {
                     countDownTimer.cancel();
                 }
                 stopAllTimerSounds();
 
-                // **Toggle buttons**
                 btnSuriin.setVisibility(View.GONE);
                 btnTapos.setVisibility(View.VISIBLE);
 
-                Glide.with(this)
-                        .asGif()
-                        .load(R.drawable.right_1)
-                        .transition(DrawableTransitionOptions.withCrossFade(300))
-                        .into(characterIcon);
-                new Handler().postDelayed(() -> {
-                    Glide.with(this)
-                            .asGif()
-                            .load(R.drawable.idle)
+                if (!isFinishing() && !isDestroyed()) {
+                    Glide.with(this).asGif()
+                            .load(R.drawable.right_1)
                             .transition(DrawableTransitionOptions.withCrossFade(300))
                             .into(characterIcon);
+                }
+                new Handler().postDelayed(() -> {
+                    if (!isFinishing() && !isDestroyed()) {
+                        Glide.with(this).asGif()
+                                .load(R.drawable.idle)
+                                .transition(DrawableTransitionOptions.withCrossFade(300))
+                                .into(characterIcon);
+                    }
                 }, 3000);
 
                 loadCharacterLine("MDCL2");
@@ -451,7 +481,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                         SpannableStringBuilder builder = new SpannableStringBuilder();
                         builder.append("Maling salita o grammar:\n\n");
 
-// Highlight mali sa sentence
                         SpannableString highlightedSentence = new SpannableString(originalSentence);
                         for (int i = 0; i < matches.length(); i++) {
                             JSONObject match = matches.getJSONObject(i);
@@ -463,7 +492,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                         builder.append(highlightedSentence);
                         builder.append("\n\n");
 
-// Add per-word explanations
                         for (int i = 0; i < matches.length(); i++) {
                             JSONObject match = matches.getJSONObject(i);
                             int offset = match.getInt("offset");
@@ -564,7 +592,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                             keywordList.add(keywords);
                         }
 
-                        // **Shuffle questions**
                         shuffleQuestions();
 
                         nextQuestion();
@@ -611,7 +638,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
             userSentenceInput.setText("");
             userSentenceInput.setEnabled(true);
 
-            // **Reset buttons visibility**
             btnSuriin.setVisibility(View.VISIBLE);
             btnTapos.setVisibility(View.GONE);
 
@@ -629,42 +655,65 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadInstruction() {
-        // Use a short beep sound for each countdown tick
-        final MediaPlayer[] beepPlayer = {null};
-
-        final Handler countdownHandler = new Handler();
+        if (countdownHandler != null) {
+            countdownHandler.removeCallbacksAndMessages(null);
+        }
+        countdownHandler = new Handler();
         final int[] countdown = {3};
 
-        Runnable countdownRunnable = new Runnable() {
+        if (countdownBeepPlayer != null) {
+            try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
+            countdownBeepPlayer.release();
+            countdownBeepPlayer = null;
+        }
+
+        countdownRunnable = new Runnable() {
             @Override
             public void run() {
+                if (isFinishing() || isDestroyed() || isGameOver) {
+                    if (countdownBeepPlayer != null) {
+                        try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
+                        countdownBeepPlayer.release();
+                        countdownBeepPlayer = null;
+                    }
+                    return;
+                }
+
                 if (countdown[0] > 0) {
                     dalubhasaInstruction.setText(String.valueOf(countdown[0]));
 
-                    // Play beep sound
-                    if (beepPlayer[0] != null) {
-                        beepPlayer[0].release();
+                    if (countdownBeepPlayer != null) {
+                        try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
+                        countdownBeepPlayer.release();
+                        countdownBeepPlayer = null;
                     }
-                    beepPlayer[0] = MediaPlayer.create(PalaroDalubhasa.this, R.raw.beep);
-                    beepPlayer[0].setOnCompletionListener(mp -> mp.release());
-                    beepPlayer[0].start();
+                    countdownBeepPlayer = MediaPlayer.create(PalaroDalubhasa.this, R.raw.beep);
+                    countdownBeepPlayer.setOnCompletionListener(mp -> {
+                        try { mp.release(); } catch (Exception ignored) {}
+                        if (mp == countdownBeepPlayer) countdownBeepPlayer = null;
+                    });
+                    countdownBeepPlayer.start();
 
                     countdown[0]--;
                     countdownHandler.postDelayed(this, 1000);
                 } else {
                     dalubhasaInstruction.setText("");
-                    // Release beep player if still exists
-                    if (beepPlayer[0] != null) {
-                        beepPlayer[0].release();
-                        beepPlayer[0] = null;
+                    if (countdownBeepPlayer != null) {
+                        try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
+                        countdownBeepPlayer.release();
+                        countdownBeepPlayer = null;
                     }
-                    loadAllDalubhasaInstructions();
-                    startTimer();
+                    if (!isFinishing() && !isDestroyed() && !isGameOver) {
+                        loadAllDalubhasaInstructions();
+                        startTimer();
+                    }
                 }
             }
         };
+
         countdownHandler.post(countdownRunnable);
     }
+
 
     private void startTimer() {
 
@@ -821,9 +870,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
             if (remainingHearts == 0) {
                 Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
 
-                // Stop timer and sounds
                 if (countDownTimer != null) countDownTimer.cancel();
-                stopAllTimerSounds(); // <--- ADD THIS
+                stopAllTimerSounds();
 
                 userSentenceInput.setEnabled(false);
                 btnTapos.setEnabled(false);
@@ -836,11 +884,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
         }
     }
 
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        endAllAndFinish();
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
@@ -848,8 +895,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         if (tts != null) {
             tts.stop();
-            tts.shutdown();
-            tts = null;
         }
 
         stopAllTimerSounds();
@@ -860,6 +905,22 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         if (errorTooltipHandler != null) {
             errorTooltipHandler.removeCallbacksAndMessages(null);
+        }
+        if (connectivityManager != null && networkCallback != null) {
+            connectivityManager.unregisterNetworkCallback(networkCallback);
+        }
+
+        if (countdownHandler != null) {
+            try { countdownHandler.removeCallbacksAndMessages(null); } catch (Exception ignored) {}
+            countdownHandler = null;
+        }
+        if (countdownRunnable != null) {
+            countdownRunnable = null;
+        }
+        if (countdownBeepPlayer != null) {
+            try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
+            try { countdownBeepPlayer.release(); } catch (Exception ignored) {}
+            countdownBeepPlayer = null;
         }
     }
 
@@ -1057,5 +1118,62 @@ public class PalaroDalubhasa extends AppCompatActivity {
         TimerSoundUtils.setVolume(0.2f);
     }
 
+    private void endAllAndFinish() {
+        if (isGameOver) {
+            if (countDownTimer != null) { countDownTimer.cancel(); countDownTimer = null; }
+            stopAllTimerSounds();
+            if (tts != null) { tts.stop(); tts.shutdown(); tts = null; }
+            if (greenTimerSoundPlayer != null) { greenTimerSoundPlayer.stop(); greenTimerSoundPlayer = null; }
+            if (orangeTimerSoundPlayer != null) { orangeTimerSoundPlayer.stop(); orangeTimerSoundPlayer = null; }
+            if (redTimerSoundPlayer != null) { redTimerSoundPlayer.stop(); redTimerSoundPlayer = null; }
+            if (errorTooltipHandler != null) errorTooltipHandler.removeCallbacksAndMessages(null);
+            try {
+                if (connectivityManager != null && networkCallback != null) {
+                    connectivityManager.unregisterNetworkCallback(networkCallback);
+                }
+            } catch (Exception ignored) {}
+            finish();
+            return;
+        }
+
+        isGameOver = true;
+
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+
+        stopAllTimerSounds();
+
+        try {
+            if (tts != null) {
+                tts.stop();
+                tts.shutdown();
+                tts = null;
+            }
+        } catch (Exception ignored) {}
+
+        if (errorTooltipHandler != null) {
+            errorTooltipHandler.removeCallbacksAndMessages(null);
+        }
+        if (internetHandler != null && internetRunnable != null) {
+            internetHandler.removeCallbacks(internetRunnable);
+        }
+
+        try {
+            if (connectivityManager != null && networkCallback != null) {
+                connectivityManager.unregisterNetworkCallback(networkCallback);
+                networkCallback = null;
+            }
+        } catch (Exception ignored) {}
+
+        finish();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        endAllAndFinish();
+    }
 
 }
