@@ -149,6 +149,7 @@
         android:fontFamily="@font/special"
         android:text="Sunod"
         android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/answer3" />
 

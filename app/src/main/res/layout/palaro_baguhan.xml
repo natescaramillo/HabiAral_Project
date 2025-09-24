@@ -188,7 +188,7 @@
                     android:layout_column="0"
                     android:layout_margin="8dp"
                     android:background="@drawable/answer_option_bg"
-                    android:fontFamily="@font/special"
+                    android:fontFamily="@font/ala_sans"
                     android:gravity="center"
                     android:text=""
                     android:textSize="12sp" />
@@ -201,7 +201,7 @@
                     android:layout_column="1"
                     android:layout_margin="8dp"
                     android:background="@drawable/answer_option_bg"
-                    android:fontFamily="@font/special"
+                    android:fontFamily="@font/ala_sans"
                     android:gravity="center"
                     android:text=""
                     android:textSize="12sp" />
@@ -212,7 +212,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:background="@drawable/answer_option_bg"
-                    android:fontFamily="@font/special"
+                    android:fontFamily="@font/ala_sans"
                     android:gravity="center"
                     android:text=""
                     android:textSize="12sp" />
@@ -223,7 +223,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:background="@drawable/answer_option_bg"
-                    android:fontFamily="@font/special"
+                    android:fontFamily="@font/ala_sans"
                     android:gravity="center"
                     android:text=""
                     android:textSize="12sp" />
@@ -234,7 +234,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:background="@drawable/answer_option_bg"
-                    android:fontFamily="@font/special"
+                    android:fontFamily="@font/ala_sans"
                     android:gravity="center"
                     android:text=""
                     android:textSize="12sp" />
@@ -245,7 +245,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:background="@drawable/answer_option_bg"
-                    android:fontFamily="@font/special"
+                    android:fontFamily="@font/ala_sans"
                     android:gravity="center"
                     android:text=""
                     android:textSize="12sp" />

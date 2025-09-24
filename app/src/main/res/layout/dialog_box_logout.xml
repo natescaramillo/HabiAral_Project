@@ -65,9 +65,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <!-- No button -->
-
-        <!-- Yes button -->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
@@ -82,8 +79,8 @@
 
             <Button
                 android:id="@+id/btnLogoutYes"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:background="@drawable/button_color"
                 android:fontFamily="@font/special"
@@ -96,8 +93,8 @@
 
             <Button
                 android:id="@+id/btnLogoutNo"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:background="@drawable/button_color"
                 android:fontFamily="@font/special"
@@ -110,7 +107,7 @@
 
             <TextView
                 android:id="@+id/textViewMessage"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/special"
                 android:gravity="center"
