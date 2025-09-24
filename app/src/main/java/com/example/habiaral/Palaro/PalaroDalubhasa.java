@@ -1,5 +1,7 @@
 package com.example.habiaral.Palaro;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
@@ -7,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.speech.tts.Voice;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -39,6 +42,7 @@ import com.example.habiaral.GrammarChecker.GrammarChecker;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.InternetCheckerUtils;
+import com.example.habiaral.Utils.SoundManagerUtils;
 import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -132,13 +136,44 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
-                isTtsReady = true;
-                Locale tagalogLocale = new Locale("fil", "PH");
-                tts.setLanguage(tagalogLocale);
-                tts.setSpeechRate(1.3f);
 
+                Locale filLocale = new Locale.Builder().setLanguage("fil").setRegion("PH").build();
+                int result = tts.setLanguage(filLocale);
+
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Toast.makeText(this,
+                            "Kailangan i-download ang Filipino voice sa Text-to-Speech settings.",
+                            Toast.LENGTH_LONG).show();
+                    try {
+                        Intent installIntent = new Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                        startActivity(installIntent);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(this,
+                                "Hindi ma-open ang installer ng TTS.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Voice selected = null;
+                    for (Voice v : tts.getVoices()) {
+                        Locale vLocale = v.getLocale();
+                        if (vLocale != null && vLocale.getLanguage().equals("fil")) {
+                            selected = v;
+                            break;
+                        } else if (v.getName().toLowerCase().contains("fil")) {
+                            selected = v;
+                            break;
+                        }
+                    }
+                    if (selected != null) {
+                        tts.setVoice(selected);
+                    }
+
+                }
+                tts.setSpeechRate(1.0f);
                 new Handler().postDelayed(() -> loadCharacterLine("MDCL1"), 300);
                 new Handler().postDelayed(this::showCountdownThenLoadInstruction, 4000);
+            } else {
+                Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
             }
         });
 
