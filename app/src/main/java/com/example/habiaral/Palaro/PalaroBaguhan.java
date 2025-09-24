@@ -1,5 +1,6 @@
 package com.example.habiaral.Palaro;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -8,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.speech.tts.Voice;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
@@ -117,6 +119,7 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         startCountdownRunnable = this::showCountdownThenLoadQuestion;
 
+
         ImageView imageView = findViewById(R.id.characterIcon);
         if (!isFinishing() && !isDestroyed()) {
             Glide.with(getApplicationContext())
@@ -144,27 +147,62 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
-                tts.setLanguage(new Locale("fil", "PH"));
-                tts.setSpeechRate(1.3f);
 
-                if (!hasSeenIntro) {
-                    loadLineRunnable = () -> loadCharacterLine(LINE_START);
-                    handler.postDelayed(loadLineRunnable, 300);
-                    handler.postDelayed(startCountdownRunnable, 3000);
+                // Gamitin ang mas kumpletong Filipino locale
+                Locale filLocale = new Locale.Builder().setLanguage("fil").setRegion("PH").build();
+                int result = tts.setLanguage(filLocale);
 
-                    prefs.edit().putBoolean(KEY_SEEN_INTRO, true).apply();
-                    hasSeenIntro = true;
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Toast.makeText(this,
+                            "Kailangan i-download ang Filipino voice sa Text-to-Speech settings.",
+                            Toast.LENGTH_LONG).show();
+                    try {
+                        Intent installIntent = new Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                        startActivity(installIntent);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(this,
+                                "Hindi ma-open ang installer ng TTS.",
+                                Toast.LENGTH_LONG).show();
+                    }
                 } else {
-                    handler.post(startCountdownRunnable);
+                    // Piliin ang voice na may Filipino language kung available
+                    Voice selected = null;
+                    for (Voice v : tts.getVoices()) {
+                        Locale vLocale = v.getLocale();
+                        if (vLocale != null && vLocale.getLanguage().equals("fil")) {
+                            selected = v;
+                            break;
+                        } else if (v.getName().toLowerCase().contains("fil")) {
+                            selected = v;
+                            break;
+                        }
+                    }
+                    if (selected != null) {
+                        tts.setVoice(selected);
+                    }
+
+                    tts.setSpeechRate(1.0f);
+
+                    // Optional: kung merong TTS manager utils sa app
+                    // SoundManagerUtils.setTts(tts);
+
+                    // Simulan agad ang intro line o countdown
+                    if (!hasSeenIntro) {
+                        loadLineRunnable = () -> loadCharacterLine(LINE_START);
+                        handler.postDelayed(loadLineRunnable, 300);
+                        handler.postDelayed(startCountdownRunnable, 3000);
+
+                        prefs.edit().putBoolean(KEY_SEEN_INTRO, true).apply();
+                        hasSeenIntro = true;
+                    } else {
+                        handler.post(startCountdownRunnable);
+                    }
                 }
+
             } else {
-                if (!hasSeenIntro) {
-                    handler.post(startCountdownRunnable);
-                    prefs.edit().putBoolean(KEY_SEEN_INTRO, true).apply();
-                    hasSeenIntro = true;
-                } else {
-                    handler.post(startCountdownRunnable);
-                }
+                Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
+                // Fallback sa countdown kahit hindi ma-init TTS
+                handler.post(startCountdownRunnable);
             }
         });
 
@@ -429,8 +467,10 @@ public class PalaroBaguhan extends AppCompatActivity {
                     update.put("studentId", studentId);
                     update.put("baguhan", nestedBaguhan);
 
-                    docRef.set(update, SetOptions.merge());
-                }
+                    docRef.set(update, SetOptions.merge())
+                            .addOnSuccessListener(unused -> {
+                                unlockAchievementA8IfEligible();
+                            });                }
 
             });
         });
@@ -444,15 +484,18 @@ public class PalaroBaguhan extends AppCompatActivity {
         db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
             if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
 
+            // Get both studentId and Firebase UID
             String studentId = studentDoc.getString("studentId");
             String firebaseUID = studentDoc.getId();
 
+            // Fetch all Baguhan questions
             db.collection("baguhan").get().addOnSuccessListener(allQuestionsSnapshot -> {
                 List<String> allQuestionIds = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : allQuestionsSnapshot) {
                     allQuestionIds.add(doc.getId());
                 }
 
+                // Fetch answered questions using firebaseUID (palaro_answered)
                 db.collection("palaro_answered").document(firebaseUID).get().addOnSuccessListener(userDoc -> {
                     if (!userDoc.exists()) return;
 
@@ -461,21 +504,26 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                     List<String> answeredIds = new ArrayList<>(answeredMap.keySet());
 
+                    // Check if all questions are answered
                     if (answeredIds.containsAll(allQuestionIds)) {
-                        db.collection("student_achievements").document(firebaseUID).get().addOnSuccessListener(achSnapshot -> {
-                            Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
-                            if (achievements != null && achievements.containsKey(achievementCode)) {
-                                return;
+                        db.collection("student_achievements").document(studentId).get().addOnSuccessListener(achSnapshot -> {
+                            if (achSnapshot.exists()) {
+                                Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
+                                if (achievements != null && achievements.containsKey(achievementCode)) {
+                                    // Already unlocked, do nothing
+                                    return;
+                                }
                             }
 
-                            continueUnlockingAchievement(firebaseUID, achievementCode, achievementId);
+                            // Unlock achievement if not yet unlocked
+                            continueUnlockingAchievement(studentId, achievementCode, achievementId);
                         });
                     }
-
                 });
             });
         });
     }
+
 
     private void continueUnlockingAchievement(String uid, String saCode, String achievementID) {
         db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
