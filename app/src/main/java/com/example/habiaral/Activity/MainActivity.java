@@ -18,9 +18,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        TalasalitaanUtils.preloadWords(this);
-
-        goToWelcome();
+        InternetCheckerUtils.checkInternet(this, () -> goToWelcome());
     }
 
     private void goToWelcome() {
