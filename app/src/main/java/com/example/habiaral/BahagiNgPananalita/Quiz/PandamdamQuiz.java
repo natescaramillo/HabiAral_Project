@@ -378,10 +378,7 @@ public class PandamdamQuiz extends AppCompatActivity {
 
     private void showResultDialog() {
         stopTimerSound();
-
-        if (resultDialog != null && resultDialog.isShowing()) {
-            resultDialog.dismiss();
-        }
+        if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
         releaseResultPlayer();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -392,7 +389,6 @@ public class PandamdamQuiz extends AppCompatActivity {
         Button retryButton = dialogView.findViewById(R.id.retryButton);
         Button taposButton = dialogView.findViewById(R.id.finishButton);
         Button homeButton = dialogView.findViewById(R.id.returnButton);
-
         ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
         TextView scoreNumber = dialogView.findViewById(R.id.textView6);
         TextView resultText = dialogView.findViewById(R.id.textView7);
@@ -402,8 +398,14 @@ public class PandamdamQuiz extends AppCompatActivity {
         scoreNumber.setText(correctAnswers + "/" + totalQuestions);
 
         boolean passed = correctAnswers >= 6;
+        boolean passedBefore = hasPassedQuizBefore();
+
         if (passed) {
             resultText.setText("Ikaw ay nakapasa!");
+            taposButton.setEnabled(true);
+            taposButton.setAlpha(1.0f);
+        } else if (passedBefore) {
+            resultText.setText("Ikaw ay nakapasa dati, ngunit sa pagkakataong ito, nabigo ka!");
             taposButton.setEnabled(true);
             taposButton.setAlpha(1.0f);
         } else {
@@ -413,9 +415,8 @@ public class PandamdamQuiz extends AppCompatActivity {
         }
 
         resultDialog = builder.create();
-        if (resultDialog.getWindow() != null) {
+        if (resultDialog.getWindow() != null)
             resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        }
 
         resultDialog.setOnShowListener(d -> {
             releaseResultPlayer();
@@ -424,22 +425,11 @@ public class PandamdamQuiz extends AppCompatActivity {
             if (resultPlayer != null) {
                 resultPlayer.setVolume(0.6f, 0.6f);
                 resultPlayer.setOnCompletionListener(mp -> releaseResultPlayer());
-                try {
-                    resultPlayer.start();
-                } catch (IllegalStateException e) {
-                    e.printStackTrace();
-                    releaseResultPlayer();
-                }
+                try { resultPlayer.start(); } catch (IllegalStateException e) { releaseResultPlayer(); }
             }
         });
 
-        if (!isFinishing() && !isDestroyed()) {
-            try {
-                resultDialog.show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        if (!isFinishing() && !isDestroyed()) resultDialog.show();
 
         retryButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
@@ -458,6 +448,20 @@ public class PandamdamQuiz extends AppCompatActivity {
             dismissAndReleaseResultDialog();
             navigateToLesson(BahagiNgPananalita.class);
         });
+    }
+
+    private boolean hasPassedQuizBefore() {
+        Map<String, Object> cachedData = LessonProgressCache.getData();
+        if (cachedData == null) return false;
+
+        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_1");
+        if (module2 == null) return false;
+
+        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
+        if (lessons == null) return false;
+
+        Map<String, Object> pandamdamLesson = (Map<String, Object>) lessons.get("pandamdam");
+        return pandamdamLesson != null && "completed".equals(pandamdamLesson.get("status"));
     }
 
     private void releaseResultPlayer() {

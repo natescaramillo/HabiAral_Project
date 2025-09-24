@@ -2,6 +2,7 @@ package com.example.habiaral.KayarianNgPangungusap.Lessons;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +38,7 @@ public class LangkapanLesson extends AppCompatActivity {
     ImageView descriptionImageView;
     ImageView exampleImageView;
     Button quizButton;
+    private boolean introCompleted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,15 +120,13 @@ public class LangkapanLesson extends AppCompatActivity {
                                 .set(update, SetOptions.merge());
                     }
 
-                    runOnUiThread(() -> {
-                        quizButton.setEnabled(true);
-                        quizButton.setAlpha(1.0f);
-                    });
                 });
     }
 
-
     private void initTextToSpeech() {
+        SharedPreferences prefs = getSharedPreferences("lesson_prefs", MODE_PRIVATE);
+        introCompleted = prefs.getBoolean("langkapan_quiz_unlocked", false);
+
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
                 Locale filLocale = new Locale.Builder().setLanguage("fil").setRegion("PH").build();
@@ -149,7 +149,10 @@ public class LangkapanLesson extends AppCompatActivity {
                         }
                     }
                     textToSpeech.setSpeechRate(1.0f);
-                    loadCharacterLines();
+
+                    if (!introCompleted) {
+                        loadCharacterLines();
+                    }
                 }
             } else {
                 Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
@@ -176,10 +179,15 @@ public class LangkapanLesson extends AppCompatActivity {
                                     runOnUiThread(() -> {
                                         quizButton.setEnabled(true);
                                         quizButton.setAlpha(1.0f);
+
+                                        introCompleted = true;
+                                        SharedPreferences prefs = getSharedPreferences("lesson_prefs", MODE_PRIVATE);
+                                        prefs.edit().putBoolean("langkapan_quiz_unlocked", true).apply();
                                     });
                                 });
                             });
                         });
+
                     }
                 });
     }
@@ -192,7 +200,6 @@ public class LangkapanLesson extends AppCompatActivity {
                 .setDuration(800)
                 .setListener(null);
     }
-
 
     private void speakLinesSequentially(List<String> lines, Runnable onComplete) {
         if (lines == null || lines.isEmpty()) {
@@ -217,6 +224,32 @@ public class LangkapanLesson extends AppCompatActivity {
         });
 
         textToSpeech.speak(line, TextToSpeech.QUEUE_ADD, null, line);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+        }
+
+        SharedPreferences prefs = getSharedPreferences("lesson_prefs", MODE_PRIVATE);
+        introCompleted = prefs.getBoolean("langkapan_quiz_unlocked", false);
+
+        if (introCompleted) {
+            descriptionImageView.setVisibility(View.VISIBLE);
+            exampleImageView.setVisibility(View.VISIBLE);
+            quizButton.setEnabled(true);
+            quizButton.setAlpha(1.0f);
+        } else {
+            descriptionImageView.setVisibility(View.GONE);
+            exampleImageView.setVisibility(View.GONE);
+            quizButton.setEnabled(false);
+            quizButton.setAlpha(0.5f);
+
+            loadCharacterLines();
+        }
     }
 
     @Override

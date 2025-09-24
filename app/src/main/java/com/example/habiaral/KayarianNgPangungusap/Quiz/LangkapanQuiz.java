@@ -30,6 +30,7 @@ import com.example.habiaral.BahagiNgPananalita.Quiz.PangawingQuiz;
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.KayarianNgPangungusap.Lessons.LangkapanLesson;
+import com.example.habiaral.KayarianNgPangungusap.Lessons.TambalanLesson;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.AppPreloaderUtils;
@@ -377,8 +378,14 @@ public class LangkapanQuiz extends AppCompatActivity {
         scoreNumber.setText(correctAnswers + "/" + totalQuestions);
 
         boolean passed = correctAnswers >= 6;
+        boolean passedBefore = hasPassedQuizBefore();
+
         if (passed) {
             resultText.setText("Ikaw ay nakapasa!");
+            taposButton.setEnabled(true);
+            taposButton.setAlpha(1.0f);
+        } else if (passedBefore) {
+            resultText.setText("Ikaw ay nakapasa dati, ngunit sa pagkakataong ito, nabigo ka!");
             taposButton.setEnabled(true);
             taposButton.setAlpha(1.0f);
         } else {
@@ -421,6 +428,20 @@ public class LangkapanQuiz extends AppCompatActivity {
             dismissAndReleaseResultDialog();
             navigateToLesson(KayarianNgPangungusap.class);
         });
+    }
+
+    private boolean hasPassedQuizBefore() {
+        Map<String, Object> cachedData = LessonProgressCache.getData();
+        if (cachedData == null) return false;
+
+        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_2");
+        if (module2 == null) return false;
+
+        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
+        if (lessons == null) return false;
+
+        Map<String, Object> langkapanLesson = (Map<String, Object>) lessons.get("langkapan");
+        return langkapanLesson != null && "completed".equals(langkapanLesson.get("status"));
     }
 
     private void releaseResultPlayer() {

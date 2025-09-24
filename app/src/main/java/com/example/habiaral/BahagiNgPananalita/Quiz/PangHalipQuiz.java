@@ -376,6 +376,20 @@ public class PangHalipQuiz extends AppCompatActivity {
         exitDialog.show();
     }
 
+    private boolean hasPassedQuizBefore() {
+        Map<String, Object> cachedData = LessonProgressCache.getData();
+        if (cachedData == null) return false;
+
+        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_1");
+        if (module2 == null) return false;
+
+        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
+        if (lessons == null) return false;
+
+        Map<String, Object> panghalipLesson = (Map<String, Object>) lessons.get("panghalip");
+        return panghalipLesson != null && "completed".equals(panghalipLesson.get("status"));
+    }
+
     private void showResultDialog() {
         stopTimerSound();
 
@@ -402,8 +416,14 @@ public class PangHalipQuiz extends AppCompatActivity {
         scoreNumber.setText(correctAnswers + "/" + totalQuestions);
 
         boolean passed = correctAnswers >= 6;
+        boolean passedBefore = hasPassedQuizBefore();
+
         if (passed) {
             resultText.setText("Ikaw ay nakapasa!");
+            taposButton.setEnabled(true);
+            taposButton.setAlpha(1.0f);
+        } else if (passedBefore) {
+            resultText.setText("Ikaw ay nakapasa dati, ngunit sa pagkakataong ito, nabigo ka!");
             taposButton.setEnabled(true);
             taposButton.setAlpha(1.0f);
         } else {

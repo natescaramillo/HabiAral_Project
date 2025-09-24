@@ -402,19 +402,20 @@ public class PandiwaQuiz extends AppCompatActivity {
         scoreNumber.setText(correctAnswers + "/" + totalQuestions);
 
         boolean passed = correctAnswers >= 6;
+        boolean passedBefore = hasPassedQuizBefore();
+
         if (passed) {
             resultText.setText("Ikaw ay nakapasa!");
+            taposButton.setEnabled(true);
+            taposButton.setAlpha(1.0f);
+        } else if (passedBefore) {
+            resultText.setText("Ikaw ay nakapasa dati, ngunit sa pagkakataong ito, nabigo ka!");
             taposButton.setEnabled(true);
             taposButton.setAlpha(1.0f);
         } else {
             resultText.setText("Ikaw ay nabigo, subukan muli!");
             taposButton.setEnabled(false);
             taposButton.setAlpha(0.5f);
-        }
-
-        resultDialog = builder.create();
-        if (resultDialog.getWindow() != null) {
-            resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
 
         resultDialog.setOnShowListener(d -> {
@@ -458,6 +459,20 @@ public class PandiwaQuiz extends AppCompatActivity {
             dismissAndReleaseResultDialog();
             navigateToLesson(BahagiNgPananalita.class);
         });
+    }
+
+    private boolean hasPassedQuizBefore() {
+        Map<String, Object> cachedData = LessonProgressCache.getData();
+        if (cachedData == null) return false;
+
+        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_1");
+        if (module2 == null) return false;
+
+        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
+        if (lessons == null) return false;
+
+        Map<String, Object> pandiwaLesson = (Map<String, Object>) lessons.get("pandiwa");
+        return pandiwaLesson != null && "completed".equals(pandiwaLesson.get("status"));
     }
 
     private void releaseResultPlayer() {
