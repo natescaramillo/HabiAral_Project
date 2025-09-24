@@ -228,7 +228,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
-                android:fontFamily="@font/special"
+                android:fontFamily="@font/ala_sans"
                 android:textAllCaps="false"
                 android:gravity="center"
                 android:textSize="15sp" />
