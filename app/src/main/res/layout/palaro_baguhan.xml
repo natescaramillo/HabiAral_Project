@@ -190,6 +190,7 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/ala_sans"
                     android:gravity="center"
+                    android:textAllCaps="false"
                     android:text=""
                     android:textSize="12sp" />
 
@@ -203,6 +204,7 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/ala_sans"
                     android:gravity="center"
+                    android:textAllCaps="false"
                     android:text=""
                     android:textSize="12sp" />
 
@@ -214,6 +216,7 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/ala_sans"
                     android:gravity="center"
+                    android:textAllCaps="false"
                     android:text=""
                     android:textSize="12sp" />
 
@@ -225,6 +228,7 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/ala_sans"
                     android:gravity="center"
+                    android:textAllCaps="false"
                     android:text=""
                     android:textSize="12sp" />
 
@@ -236,6 +240,7 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/ala_sans"
                     android:gravity="center"
+                    android:textAllCaps="false"
                     android:text=""
                     android:textSize="12sp" />
 
@@ -247,6 +252,7 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/ala_sans"
                     android:gravity="center"
+                    android:textAllCaps="false"
                     android:text=""
                     android:textSize="12sp" />
 
