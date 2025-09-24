@@ -1,6 +1,7 @@
 package com.example.habiaral.Palaro;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
@@ -99,6 +100,10 @@ public class PalaroBaguhan extends AppCompatActivity {
     private static final String FIELD_DALUBHASA_UNLOCKED = "dalubhasa_unlocked";
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
+    private static final String PREFS_NAME = "PalaroPrefs";
+    private static final String KEY_SEEN_INTRO = "seen_intro";
+    private boolean hasSeenIntro = false;
+    private SharedPreferences prefs;
 
 
 
@@ -106,6 +111,11 @@ public class PalaroBaguhan extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.palaro_baguhan);
+
+        prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        hasSeenIntro = prefs.getBoolean(KEY_SEEN_INTRO, false);
+
+        startCountdownRunnable = this::showCountdownThenLoadQuestion;
 
         ImageView imageView = findViewById(R.id.characterIcon);
         if (!isFinishing() && !isDestroyed()) {
@@ -137,11 +147,24 @@ public class PalaroBaguhan extends AppCompatActivity {
                 tts.setLanguage(new Locale("fil", "PH"));
                 tts.setSpeechRate(1.3f);
 
-                loadLineRunnable = () -> loadCharacterLine(LINE_START);
-                startCountdownRunnable = this::showCountdownThenLoadQuestion;
+                if (!hasSeenIntro) {
+                    loadLineRunnable = () -> loadCharacterLine(LINE_START);
+                    handler.postDelayed(loadLineRunnable, 300);
+                    handler.postDelayed(startCountdownRunnable, 3000);
 
-                handler.postDelayed(loadLineRunnable, 300);
-                handler.postDelayed(startCountdownRunnable, 3000);
+                    prefs.edit().putBoolean(KEY_SEEN_INTRO, true).apply();
+                    hasSeenIntro = true;
+                } else {
+                    handler.post(startCountdownRunnable);
+                }
+            } else {
+                if (!hasSeenIntro) {
+                    handler.post(startCountdownRunnable);
+                    prefs.edit().putBoolean(KEY_SEEN_INTRO, true).apply();
+                    hasSeenIntro = true;
+                } else {
+                    handler.post(startCountdownRunnable);
+                }
             }
         });
 
@@ -242,7 +265,7 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                                     if (!isFinishing() && !isDestroyed()) {
                                         Glide.with(this).asGif()
-                                                .load(R.drawable.idle)
+                                                .load(R.drawable.wrong)
                                                 .transition(DrawableTransitionOptions.withCrossFade(300))
                                                 .into(imageView);
                                     }
@@ -976,7 +999,6 @@ public class PalaroBaguhan extends AppCompatActivity {
             try { if (!isFinishing()) finish(); } catch (Exception ignored) {}
         }
     }
-
 
     @Override
     protected void onStop() {
