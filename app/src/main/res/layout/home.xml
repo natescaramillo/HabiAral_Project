@@ -205,7 +205,7 @@
                         android:layout_height="100dp"
                         android:layout_gravity="center"
                         android:scaleType="fitXY"
-                        android:src="@drawable/home_pagunawa"
+                        android:src="@drawable/diksyonaryo"
                         android:background="@drawable/rounded_image"
                         android:clipToOutline="true"
                         app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
@@ -241,7 +241,7 @@
                         android:background="@drawable/rounded_image"
                         android:clipToOutline="true"
                         android:scaleType="fitXY"
-                        android:src="@drawable/diksyonaryo"
+                        android:src="@drawable/home_palaro"
                         app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
 
                     <TextView
