@@ -3,6 +3,7 @@ package com.example.habiaral.Palaro;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -96,6 +97,9 @@ public class PalaroBaguhan extends AppCompatActivity {
 
     private static final String FIELD_HUSAY_UNLOCKED = "husay_unlocked";
     private static final String FIELD_DALUBHASA_UNLOCKED = "dalubhasa_unlocked";
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
+
 
 
     @Override
@@ -104,7 +108,29 @@ public class PalaroBaguhan extends AppCompatActivity {
         setContentView(R.layout.palaro_baguhan);
 
         ImageView imageView = findViewById(R.id.characterIcon);
-        Glide.with(this).asGif().load(R.drawable.idle).into(imageView);
+        if (!isFinishing() && !isDestroyed()) {
+            Glide.with(getApplicationContext())
+                    .asGif()
+                    .load(R.drawable.idle)
+                    .into(imageView);
+        }
+
+        connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            networkCallback = new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onLost(android.net.Network network) {
+                    super.onLost(network);
+                    runOnUiThread(() -> {
+                        finishQuiz();
+                    });
+                }
+            };
+            connectivityManager.registerDefaultNetworkCallback(networkCallback);
+        } else {
+        }
+
 
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
@@ -181,18 +207,20 @@ public class PalaroBaguhan extends AppCompatActivity {
                                     correctStreak++;
                                     handleCorrectStreak(correctStreak);
 
-                                    Glide.with(this)
-                                            .asGif()
-                                            .load(R.drawable.right_1)
-                                            .transition(DrawableTransitionOptions.withCrossFade(300))
-                                            .into(imageView);
-
-                                    new Handler().postDelayed(() -> {
-                                        Glide.with(this)
-                                                .asGif()
-                                                .load(R.drawable.idle)
+                                    if (!isFinishing() && !isDestroyed()) {
+                                        Glide.with(this).asGif()
+                                                .load(R.drawable.right_1)
                                                 .transition(DrawableTransitionOptions.withCrossFade(300))
                                                 .into(imageView);
+                                    }
+
+                                    new Handler().postDelayed(() -> {
+                                        if (!isFinishing() && !isDestroyed()) {
+                                            Glide.with(this).asGif()
+                                                    .load(R.drawable.idle)
+                                                    .transition(DrawableTransitionOptions.withCrossFade(300))
+                                                    .into(imageView);
+                                        }
                                     }, 3000);
 
                                     MediaPlayer correctSound = MediaPlayer.create(this, R.raw.correct);
@@ -212,10 +240,20 @@ public class PalaroBaguhan extends AppCompatActivity {
                                     wrongSound.setOnCompletionListener(MediaPlayer::release);
                                     wrongSound.start();
 
-                                    Glide.with(this).asGif().load(R.drawable.wrong).into(imageView);
+                                    if (!isFinishing() && !isDestroyed()) {
+                                        Glide.with(this).asGif()
+                                                .load(R.drawable.idle)
+                                                .transition(DrawableTransitionOptions.withCrossFade(300))
+                                                .into(imageView);
+                                    }
 
                                     new Handler().postDelayed(() -> {
-                                        Glide.with(this).asGif().load(R.drawable.idle).transition(DrawableTransitionOptions.withCrossFade(300)).into(imageView);
+                                        if (!isFinishing() && !isDestroyed()) {
+                                            Glide.with(this).asGif()
+                                                    .load(R.drawable.idle)
+                                                    .transition(DrawableTransitionOptions.withCrossFade(300))
+                                                    .into(imageView);
+                                        }
                                     }, 2300);
 
                                     loadCharacterLine(remainingHearts > 0 ? LINE_WRONG : LINE_WRONG_2);
@@ -796,6 +834,9 @@ public class PalaroBaguhan extends AppCompatActivity {
             handler.removeCallbacksAndMessages(null);
         }
         TimerSoundUtils.stop();
+        if (connectivityManager != null && networkCallback != null) {
+            connectivityManager.unregisterNetworkCallback(networkCallback);
+        }
         super.onDestroy();
     }
 
@@ -893,5 +934,53 @@ public class PalaroBaguhan extends AppCompatActivity {
         TimerSoundUtils.setVolume(1f);
     }
 
+    private void endAllAndFinish() {
+        try {
+            if (!isGameOver) {
+                exitGame();
+            } else {
+                if (countDownTimer != null) {
+                    try {
+                        countDownTimer.cancel();
+                    } catch (Exception ignored) {}
+                    countDownTimer = null;
+                }
 
+                try { TimerSoundUtils.stop(); } catch (Exception ignored) {}
+                stopAllSounds();
+
+                try {
+                    if (tts != null) {
+                        tts.stop();
+                    }
+                } catch (Exception ignored) {}
+            }
+
+            if (handler != null) {
+                if (loadLineRunnable != null) handler.removeCallbacks(loadLineRunnable);
+                if (startCountdownRunnable != null) handler.removeCallbacks(startCountdownRunnable);
+                handler.removeCallbacksAndMessages(null);
+            }
+
+            try {
+                if (connectivityManager != null && networkCallback != null) {
+                    connectivityManager.unregisterNetworkCallback(networkCallback);
+                    networkCallback = null;
+                }
+            } catch (Exception ignored) {}
+
+            if (!isFinishing()) {
+                finish();
+            }
+        } catch (Exception e) {
+            try { if (!isFinishing()) finish(); } catch (Exception ignored) {}
+        }
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        endAllAndFinish();
+    }
 }

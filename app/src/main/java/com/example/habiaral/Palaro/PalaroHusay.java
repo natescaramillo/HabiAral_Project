@@ -3,6 +3,7 @@ package com.example.habiaral.Palaro;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -87,12 +88,35 @@ public class PalaroHusay extends AppCompatActivity {
     private ImageView characterIcon;
     private List<String> questionIds = new ArrayList<>();
     private int currentQuestionIndex = 0;
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
+    private Handler countdownHandler;
+    private Runnable countdownRunnable;
+    private MediaPlayer countdownBeep;
+    private int countdownValue = 3;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.palaro_husay);
+
+        connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            networkCallback = new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onLost(android.net.Network network) {
+                    super.onLost(network);
+                    runOnUiThread(() -> {
+                        finishQuiz();
+                    });
+                }
+            };
+            connectivityManager.registerDefaultNetworkCallback(networkCallback);
+        } else {
+        }
+
         answer1 = findViewById(R.id.husay_answer1);
         answer2 = findViewById(R.id.husay_answer2);
         answer3 = findViewById(R.id.husay_answer3);
@@ -138,7 +162,12 @@ public class PalaroHusay extends AppCompatActivity {
         });
 
         characterIcon = findViewById(R.id.characterIcon);
-        Glide.with(this).asGif().load(R.drawable.idle).into(characterIcon);
+        if (!isFinishing() && !isDestroyed()) {
+            Glide.with(getApplicationContext())
+                    .asGif()
+                    .load(R.drawable.idle)
+                    .into(characterIcon);
+        }
 
         setupAnswerSelection();
         setupBackConfirmation();
@@ -148,7 +177,6 @@ public class PalaroHusay extends AppCompatActivity {
             questionIds.add("H" + i);
         }
 
-        // Shuffle questions
         Collections.shuffle(questionIds);
 
     }
@@ -169,6 +197,7 @@ public class PalaroHusay extends AppCompatActivity {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
 
             stopAllSounds();
+            stopCountdownSequence();
 
             if (countDownTimer != null) {
                 countDownTimer.cancel();
@@ -294,7 +323,7 @@ public class PalaroHusay extends AppCompatActivity {
                             if (currentQuestionIndex < questionIds.size() && !isGameOver) {
                                 loadHusayWords(questionIds.get(currentQuestionIndex));
 
-                                currentQuestionIndex++; // move to the next question in the shuffled list
+                                currentQuestionIndex++;
                                 new Handler().postDelayed(() -> {
                                     if (!isGameOver && currentQuestionIndex < questionIds.size()) {
                                         loadHusayWords(questionIds.get(currentQuestionIndex));
@@ -455,33 +484,79 @@ public class PalaroHusay extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadWords() {
-        final Handler countdownHandler = new Handler();
-        final int[] countdown = {3};
+        stopCountdownSequence();
 
-        countdownHandler.post(new Runnable() {
+        countdownHandler = new Handler();
+        countdownValue = 3;
+
+        countdownRunnable = new Runnable() {
             @Override
             public void run() {
-                if (countdown[0] > 0) {
-                    // Play beep kada second
-                    MediaPlayer beep = MediaPlayer.create(PalaroHusay.this, R.raw.beep);
-                    beep.setOnCompletionListener(MediaPlayer::release);
-                    beep.start();
+                if (isGameOver || isFinishing() || isDestroyed()) {
+                    stopCountdownSequence();
+                    return;
+                }
 
-                    countdown[0]--;
+                if (countdownValue > 0) {
+                    // release previous beep if any
+                    if (countdownBeep != null) {
+                        try { countdownBeep.stop(); } catch (Exception ignored) {}
+                        try { countdownBeep.release(); } catch (Exception ignored) {}
+                        countdownBeep = null;
+                    }
+
+                    countdownBeep = MediaPlayer.create(PalaroHusay.this, R.raw.beep);
+                    if (countdownBeep != null) {
+                        countdownBeep.setOnCompletionListener(mp -> {
+                            try { mp.release(); } catch (Exception ignored) {}
+                        });
+                        try { countdownBeep.start(); } catch (IllegalStateException ignored) {}
+                    }
+
+                    countdownValue--;
                     countdownHandler.postDelayed(this, 1000);
                 } else {
-                    // Pagkatapos ng countdown, load character line muna
-                    loadCharacterLineWithCallback("MHCL2", () -> {
-                        // Load first question mula sa shuffled list
-                        if (!questionIds.isEmpty()) {
-                            loadHusayWords(questionIds.get(currentQuestionIndex));
-                        }
-                        startTimer();
-                    });
+                    if (countdownBeep != null) {
+                        try { if (countdownBeep.isPlaying()) countdownBeep.stop(); } catch (Exception ignored) {}
+                        try { countdownBeep.release(); } catch (Exception ignored) {}
+                        countdownBeep = null;
+                    }
+
+                    if (!isGameOver && !isFinishing() && !isDestroyed()) {
+                        loadCharacterLineWithCallback("MHCL2", () -> {
+                            if (!questionIds.isEmpty() && !isGameOver) {
+                                loadHusayWords(questionIds.get(currentQuestionIndex));
+                            }
+                            startTimer();
+                        });
+                    }
                 }
             }
-        });
+        };
+
+        countdownHandler.post(countdownRunnable);
     }
+
+    private void stopCountdownSequence() {
+        try {
+            if (countdownHandler != null && countdownRunnable != null) {
+                countdownHandler.removeCallbacks(countdownRunnable);
+            }
+        } catch (Exception ignored) {}
+
+        try {
+            if (countdownBeep != null) {
+                try { if (countdownBeep.isPlaying()) countdownBeep.stop(); } catch (Exception ignored) {}
+                try { countdownBeep.release(); } catch (Exception ignored) {}
+                countdownBeep = null;
+            }
+        } catch (Exception ignored) {}
+
+        countdownHandler = null;
+        countdownRunnable = null;
+        countdownValue = 3;
+    }
+
 
     private void loadCharacterLineWithCallback(String docId, Runnable onDone) {
         db.collection("minigame_character_lines").document(docId)
@@ -588,7 +663,7 @@ public class PalaroHusay extends AppCompatActivity {
         try {
             return player.isPlaying();
         } catch (IllegalStateException e) {
-            return false; // kung released na, wag i-crash
+            return false;
         }
     }
 
@@ -596,6 +671,8 @@ public class PalaroHusay extends AppCompatActivity {
     private void finishQuiz() {
         if (isGameOver) return;
         isGameOver = true;
+
+        stopCountdownSequence();
 
         if (countDownTimer != null) {
             countDownTimer.cancel();
@@ -698,7 +775,6 @@ public class PalaroHusay extends AppCompatActivity {
         }
 
         if (remainingHearts <= 0) {
-            // Stop the timer & timer sounds immediately
             if (countDownTimer != null) {
                 countDownTimer.cancel();
                 countDownTimer = null;
@@ -729,6 +805,7 @@ public class PalaroHusay extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        endAllAndFinish();
         if (countDownTimer != null) countDownTimer.cancel();
         if (tts != null) {
             tts.stop();
@@ -738,6 +815,9 @@ public class PalaroHusay extends AppCompatActivity {
         if (orangeSound != null) orangeSound.stop();
         if (redSound != null) redSound.stop();
         handler.removeCallbacksAndMessages(null);
+        if (connectivityManager != null && networkCallback != null) {
+            connectivityManager.unregisterNetworkCallback(networkCallback);
+        }
         super.onDestroy();
     }
     private void saveCorrectHusayAnswer(String uid, String firebaseUID, String questionId) {
@@ -983,5 +1063,90 @@ public class PalaroHusay extends AppCompatActivity {
         if (redSound != null) redSound.setVolume(1f, 1f);
 
         TimerSoundUtils.setVolume(0.2f);
+    }
+
+    private void endAllAndFinish() {
+        if (isGameOver) {
+            cleanupResources();
+            finish();
+            return;
+        }
+
+        isGameOver = true;
+
+        cleanupResources();
+
+        finish();
+    }
+
+    private void cleanupResources() {
+        stopCountdownSequence();
+        try {
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
+                countDownTimer = null;
+            }
+        } catch (Exception ignored) {}
+
+        try {
+            stopTimerSounds();
+        } catch (Exception ignored) {}
+
+        try {
+            if (greenSound != null) {
+                try { if (greenSound.isPlaying()) greenSound.stop(); } catch (Exception ignored) {}
+                try { greenSound.release(); } catch (Exception ignored) {}
+                greenSound = null;
+            }
+        } catch (Exception ignored) {}
+
+        try {
+            if (orangeSound != null) {
+                try { if (orangeSound.isPlaying()) orangeSound.stop(); } catch (Exception ignored) {}
+                try { orangeSound.release(); } catch (Exception ignored) {}
+                orangeSound = null;
+            }
+        } catch (Exception ignored) {}
+
+        try {
+            if (redSound != null) {
+                try { if (redSound.isPlaying()) redSound.stop(); } catch (Exception ignored) {}
+                try { redSound.release(); } catch (Exception ignored) {}
+                redSound = null;
+            }
+        } catch (Exception ignored) {}
+
+        try {
+            if (tts != null) {
+                try { tts.stop(); } catch (Exception ignored) {}
+                try { tts.shutdown(); } catch (Exception ignored) {}
+                tts = null;
+                isTtsReady = false;
+            }
+        } catch (Exception ignored) {}
+
+        try {
+            if (handler != null) handler.removeCallbacksAndMessages(null);
+        } catch (Exception ignored) {}
+
+        try {
+            if (connectivityManager != null && networkCallback != null) {
+                try {
+                    connectivityManager.unregisterNetworkCallback(networkCallback);
+                } catch (IllegalArgumentException | SecurityException ignored) {
+                }
+                networkCallback = null;
+            }
+        } catch (Exception ignored) {}
+
+        playedGreen = playedOrange = playedRed = false;
+        lastTimerZone = "";
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        endAllAndFinish();
     }
 }
