@@ -339,7 +339,7 @@ public class PalaroHusay extends AppCompatActivity {
                                 if (!isFinishing() && !isDestroyed()) {
                                     Glide.with(PalaroHusay.this)
                                             .asGif()
-                                            .load(R.drawable.right_1)
+                                            .load(R.drawable.wrong)
                                             .transition(DrawableTransitionOptions.withCrossFade(300))
                                             .into(characterIcon);
 
