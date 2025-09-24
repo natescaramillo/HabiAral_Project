@@ -49,7 +49,7 @@ public class Palaro extends AppCompatActivity {
     int userPoints;
     int userEnergy;
 
-    final int ENERGY_COST = 0;
+    final int ENERGY_COST = 20;
     final int ENERGY_MAX = 100;
     final long ENERGY_INTERVAL = 3 * 60 * 1000;
 
@@ -139,7 +139,7 @@ public class Palaro extends AppCompatActivity {
 
         button2.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
-            if (userPoints >= 400) {
+            if (userPoints >= 0) {
                 startActivity(new Intent(Palaro.this, PalaroHusay.class));
             } else {
                 Toast.makeText(this, "Unlock Husay at 400 points!", Toast.LENGTH_SHORT).show();
@@ -148,7 +148,7 @@ public class Palaro extends AppCompatActivity {
 
         button3.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
-            if (userPoints >= 800) {
+            if (userPoints >= 0) {
                 startActivity(new Intent(Palaro.this, PalaroDalubhasa.class));
             } else {
                 Toast.makeText(this, "Unlock Dalubhasa at 800 points!", Toast.LENGTH_SHORT).show();
@@ -175,7 +175,7 @@ public class Palaro extends AppCompatActivity {
                 updateUI();
                 checkLocks();
                 unlockGanapNaKaalamanAchievement();
-                unlockBatangHenyoAchievement(totalScore); // ✅ Call this here
+                unlockBatangHenyoAchievement(totalScore);
 
 
             } else {
@@ -363,10 +363,10 @@ public class Palaro extends AppCompatActivity {
 
 
     private void checkLocks() {
-        button2.setEnabled(userPoints >= 400);
-        button2.setAlpha(userPoints >= 400 ? 1f : 0.5f);
-        button3.setEnabled(userPoints >= 800);
-        button3.setAlpha(userPoints >= 800 ? 1f : 0.5f);
+        button2.setEnabled(userPoints >= 0);
+        button2.setAlpha(userPoints >= 0 ? 1f : 0.5f);
+        button3.setEnabled(userPoints >= 0);
+        button3.setAlpha(userPoints >= 0 ? 1f : 0.5f);
     }
 
     private void startEnergyRegeneration() {
