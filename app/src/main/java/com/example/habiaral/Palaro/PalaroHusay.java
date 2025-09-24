@@ -1,12 +1,15 @@
 package com.example.habiaral.Palaro;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.speech.tts.Voice;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
@@ -35,6 +38,7 @@ import java.util.Locale;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
+import com.example.habiaral.Utils.SoundManagerUtils;
 import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
@@ -75,7 +79,7 @@ public class PalaroHusay extends AppCompatActivity {
     private int correctStreak = 0;
     private int remainingHearts = 5;
     private ImageView[] heartIcons;
-    private TextToSpeech tts;
+    private TextToSpeech textToSpeech;
     private boolean isTtsReady = false;
     private int attemptCount = 0;
     private boolean isGameOver = false;
@@ -102,6 +106,21 @@ public class PalaroHusay extends AppCompatActivity {
         setContentView(R.layout.palaro_husay);
 
         connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        SharedPreferences prefs = getSharedPreferences("HusayPrefs", MODE_PRIVATE);
+        boolean firstTime = prefs.getBoolean("firstTimeMHCL1", true);
+
+        if (firstTime) {
+            // Play MHCL1 first time
+            new Handler().postDelayed(() -> loadCharacterLine("MHCL1"), 200);
+            new Handler().postDelayed(this::showCountdownThenLoadWords, 4000);
+
+            // Set to false so next time it won't play
+            prefs.edit().putBoolean("firstTimeMHCL1", false).apply();
+        } else {
+            // Skip MHCL1, just show countdown
+            new Handler().postDelayed(this::showCountdownThenLoadWords, 200);
+        }
+
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             networkCallback = new ConnectivityManager.NetworkCallback() {
@@ -149,17 +168,42 @@ public class PalaroHusay extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        tts = new TextToSpeech(this, status -> {
+        textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
-                isTtsReady = true;
-                Locale tagalogLocale = new Locale("fil", "PH");
-                tts.setLanguage(tagalogLocale);
-                tts.setSpeechRate(1.3f);
+                Locale filLocale = new Locale.Builder().setLanguage("fil").setRegion("PH").build();
+                int result = textToSpeech.setLanguage(filLocale);
 
-                new Handler().postDelayed(() -> loadCharacterLine("MHCL1"), 200);
-                new Handler().postDelayed(this::showCountdownThenLoadWords, 4000);
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Toast.makeText(this, "Kailangan i-download ang Filipino voice sa Text-to-Speech settings.", Toast.LENGTH_LONG).show();
+                    try {
+                        Intent installIntent = new Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                        startActivity(installIntent);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(this, "Hindi ma-open ang installer ng TTS.", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    // TTS is ready, set the flag
+                    isTtsReady = true;
+                    // Set TTS to use Filipino voices
+                    Voice selected = null;
+                    for (Voice v : textToSpeech.getVoices()) {
+                        Locale vLocale = v.getLocale();
+                        if (vLocale != null && vLocale.getLanguage().equals("fil")) {
+                            selected = v;
+                            break;
+                        }
+                    }
+                    if (selected != null) {
+                        textToSpeech.setVoice(selected);
+                    }
+                    textToSpeech.setSpeechRate(1.0f);
+                    SoundManagerUtils.setTts(textToSpeech);  // Assuming this method does further setup
+                }
+            } else {
+                Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
             }
         });
+
 
         characterIcon = findViewById(R.id.characterIcon);
         if (!isFinishing() && !isDestroyed()) {
@@ -222,7 +266,7 @@ public class PalaroHusay extends AppCompatActivity {
         if (greenSound != null && greenSound.isPlaying()) greenSound.pause();
         if (orangeSound != null && orangeSound.isPlaying()) orangeSound.pause();
         if (redSound != null && redSound.isPlaying()) redSound.pause();
-        if (tts != null) tts.stop();
+        if (textToSpeech != null) textToSpeech.stop();
     }
 
     private void setupUnlockButton() {
@@ -391,7 +435,7 @@ public class PalaroHusay extends AppCompatActivity {
         yesButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             if (countDownTimer != null) countDownTimer.cancel();
-            if (tts != null) tts.stop();
+            if (textToSpeech != null) textToSpeech.stop();
             backDialog.dismiss();
             finish();
         });
@@ -564,10 +608,10 @@ public class PalaroHusay extends AppCompatActivity {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String line = documentSnapshot.getString("line");
-                        if (isTtsReady && tts != null) {
-                            tts.speak(line, TextToSpeech.QUEUE_FLUSH, null, docId + "_UTTERANCE");
+                        if (isTtsReady && textToSpeech != null) {
+                            textToSpeech.speak(line, TextToSpeech.QUEUE_FLUSH, null, docId + "_UTTERANCE");
 
-                            tts.setOnUtteranceProgressListener(new android.speech.tts.UtteranceProgressListener() {
+                            textToSpeech.setOnUtteranceProgressListener(new android.speech.tts.UtteranceProgressListener() {
                                 @Override
                                 public void onStart(String utteranceId) {}
 
@@ -677,8 +721,8 @@ public class PalaroHusay extends AppCompatActivity {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
-        if (tts != null) {
-            tts.stop();
+        if (textToSpeech != null) {
+            textToSpeech.stop();
         }
 
         MediaPlayer gameOverSound = MediaPlayer.create(this, R.raw.game_over);
@@ -757,7 +801,7 @@ public class PalaroHusay extends AppCompatActivity {
                 docRef.set(updates, SetOptions.merge())
                         .addOnSuccessListener(aVoid -> {
                             if (countDownTimer != null) countDownTimer.cancel();
-                            if (tts != null) tts.stop();
+                            if (textToSpeech != null) textToSpeech.stop();
                             Toast.makeText(this, "Nabuksan na ang Dalubhasa!", Toast.LENGTH_LONG).show();
                         });
             }
@@ -792,25 +836,26 @@ public class PalaroHusay extends AppCompatActivity {
     private void speakText(String text) {
         if (text == null || text.trim().isEmpty()) return;
 
-        if (isTtsReady && tts != null) {
-            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+        // Check if TTS is ready
+        if (isTtsReady && textToSpeech != null) {
+            // Speak the text
+            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
         } else {
+            // Retry after a delay if TTS is not ready
             new Handler().postDelayed(() -> {
-                if (isTtsReady && tts != null) {
-                    tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+                if (isTtsReady && textToSpeech != null) {
+                    textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
                 }
-            }, 500);
+            }, 500);  // Wait a bit before trying again
         }
     }
+
 
     @Override
     protected void onDestroy() {
         endAllAndFinish();
         if (countDownTimer != null) countDownTimer.cancel();
-        if (tts != null) {
-            tts.stop();
-            tts.shutdown();
-        }
+
         if (greenSound != null) greenSound.stop();
         if (orangeSound != null) orangeSound.stop();
         if (redSound != null) redSound.stop();
@@ -819,6 +864,10 @@ public class PalaroHusay extends AppCompatActivity {
             connectivityManager.unregisterNetworkCallback(networkCallback);
         }
         super.onDestroy();
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
     }
     private void saveCorrectHusayAnswer(String uid, String firebaseUID, String questionId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -983,7 +1032,7 @@ public class PalaroHusay extends AppCompatActivity {
                             db.collection("student_achievements").document(firebaseUID)
                                     .set(wrapper, SetOptions.merge())
                                     .addOnSuccessListener(unused -> runOnUiThread(() ->{
-                                        AchievementDialogUtils.showAchievementUnlockedDialog(PalaroHusay.this, title, R.drawable.achievement11);
+                                        AchievementDialogUtils.showAchievementUnlockedDialog(PalaroHusay.this, title, R.drawable.achievement02);
                                     }));
                         });
                     });
@@ -1051,7 +1100,7 @@ public class PalaroHusay extends AppCompatActivity {
 
         TimerSoundUtils.setVolume(0f);
 
-        if (tts != null) tts.stop();
+        if (textToSpeech != null) textToSpeech.stop();
     }
 
     @Override
@@ -1117,10 +1166,10 @@ public class PalaroHusay extends AppCompatActivity {
         } catch (Exception ignored) {}
 
         try {
-            if (tts != null) {
-                try { tts.stop(); } catch (Exception ignored) {}
-                try { tts.shutdown(); } catch (Exception ignored) {}
-                tts = null;
+            if (textToSpeech != null) {
+                try { textToSpeech.stop(); } catch (Exception ignored) {}
+                try { textToSpeech.shutdown(); } catch (Exception ignored) {}
+                textToSpeech = null;
                 isTtsReady = false;
             }
         } catch (Exception ignored) {}
