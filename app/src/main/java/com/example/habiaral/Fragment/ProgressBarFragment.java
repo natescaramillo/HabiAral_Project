@@ -60,7 +60,7 @@ public class ProgressBarFragment extends Fragment {
                     if (module1 != null) {
                         Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
                         if (lessons != null) {
-                            int totalLessons = lessons.size();
+                            int totalLessons = 10;
                             int completedCount = 0;
 
                             for (Map.Entry<String, Object> entry : lessons.entrySet()) {
@@ -74,6 +74,10 @@ public class ProgressBarFragment extends Fragment {
                             progressBarBahagi.setProgress(progress);
                             progressPercentageBahagi.setText(progress + "%");
                             bahagiDescription.setText(getDescription(progress));
+                        } else {
+                            progressBarBahagi.setProgress(0);
+                            progressPercentageBahagi.setText("0%");
+                            bahagiDescription.setText(getDescription(0));
                         }
                     }
 
@@ -82,7 +86,7 @@ public class ProgressBarFragment extends Fragment {
                     if (module2 != null) {
                         Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
                         if (lessons != null) {
-                            int totalLessons = lessons.size();
+                            int totalLessons = 4;
                             int completedCount = 0;
 
                             for (Map.Entry<String, Object> entry : lessons.entrySet()) {
@@ -96,6 +100,10 @@ public class ProgressBarFragment extends Fragment {
                             progressBarKayarian.setProgress(progress);
                             progressPercentageKayarian.setText(progress + "%");
                             kayarianDescription.setText(getDescription(progress));
+                        } else {
+                            progressBarKayarian.setProgress(0);
+                            progressPercentageKayarian.setText("0%");
+                            kayarianDescription.setText(getDescription(0));
                         }
                     }
 
@@ -104,39 +112,29 @@ public class ProgressBarFragment extends Fragment {
                     if (module3 != null) {
                         Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                         if (categories != null) {
-                            int totalStories = 0;
-                            int completedStories = 0;
+                            int totalCategories = 5;
+                            int completedCategories = 0;
 
                             for (Map.Entry<String, Object> categoryEntry : categories.entrySet()) {
                                 Map<String, Object> categoryData = (Map<String, Object>) categoryEntry.getValue();
-                                if (categoryData != null) {
-                                    Map<String, Object> stories = (Map<String, Object>) categoryData.get("stories");
-                                    if (stories != null) {
-                                        for (Map.Entry<String, Object> storyEntry : stories.entrySet()) {
-                                            Map<String, Object> storyData = (Map<String, Object>) storyEntry.getValue();
-                                            if (storyData != null) {
-                                                totalStories++;
-                                                if ("completed".equals(storyData.get("status"))) {
-                                                    completedStories++;
-                                                }
-                                            }
-                                        }
-                                    }
+                                if (categoryData != null && "completed".equals(categoryData.get("status"))) {
+                                    completedCategories++;
                                 }
                             }
 
-                            if (totalStories > 0) {
-                                int progress = (completedStories * 100) / totalStories;
-                                progressBarPagUnawa.setProgress(progress);
-                                progressPercentagePagUnawa.setText(progress + "%");
-                                pagUnawaDescription.setText(getDescription(progress));
-                            }
+                            int progress = (completedCategories * 100) / totalCategories;
+                            progressBarPagUnawa.setProgress(progress);
+                            progressPercentagePagUnawa.setText(progress + "%");
+                            pagUnawaDescription.setText(getDescription(progress));
+                        } else {
+                            progressBarPagUnawa.setProgress(0);
+                            progressPercentagePagUnawa.setText("0%");
+                            pagUnawaDescription.setText(getDescription(0));
                         }
                     }
                 });
     }
 
-    /** Magbigay ng description depende sa percentage **/
     private String getDescription(int progress) {
         if (progress == 100) {
             return "Tapos na!";
