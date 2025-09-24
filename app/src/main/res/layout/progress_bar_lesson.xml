@@ -92,7 +92,7 @@
                             android:justificationMode="inter_word"
                             android:textColor="#fff"
                             android:layout_height="wrap_content"
-                            android:text="description ng progress" />
+                            android:text="Wala pang progreso." />
                     </LinearLayout>
                 </FrameLayout>
             </LinearLayout>
@@ -177,7 +177,7 @@
                             android:justificationMode="inter_word"
                             android:textColor="#fff"
                             android:layout_height="wrap_content"
-                            android:text="description ng progress" />
+                            android:text="Wala pang progreso." />
 
                     </LinearLayout>
 
@@ -261,7 +261,7 @@
                             android:justificationMode="inter_word"
                             android:textColor="#fff"
                             android:layout_height="wrap_content"
-                            android:text="description ng progress" />
+                            android:text="Wala pang progreso." />
 
 
                     </LinearLayout>

@@ -407,7 +407,7 @@ public class MaiklingKuwento1 extends AppCompatActivity {
                     Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                     if (categories == null) return;
 
-                    Map<String, Object> alamat = (Map<String, Object>) categories.get("MaiklingKuwento");
+                    Map<String, Object> alamat = (Map<String, Object>) categories.get("Maikling Kuwento");
                     if (alamat == null) return;
 
                     Map<String, Object> stories = (Map<String, Object>) alamat.get("stories");
@@ -446,7 +446,7 @@ public class MaiklingKuwento1 extends AppCompatActivity {
                         if (module3 != null) {
                             Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                             if (categories != null) {
-                                Map<String, Object> maiklingkuwento = (Map<String, Object>) categories.get("MaiklingKuwento");
+                                Map<String, Object> maiklingkuwento = (Map<String, Object>) categories.get("Maikling Kuwento");
                                 if (maiklingkuwento != null) {
                                     Map<String, Object> stories = (Map<String, Object>) maiklingkuwento.get("stories");
                                     if (stories != null) {
@@ -469,7 +469,7 @@ public class MaiklingKuwento1 extends AppCompatActivity {
                     maiklingkuwentoData.put("stories", Map.of(STORY_ID, storyData));
 
                     Map<String, Object> categories = new HashMap<>();
-                    categories.put("MaiklingKuwento", maiklingkuwentoData);
+                    categories.put("Maikling Kuwento", maiklingkuwentoData);
 
                     Map<String, Object> module3 = new HashMap<>();
                     module3.put("categories", categories);
