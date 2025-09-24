@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.app.ProgressDialog;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -52,16 +53,9 @@ public class AppNetworkMonitor extends BroadcastReceiver {
                 dismissNoInternetDialog();
                 currentActivity = activity;
             }
-            @Override
-            public void onActivityResumed(Activity activity) {
+            @Override public void onActivityResumed(Activity activity) {
                 dismissNoInternetDialog();
                 currentActivity = activity;
-
-                mainHandler.postDelayed(() -> {
-                    if (currentActivity != null) {
-                        checkInternetConnection(currentActivity);
-                    }
-                }, 1000);
             }
             @Override public void onActivityPaused(Activity activity) {
 
@@ -92,8 +86,9 @@ public class AppNetworkMonitor extends BroadcastReceiver {
             if (!isConnected) {
                 showNoInternetDialog();
             } else {
-                // Instead of dismissing immediately, do a real internet check
-                checkInternetConnection(context);
+                if (isDialogShowing) {
+                    dismissNoInternetDialog();
+                }
             }
         });
     }
