@@ -127,6 +127,21 @@
         app:layout_constraintTop_toBottomOf="@id/answer2" />
 
     <Button
+        android:id="@+id/intro_button"
+        android:layout_width="336dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="336dp"
+        android:background="@drawable/rounded_button_achievement"
+        android:fontFamily="@font/special"
+        android:text="Magsimula"
+        android:textColor="#000000"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline21" />
+
+    <Button
         android:id="@+id/pangngalanNextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
