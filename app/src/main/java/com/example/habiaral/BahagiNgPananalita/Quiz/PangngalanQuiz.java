@@ -67,6 +67,8 @@ public class PangngalanQuiz extends AppCompatActivity {
     private FirebaseFirestore db;
     private SoundPool soundPool;
     private View background;
+    private boolean isMuted = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -309,6 +311,10 @@ public class PangngalanQuiz extends AppCompatActivity {
                     soundPool.stop(currentStreamId);
                 }
                 currentStreamId = soundPool.play(soundId, 1, 1, 0, -1, 1);
+
+                if (isMuted && currentStreamId != -1) {
+                    soundPool.setVolume(currentStreamId, 0f, 0f);
+                }
             }
 
 
@@ -597,11 +603,11 @@ public class PangngalanQuiz extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        isMuted = true;
 
         if (currentStreamId != -1 && soundPool != null) {
             soundPool.setVolume(currentStreamId, 0f, 0f);
         }
-
         if (mediaPlayer != null) mediaPlayer.setVolume(0f, 0f);
         if (resultPlayer != null) resultPlayer.setVolume(0f, 0f);
         if (readyPlayer != null) readyPlayer.setVolume(0f, 0f);
@@ -609,20 +615,22 @@ public class PangngalanQuiz extends AppCompatActivity {
         TimerSoundUtils.setVolume(0f);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
+        isMuted = false;
 
         if (currentStreamId != -1 && soundPool != null) {
             soundPool.setVolume(currentStreamId, 1f, 1f);
         }
-
         if (mediaPlayer != null) mediaPlayer.setVolume(1f, 1f);
         if (resultPlayer != null) resultPlayer.setVolume(1f, 1f);
         if (readyPlayer != null) readyPlayer.setVolume(1f, 1f);
 
         TimerSoundUtils.setVolume(1f);
     }
+
 
     @Override
     protected void onDestroy() {
