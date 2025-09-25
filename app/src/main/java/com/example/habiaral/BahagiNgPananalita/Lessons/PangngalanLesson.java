@@ -3,36 +3,28 @@ package com.example.habiaral.BahagiNgPananalita.Lessons;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.bumptech.glide.Glide;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.LessonGifUtils;
 import com.example.habiaral.Utils.ResumeDialogUtils;
 import com.example.habiaral.Utils.BahagiFirestoreUtils;
 import com.example.habiaral.Utils.FullScreenUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
-import com.example.habiaral.Utils.SoundManagerUtils;
+import com.example.habiaral.Utils.TTSUtils;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import android.content.ActivityNotFoundException;
-import android.speech.tts.Voice;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 public class PangngalanLesson extends AppCompatActivity {
 
@@ -49,8 +41,6 @@ public class PangngalanLesson extends AppCompatActivity {
             R.drawable.pangngalan28, R.drawable.pangngalan29, R.drawable.pangngalan30,
             R.drawable.pangngalan31
     };
-
-    private android.os.Handler textHandler = new android.os.Handler();
     private Map<Integer, List<String>> pageLines = new HashMap<>();
     private final boolean[] isFullScreen = {false};
     private boolean isNavigatingInsideApp = false;
@@ -58,17 +48,13 @@ public class PangngalanLesson extends AppCompatActivity {
     private ImageView backOption, nextOption;
     private boolean isLessonDone = false;
     private boolean isFirstTime = true;
-    private TextToSpeech textToSpeech;
     private ImageView imageView;
     private Button unlockButton;
     private int currentPage = 0;
     private int resumePage = -1;
     private int resumeLine = -1;
-
-    private Handler idleGifHandler = new Handler();
-    private Runnable idleGifRunnable;
-    private boolean isActivityActive = false;
     private ImageView imageView2;
+    private boolean isResumeDialogShowing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +62,7 @@ public class PangngalanLesson extends AppCompatActivity {
         setContentView(R.layout.bahagi_ng_pananalita_pangngalan_lesson);
 
         imageView2 = findViewById(R.id.imageView2);
-        if (!isFinishing() && !isDestroyed()) {
-            Glide.with(this).asGif().load(R.drawable.idle).into(imageView2);
-        }
-
-        startIdleGifRandomizer();
+        LessonGifUtils.startLessonGifRandomizer(this, imageView2);
 
         unlockButton = findViewById(R.id.UnlockButtonPangngalan);
         imageView = findViewById(R.id.imageViewPangngalan);
@@ -94,47 +76,14 @@ public class PangngalanLesson extends AppCompatActivity {
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
-        textToSpeech = new TextToSpeech(this, status -> {
-            if (status == TextToSpeech.SUCCESS) {
-
-                Locale filLocale = new Locale.Builder().setLanguage("fil").setRegion("PH").build();
-                int result = textToSpeech.setLanguage(filLocale);
-
-                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    Toast.makeText(this,
-                            "Kailangan i-download ang Filipino voice sa Text-to-Speech settings.",
-                            Toast.LENGTH_LONG).show();
-                    try {
-                        Intent installIntent = new Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-                        startActivity(installIntent);
-                    } catch (ActivityNotFoundException e) {
-                        Toast.makeText(this,
-                                "Hindi ma-open ang installer ng TTS.",
-                                Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Voice selected = null;
-                    for (Voice v : textToSpeech.getVoices()) {
-                        Locale vLocale = v.getLocale();
-                        if (vLocale != null && vLocale.getLanguage().equals("fil")) {
-                            selected = v;
-                            break;
-                        } else if (v.getName().toLowerCase().contains("fil")) {
-                            selected = v;
-                            break;
-                        }
-                    }
-                    if (selected != null) {
-                        textToSpeech.setVoice(selected);
-                    }
-
-                    textToSpeech.setSpeechRate(1.0f);
-                    SoundManagerUtils.setTts(textToSpeech);
-                    loadCharacterLines();
-                }
-            } else {
-                Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
+        TTSUtils.initTts(this, new TTSUtils.OnInitComplete() {
+            @Override
+            public void onReady() {
+                loadCharacterLines();
             }
+
+            @Override
+            public void onFail() {}
         });
 
         checkLessonStatus();
@@ -142,7 +91,7 @@ public class PangngalanLesson extends AppCompatActivity {
         unlockButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             isNavigatingInsideApp = true;
-            stopTTS();
+            TTSUtils.stopSpeaking();
             startActivity(new Intent(this, PangngalanQuiz.class));
         });
 
@@ -169,7 +118,25 @@ public class PangngalanLesson extends AppCompatActivity {
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() {
-                stopTTS();
+                if (isFullScreen[0]) {
+                    ConstraintLayout bottomBar = findViewById(R.id.bottom_bar);
+                    ConstraintLayout optionBar = findViewById(R.id.option_bar);
+                    ImageView fullScreenOption = findViewById(R.id.full_screen_option);
+
+                    FullScreenUtils.exitFullScreen(
+                            PangngalanLesson.this,
+                            isFullScreen,
+                            fullScreenOption,
+                            imageView,
+                            imageView2,
+                            unlockButton,
+                            bottomBar,
+                            optionBar
+                    );
+                    return;
+                }
+
+                TTSUtils.shutdown();
                 startActivity(new Intent(PangngalanLesson.this, BahagiNgPananalita.class)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                 finish();
@@ -195,6 +162,21 @@ public class PangngalanLesson extends AppCompatActivity {
         }
     }
 
+    private void updatePage() {
+        imageView.setImageResource(pangngalanLesson[currentPage]);
+        BahagiFirestoreUtils.saveLessonProgress(BahagiFirestoreUtils.getCurrentUser().getUid(),
+                "pangngalan", currentPage, isLessonDone);
+
+        TTSUtils.stopSpeaking();
+        updateNavigationButtons();
+
+        List<String> lines = pageLines.get(currentPage);
+        if (lines != null && !lines.isEmpty()) {
+            TTSUtils.speakSequentialLines(this, lines, "page_" + currentPage, null);
+
+        }
+    }
+
     private void updateNavigationButtons() {
         if (currentPage == 0) {
             backOption.setEnabled(false);
@@ -210,20 +192,6 @@ public class PangngalanLesson extends AppCompatActivity {
         } else {
             nextOption.setEnabled(true);
             nextOption.setAlpha(1f);
-        }
-    }
-
-    private void updatePage() {
-        imageView.setImageResource(pangngalanLesson[currentPage]);
-        BahagiFirestoreUtils.saveLessonProgress(BahagiFirestoreUtils.getCurrentUser().getUid(),
-                "pangngalan", currentPage, isLessonDone);
-
-        stopSpeaking();
-        updateNavigationButtons();
-
-        List<String> lines = pageLines.get(currentPage);
-        if (lines != null && !lines.isEmpty()) {
-            speakSequentialLines(lines, () -> {});
         }
     }
 
@@ -248,8 +216,10 @@ public class PangngalanLesson extends AppCompatActivity {
                                         unlockButton.setEnabled(true);
                                         unlockButton.setAlpha(1f);
                                     }
-                                    showResumeDialog(currentPage);
-                                    waitForResumeChoice = true;
+                                    if (!isResumeDialogShowing) {
+                                        showResumeDialog(currentPage);
+                                        waitForResumeChoice = true;
+                                    }
                                 }
                             }
                         }
@@ -280,45 +250,18 @@ public class PangngalanLesson extends AppCompatActivity {
                     if (!waitForResumeChoice) {
                         if (introLines != null && isFirstTime && !introLines.isEmpty()) {
                             isFirstTime = false;
-                            speakSequentialLines(introLines, this::updatePage);
-                        } else updatePage();
+                            TTSUtils.speakSequentialLines(this, introLines, "intro", null);
+                        } else {
+                            updatePage();
+                        }
                     }
                 });
     }
 
-    private void speakSequentialLines(List<String> lines, Runnable onComplete) {
-        if (lines == null || lines.isEmpty()) return;
-        final int[] index = {0};
-        String utterancePage = "page_" + currentPage;
-
-        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
-            @Override public void onStart(String s) {}
-            @Override public void onDone(String utteranceId) {
-                runOnUiThread(() -> {
-                    if (!utteranceId.startsWith(utterancePage)) return;
-                    index[0]++;
-                    if (index[0] < lines.size()) {
-                        if (!SoundManagerUtils.isMuted(PangngalanLesson.this)) {
-                            speak(lines.get(index[0]), utterancePage + "_" + index[0]);
-                        }
-                    } else onComplete.run();
-                });
-            }
-
-            @Override public void onError(String s) {}
-        });
-
-        if (!SoundManagerUtils.isMuted(this)) {
-            speak(lines.get(0), utterancePage + "_0");
-        }
-    }
-
-    private void speak(String text, String id) {
-        if (textToSpeech != null && !text.isEmpty())
-            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, id);
-    }
-
     private void showResumeDialog(int checkpoint) {
+        if (isResumeDialogShowing) return;
+        isResumeDialogShowing = true;
+
         AlertDialog dialog = ResumeDialogUtils.showResumeDialog(this, new ResumeDialogUtils.ResumeDialogListener() {
             @Override public void onResumeLesson() {
                 currentPage = checkpoint;
@@ -331,58 +274,15 @@ public class PangngalanLesson extends AppCompatActivity {
                 waitForResumeChoice = false;
             }
         });
-    }
 
-    private void stopSpeaking() {
-        if (textToSpeech != null) textToSpeech.stop();
-        textHandler.removeCallbacksAndMessages(null);
-    }
-
-    private void stopTTS() {
-        if (textToSpeech != null) {
-            textToSpeech.stop();
-            textToSpeech.shutdown();
-        }
-        textHandler.removeCallbacksAndMessages(null);
-    }
-
-    private void startIdleGifRandomizer() {
-        isActivityActive = true;
-        idleGifRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (!isActivityActive || imageView2 == null || isFinishing() || isDestroyed()) return;
-                int delay = 2000;
-                if (Math.random() < 0.4) {
-                    if (!isFinishing() && !isDestroyed()) {
-                        Glide.with(PangngalanLesson.this).asGif().load(R.drawable.right_2).into(imageView2);
-                    }
-                    idleGifHandler.postDelayed(() -> {
-                        if (isActivityActive && imageView2 != null && !isFinishing() && !isDestroyed()) {
-                            Glide.with(PangngalanLesson.this).asGif().load(R.drawable.idle).into(imageView2);
-                        }
-                        idleGifHandler.postDelayed(idleGifRunnable, delay);
-                    }, 2000);
-                } else {
-                    idleGifHandler.postDelayed(idleGifRunnable, delay);
-                }
-            }
-        };
-        idleGifHandler.postDelayed(idleGifRunnable, 2000);
-    }
-
-    private void stopIdleGifRandomizer() {
-        isActivityActive = false;
-        idleGifHandler.removeCallbacksAndMessages(null);
-        if (imageView2 != null && !isFinishing() && !isDestroyed()) {
-            Glide.with(this).asGif().load(R.drawable.idle).into(imageView2);
-        }
+        dialog.setOnDismissListener(d -> isResumeDialogShowing = false);
     }
 
     @Override
     protected void onDestroy() {
-        stopIdleGifRandomizer();
-        stopTTS();
+        LessonGifUtils.stopIdleGifRandomizer(this, imageView2);
+        TTSUtils.shutdown();
+
         super.onDestroy();
     }
 
@@ -390,22 +290,23 @@ public class PangngalanLesson extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        if (!isNavigatingInsideApp) {
-            resumePage = currentPage;
-        }
+        resumePage = currentPage;
 
-        stopSpeaking();
+        TTSUtils.stopSpeaking();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        isNavigatingInsideApp = false;
+
         if (resumePage != -1) {
-            currentPage = resumePage;
-            updatePage();
+            showResumeDialog(resumePage);
+            waitForResumeChoice = true;
             resumePage = -1;
             resumeLine = -1;
         }
     }
+
 }
