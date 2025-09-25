@@ -168,7 +168,7 @@ public class PangngalanLesson extends AppCompatActivity {
         TTSUtils.stopSpeaking();
         updateNavigationButtons();
 
-        if (currentPage == lessonPPT.length - 1) {
+        if (isLessonDone || currentPage == lessonPPT.length - 1) {
             btnUnlock.setEnabled(true);
             btnUnlock.setAlpha(1f);
         } else {
