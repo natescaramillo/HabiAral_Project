@@ -15,10 +15,10 @@ public class FullScreenUtils {
     public static void toggleFullScreen(
             Activity activity,
             boolean[] isFullScreen,
-            ImageView fullScreenOption,
+            ImageView btnFullscreen,
             ImageView imageView,
-            ImageView imageView2,
-            Button unlockButton,
+            ImageView image3D,
+            Button btnUnlock,
             ConstraintLayout bottomBar,
             ConstraintLayout optionBar
     ) {
@@ -28,8 +28,8 @@ public class FullScreenUtils {
 
         if (!isFullScreen[0]) {
             if (activity.getActionBar() != null) activity.getActionBar().hide();
-            unlockButton.setVisibility(View.GONE);
-            imageView2.setVisibility(View.GONE);
+            btnUnlock.setVisibility(View.GONE);
+            image3D.setVisibility(View.GONE);
 
             imageParams.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
             imageParams.height = 0;
@@ -54,12 +54,12 @@ public class FullScreenUtils {
                             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
             );
-            fullScreenOption.setImageResource(R.drawable.not_full_screen);
+            btnFullscreen.setImageResource(R.drawable.not_full_screen);
 
         } else {
             if (activity.getActionBar() != null) activity.getActionBar().show();
-            unlockButton.setVisibility(View.VISIBLE);
-            imageView2.setVisibility(View.VISIBLE);
+            btnUnlock.setVisibility(View.VISIBLE);
+            image3D.setVisibility(View.VISIBLE);
 
             imageParams.width = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT;
             imageParams.height = (int) (200 * activity.getResources().getDisplayMetrics().density);
@@ -77,7 +77,7 @@ public class FullScreenUtils {
 
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-            fullScreenOption.setImageResource(R.drawable.full_screen);
+            btnFullscreen.setImageResource(R.drawable.full_screen);
         }
 
         isFullScreen[0] = !isFullScreen[0];
@@ -86,18 +86,18 @@ public class FullScreenUtils {
     public static void exitFullScreen(
             Activity activity,
             boolean[] isFullScreen,
-            ImageView fullScreenOption,
+            ImageView btnFullscreen,
             ImageView imageView,
-            ImageView imageView2,
-            Button unlockButton,
+            ImageView image3D,
+            Button btnUnlock,
             ConstraintLayout bottomBar,
             ConstraintLayout optionBar
     ) {
-        if (!isFullScreen[0]) return; // Kung hindi fullscreen, wala nang gagawin
+        if (!isFullScreen[0]) return;
 
         if (activity.getActionBar() != null) activity.getActionBar().show();
-        unlockButton.setVisibility(View.VISIBLE);
-        imageView2.setVisibility(View.VISIBLE);
+        btnUnlock.setVisibility(View.VISIBLE);
+        image3D.setVisibility(View.VISIBLE);
 
         ConstraintLayout.LayoutParams imageParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
         ConstraintLayout.LayoutParams bottomBarParams = (ConstraintLayout.LayoutParams) bottomBar.getLayoutParams();
@@ -119,9 +119,9 @@ public class FullScreenUtils {
 
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-        fullScreenOption.setImageResource(R.drawable.full_screen);
+        btnFullscreen.setImageResource(R.drawable.full_screen);
 
-        isFullScreen[0] = false; // reset
+        isFullScreen[0] = false;
     }
 
 }

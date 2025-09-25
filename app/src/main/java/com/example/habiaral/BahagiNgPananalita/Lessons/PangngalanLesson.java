@@ -45,36 +45,34 @@ public class PangngalanLesson extends AppCompatActivity {
     private final boolean[] isFullScreen = {false};
     private boolean isNavigatingInsideApp = false;
     private boolean waitForResumeChoice = false;
-    private ImageView backOption, nextOption;
+    private ImageView btnBack, btnNext;
     private boolean isLessonDone = false;
     private boolean isFirstTime = true;
     private ImageView imageView;
-    private Button unlockButton;
+    private Button btnUnlock;
     private int currentPage = 0;
     private int resumePage = -1;
-    private int resumeLine = -1;
-    private ImageView imageView2;
+    private ImageView image3D, btnFullscreen;
     private boolean isResumeDialogShowing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bahagi_ng_pananalita_pangngalan_lesson);
+        setContentView(R.layout.bahagi_lesson);
 
-        imageView2 = findViewById(R.id.imageView2);
-        LessonGifUtils.startLessonGifRandomizer(this, imageView2);
+        image3D = findViewById(R.id.lesson_idle_gif);
+        LessonGifUtils.startLessonGifRandomizer(this, image3D);
 
-        unlockButton = findViewById(R.id.UnlockButtonPangngalan);
-        imageView = findViewById(R.id.imageViewPangngalan);
+        btnUnlock = findViewById(R.id.button_unlock);
+        imageView = findViewById(R.id.lesson_image);
 
-        backOption = findViewById(R.id.back_option);
-        nextOption = findViewById(R.id.next_option);
+        btnBack = findViewById(R.id.button_back);
+        btnNext = findViewById(R.id.button_next);
 
-        ImageView fullScreenOption = findViewById(R.id.full_screen_option);
-        ImageView imageView2 = findViewById(R.id.imageView2);
+        btnFullscreen = findViewById(R.id.button_fullscreen);
 
-        unlockButton.setEnabled(false);
-        unlockButton.setAlpha(0.5f);
+        btnUnlock.setEnabled(false);
+        btnUnlock.setAlpha(0.5f);
 
         TTSUtils.initTts(this, new TTSUtils.OnInitComplete() {
             @Override
@@ -88,28 +86,28 @@ public class PangngalanLesson extends AppCompatActivity {
 
         checkLessonStatus();
 
-        unlockButton.setOnClickListener(v -> {
+        btnUnlock.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             isNavigatingInsideApp = true;
             TTSUtils.stopSpeaking();
             startActivity(new Intent(this, PangngalanQuiz.class));
         });
 
-        backOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
-        nextOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); nextPage(); });
+        btnBack.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
+        btnNext.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); nextPage(); });
 
         ConstraintLayout bottomBar = findViewById(R.id.bottom_bar);
         ConstraintLayout optionBar = findViewById(R.id.option_bar);
 
-        fullScreenOption.setOnClickListener(v -> {
+        btnFullscreen.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             FullScreenUtils.toggleFullScreen(
                     this,
                     isFullScreen,
-                    fullScreenOption,
+                    btnFullscreen,
                     imageView,
-                    imageView2,
-                    unlockButton,
+                    image3D,
+                    btnUnlock,
                     bottomBar,
                     optionBar
             );
@@ -121,15 +119,15 @@ public class PangngalanLesson extends AppCompatActivity {
                 if (isFullScreen[0]) {
                     ConstraintLayout bottomBar = findViewById(R.id.bottom_bar);
                     ConstraintLayout optionBar = findViewById(R.id.option_bar);
-                    ImageView fullScreenOption = findViewById(R.id.full_screen_option);
+                    ImageView btnFullscreen = findViewById(R.id.button_fullscreen);
 
                     FullScreenUtils.exitFullScreen(
                             PangngalanLesson.this,
                             isFullScreen,
-                            fullScreenOption,
+                            btnFullscreen,
                             imageView,
-                            imageView2,
-                            unlockButton,
+                            image3D,
+                            btnUnlock,
                             bottomBar,
                             optionBar
                     );
@@ -150,8 +148,8 @@ public class PangngalanLesson extends AppCompatActivity {
             updatePage();
         }
         if (currentPage == lessonPPT.length - 1) {
-            unlockButton.setEnabled(true);
-            unlockButton.setAlpha(1f);
+            btnUnlock.setEnabled(true);
+            btnUnlock.setAlpha(1f);
         }
     }
 
@@ -179,19 +177,19 @@ public class PangngalanLesson extends AppCompatActivity {
 
     private void updateNavigationButtons() {
         if (currentPage == 0) {
-            backOption.setEnabled(false);
-            backOption.setAlpha(0.5f);
+            btnBack.setEnabled(false);
+            btnBack.setAlpha(0.5f);
         } else {
-            backOption.setEnabled(true);
-            backOption.setAlpha(1f);
+            btnBack.setEnabled(true);
+            btnBack.setAlpha(1f);
         }
 
         if (currentPage == lessonPPT.length - 1) {
-            nextOption.setEnabled(false);
-            nextOption.setAlpha(0.5f);
+            btnNext.setEnabled(false);
+            btnNext.setAlpha(0.5f);
         } else {
-            nextOption.setEnabled(true);
-            nextOption.setAlpha(1f);
+            btnNext.setEnabled(true);
+            btnNext.setAlpha(1f);
         }
     }
 
@@ -213,8 +211,8 @@ public class PangngalanLesson extends AppCompatActivity {
                                     isFirstTime = false;
                                     if ("completed".equals(lessonsData.get("status"))) {
                                         isLessonDone = true;
-                                        unlockButton.setEnabled(true);
-                                        unlockButton.setAlpha(1f);
+                                        btnUnlock.setEnabled(true);
+                                        btnUnlock.setAlpha(1f);
                                     }
                                     if (!isResumeDialogShowing) {
                                         showResumeDialog(currentPage);
@@ -236,6 +234,7 @@ public class PangngalanLesson extends AppCompatActivity {
         FirebaseFirestore.getInstance().collection("lesson_character_lines").document("LCL1").get()
                 .addOnSuccessListener(doc -> {
                     if (!doc.exists()) return;
+
                     List<Map<String, Object>> pages = (List<Map<String, Object>>) doc.get("pages");
                     if (pages != null) {
                         for (Map<String, Object> page : pages) {
@@ -246,17 +245,24 @@ public class PangngalanLesson extends AppCompatActivity {
                             }
                         }
                     }
+
                     List<String> introLines = (List<String>) doc.get("intro");
                     if (!waitForResumeChoice) {
                         if (introLines != null && isFirstTime && !introLines.isEmpty()) {
                             isFirstTime = false;
-                            TTSUtils.speakSequentialLines(this, introLines, "intro", null);
+                            TTSUtils.speakSequentialLines(this, introLines, "intro", () -> {
+                                currentPage = 0;
+                                updatePage();
+                            });
+                            btnBack.setEnabled(false);
+                            btnBack.setAlpha(0.5f);
                         } else {
                             updatePage();
                         }
                     }
                 });
     }
+
 
     private void showResumeDialog(int checkpoint) {
         if (isResumeDialogShowing) return;
@@ -280,7 +286,7 @@ public class PangngalanLesson extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        LessonGifUtils.stopIdleGifRandomizer(this, imageView2);
+        LessonGifUtils.stopIdleGifRandomizer(this, image3D);
         TTSUtils.shutdown();
 
         super.onDestroy();
@@ -291,8 +297,8 @@ public class PangngalanLesson extends AppCompatActivity {
         super.onPause();
 
         resumePage = currentPage;
-
         TTSUtils.stopSpeaking();
+        LessonGifUtils.stopIdleGifRandomizer(this, image3D);
     }
 
     @Override
@@ -301,11 +307,10 @@ public class PangngalanLesson extends AppCompatActivity {
 
         isNavigatingInsideApp = false;
 
-        if (resumePage != -1) {
+        if (resumePage != -1 && !isResumeDialogShowing) {
             showResumeDialog(resumePage);
             waitForResumeChoice = true;
             resumePage = -1;
-            resumeLine = -1;
         }
     }
 
