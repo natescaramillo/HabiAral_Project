@@ -168,10 +168,17 @@ public class PangngalanLesson extends AppCompatActivity {
         TTSUtils.stopSpeaking();
         updateNavigationButtons();
 
+        if (currentPage == lessonPPT.length - 1) {
+            btnUnlock.setEnabled(true);
+            btnUnlock.setAlpha(1f);
+        } else {
+            btnUnlock.setEnabled(false);
+            btnUnlock.setAlpha(0.5f);
+        }
+
         List<String> lines = pageLines.get(currentPage);
         if (lines != null && !lines.isEmpty()) {
             TTSUtils.speakSequentialLines(this, lines, "page_" + currentPage, null);
-
         }
     }
 
@@ -299,7 +306,24 @@ public class PangngalanLesson extends AppCompatActivity {
         resumePage = currentPage;
         TTSUtils.stopSpeaking();
         LessonGifUtils.stopIdleGifRandomizer(this, image3D);
+
+        if (isFullScreen[0]) {
+            ConstraintLayout bottomBar = findViewById(R.id.bottom_bar);
+            ConstraintLayout optionBar = findViewById(R.id.option_bar);
+
+            FullScreenUtils.exitFullScreen(
+                    this,
+                    isFullScreen,
+                    btnFullscreen,
+                    imageView,
+                    image3D,
+                    btnUnlock,
+                    bottomBar,
+                    optionBar
+            );
+        }
     }
+
 
     @Override
     protected void onResume() {
