@@ -45,14 +45,12 @@ public class PangngalanLesson extends AppCompatActivity {
     private final boolean[] isFullScreen = {false};
     private boolean isNavigatingInsideApp = false;
     private boolean waitForResumeChoice = false;
-    private ImageView btnBack, btnNext;
+    private ImageView btnBack, btnNext, btnFullscreen, image3D, imageView;
     private boolean isLessonDone = false;
     private boolean isFirstTime = true;
-    private ImageView imageView;
     private Button btnUnlock;
     private int currentPage = 0;
     private int resumePage = -1;
-    private ImageView image3D, btnFullscreen;
     private boolean isResumeDialogShowing = false;
 
     @Override
@@ -323,7 +321,6 @@ public class PangngalanLesson extends AppCompatActivity {
             );
         }
     }
-
 
     @Override
     protected void onResume() {
