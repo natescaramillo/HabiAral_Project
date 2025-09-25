@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class PangngalanLesson extends AppCompatActivity {
 
-    private final int[] pangngalanLesson = {
+    private final int[] lessonPPT = {
             R.drawable.pangngalan01, R.drawable.pangngalan02, R.drawable.pangngalan03,
             R.drawable.pangngalan04, R.drawable.pangngalan05, R.drawable.pangngalan06,
             R.drawable.pangngalan07, R.drawable.pangngalan08, R.drawable.pangngalan09,
@@ -145,11 +145,11 @@ public class PangngalanLesson extends AppCompatActivity {
     }
 
     private void nextPage() {
-        if (currentPage < pangngalanLesson.length - 1 ) {
+        if (currentPage < lessonPPT.length - 1 ) {
             currentPage++;
             updatePage();
         }
-        if (currentPage == pangngalanLesson.length - 1) {
+        if (currentPage == lessonPPT.length - 1) {
             unlockButton.setEnabled(true);
             unlockButton.setAlpha(1f);
         }
@@ -163,7 +163,7 @@ public class PangngalanLesson extends AppCompatActivity {
     }
 
     private void updatePage() {
-        imageView.setImageResource(pangngalanLesson[currentPage]);
+        imageView.setImageResource(lessonPPT[currentPage]);
         BahagiFirestoreUtils.saveLessonProgress(BahagiFirestoreUtils.getCurrentUser().getUid(),
                 "pangngalan", currentPage, isLessonDone);
 
@@ -186,7 +186,7 @@ public class PangngalanLesson extends AppCompatActivity {
             backOption.setAlpha(1f);
         }
 
-        if (currentPage == pangngalanLesson.length - 1) {
+        if (currentPage == lessonPPT.length - 1) {
             nextOption.setEnabled(false);
             nextOption.setAlpha(0.5f);
         } else {
@@ -206,12 +206,12 @@ public class PangngalanLesson extends AppCompatActivity {
                         if (module1 != null) {
                             Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
                             if (lessons != null && lessons.containsKey("pangngalan")) {
-                                Map<String, Object> pangngalan = (Map<String, Object>) lessons.get("pangngalan");
-                                if (pangngalan != null) {
-                                    Long checkpoint = (Long) pangngalan.get("checkpoint");
+                                Map<String, Object> lessonsData = (Map<String, Object>) lessons.get("pangngalan");
+                                if (lessonsData != null) {
+                                    Long checkpoint = (Long) lessonsData.get("checkpoint");
                                     currentPage = (checkpoint != null) ? checkpoint.intValue() : 0;
                                     isFirstTime = false;
-                                    if ("completed".equals(pangngalan.get("status"))) {
+                                    if ("completed".equals(lessonsData.get("status"))) {
                                         isLessonDone = true;
                                         unlockButton.setEnabled(true);
                                         unlockButton.setAlpha(1f);
@@ -225,7 +225,7 @@ public class PangngalanLesson extends AppCompatActivity {
                         }
                     } else {
                         currentPage = 0;
-                        imageView.setImageResource(pangngalanLesson[currentPage]);
+                        imageView.setImageResource(lessonPPT[currentPage]);
                         isFirstTime = true;
                     }
                     BahagiFirestoreUtils.saveLessonProgress(user.getUid(), "pangngalan", currentPage, isLessonDone);
