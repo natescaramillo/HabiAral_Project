@@ -41,7 +41,7 @@ public class PangngalanLesson extends AppCompatActivity {
             R.drawable.pangngalan28, R.drawable.pangngalan29, R.drawable.pangngalan30,
             R.drawable.pangngalan31
     };
-    private Map<Integer, List<String>> pageLines = new HashMap<>();
+    private final Map<Integer, List<String>> pageLines = new HashMap<>();
     private final boolean[] isFullScreen = {false};
     private boolean isNavigatingInsideApp = false;
     private boolean waitForResumeChoice = false;
@@ -52,6 +52,7 @@ public class PangngalanLesson extends AppCompatActivity {
     private int currentPage = 0;
     private int resumePage = -1;
     private boolean isResumeDialogShowing = false;
+    private ConstraintLayout optnBar, btmBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,9 @@ public class PangngalanLesson extends AppCompatActivity {
 
         btnBack = findViewById(R.id.button_back);
         btnNext = findViewById(R.id.button_next);
+
+        btmBar = findViewById(R.id.bottom_bar);
+        optnBar = findViewById(R.id.option_bar);
 
         btnFullscreen = findViewById(R.id.button_fullscreen);
 
@@ -94,9 +98,6 @@ public class PangngalanLesson extends AppCompatActivity {
         btnBack.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
         btnNext.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); nextPage(); });
 
-        ConstraintLayout bottomBar = findViewById(R.id.bottom_bar);
-        ConstraintLayout optionBar = findViewById(R.id.option_bar);
-
         btnFullscreen.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             FullScreenUtils.toggleFullScreen(
@@ -106,8 +107,8 @@ public class PangngalanLesson extends AppCompatActivity {
                     imageView,
                     image3D,
                     btnUnlock,
-                    bottomBar,
-                    optionBar
+                    btmBar,
+                    optnBar
             );
         });
 
@@ -115,10 +116,6 @@ public class PangngalanLesson extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() {
                 if (isFullScreen[0]) {
-                    ConstraintLayout bottomBar = findViewById(R.id.bottom_bar);
-                    ConstraintLayout optionBar = findViewById(R.id.option_bar);
-                    ImageView btnFullscreen = findViewById(R.id.button_fullscreen);
-
                     FullScreenUtils.exitFullScreen(
                             PangngalanLesson.this,
                             isFullScreen,
@@ -126,8 +123,8 @@ public class PangngalanLesson extends AppCompatActivity {
                             imageView,
                             image3D,
                             btnUnlock,
-                            bottomBar,
-                            optionBar
+                            btmBar,
+                            optnBar
                     );
                     return;
                 }
@@ -176,7 +173,7 @@ public class PangngalanLesson extends AppCompatActivity {
 
         List<String> lines = pageLines.get(currentPage);
         if (lines != null && !lines.isEmpty()) {
-            TTSUtils.speakSequentialLines(this, lines, "page_" + currentPage, null);
+            TTSUtils.bahagiSpeakSequentialLines(this, lines, "page_" + currentPage, null);
         }
     }
 
@@ -255,7 +252,7 @@ public class PangngalanLesson extends AppCompatActivity {
                     if (!waitForResumeChoice) {
                         if (introLines != null && isFirstTime && !introLines.isEmpty()) {
                             isFirstTime = false;
-                            TTSUtils.speakSequentialLines(this, introLines, "intro", () -> {
+                            TTSUtils.bahagiSpeakSequentialLines(this, introLines, "intro", () -> {
                                 currentPage = 0;
                                 updatePage();
                             });
@@ -267,7 +264,6 @@ public class PangngalanLesson extends AppCompatActivity {
                     }
                 });
     }
-
 
     private void showResumeDialog(int checkpoint) {
         if (isResumeDialogShowing) return;
@@ -291,10 +287,10 @@ public class PangngalanLesson extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         LessonGifUtils.stopIdleGifRandomizer(this, image3D);
         TTSUtils.shutdown();
 
-        super.onDestroy();
     }
 
     @Override
@@ -306,8 +302,8 @@ public class PangngalanLesson extends AppCompatActivity {
         LessonGifUtils.stopIdleGifRandomizer(this, image3D);
 
         if (isFullScreen[0]) {
-            ConstraintLayout bottomBar = findViewById(R.id.bottom_bar);
-            ConstraintLayout optionBar = findViewById(R.id.option_bar);
+            btmBar = findViewById(R.id.bottom_bar);
+            optnBar = findViewById(R.id.option_bar);
 
             FullScreenUtils.exitFullScreen(
                     this,
@@ -316,8 +312,8 @@ public class PangngalanLesson extends AppCompatActivity {
                     imageView,
                     image3D,
                     btnUnlock,
-                    bottomBar,
-                    optionBar
+                    btmBar,
+                    optnBar
             );
         }
     }

@@ -13,15 +13,12 @@ public class KayarianFirestoreUtils {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public static void saveLessonProgress(String uid, String lessonName, int checkpoint, boolean completed) {
+    public static void saveLessonProgress(String uid, String lessonName, boolean completed) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         String status = completed ? "completed" : "in-progress";
 
-        Map<String, Object> lessonStatus = Map.of(
-                "status", status,
-                "checkpoint", checkpoint
-        );
+        Map<String, Object> lessonStatus = Map.of("status", status);
 
         Map<String, Object> lessons = Map.of(lessonName, lessonStatus);
 

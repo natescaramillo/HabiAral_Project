@@ -19,12 +19,12 @@ public class FullScreenUtils {
             ImageView imageView,
             ImageView image3D,
             Button btnUnlock,
-            ConstraintLayout bottomBar,
-            ConstraintLayout optionBar
+            ConstraintLayout btmBar,
+            ConstraintLayout optnBar
     ) {
         ConstraintLayout.LayoutParams imageParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
-        ConstraintLayout.LayoutParams bottomBarParams = (ConstraintLayout.LayoutParams) bottomBar.getLayoutParams();
-        ConstraintLayout.LayoutParams optionBarParams = (ConstraintLayout.LayoutParams) optionBar.getLayoutParams();
+        ConstraintLayout.LayoutParams bottomBarParams = (ConstraintLayout.LayoutParams) btmBar.getLayoutParams();
+        ConstraintLayout.LayoutParams optionBarParams = (ConstraintLayout.LayoutParams) optnBar.getLayoutParams();
 
         if (!isFullScreen[0]) {
             if (activity.getActionBar() != null) activity.getActionBar().hide();
@@ -34,19 +34,19 @@ public class FullScreenUtils {
             imageParams.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
             imageParams.height = 0;
             imageParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
-            imageParams.bottomToTop = optionBar.getId();
+            imageParams.bottomToTop = optnBar.getId();
             imageParams.setMargins(0, 0, 0, 0);
             imageView.setLayoutParams(imageParams);
 
             bottomBarParams.height = ConstraintLayout.LayoutParams.MATCH_PARENT;
             bottomBarParams.setMargins(0, 0, 0, 0);
-            bottomBar.setLayoutParams(bottomBarParams);
+            btmBar.setLayoutParams(bottomBarParams);
 
-            optionBar.setVisibility(View.VISIBLE);
+            optnBar.setVisibility(View.VISIBLE);
             optionBarParams.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
             optionBarParams.height = (int) (60 * activity.getResources().getDisplayMetrics().density);
             optionBarParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
-            optionBar.setLayoutParams(optionBarParams);
+            optnBar.setLayoutParams(optionBarParams);
 
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             activity.getWindow().getDecorView().setSystemUiVisibility(
@@ -67,13 +67,13 @@ public class FullScreenUtils {
             imageView.setLayoutParams(imageParams);
 
             bottomBarParams.height = 0;
-            bottomBar.setLayoutParams(bottomBarParams);
+            btmBar.setLayoutParams(bottomBarParams);
 
-            optionBar.setVisibility(View.VISIBLE);
+            optnBar.setVisibility(View.VISIBLE);
             optionBarParams.width = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT;
             optionBarParams.height = (int) (45 * activity.getResources().getDisplayMetrics().density);
             optionBarParams.bottomToBottom = ConstraintLayout.LayoutParams.UNSET;
-            optionBar.setLayoutParams(optionBarParams);
+            optnBar.setLayoutParams(optionBarParams);
 
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
@@ -90,8 +90,8 @@ public class FullScreenUtils {
             ImageView imageView,
             ImageView image3D,
             Button btnUnlock,
-            ConstraintLayout bottomBar,
-            ConstraintLayout optionBar
+            ConstraintLayout btmBar,
+            ConstraintLayout optnBar
     ) {
         if (!isFullScreen[0]) return;
 
@@ -100,8 +100,8 @@ public class FullScreenUtils {
         image3D.setVisibility(View.VISIBLE);
 
         ConstraintLayout.LayoutParams imageParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
-        ConstraintLayout.LayoutParams bottomBarParams = (ConstraintLayout.LayoutParams) bottomBar.getLayoutParams();
-        ConstraintLayout.LayoutParams optionBarParams = (ConstraintLayout.LayoutParams) optionBar.getLayoutParams();
+        ConstraintLayout.LayoutParams bottomBarParams = (ConstraintLayout.LayoutParams) btmBar.getLayoutParams();
+        ConstraintLayout.LayoutParams optionBarParams = (ConstraintLayout.LayoutParams) optnBar.getLayoutParams();
 
         imageParams.width = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT;
         imageParams.height = (int) (200 * activity.getResources().getDisplayMetrics().density);
@@ -109,13 +109,13 @@ public class FullScreenUtils {
         imageView.setLayoutParams(imageParams);
 
         bottomBarParams.height = 0;
-        bottomBar.setLayoutParams(bottomBarParams);
+        btmBar.setLayoutParams(bottomBarParams);
 
-        optionBar.setVisibility(View.VISIBLE);
+        optnBar.setVisibility(View.VISIBLE);
         optionBarParams.width = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT;
         optionBarParams.height = (int) (45 * activity.getResources().getDisplayMetrics().density);
         optionBarParams.bottomToBottom = ConstraintLayout.LayoutParams.UNSET;
-        optionBar.setLayoutParams(optionBarParams);
+        optnBar.setLayoutParams(optionBarParams);
 
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
