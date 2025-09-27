@@ -20,49 +20,51 @@
         app:layout_constraintVertical_bias="0.054" />
 
     <ImageView
-        android:id="@+id/lesson_front"
+        android:id="@+id/lesson_image"
+        android:layout_width="379dp"
+        android:layout_height="200dp"
+        android:background="@drawable/background_with_border"
+        android:clipToOutline="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/payak1"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline38" />
+    <ImageView
+        android:id="@+id/lesson_image2"
         android:layout_width="379dp"
         android:layout_height="200dp"
         android:background="@drawable/background_with_border"
         android:clipToOutline="true"
         android:scaleType="fitXY"
         android:src="@drawable/cover_page"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline38" />
 
     <ImageView
-        android:id="@+id/lesson_back"
+        android:id="@+id/example_image"
         android:layout_width="379dp"
         android:layout_height="200dp"
         android:background="@drawable/background_with_border"
         android:clipToOutline="true"
         android:scaleType="fitXY"
-        android:src="@drawable/cover_page"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline38" />
-
-    <ImageView
-        android:id="@+id/example_front"
-        android:layout_width="379dp"
-        android:layout_height="200dp"
-        android:background="@drawable/background_with_border"
-        android:clipToOutline="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/cover_page"
+        android:src="@drawable/payak2"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guideline39" />
-
     <ImageView
-        android:id="@+id/example_back"
+        android:id="@+id/example_image2"
         android:layout_width="379dp"
         android:layout_height="200dp"
         android:background="@drawable/background_with_border"
         android:clipToOutline="true"
         android:scaleType="fitXY"
         android:src="@drawable/cover_page"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guideline39" />
