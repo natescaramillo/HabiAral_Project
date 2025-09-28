@@ -139,7 +139,7 @@
                     <ImageView
                         android:id="@+id/bahagi_view"
                         android:layout_width="match_parent"
-                        android:layout_height="105dp"
+                        android:layout_height="125dp"
                         android:alpha="0.8"
                         android:background="@drawable/home_bahagi"
                         android:scaleType="fitCenter" />
@@ -157,7 +157,7 @@
                             android:fontFamily="@font/ala_sans"
                             android:text="Bahagi ng Pananalita"
                             android:textColor="#A27B5C"
-                            android:textSize="16sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
@@ -183,7 +183,7 @@
                     <ImageView
                         android:id="@+id/kayarian_view"
                         android:layout_width="match_parent"
-                        android:layout_height="105dp"
+                        android:layout_height="125dp"
                         android:alpha="0.8"
                         android:background="@drawable/home_kayarian"
                         android:scaleType="fitCenter" />
@@ -201,7 +201,7 @@
                             android:fontFamily="@font/ala_sans"
                             android:text="Kayarian ng Pangungusap"
                             android:textColor="#A27B5C"
-                            android:textSize="16sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
@@ -227,10 +227,10 @@
                     <ImageView
                         android:id="@+id/panitikan_view"
                         android:layout_width="match_parent"
-                        android:layout_height="105dp"
+                        android:layout_height="125dp"
                         android:alpha="0.8"
                         android:background="@drawable/home_pagunawa"
-                        android:scaleType="centerCrop" />
+                        android:scaleType="fitCenter" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -245,7 +245,7 @@
                             android:fontFamily="@font/ala_sans"
                             android:text="Panitikan"
                             android:textColor="#A27B5C"
-                            android:textSize="16sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
