@@ -6,9 +6,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.View;
 
 import androidx.fragment.app.Fragment;
 
@@ -39,7 +39,9 @@ public class HomeFragment extends Fragment {
     private int animationStep = 0;
 
     @Override
-    public android.view.View onCreateView(android.view.LayoutInflater inflater, android.view.ViewGroup container, Bundle savedInstanceState) {
+    public android.view.View onCreateView(android.view.LayoutInflater inflater,
+                                          android.view.ViewGroup container,
+                                          Bundle savedInstanceState) {
         android.view.View view = inflater.inflate(R.layout.home, container, false);
 
         imageView = view.findViewById(R.id.imageView7);
@@ -47,14 +49,16 @@ public class HomeFragment extends Fragment {
 
         nicknameTextView = view.findViewById(R.id.nickname_id);
 
-        lessonMap.put(R.id.bahagi, BahagiNgPananalita.class);
-        lessonMap.put(R.id.komprehensyon, Panitikan.class);
-        lessonMap.put(R.id.kayarian, KayarianNgPangungusap.class);
-        lessonMap.put(R.id.talasalitaan, Talasalitaan.class);
-        lessonMap.put(R.id.palaro, Palaro.class);
+        // Map lesson buttons to their activities
+        lessonMap.put(R.id.bahagi_cardView, BahagiNgPananalita.class);
+        lessonMap.put(R.id.panitikan_cardView, Panitikan.class);
+        lessonMap.put(R.id.kayarian_cardView, KayarianNgPangungusap.class);
+        lessonMap.put(R.id.talasalitaan_cardView, Talasalitaan.class);
+        lessonMap.put(R.id.palaro_cardView, Palaro.class);
 
+        // Attach listeners to each card
         for (Map.Entry<Integer, Class<?>> entry : lessonMap.entrySet()) {
-            LinearLayout button = view.findViewById(entry.getKey());
+            View button = view.findViewById(entry.getKey()); // FIX: use View instead of LinearLayout
             Class<?> activityClass = entry.getValue();
             if (button != null) {
                 button.setOnClickListener(v -> {

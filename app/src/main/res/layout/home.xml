@@ -1,266 +1,400 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background"
     android:fitsSystemWindows="false"
     tools:context=".Fragment.HomeFragment">
 
-    <View
-        android:id="@+id/view2"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:alpha="0.6"
-        android:background="@drawable/homepage_design"/>
+    <!-- Header -->
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="353dp"
+        android:layout_height="262dp"
+        android:layout_marginStart="250dp"
+        android:src="@drawable/idle"
+        android:translationZ="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="35dp">
+        android:layout_height="70dp"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView21"
+            android:id="@+id/textView17"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/special"
-            android:gravity="center"
-            android:text="Mabuhay!\nSalamat sa pag gamit!"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:fontFamily="@font/ala_sans"
+            android:text="Maligayang Pagbalik,"
+            android:textColor="#A27B5C"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/nickname_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/special"
-            android:gravity="center"
-            android:text="Mark"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp" />
-    </LinearLayout>
+            android:layout_toEndOf="@+id/textView17"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/ala_sans"
+            android:text="Nickname"
+            android:textColor="#A27B5C"
+            android:textSize="18sp" />
 
-    <!-- Brown overlay starting halfway down the image -->
-    <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="450dp"
-        android:layout_height="256dp"
-        android:layout_gravity="center|top"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="10dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:src="@drawable/idle" />
+    </RelativeLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="260dp"
-        android:background="@drawable/homepage_design_2">
+    <!-- Character Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
+        android:layout_width="0dp"
+        android:layout_height="87dp"
+        android:layout_margin="20dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
 
-        <ScrollView
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:scrollbarSize="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/character_Line_homepage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ala_sans"
+                    android:text="Tara na at matuto!"
+                    android:textColor="#A27B5C"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/character_Line_homepage2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ala_sans"
+                    android:text="Salamat sa pag gamit."
+                    android:textColor="#A27B5C"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Title for Lessons -->
+
+    <!-- Scroll only for lessons -->
+    <HorizontalScrollView
+        android:id="@+id/lessonsScroll"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView26">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <!-- Bahagi -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/bahagi_cardView"
+                android:layout_width="218dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="0dp"
+                app:cardPreventCornerOverlap="false"
+                app:cardUseCompatPadding="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/bahagi_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:alpha="0.9"
+                        android:background="@drawable/home_bahagi"
+                        android:scaleType="centerCrop" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFFFF"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/ala_sans"
+                            android:text="Bahagi ng Pananalita"
+                            android:textColor="#A27B5C"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Kayarian -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/kayarian_cardView"
+                android:layout_width="218dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:clickable="true"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="0dp"
+                app:cardPreventCornerOverlap="false"
+                app:cardUseCompatPadding="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/kayarian_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:alpha="0.8"
+                        android:background="@drawable/home_kayarian"
+                        android:scaleType="centerCrop" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFFFF"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/ala_sans"
+                            android:text="Kayarian ng Pangungusap"
+                            android:textColor="#A27B5C"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Panitikan -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/panitikan_cardView"
+                android:layout_width="218dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:clickable="true"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="0dp"
+                app:cardPreventCornerOverlap="false"
+                app:cardUseCompatPadding="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/panitikan_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:alpha="0.8"
+                        android:background="@drawable/home_pagunawa"
+                        android:scaleType="centerCrop" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFFFF"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/ala_sans"
+                            android:text="Panitikan"
+                            android:textColor="#A27B5C"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+    <GridLayout
+        android:id="@+id/gridLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:paddingBottom="10dp"
+        android:rowCount="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView30"
+        app:layout_constraintVertical_bias="0.0">
+
+        <!-- Diksyonaryo -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/talasalitaan_cardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:cardPreventCornerOverlap="false"
+            app:cardUseCompatPadding="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp">
+                android:orientation="vertical">
 
-                <!-- BUTTON 1 -->
+                <!-- Top image -->
+                <ImageView
+                    android:id="@+id/view6"
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    android:adjustViewBounds="true"
+                    android:alpha="0.9"
+                    android:background="@drawable/diksyonaryo"
+                    android:scaleType="centerCrop" />
+
+                <!-- White section with title -->
                 <LinearLayout
-                    android:id="@+id/bahagi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/button_color"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
                     android:padding="12dp">
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:clipToOutline="true"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/home_bahagi"
-                        android:background="@drawable/rounded_image"
-                        app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
-
                     <TextView
-                        android:layout_width="0dp"
+                        android:id="@+id/textView31"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/special"
-                        android:gravity="center"
-                        android:text="Bahagi ng pananalita"
-                        android:textColor="#ffffff"
-                        android:textSize="18sp" />
-                </LinearLayout>
-
-                <!-- BUTTON 2 -->
-                <LinearLayout
-                    android:id="@+id/kayarian"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/button_color"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="12dp">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:background="@drawable/rounded_image"
-                        android:clipToOutline="true"
-                        android:src="@drawable/home_kayarian"
-                        app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/special"
-                        android:gravity="center"
-                        android:text="Kayarian ng Pangungusap"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp" />
-
-
-                </LinearLayout>
-
-                <!-- BUTTON 3 -->
-                <LinearLayout
-                    android:id="@+id/komprehensyon"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/button_color"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="12dp">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/home_pagunawa_image"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/home_pagunawa"
-                        android:background="@drawable/rounded_image"
-                        android:clipToOutline="true"
-                        app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/special"
-                        android:gravity="center"
-                        android:text="Panitikan"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp" />
-
-                </LinearLayout>
-
-                <!-- BUTTON 4 -->
-                <LinearLayout
-                    android:id="@+id/talasalitaan"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/button_color"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="12dp">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/home_talasalitaan_image"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/diksyonaryo"
-                        android:background="@drawable/rounded_image"
-                        android:clipToOutline="true"
-                        app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/special"
-                        android:gravity="center"
+                        android:fontFamily="@font/ala_sans"
                         android:text="Diksyonaryo"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp" />
-
+                        android:textColor="#A27B5C"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-                <!-- BUTTON 5 -->
+
+        <!-- Palaro Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/palaro_cardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:cardPreventCornerOverlap="false"
+            app:cardUseCompatPadding="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Top image -->
+                <ImageView
+                    android:id="@+id/view8"
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    android:adjustViewBounds="true"
+                    android:alpha="0.9"
+                    android:background="@drawable/home_palaro"
+                    android:scaleType="centerCrop" />
+
+                <!-- White section with title -->
                 <LinearLayout
-                    android:id="@+id/palaro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/button_color"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
                     android:padding="12dp">
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:background="@drawable/rounded_image"
-                        android:clipToOutline="true"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/home_palaro"
-                        app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
-
                     <TextView
-                        android:layout_width="0dp"
+                        android:id="@+id/textView32"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/special"
-                        android:gravity="center"
+                        android:fontFamily="@font/ala_sans"
                         android:text="Palaro"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp" />
+                        android:textColor="#A27B5C"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
-
             </LinearLayout>
-        </ScrollView>
+        </androidx.cardview.widget.CardView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </GridLayout>
 
+    <TextView
+        android:id="@+id/textView30"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/special"
+        android:text="Mga Pantulong na Kagamitan"
+        android:textColor="#A27B5C"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lessonsScroll" />
 
+    <TextView
+        android:id="@+id/textView26"
+        android:layout_margin="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/special"
+        android:text="Mga Paksang Tatalakayin"
+        android:textColor="#A27B5C"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView2" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
