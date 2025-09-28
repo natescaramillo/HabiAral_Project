@@ -22,8 +22,19 @@ public class TalasalitaanUtils {
         return isLoaded;
     }
 
-    public static void preloadWords(Context context) {
-        if (isLoaded) return;
+    // --- New listener interface ---
+    public interface OnWordsLoadedListener {
+        void onWordsLoaded(List<DocumentSnapshot> words);
+        void onWordsLoadFailed(Exception e);
+    }
+
+    public static void preloadWords(Context context, OnWordsLoadedListener listener) {
+        if (isLoaded) {
+            if (listener != null) {
+                listener.onWordsLoaded(cachedWords);
+            }
+            return;
+        }
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("diksiyonaryo")
@@ -33,9 +44,16 @@ public class TalasalitaanUtils {
                     cachedWords.clear();
                     cachedWords.addAll(queryDocumentSnapshots.getDocuments());
                     isLoaded = true;
+
+                    if (listener != null) {
+                        listener.onWordsLoaded(cachedWords);
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(context, "Failed to preload words", Toast.LENGTH_SHORT).show();
+                    if (listener != null) {
+                        listener.onWordsLoadFailed(e);
+                    }
                 });
     }
 }

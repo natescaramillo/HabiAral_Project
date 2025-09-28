@@ -17,7 +17,7 @@ import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.Panitikan.Panitikan;
 import com.example.habiaral.Palaro.Palaro;
-import com.example.habiaral.Talasalitaan.Talasalitaan;
+import com.example.habiaral.Diksyonaryo.Diksyonaryo;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
@@ -53,7 +53,7 @@ public class HomeFragment extends Fragment {
         lessonMap.put(R.id.bahagi_cardView, BahagiNgPananalita.class);
         lessonMap.put(R.id.panitikan_cardView, Panitikan.class);
         lessonMap.put(R.id.kayarian_cardView, KayarianNgPangungusap.class);
-        lessonMap.put(R.id.talasalitaan_cardView, Talasalitaan.class);
+        lessonMap.put(R.id.talasalitaan_cardView, Diksyonaryo.class);
         lessonMap.put(R.id.palaro_cardView, Palaro.class);
 
         // Attach listeners to each card

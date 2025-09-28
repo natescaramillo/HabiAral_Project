@@ -45,7 +45,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".Talasalitaan.Talasalitaan"
+            android:name=".Diksyonaryo.Diksyonaryo"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
@@ -146,11 +146,6 @@
             android:screenOrientation="portrait" />
         <activity android:name=".Panitikan.MaiklingKuwento.Quiz.MaiklingKuwento2Quiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.MaiklingKuwento.Stories.MaiklingKuwento3"
-            android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.MaiklingKuwento.Quiz.MaiklingKuwento3Quiz"
-            android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Pabula.Pabula"
             android:screenOrientation="portrait" />
         <activity android:name=".Panitikan.Pabula.Stories.PabulaKwento1"
             android:screenOrientation="portrait" />

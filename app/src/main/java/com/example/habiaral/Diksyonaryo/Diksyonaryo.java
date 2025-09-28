@@ -1,4 +1,4 @@
-package com.example.habiaral.Talasalitaan;
+package com.example.habiaral.Diksyonaryo;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -6,7 +6,6 @@ import android.speech.tts.TextToSpeech;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.SoundClickUtils;
@@ -28,7 +26,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-public class Talasalitaan extends AppCompatActivity {
+public class Diksyonaryo extends AppCompatActivity {
 
     private LinearLayout wordContainer;
     private LayoutInflater inflater;
@@ -85,8 +83,34 @@ public class Talasalitaan extends AppCompatActivity {
 
         } else {
             Toast.makeText(this, "Loading words...", Toast.LENGTH_SHORT).show();
-            TalasalitaanUtils.preloadWords(this);
+            TalasalitaanUtils.preloadWords(this, new TalasalitaanUtils.OnWordsLoadedListener() {
+                @Override
+                public void onWordsLoaded(List<DocumentSnapshot> words) {
+                    runOnUiThread(() -> {
+                        allWords.clear();
+                        allWords.addAll(words);
+
+                        Collections.sort(allWords, (d1, d2) -> {
+                            String w1 = d1.getString("word");
+                            String w2 = d2.getString("word");
+                            if (w1 == null) w1 = "";
+                            if (w2 == null) w2 = "";
+                            return w1.compareToIgnoreCase(w2);
+                        });
+
+                        displayWords(allWords);
+                    });
+                }
+
+                @Override
+                public void onWordsLoadFailed(Exception e) {
+                    runOnUiThread(() ->
+                            Toast.makeText(Diksyonaryo.this, "Failed to load words", Toast.LENGTH_SHORT).show()
+                    );
+                }
+            });
         }
+
 
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {

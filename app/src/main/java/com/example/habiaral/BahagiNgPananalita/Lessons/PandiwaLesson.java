@@ -159,6 +159,23 @@ public class PandiwaLesson extends AppCompatActivity {
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() {
+                if (isFullScreen[0]) {
+                    ConstraintLayout bottomBar = findViewById(R.id.bottom_bar);
+                    ConstraintLayout optionBar = findViewById(R.id.option_bar);
+
+                    FullScreenUtils.exitFullScreen(
+                            PandiwaLesson.this,
+                            isFullScreen,
+                            fullScreenOption,
+                            imageView,
+                            imageView2,
+                            unlockButton,
+                            bottomBar,
+                            optionBar
+                    );
+                    return;
+                }
+
                 stopTTS();
                 startActivity(new Intent(PandiwaLesson.this, BahagiNgPananalita.class)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
