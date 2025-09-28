@@ -16,6 +16,7 @@
         android:layout_width="353dp"
         android:layout_height="262dp"
         android:layout_marginStart="250dp"
+        android:layout_marginTop="-20dp"
         android:src="@drawable/idle"
         android:translationZ="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -138,7 +139,7 @@
                         android:id="@+id/bahagi_view"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
-                        android:alpha="0.9"
+                        android:alpha="0.8"
                         android:background="@drawable/home_bahagi"
                         android:scaleType="centerCrop" />
 
@@ -291,7 +292,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="130dp"
                     android:adjustViewBounds="true"
-                    android:alpha="0.9"
+                    android:alpha="0.8"
                     android:background="@drawable/diksyonaryo"
                     android:scaleType="centerCrop" />
 
@@ -341,7 +342,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="130dp"
                     android:adjustViewBounds="true"
-                    android:alpha="0.9"
+                    android:alpha="0.8"
                     android:background="@drawable/home_palaro"
                     android:scaleType="centerCrop" />
 
