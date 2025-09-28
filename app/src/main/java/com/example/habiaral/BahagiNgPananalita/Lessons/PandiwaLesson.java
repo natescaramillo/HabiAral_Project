@@ -3,28 +3,35 @@ package com.example.habiaral.BahagiNgPananalita.Lessons;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PandiwaQuiz;
 import com.example.habiaral.R;
-import com.example.habiaral.Utils.LessonGifUtils;
 import com.example.habiaral.Utils.ResumeDialogUtils;
 import com.example.habiaral.Utils.BahagiFirestoreUtils;
 import com.example.habiaral.Utils.FullScreenUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
-import com.example.habiaral.Utils.TTSUtils;
+import com.example.habiaral.Utils.SoundManagerUtils;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import android.content.ActivityNotFoundException;
+import android.speech.tts.Voice;
+import android.widget.Toast;
 
 public class PandiwaLesson extends AppCompatActivity {
 
@@ -36,95 +43,123 @@ public class PandiwaLesson extends AppCompatActivity {
             R.drawable.pandiwa13, R.drawable.pandiwa14, R.drawable.pandiwa15,
             R.drawable.pandiwa16, R.drawable.pandiwa17, R.drawable.pandiwa18
     };
-    private final Map<Integer, List<String>> pageLines = new HashMap<>();
+
+    private android.os.Handler textHandler = new android.os.Handler();
+    private Map<Integer, List<String>> pageLines = new HashMap<>();
     private final boolean[] isFullScreen = {false};
     private boolean isNavigatingInsideApp = false;
     private boolean waitForResumeChoice = false;
-    private ImageView btnBack, btnNext, btnFullscreen, image3D, imageView;
+    private ImageView backOption, nextOption, imageView, imageView2, fullScreenOption;
     private boolean isLessonDone = false;
     private boolean isFirstTime = true;
-    private Button btnUnlock;
+    private TextToSpeech textToSpeech;
+    private Button unlockButton;
     private int currentPage = 0;
     private int resumePage = -1;
-    private boolean isResumeDialogShowing = false;
-    private ConstraintLayout optnBar, btmBar;
+    private int resumeLine = -1;
+
+    private Handler idleGifHandler = new Handler();
+    private Runnable idleGifRunnable;
+    private boolean isActivityActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bahagi_lesson);
 
-        image3D = findViewById(R.id.lesson_idle_gif);
-        LessonGifUtils.startLessonGifRandomizer(this, image3D);
+        imageView2 = findViewById(R.id.lesson_idle_gif);
+        if (!isFinishing() && !isDestroyed()) {
+            Glide.with(this).asGif().load(R.drawable.idle).into(imageView2);
+        }
 
-        btnUnlock = findViewById(R.id.button_unlock);
+        startIdleGifRandomizer();
+
+        unlockButton = findViewById(R.id.button_unlock);
         imageView = findViewById(R.id.lesson_image);
 
-        btnBack = findViewById(R.id.button_back);
-        btnNext = findViewById(R.id.button_next);
+        backOption = findViewById(R.id.button_back);
+        nextOption = findViewById(R.id.button_next);
+        fullScreenOption = findViewById(R.id.button_fullscreen);
 
-        btmBar = findViewById(R.id.bottom_bar);
-        optnBar = findViewById(R.id.option_bar);
+        unlockButton.setEnabled(false);
+        unlockButton.setAlpha(0.5f);
 
-        btnFullscreen = findViewById(R.id.button_fullscreen);
+        textToSpeech = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
 
-        btnUnlock.setEnabled(false);
-        btnUnlock.setAlpha(0.5f);
+                Locale filLocale = new Locale.Builder().setLanguage("fil").setRegion("PH").build();
+                int result = textToSpeech.setLanguage(filLocale);
 
-        TTSUtils.initTts(this, new TTSUtils.OnInitComplete() {
-            @Override
-            public void onReady() {
-                loadCharacterLines();
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Toast.makeText(this,
+                            "Kailangan i-download ang Filipino voice sa Text-to-Speech settings.",
+                            Toast.LENGTH_LONG).show();
+                    try {
+                        Intent installIntent = new Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                        startActivity(installIntent);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(this,
+                                "Hindi ma-open ang installer ng TTS.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Voice selected = null;
+                    for (Voice v : textToSpeech.getVoices()) {
+                        Locale vLocale = v.getLocale();
+                        if (vLocale != null && vLocale.getLanguage().equals("fil")) {
+                            selected = v;
+                            break;
+                        } else if (v.getName().toLowerCase().contains("fil")) {
+                            selected = v;
+                            break;
+                        }
+                    }
+                    if (selected != null) {
+                        textToSpeech.setVoice(selected);
+                    }
+
+                    textToSpeech.setSpeechRate(1.0f);
+                    SoundManagerUtils.setTts(textToSpeech);
+                    loadCharacterLines();
+                }
+            } else {
+                Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
             }
-
-            @Override
-            public void onFail() {}
         });
 
         checkLessonStatus();
 
-        btnUnlock.setOnClickListener(v -> {
+        unlockButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             isNavigatingInsideApp = true;
-            TTSUtils.stopSpeaking();
+            stopTTS();
             startActivity(new Intent(this, PandiwaQuiz.class));
         });
 
-        btnBack.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
-        btnNext.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); nextPage(); });
+        backOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); previousPage(); });
+        nextOption.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); nextPage(); });
 
-        btnFullscreen.setOnClickListener(v -> {
+        ConstraintLayout bottomBar = findViewById(R.id.bottom_bar);
+        ConstraintLayout optionBar = findViewById(R.id.option_bar);
+
+        fullScreenOption.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             FullScreenUtils.toggleFullScreen(
                     this,
                     isFullScreen,
-                    btnFullscreen,
+                    fullScreenOption,
                     imageView,
-                    image3D,
-                    btnUnlock,
-                    btmBar,
-                    optnBar
+                    imageView2,
+                    unlockButton,
+                    bottomBar,
+                    optionBar
             );
         });
 
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() {
-                if (isFullScreen[0]) {
-                    FullScreenUtils.exitFullScreen(
-                            PandiwaLesson.this,
-                            isFullScreen,
-                            btnFullscreen,
-                            imageView,
-                            image3D,
-                            btnUnlock,
-                            btmBar,
-                            optnBar
-                    );
-                    return;
-                }
-
-                TTSUtils.shutdown();
+                stopTTS();
                 startActivity(new Intent(PandiwaLesson.this, BahagiNgPananalita.class)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                 finish();
@@ -138,8 +173,8 @@ public class PandiwaLesson extends AppCompatActivity {
             updatePage();
         }
         if (currentPage == lessonPPT.length - 1) {
-            btnUnlock.setEnabled(true);
-            btnUnlock.setAlpha(1f);
+            unlockButton.setEnabled(true);
+            unlockButton.setAlpha(1f);
         }
     }
 
@@ -150,43 +185,35 @@ public class PandiwaLesson extends AppCompatActivity {
         }
     }
 
+    private void updateNavigationButtons() {
+        if (currentPage == 0) {
+            backOption.setEnabled(false);
+            backOption.setAlpha(0.5f);
+        } else {
+            backOption.setEnabled(true);
+            backOption.setAlpha(1f);
+        }
+
+        if (currentPage == lessonPPT.length - 1) {
+            nextOption.setEnabled(false);
+            nextOption.setAlpha(0.5f);
+        } else {
+            nextOption.setEnabled(true);
+            nextOption.setAlpha(1f);
+        }
+    }
+
     private void updatePage() {
         imageView.setImageResource(lessonPPT[currentPage]);
         BahagiFirestoreUtils.saveLessonProgress(BahagiFirestoreUtils.getCurrentUser().getUid(),
                 "pandiwa", currentPage, isLessonDone);
 
-        TTSUtils.stopSpeaking();
+        stopSpeaking();
         updateNavigationButtons();
-
-        if (isLessonDone || currentPage == lessonPPT.length - 1) {
-            btnUnlock.setEnabled(true);
-            btnUnlock.setAlpha(1f);
-        } else {
-            btnUnlock.setEnabled(false);
-            btnUnlock.setAlpha(0.5f);
-        }
 
         List<String> lines = pageLines.get(currentPage);
         if (lines != null && !lines.isEmpty()) {
-            TTSUtils.bahagiSpeakSequentialLines(this, lines, "page_" + currentPage, null);
-        }
-    }
-
-    private void updateNavigationButtons() {
-        if (currentPage == 0) {
-            btnBack.setEnabled(false);
-            btnBack.setAlpha(0.5f);
-        } else {
-            btnBack.setEnabled(true);
-            btnBack.setAlpha(1f);
-        }
-
-        if (currentPage == lessonPPT.length - 1) {
-            btnNext.setEnabled(false);
-            btnNext.setAlpha(0.5f);
-        } else {
-            btnNext.setEnabled(true);
-            btnNext.setAlpha(1f);
+            speakSequentialLines(lines, () -> {});
         }
     }
 
@@ -201,20 +228,18 @@ public class PandiwaLesson extends AppCompatActivity {
                         if (module1 != null) {
                             Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
                             if (lessons != null && lessons.containsKey("pandiwa")) {
-                                Map<String, Object> lessonsData = (Map<String, Object>) lessons.get("pandiwa");
-                                if (lessonsData != null) {
-                                    Long checkpoint = (Long) lessonsData.get("checkpoint");
+                                Map<String, Object> lessonList = (Map<String, Object>) lessons.get("pandiwa");
+                                if (lessonList != null) {
+                                    Long checkpoint = (Long) lessonList.get("checkpoint");
                                     currentPage = (checkpoint != null) ? checkpoint.intValue() : 0;
                                     isFirstTime = false;
-                                    if ("completed".equals(lessonsData.get("status"))) {
+                                    if ("completed".equals(lessonList.get("status"))) {
                                         isLessonDone = true;
-                                        btnUnlock.setEnabled(true);
-                                        btnUnlock.setAlpha(1f);
+                                        unlockButton.setEnabled(true);
+                                        unlockButton.setAlpha(1f);
                                     }
-                                    if (!isResumeDialogShowing) {
-                                        showResumeDialog(currentPage);
-                                        waitForResumeChoice = true;
-                                    }
+                                    showResumeDialog(currentPage);
+                                    waitForResumeChoice = true;
                                 }
                             }
                         }
@@ -231,7 +256,6 @@ public class PandiwaLesson extends AppCompatActivity {
         FirebaseFirestore.getInstance().collection("lesson_character_lines").document("LCL2").get()
                 .addOnSuccessListener(doc -> {
                     if (!doc.exists()) return;
-
                     List<Map<String, Object>> pages = (List<Map<String, Object>>) doc.get("pages");
                     if (pages != null) {
                         for (Map<String, Object> page : pages) {
@@ -242,28 +266,49 @@ public class PandiwaLesson extends AppCompatActivity {
                             }
                         }
                     }
-
                     List<String> introLines = (List<String>) doc.get("intro");
                     if (!waitForResumeChoice) {
                         if (introLines != null && isFirstTime && !introLines.isEmpty()) {
                             isFirstTime = false;
-                            TTSUtils.bahagiSpeakSequentialLines(this, introLines, "intro", () -> {
-                                currentPage = 0;
-                                updatePage();
-                            });
-                            btnBack.setEnabled(false);
-                            btnBack.setAlpha(0.5f);
-                        } else {
-                            updatePage();
-                        }
+                            speakSequentialLines(introLines, this::updatePage);
+                        } else updatePage();
                     }
                 });
     }
 
-    private void showResumeDialog(int checkpoint) {
-        if (isResumeDialogShowing) return;
-        isResumeDialogShowing = true;
+    private void speakSequentialLines(List<String> lines, Runnable onComplete) {
+        if (lines == null || lines.isEmpty()) return;
+        final int[] index = {0};
+        String utterancePage = "page_" + currentPage;
 
+        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override public void onStart(String s) {}
+            @Override public void onDone(String utteranceId) {
+                runOnUiThread(() -> {
+                    if (!utteranceId.startsWith(utterancePage)) return;
+                    index[0]++;
+                    if (index[0] < lines.size()) {
+                        if (!SoundManagerUtils.isMuted(PandiwaLesson.this)) {
+                            speak(lines.get(index[0]), utterancePage + "_" + index[0]);
+                        }
+                    } else onComplete.run();
+                });
+            }
+
+            @Override public void onError(String s) {}
+        });
+
+        if (!SoundManagerUtils.isMuted(this)) {
+            speak(lines.get(0), utterancePage + "_0");
+        }
+    }
+
+    private void speak(String text, String id) {
+        if (textToSpeech != null && !text.isEmpty())
+            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, id);
+    }
+
+    private void showResumeDialog(int checkpoint) {
         AlertDialog dialog = ResumeDialogUtils.showResumeDialog(this, new ResumeDialogUtils.ResumeDialogListener() {
             @Override public void onResumeLesson() {
                 currentPage = checkpoint;
@@ -276,54 +321,81 @@ public class PandiwaLesson extends AppCompatActivity {
                 waitForResumeChoice = false;
             }
         });
+    }
 
-        dialog.setOnDismissListener(d -> isResumeDialogShowing = false);
+    private void stopSpeaking() {
+        if (textToSpeech != null) textToSpeech.stop();
+        textHandler.removeCallbacksAndMessages(null);
+    }
+
+    private void stopTTS() {
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
+        textHandler.removeCallbacksAndMessages(null);
+    }
+
+    private void startIdleGifRandomizer() {
+        isActivityActive = true;
+        idleGifRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (!isActivityActive || imageView2 == null || isFinishing() || isDestroyed()) return;
+                int delay = 2000;
+                if (Math.random() < 0.4) {
+                    if (!isFinishing() && !isDestroyed()) {
+                        Glide.with(PandiwaLesson.this).asGif().load(R.drawable.right_2).into(imageView2);
+                    }
+                    idleGifHandler.postDelayed(() -> {
+                        if (isActivityActive && imageView2 != null && !isFinishing() && !isDestroyed()) {
+                            Glide.with(PandiwaLesson.this).asGif().load(R.drawable.idle).into(imageView2);
+                        }
+                        idleGifHandler.postDelayed(idleGifRunnable, delay);
+                    }, 2000);
+                } else {
+                    idleGifHandler.postDelayed(idleGifRunnable, delay);
+                }
+            }
+        };
+        idleGifHandler.postDelayed(idleGifRunnable, 2000);
+    }
+
+    private void stopIdleGifRandomizer() {
+        isActivityActive = false;
+        idleGifHandler.removeCallbacksAndMessages(null);
+        if (imageView2 != null && !isFinishing() && !isDestroyed()) {
+            Glide.with(this).asGif().load(R.drawable.idle).into(imageView2);
+        }
     }
 
     @Override
     protected void onDestroy() {
+        stopIdleGifRandomizer();
+        stopTTS();
         super.onDestroy();
-        LessonGifUtils.stopIdleGifRandomizer(this, image3D);
-        TTSUtils.shutdown();
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        resumePage = currentPage;
-        TTSUtils.stopSpeaking();
-        LessonGifUtils.stopIdleGifRandomizer(this, image3D);
-
-        if (isFullScreen[0]) {
-            btmBar = findViewById(R.id.bottom_bar);
-            optnBar = findViewById(R.id.option_bar);
-
-            FullScreenUtils.exitFullScreen(
-                    this,
-                    isFullScreen,
-                    btnFullscreen,
-                    imageView,
-                    image3D,
-                    btnUnlock,
-                    btmBar,
-                    optnBar
-            );
+        if (!isNavigatingInsideApp) {
+            resumePage = currentPage;
         }
+
+        stopSpeaking();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        isNavigatingInsideApp = false;
-
-        if (resumePage != -1 && !isResumeDialogShowing) {
-            showResumeDialog(resumePage);
-            waitForResumeChoice = true;
+        if (resumePage != -1) {
+            currentPage = resumePage;
+            updatePage();
             resumePage = -1;
+            resumeLine = -1;
         }
     }
-
 }

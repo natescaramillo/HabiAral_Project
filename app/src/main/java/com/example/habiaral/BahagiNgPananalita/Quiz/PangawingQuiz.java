@@ -618,7 +618,7 @@ public class PangawingQuiz extends AppCompatActivity {
 
             String[] lessonKeys = {
                     "pangngalan", "pandiwa", "panguri", "panghalip", "pangabay",
-                    "pangatnig", "pangukol", "pangakop", "padamdam", "pangawing"
+                    "pangatnig", "pangukol", "pangangkop", "pandamdam", "pangawing"
             };
 
             for (String key : lessonKeys) {
