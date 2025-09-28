@@ -224,17 +224,18 @@
         <TextView
             android:id="@+id/errorTooltip"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/tooltip_bubble"
             android:padding="8dp"
             android:textColor="@android:color/white"
             android:textSize="14sp"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/dalubhasa_answer"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/guideline12"
-            app:layout_constraintTop_toTopOf="@+id/guideline16"
+            app:layout_constraintTop_toTopOf="@+id/heartsRow"
             app:layout_constraintVertical_bias="1.0" />
 
 
