@@ -20,9 +20,12 @@
         android:id="@+id/botnav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#A27B5C"
-        android:backgroundTint="@android:color/transparent"
-        app:menu="@menu/bottom_nav_menu"
+        android:background="#E0B782"
         app:labelVisibilityMode="selected"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="#805539"
+        app:itemTextColor="#805539"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

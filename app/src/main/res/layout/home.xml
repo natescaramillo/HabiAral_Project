@@ -101,301 +101,300 @@
         </FrameLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Title for Lessons -->
-
-    <!-- Scroll only for lessons -->
-    <HorizontalScrollView
-        android:id="@+id/lessonsScroll"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
         android:fillViewport="true"
         android:scrollbars="none"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView26">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="10dp">
-
-            <!-- Bahagi -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/bahagi_cardView"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="0dp"
-                app:cardPreventCornerOverlap="false"
-                app:cardUseCompatPadding="false">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/bahagi_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="125dp"
-                        android:alpha="0.8"
-                        android:background="@drawable/home_bahagi"
-                        android:scaleType="fitCenter" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#FFFFFF"
-                        android:gravity="center"
-                        android:padding="12dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/ala_sans"
-                            android:text="Bahagi ng Pananalita"
-                            android:textColor="#A27B5C"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Kayarian -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/kayarian_cardView"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:clickable="true"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="0dp"
-                app:cardPreventCornerOverlap="false"
-                app:cardUseCompatPadding="false">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/kayarian_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="125dp"
-                        android:alpha="0.8"
-                        android:background="@drawable/home_kayarian"
-                        android:scaleType="fitCenter" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#FFFFFF"
-                        android:gravity="center"
-                        android:padding="12dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/ala_sans"
-                            android:text="Kayarian ng Pangungusap"
-                            android:textColor="#A27B5C"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Panitikan -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/panitikan_cardView"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:clickable="true"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="0dp"
-                app:cardPreventCornerOverlap="false"
-                app:cardUseCompatPadding="false">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/panitikan_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="125dp"
-                        android:alpha="0.8"
-                        android:background="@drawable/home_pagunawa"
-                        android:scaleType="fitCenter" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#FFFFFF"
-                        android:gravity="center"
-                        android:padding="12dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/ala_sans"
-                            android:text="Panitikan"
-                            android:textColor="#A27B5C"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-    </HorizontalScrollView>
-
-
-    <GridLayout
-        android:id="@+id/gridLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:paddingBottom="10dp"
-        android:rowCount="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView30"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/cardView2">
 
-        <!-- Diksyonaryo -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/talasalitaan_cardView"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_margin="8dp"
-            android:clickable="true"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:cardPreventCornerOverlap="false"
-            app:cardUseCompatPadding="false">
+            android:orientation="vertical"
+            android:paddingBottom="30dp"> <!-- space for bottom nav -->
 
-            <LinearLayout
+            <!-- Mga Paksang Tatalakayin -->
+            <TextView
+                android:id="@+id/textView26"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="25dp"
+                android:fontFamily="@font/special"
+                android:text="Mga Paksang Tatalakayin"
+                android:textColor="#A27B5C"
+                android:textSize="25sp" />
+
+            <!-- Lessons Horizontal Scroll -->
+            <HorizontalScrollView
+                android:id="@+id/lessonsScroll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="10dp"
+                android:fillViewport="true"
+                android:scrollbars="none">
 
-                <!-- Top image -->
-                <ImageView
-                    android:id="@+id/view6"
-                    android:layout_width="match_parent"
-                    android:layout_height="185dp"
-                    android:adjustViewBounds="true"
-                    android:alpha="0.8"
-                    android:background="@drawable/diksyonaryo"
-                    android:scaleType="centerCrop" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:orientation="horizontal">
 
-                <!-- White section with title -->
+                    <!-- Bahagi -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/bahagi_cardView"
+                        android:layout_width="180dp"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/bahagi_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="185dp"
+                                android:alpha="0.8"
+                                android:background="@drawable/home_bahagi"
+                                android:scaleType="fitCenter" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="#FFFFFF"
+                                android:gravity="center"
+                                android:padding="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/ala_sans"
+                                    android:text="Bahagi ng Pananalita"
+                                    android:textColor="#A27B5C"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Kayarian -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/kayarian_cardView"
+                        android:layout_width="180dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:clickable="true"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/kayarian_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="185dp"
+                                android:alpha="0.8"
+                                android:background="@drawable/home_kayarian"
+                                android:scaleType="fitCenter" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="#FFFFFF"
+                                android:gravity="center"
+                                android:padding="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/ala_sans"
+                                    android:text="Kayarian ng Pangungusap"
+                                    android:textColor="#A27B5C"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Panitikan -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/panitikan_cardView"
+                        android:layout_width="180dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:clickable="true"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/panitikan_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="185dp"
+                                android:alpha="0.8"
+                                android:background="@drawable/home_pagunawa"
+                                android:scaleType="fitCenter" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="#FFFFFF"
+                                android:gravity="center"
+                                android:padding="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/ala_sans"
+                                    android:text="Panitikan"
+                                    android:textColor="#A27B5C"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- Mga Pantulong na Kagamitan -->
+            <TextView
+                android:id="@+id/textView30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="25dp"
+                android:fontFamily="@font/special"
+                android:text="Mga Pantulong na Kagamitan"
+                android:textColor="#A27B5C"
+                android:textSize="25sp" />
+
+            <!-- Kagamitan Horizontal Scroll -->
+            <HorizontalScrollView
+                android:id="@+id/kagamitanScroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scrollbars="none">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#FFFFFF"
-                    android:gravity="center"
-                    android:padding="12dp">
+                    android:padding="10dp"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/textView31"
-                        android:layout_width="wrap_content"
+                    <!-- Diksyonaryo Card -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/talasalitaan_cardView"
+                        android:layout_width="180dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/ala_sans"
-                        android:text="Diksyonaryo"
-                        android:textColor="#A27B5C"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                        android:layout_margin="8dp"
+                        android:clickable="true"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="2dp">
 
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
-        <!-- Palaro Card -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/palaro_cardView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_margin="8dp"
-            android:clickable="true"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:cardPreventCornerOverlap="false"
-            app:cardUseCompatPadding="false">
+                            <ImageView
+                                android:id="@+id/view6"
+                                android:layout_width="match_parent"
+                                android:layout_height="185dp"
+                                android:adjustViewBounds="true"
+                                android:alpha="0.8"
+                                android:background="@drawable/diksyonaryo"
+                                android:scaleType="centerCrop" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="#FFFFFF"
+                                android:gravity="center"
+                                android:padding="12dp">
 
-                <!-- Top image -->
-                <ImageView
-                    android:id="@+id/view8"
-                    android:layout_width="match_parent"
-                    android:layout_height="185dp"
-                    android:adjustViewBounds="true"
-                    android:alpha="0.8"
-                    android:background="@drawable/home_palaro"
-                    android:scaleType="centerCrop" />
+                                <TextView
+                                    android:id="@+id/textView31"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/ala_sans"
+                                    android:text="Diksyonaryo"
+                                    android:textColor="#A27B5C"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
 
-                <!-- White section with title -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#FFFFFF"
-                    android:gravity="center"
-                    android:padding="12dp">
-
-                    <TextView
-                        android:id="@+id/textView32"
-                        android:layout_width="wrap_content"
+                    <!-- Palaro Card -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/palaro_cardView"
+                        android:layout_width="180dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/ala_sans"
-                        android:text="Palaro"
-                        android:textColor="#A27B5C"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:layout_margin="8dp"
+                        android:clickable="true"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/view8"
+                                android:layout_width="match_parent"
+                                android:layout_height="185dp"
+                                android:adjustViewBounds="true"
+                                android:alpha="0.8"
+                                android:background="@drawable/home_palaro"
+                                android:scaleType="centerCrop" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="#FFFFFF"
+                                android:gravity="center"
+                                android:padding="12dp">
+
+                                <TextView
+                                    android:id="@+id/textView32"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/ala_sans"
+                                    android:text="Palaro"
+                                    android:textColor="#A27B5C"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
                 </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+            </HorizontalScrollView>
 
-    </GridLayout>
+        </LinearLayout>
+    </ScrollView>
 
-    <TextView
-        android:id="@+id/textView30"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="25dp"
-        android:fontFamily="@font/special"
-        android:text="Mga Pantulong na Kagamitan"
-        android:textColor="#A27B5C"
-        android:textSize="25sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lessonsScroll" />
 
-    <TextView
-        android:id="@+id/textView26"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="25dp"
-        android:fontFamily="@font/special"
-        android:text="Mga Paksang Tatalakayin"
-        android:textColor="#A27B5C"
-        android:textSize="25sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
