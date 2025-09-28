@@ -59,6 +59,10 @@ public class PayakLesson extends AppCompatActivity {
 
         descriptionImageView = findViewById(R.id.lesson_image);
         exampleImageView = findViewById(R.id.example_image);
+
+        descriptionImageView.setImageResource(R.drawable.payak1);
+        exampleImageView.setImageResource(R.drawable.payak2);
+
         quizButton = findViewById(R.id.button_unlock);
 
         descriptionImageView.setVisibility(View.GONE);

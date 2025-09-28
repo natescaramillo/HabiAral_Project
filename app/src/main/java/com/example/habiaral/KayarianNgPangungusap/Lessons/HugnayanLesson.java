@@ -59,6 +59,10 @@ public class HugnayanLesson extends AppCompatActivity {
 
         descriptionImageView = findViewById(R.id.lesson_image);
         exampleImageView = findViewById(R.id.example_image);
+
+        descriptionImageView.setImageResource(R.drawable.hugnayan1);
+        exampleImageView.setImageResource(R.drawable.hugnayan2);
+
         quizButton = findViewById(R.id.button_unlock);
 
         descriptionImageView.setVisibility(View.GONE);
@@ -236,7 +240,7 @@ public class HugnayanLesson extends AppCompatActivity {
     }
 
     private void loadCharacterLines() {
-        db.collection("lesson_character_lines").document("LCL11")
+        db.collection("lesson_character_lines").document("LCL13")
                 .get()
                 .addOnSuccessListener(document -> {
                     if (document.exists()) {
