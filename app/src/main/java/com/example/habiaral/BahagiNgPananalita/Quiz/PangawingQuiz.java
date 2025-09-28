@@ -2,23 +2,14 @@ package com.example.habiaral.BahagiNgPananalita.Quiz;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,7 +71,7 @@ public class PangawingQuiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bahagi_ng_pananalita_pangawing_quiz);
+        setContentView(R.layout.all_quiz_layout);
 
         AppPreloaderUtils.init(this);
 
@@ -93,12 +84,12 @@ public class PangawingQuiz extends AppCompatActivity {
         orangeDrawable = AppPreloaderUtils.orangeDrawable;
         greenDrawable = AppPreloaderUtils.greenDrawable;
 
-        questionTitle = findViewById(R.id.questionTitle);
-        questionText = findViewById(R.id.pangawing_questionText);
-        nextButton = findViewById(R.id.pangawingNextButton);
-        timerBar = findViewById(R.id.timerBar);
+        questionTitle = findViewById(R.id.question_number);
+        questionText = findViewById(R.id.question_text);
+        nextButton = findViewById(R.id.next_button);
+        timerBar = findViewById(R.id.timer_bar);
         introButton = findViewById(R.id.intro_button);
-        background = findViewById(R.id.bottomBar);
+        background = findViewById(R.id.bottom_bar);
 
         answer1 = findViewById(R.id.answer1);
         answer2 = findViewById(R.id.answer2);

@@ -73,7 +73,7 @@ public class PangngalanQuiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bahagi_ng_pananalita_pangngalan_quiz);
+        setContentView(R.layout.all_quiz_layout);
 
         AppPreloaderUtils.init(this);
 
@@ -86,12 +86,12 @@ public class PangngalanQuiz extends AppCompatActivity {
         orangeDrawable = AppPreloaderUtils.orangeDrawable;
         greenDrawable = AppPreloaderUtils.greenDrawable;
 
-        questionTitle = findViewById(R.id.questionTitle);
-        questionText = findViewById(R.id.pangngalan_questionText); // !!
-        nextButton = findViewById(R.id.pangngalanNextButton); // !!
-        timerBar = findViewById(R.id.timerBar);
+        questionTitle = findViewById(R.id.question_number);
+        questionText = findViewById(R.id.question_text);
+        nextButton = findViewById(R.id.next_button);
+        timerBar = findViewById(R.id.timer_bar);
         introButton = findViewById(R.id.intro_button);
-        background = findViewById(R.id.bottomBar);
+        background = findViewById(R.id.bottom_bar);
 
         answer1 = findViewById(R.id.answer1);
         answer2 = findViewById(R.id.answer2);
@@ -447,7 +447,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         resultDialog.setOnShowListener(d -> {
             releaseResultPlayer();
             int soundRes = passed ? R.raw.success : R.raw.game_over;
-            resultPlayer = MediaPlayer.create(PangngalanQuiz.this, soundRes); // !!
+            resultPlayer = MediaPlayer.create(PangngalanQuiz.this, soundRes);
             if (resultPlayer != null) {
                 resultPlayer.setVolume(0.6f, 0.6f);
                 resultPlayer.setOnCompletionListener(mp -> releaseResultPlayer());
@@ -477,7 +477,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         taposButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
-            navigateToLesson(PandiwaLesson.class); // !!
+            navigateToLesson(PandiwaLesson.class);
         });
 
         homeButton.setOnClickListener(v -> {
@@ -536,7 +536,7 @@ public class PangngalanQuiz extends AppCompatActivity {
         stopTimerSound();
         releaseResultPlayer();
 
-        Intent intent = new Intent(PangngalanQuiz.this, lessonActivityClass); // !!
+        Intent intent = new Intent(PangngalanQuiz.this, lessonActivityClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
@@ -559,7 +559,7 @@ public class PangngalanQuiz extends AppCompatActivity {
     }
 
     private void unlockNextLesson() {
-        Toast.makeText(this, "Next Lesson Unlocked: Pandiwa!", Toast.LENGTH_SHORT).show(); // !!
+        Toast.makeText(this, "Next Lesson Unlocked: Pandiwa!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {

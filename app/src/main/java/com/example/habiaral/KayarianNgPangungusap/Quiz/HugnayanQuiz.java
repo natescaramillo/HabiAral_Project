@@ -68,7 +68,7 @@ public class HugnayanQuiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.kayarian_ng_pangungusap_hugnayan_quiz);
+        setContentView(R.layout.all_quiz_layout);
 
         AppPreloaderUtils.init(this);
         soundPool = AppPreloaderUtils.soundPool;
@@ -80,12 +80,12 @@ public class HugnayanQuiz extends AppCompatActivity {
         orangeDrawable = AppPreloaderUtils.orangeDrawable;
         greenDrawable = AppPreloaderUtils.greenDrawable;
 
-        questionTitle = findViewById(R.id.questionTitle);
-        questionText = findViewById(R.id.hugnayan_questionText);
-        nextButton = findViewById(R.id.hugnayanNextButton);
-        timerBar = findViewById(R.id.timerBar);
+        questionTitle = findViewById(R.id.question_number);
+        questionText = findViewById(R.id.question_text);
+        nextButton = findViewById(R.id.next_button);
+        timerBar = findViewById(R.id.timer_bar);
         introButton = findViewById(R.id.intro_button);
-        background = findViewById(R.id.bottomBar);
+        background = findViewById(R.id.bottom_bar);
 
         answer1 = findViewById(R.id.answer1);
         answer2 = findViewById(R.id.answer2);
