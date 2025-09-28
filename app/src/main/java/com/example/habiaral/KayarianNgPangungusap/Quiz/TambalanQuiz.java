@@ -18,7 +18,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
-import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.KayarianNgPangungusap.Lessons.HugnayanLesson;
 import com.example.habiaral.KayarianNgPangungusap.Lessons.TambalanLesson;
 import com.example.habiaral.R;
@@ -36,34 +35,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.example.habiaral.Cache.LessonProgressCache;
+
 public class TambalanQuiz extends AppCompatActivity {
 
-
     private List<Map<String, Object>> allQuizList = new ArrayList<>();
-    private List<Map<String, Object>> quizList = new ArrayList<>();
     private Button answer1, answer2, answer3, nextButton, introButton;
-    private TextView questionText, questionTitle;
-    private ProgressBar timerBar;
-    private View background;
+    private List<Map<String, Object>> quizList = new ArrayList<>();
     private Drawable redDrawable, orangeDrawable, greenDrawable;
-    private int redSoundId, orangeSoundId, greenSoundId;
-    private SoundPool soundPool;
-    private MediaPlayer mediaPlayer, readyPlayer, resultPlayer;
-    private int currentStreamId = -1;
+    private int greenSoundId, orangeSoundId, redSoundId;
+    private TextView questionText, questionTitle;
     private CountDownTimer countDownTimer;
     private long timeLeftInMillis = 30000;
-    private boolean isAnswered = false;
     private boolean quizFinished = false;
-    private boolean redPlayed = false, orangePlayed = false, greenPlayed = false;
+    private boolean orangePlayed = false;
+    private boolean greenPlayed = false;
+    private boolean isAnswered = false;
+    private String correctAnswer = "";
+    private boolean redPlayed = false;
+    private AlertDialog resultDialog;
+    private MediaPlayer resultPlayer;
+    private int currentStreamId = -1;
+    private MediaPlayer mediaPlayer;
+    private MediaPlayer readyPlayer;
     private int lastColorStage = 3;
-    private int currentIndex = -1;
+    private String lessonName = "";
     private int correctAnswers = 0;
     private int totalQuestions = 0;
-    private String correctAnswer = "";
-    private String lessonName = "";
     private String introText = "";
+    private int currentIndex = -1;
+    private ProgressBar timerBar;
     private FirebaseFirestore db;
-    private AlertDialog resultDialog;
+    private SoundPool soundPool;
+    private View background;
+    private boolean isMuted = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +77,11 @@ public class TambalanQuiz extends AppCompatActivity {
         setContentView(R.layout.all_quiz_layout);
 
         AppPreloaderUtils.init(this);
+
         soundPool = AppPreloaderUtils.soundPool;
-        redSoundId = AppPreloaderUtils.redSoundId;
-        orangeSoundId = AppPreloaderUtils.orangeSoundId;
         greenSoundId = AppPreloaderUtils.greenSoundId;
+        orangeSoundId = AppPreloaderUtils.orangeSoundId;
+        redSoundId = AppPreloaderUtils.redSoundId;
 
         redDrawable = AppPreloaderUtils.redDrawable;
         orangeDrawable = AppPreloaderUtils.orangeDrawable;
@@ -129,11 +136,14 @@ public class TambalanQuiz extends AppCompatActivity {
 
         nextButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
+
             if (!isAnswered) {
                 Toast.makeText(this, "Pumili muna ng sagot bago mag-next!", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             currentIndex++;
+
             if (currentIndex < quizList.size()) {
                 loadQuestion(currentIndex);
             } else {
@@ -208,10 +218,12 @@ public class TambalanQuiz extends AppCompatActivity {
                     if (doc.exists()) {
                         introText = doc.getString("intro");
                         lessonName = doc.getString("lesson");
+
                         allQuizList = (List<Map<String, Object>>) doc.get("Quizzes");
 
                         if (allQuizList != null && !allQuizList.isEmpty()) {
                             Collections.shuffle(allQuizList);
+
                             int limit = Math.min(10, allQuizList.size());
                             quizList = new ArrayList<>(allQuizList.subList(0, limit));
                         }
@@ -226,12 +238,15 @@ public class TambalanQuiz extends AppCompatActivity {
                         Toast.makeText(this, "Failed to load quiz data.", Toast.LENGTH_SHORT).show());
     }
 
+
     private void loadQuestion(int index) {
         if (countDownTimer != null) countDownTimer.cancel();
         if (quizList == null || quizList.isEmpty()) return;
 
         timerBar.setVisibility(View.VISIBLE);
+
         Map<String, Object> qData = quizList.get(index);
+
         String question = (String) qData.get("question");
         List<String> choices = (List<String>) qData.get("choices");
         correctAnswer = (String) qData.get("correct_choice");
@@ -248,14 +263,16 @@ public class TambalanQuiz extends AppCompatActivity {
 
             resetButtons();
             startTimer();
+
             totalQuestions = quizList.size();
         }
     }
-
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
         timeLeftInMillis = 30000;
+
         lastColorStage = 3;
+
         redPlayed = false;
         orangePlayed = false;
         greenPlayed = false;
@@ -267,9 +284,12 @@ public class TambalanQuiz extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
-                timerBar.setProgress((int) Math.min(millisUntilFinished, Integer.MAX_VALUE));
+
+                int progress = (int) Math.min(millisUntilFinished, Integer.MAX_VALUE);
+                timerBar.setProgress(progress);
 
                 int percent = (int) ((timeLeftInMillis * 100) / 30000);
+
                 if (percent <= 25 && lastColorStage > 0) {
                     timerBar.setProgressDrawable(redDrawable);
                     playLoopingSound(redSoundId);
@@ -286,9 +306,16 @@ public class TambalanQuiz extends AppCompatActivity {
             }
 
             private void playLoopingSound(int soundId) {
-                if (currentStreamId != -1) soundPool.stop(currentStreamId);
+                if (currentStreamId != -1) {
+                    soundPool.stop(currentStreamId);
+                }
                 currentStreamId = soundPool.play(soundId, 1, 1, 0, -1, 1);
+
+                if (isMuted && currentStreamId != -1) {
+                    soundPool.setVolume(currentStreamId, 0f, 0f);
+                }
             }
+
 
             @Override
             public void onFinish() {
@@ -296,7 +323,11 @@ public class TambalanQuiz extends AppCompatActivity {
                 isAnswered = true;
                 disableAnswers();
                 nextButton.setEnabled(true);
-                if (currentStreamId != -1) soundPool.stop(currentStreamId);
+
+                if (currentStreamId != -1) {
+                    soundPool.stop(currentStreamId);
+                    currentStreamId = -1;
+                }
 
                 new Handler().postDelayed(() -> {
                     if (!quizFinished) nextButton.performClick();
@@ -307,16 +338,22 @@ public class TambalanQuiz extends AppCompatActivity {
 
     private void stopTimerSound() {
         if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) mediaPlayer.stop();
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
             mediaPlayer.release();
             mediaPlayer = null;
         }
-        if (currentStreamId != -1) soundPool.stop(currentStreamId);
+
+        if (currentStreamId != -1 && soundPool != null) {
+            soundPool.stop(currentStreamId);
+            currentStreamId = -1;
+        }
+
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
         }
-        currentStreamId = -1;
     }
 
     private void showExitDialog() {
@@ -345,9 +382,26 @@ public class TambalanQuiz extends AppCompatActivity {
         exitDialog.show();
     }
 
+    private boolean hasPassedQuizBefore() {
+        Map<String, Object> cachedData = LessonProgressCache.getData();
+        if (cachedData == null) return false;
+
+        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_2");
+        if (module2 == null) return false;
+
+        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
+        if (lessons == null) return false;
+
+        Map<String, Object> tambalanLesson = (Map<String, Object>) lessons.get("tambalan");
+        return tambalanLesson != null && "completed".equals(tambalanLesson.get("status"));
+    }
+
     private void showResultDialog() {
         stopTimerSound();
-        if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
+
+        if (resultDialog != null && resultDialog.isShowing()) {
+            resultDialog.dismiss();
+        }
         releaseResultPlayer();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -358,6 +412,7 @@ public class TambalanQuiz extends AppCompatActivity {
         Button retryButton = dialogView.findViewById(R.id.retryButton);
         Button taposButton = dialogView.findViewById(R.id.finishButton);
         Button homeButton = dialogView.findViewById(R.id.returnButton);
+
         ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
         TextView scoreNumber = dialogView.findViewById(R.id.textView6);
         TextView resultText = dialogView.findViewById(R.id.textView7);
@@ -384,8 +439,9 @@ public class TambalanQuiz extends AppCompatActivity {
         }
 
         resultDialog = builder.create();
-        if (resultDialog.getWindow() != null)
+        if (resultDialog.getWindow() != null) {
             resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
         resultDialog.setOnShowListener(d -> {
             releaseResultPlayer();
@@ -394,11 +450,22 @@ public class TambalanQuiz extends AppCompatActivity {
             if (resultPlayer != null) {
                 resultPlayer.setVolume(0.6f, 0.6f);
                 resultPlayer.setOnCompletionListener(mp -> releaseResultPlayer());
-                try { resultPlayer.start(); } catch (IllegalStateException e) { releaseResultPlayer(); }
+                try {
+                    resultPlayer.start();
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                    releaseResultPlayer();
+                }
             }
         });
 
-        if (!isFinishing() && !isDestroyed()) resultDialog.show();
+        if (!isFinishing() && !isDestroyed()) {
+            try {
+                resultDialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         retryButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
@@ -419,30 +486,20 @@ public class TambalanQuiz extends AppCompatActivity {
         });
     }
 
-    private boolean hasPassedQuizBefore() {
-        Map<String, Object> cachedData = LessonProgressCache.getData();
-        if (cachedData == null) return false;
-
-        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_2");
-        if (module2 == null) return false;
-
-        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
-        if (lessons == null) return false;
-
-        Map<String, Object> tambalanLesson = (Map<String, Object>) lessons.get("tambalan");
-        return tambalanLesson != null && "completed".equals(tambalanLesson.get("status"));
-    }
-
     private void releaseResultPlayer() {
         if (resultPlayer != null) {
-            if (resultPlayer.isPlaying()) resultPlayer.stop();
+            if (resultPlayer.isPlaying()) {
+                resultPlayer.stop();
+            }
             resultPlayer.release();
             resultPlayer = null;
         }
     }
 
     private void dismissAndReleaseResultDialog() {
-        if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
+        if (resultDialog != null && resultDialog.isShowing()) {
+            resultDialog.dismiss();
+        }
         releaseResultPlayer();
         resultDialog = null;
     }
@@ -477,6 +534,7 @@ public class TambalanQuiz extends AppCompatActivity {
     private void navigateToLesson(Class<?> lessonActivityClass) {
         stopTimerSound();
         releaseResultPlayer();
+
         Intent intent = new Intent(TambalanQuiz.this, lessonActivityClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
@@ -520,8 +578,7 @@ public class TambalanQuiz extends AppCompatActivity {
         updateMap.put("lessons", lessonsMap);
         updateMap.put("current_lesson", "tambalan");
 
-        Map<String, Object> moduleUpdate = new HashMap<>();
-        moduleUpdate.put("module_2", updateMap);
+        Map<String, Object> moduleUpdate = Map.of("module_2", updateMap);
 
         db.collection("module_progress")
                 .document(uid)
@@ -529,14 +586,66 @@ public class TambalanQuiz extends AppCompatActivity {
 
         if (LessonProgressCache.getData() != null) {
             Map<String, Object> cachedData = LessonProgressCache.getData();
-            if (!cachedData.containsKey("module_2")) cachedData.put("module_2", new HashMap<String, Object>());
-            Map<String, Object> cachedModule2 = (Map<String, Object>) cachedData.get("module_2");
-            cachedModule2.put("lessons", lessonsMap);
-            cachedModule2.put("current_lesson", "tambalan");
+
+            if (!cachedData.containsKey("module_2")) {
+                cachedData.put("module_1", new HashMap<String, Object>());
+            }
+
+            Map<String, Object> cachedModule1 = (Map<String, Object>) cachedData.get("module_1");
+            cachedModule1.put("lessons", lessonsMap);
+            cachedModule1.put("current_lesson", "tambalan");
+
             LessonProgressCache.setData(cachedData);
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isMuted = true;
+
+        if (currentStreamId != -1 && soundPool != null) {
+            soundPool.setVolume(currentStreamId, 0f, 0f);
+        }
+        if (mediaPlayer != null) mediaPlayer.setVolume(0f, 0f);
+        if (resultPlayer != null) resultPlayer.setVolume(0f, 0f);
+        if (readyPlayer != null) readyPlayer.setVolume(0f, 0f);
+
+        TimerSoundUtils.setVolume(0f);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isMuted = false;
+
+        if (currentStreamId != -1 && soundPool != null) {
+            soundPool.setVolume(currentStreamId, 1f, 1f);
+        }
+        if (mediaPlayer != null) mediaPlayer.setVolume(1f, 1f);
+        if (resultPlayer != null) resultPlayer.setVolume(1f, 1f);
+        if (readyPlayer != null) readyPlayer.setVolume(1f, 1f);
+
+        TimerSoundUtils.setVolume(1f);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (resultDialog != null && resultDialog.isShowing()) {
+            resultDialog.dismiss();
+        }
+        resultDialog = null;
+
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+        stopTimerSound();
+        releaseResultPlayer();
+    }
     private void playReadySound() {
         releaseReadyPlayer();
         readyPlayer = MediaPlayer.create(this, R.raw.beep);
@@ -548,39 +657,11 @@ public class TambalanQuiz extends AppCompatActivity {
 
     private void releaseReadyPlayer() {
         if (readyPlayer != null) {
-            if (readyPlayer.isPlaying()) readyPlayer.stop();
+            if (readyPlayer.isPlaying()) {
+                readyPlayer.stop();
+            }
             readyPlayer.release();
             readyPlayer = null;
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (currentStreamId != -1 && soundPool != null) soundPool.setVolume(currentStreamId, 0f, 0f);
-        if (mediaPlayer != null) mediaPlayer.setVolume(0f, 0f);
-        if (resultPlayer != null) resultPlayer.setVolume(0f, 0f);
-        if (readyPlayer != null) readyPlayer.setVolume(0f, 0f);
-        TimerSoundUtils.setVolume(0f);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (currentStreamId != -1 && soundPool != null) soundPool.setVolume(currentStreamId, 1f, 1f);
-        if (mediaPlayer != null) mediaPlayer.setVolume(1f, 1f);
-        if (resultPlayer != null) resultPlayer.setVolume(1f, 1f);
-        if (readyPlayer != null) readyPlayer.setVolume(1f, 1f);
-        TimerSoundUtils.setVolume(1f);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
-        resultDialog = null;
-        if (countDownTimer != null) countDownTimer.cancel();
-        stopTimerSound();
-        releaseResultPlayer();
     }
 }
