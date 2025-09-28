@@ -312,7 +312,7 @@
                         android:fontFamily="@font/ala_sans"
                         android:text="Diksyonaryo"
                         android:textColor="#A27B5C"
-                        android:textSize="16sp"
+                        android:textSize="13sp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
@@ -362,7 +362,7 @@
                         android:fontFamily="@font/ala_sans"
                         android:text="Palaro"
                         android:textColor="#A27B5C"
-                        android:textSize="16sp"
+                        android:textSize="13sp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
