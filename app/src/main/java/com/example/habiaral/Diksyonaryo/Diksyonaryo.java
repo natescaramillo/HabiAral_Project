@@ -1,8 +1,11 @@
 package com.example.habiaral.Diksyonaryo;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -114,12 +117,32 @@ public class Diksyonaryo extends AppCompatActivity {
 
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
-                textToSpeech.setLanguage(new Locale("tl", "PH"));
-                textToSpeech.setSpeechRate(1.1f);
+                Locale filLocale = new Locale.Builder().setLanguage("fil").setRegion("PH").build();
+                int result = textToSpeech.setLanguage(filLocale);
+
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Toast.makeText(this,
+                            "Kailangan i-download ang Filipino voice sa Text-to-Speech settings.",
+                            Toast.LENGTH_LONG).show();
+                    try {
+                        startActivity(new Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA));
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(this, "Hindi ma-open ang installer ng TTS.", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    for (Voice v : textToSpeech.getVoices()) {
+                        if (v.getLocale() != null && v.getLocale().getLanguage().equals("fil")) {
+                            textToSpeech.setVoice(v);
+                            break;
+                        }
+                    }
+                    textToSpeech.setSpeechRate(1.0f);
+                }
             } else {
-                Toast.makeText(this, "Text-to-Speech failed to initialize", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
             }
         });
+
     }
 
     private void displayWords(List<DocumentSnapshot> words) {
