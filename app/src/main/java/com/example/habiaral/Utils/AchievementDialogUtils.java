@@ -98,7 +98,7 @@ public class AchievementDialogUtils {
                                                 }
                                             })
                                             .start();
-                                }, 1000);
+                                }, 3000);
                             })
                             .start();
                 });
@@ -128,7 +128,7 @@ public class AchievementDialogUtils {
                 safeCreateAndStartPlayer(appCtx);
 
                 // cancel after 1 second
-                main.postDelayed(toast::cancel, 1000);
+                main.postDelayed(toast::cancel, 3000);
 
             } catch (Exception ex) {
                 // last-resort: don't crash — silently ignore
@@ -159,17 +159,34 @@ public class AchievementDialogUtils {
     }
 
     // Safe MediaPlayer creation and start (returns null if cannot create)
+    // Keep a static reference para hindi made-destroy agad pag lumipat ng activity
+    private static MediaPlayer globalPlayer;
+
     private static MediaPlayer safeCreateAndStartPlayer(Context ctx) {
         try {
-            MediaPlayer mp = MediaPlayer.create(ctx, R.raw.achievement_pop);
-            if (mp != null) {
-                mp.setVolume(0.5f, 0.5f);
-                mp.setOnCompletionListener(MediaPlayer::release);
-                mp.start();
+            // Gumamit ng ApplicationContext para hindi sumama sa Activity lifecycle
+            Context appContext = ctx.getApplicationContext();
+
+            // Kung may dati pang tumutunog, i-release muna
+            if (globalPlayer != null) {
+                try { globalPlayer.release(); } catch (Exception ignored) {}
+                globalPlayer = null;
             }
-            return mp;
+
+            globalPlayer = MediaPlayer.create(appContext, R.raw.achievement_pop);
+            if (globalPlayer != null) {
+                globalPlayer.setVolume(1.0f, 1.0f);
+                globalPlayer.setOnCompletionListener(mp -> {
+                    mp.release();
+                    globalPlayer = null;
+                });
+                globalPlayer.start();
+            }
+            return globalPlayer;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
+
 }
