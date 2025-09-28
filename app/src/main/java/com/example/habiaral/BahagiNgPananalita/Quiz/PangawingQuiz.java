@@ -18,7 +18,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.Cache.LessonProgressCache;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.AppPreloaderUtils;
@@ -35,6 +35,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.example.habiaral.Cache.LessonProgressCache;
 
 public class PangawingQuiz extends AppCompatActivity {
 
@@ -67,6 +69,8 @@ public class PangawingQuiz extends AppCompatActivity {
     private FirebaseFirestore db;
     private SoundPool soundPool;
     private View background;
+    private boolean isMuted = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,7 +215,7 @@ public class PangawingQuiz extends AppCompatActivity {
     }
 
     private void loadQuizDocument() {
-        db.collection("quiz").document("Q10")
+        db.collection("quiz").document("Q1")
                 .get().addOnSuccessListener(doc -> {
                     if (doc.exists()) {
                         introText = doc.getString("intro");
@@ -235,6 +239,7 @@ public class PangawingQuiz extends AppCompatActivity {
                 }).addOnFailureListener(e ->
                         Toast.makeText(this, "Failed to load quiz data.", Toast.LENGTH_SHORT).show());
     }
+
 
     private void loadQuestion(int index) {
         if (countDownTimer != null) countDownTimer.cancel();
@@ -264,7 +269,6 @@ public class PangawingQuiz extends AppCompatActivity {
             totalQuestions = quizList.size();
         }
     }
-
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
         timeLeftInMillis = 30000;
@@ -308,6 +312,10 @@ public class PangawingQuiz extends AppCompatActivity {
                     soundPool.stop(currentStreamId);
                 }
                 currentStreamId = soundPool.play(soundId, 1, 1, 0, -1, 1);
+
+                if (isMuted && currentStreamId != -1) {
+                    soundPool.setVolume(currentStreamId, 0f, 0f);
+                }
             }
 
 
@@ -364,7 +372,6 @@ public class PangawingQuiz extends AppCompatActivity {
         yesBtn.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             stopTimerSound();
-            if (countDownTimer != null) countDownTimer.cancel();
             exitDialog.dismiss();
             finish();
         });
@@ -381,7 +388,7 @@ public class PangawingQuiz extends AppCompatActivity {
         Map<String, Object> cachedData = LessonProgressCache.getData();
         if (cachedData == null) return false;
 
-        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_1");
+        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_10");
         if (module2 == null) return false;
 
         Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
@@ -393,9 +400,6 @@ public class PangawingQuiz extends AppCompatActivity {
 
     private void showResultDialog() {
         stopTimerSound();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
 
         if (resultDialog != null && resultDialog.isShowing()) {
             resultDialog.dismiss();
@@ -663,11 +667,11 @@ public class PangawingQuiz extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        isMuted = true;
 
         if (currentStreamId != -1 && soundPool != null) {
             soundPool.setVolume(currentStreamId, 0f, 0f);
         }
-
         if (mediaPlayer != null) mediaPlayer.setVolume(0f, 0f);
         if (resultPlayer != null) resultPlayer.setVolume(0f, 0f);
         if (readyPlayer != null) readyPlayer.setVolume(0f, 0f);
@@ -675,20 +679,22 @@ public class PangawingQuiz extends AppCompatActivity {
         TimerSoundUtils.setVolume(0f);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
+        isMuted = false;
 
         if (currentStreamId != -1 && soundPool != null) {
             soundPool.setVolume(currentStreamId, 1f, 1f);
         }
-
         if (mediaPlayer != null) mediaPlayer.setVolume(1f, 1f);
         if (resultPlayer != null) resultPlayer.setVolume(1f, 1f);
         if (readyPlayer != null) readyPlayer.setVolume(1f, 1f);
 
         TimerSoundUtils.setVolume(1f);
     }
+
 
     @Override
     protected void onDestroy() {
