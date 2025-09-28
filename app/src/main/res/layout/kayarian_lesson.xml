@@ -15,12 +15,13 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.529"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.054" />
+        app:layout_constraintVertical_bias="0.086" />
 
-    <View
-        android:id="@+id/view"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_bg"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/bottom_bar_bg"
@@ -29,98 +30,99 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline38"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0">
 
-    <ImageView
-        android:id="@+id/lesson_image"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginHorizontal="30dp"
-        android:background="@drawable/background_with_border"
-        android:clipToOutline="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/cover_page"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline38" />
+        <ImageView
+            android:id="@+id/lesson_image"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginHorizontal="20dp"
+            android:background="@drawable/background_with_border"
+            android:clipToOutline="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/cover_page"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.021" />
 
-    <ImageView
-        android:id="@+id/lesson_image2"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginHorizontal="30dp"
-        android:background="@drawable/background_with_border"
-        android:clipToOutline="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/cover_page"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline38" />
+        <ImageView
+            android:id="@+id/lesson_image2"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:background="@drawable/background_with_border"
+            android:clipToOutline="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/cover_page"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/lesson_image"
+            app:layout_constraintEnd_toEndOf="@+id/lesson_image"
+            app:layout_constraintStart_toStartOf="@+id/lesson_image"
+            app:layout_constraintTop_toTopOf="@+id/lesson_image"
+            app:layout_constraintVertical_bias="0.0" />
 
-    <ImageView
-        android:id="@+id/example_image"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginHorizontal="30dp"
-        android:background="@drawable/background_with_border"
-        android:clipToOutline="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/cover_page"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline39" />
+        <ImageView
+            android:id="@+id/example_image"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/background_with_border"
+            android:clipToOutline="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/cover_page"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lesson_image" />
 
-    <ImageView
-        android:id="@+id/example_image2"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginHorizontal="30dp"
-        android:background="@drawable/background_with_border"
-        android:clipToOutline="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/cover_page"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/button_unlock"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.266"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lesson_image"
-        app:layout_constraintVertical_bias="0.0" />
+        <ImageView
+            android:id="@+id/example_image2"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/background_with_border"
+            android:clipToOutline="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/cover_page"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/example_image"
+            app:layout_constraintEnd_toEndOf="@+id/example_image"
+            app:layout_constraintStart_toStartOf="@+id/example_image"
+            app:layout_constraintTop_toBottomOf="@+id/lesson_image"
+            app:layout_constraintVertical_bias="1.0" />
 
-    <Button
-        android:id="@+id/button_unlock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/rounded_button_achievement"
-        android:fontFamily="@font/special"
-        android:text="Pagsusulit"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/example_image"
-        app:layout_constraintVertical_bias="1.0" />
+        <Button
+            android:id="@+id/button_unlock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_button_achievement"
+            android:fontFamily="@font/special"
+            android:text="Pagsusulit"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/example_image"
+            app:layout_constraintVertical_bias="0.989" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline38"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="259dp" />
+        app:layout_constraintGuide_percent="0.32" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline39"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="707dp" />
+        app:layout_constraintGuide_percent="0.4078727" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -18,7 +18,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.Cache.LessonProgressCache;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
 import com.example.habiaral.BahagiNgPananalita.Lessons.PangUriLesson;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AppPreloaderUtils;
@@ -34,6 +34,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.example.habiaral.Cache.LessonProgressCache;
 
 public class PandiwaQuiz extends AppCompatActivity {
 
@@ -66,6 +68,8 @@ public class PandiwaQuiz extends AppCompatActivity {
     private FirebaseFirestore db;
     private SoundPool soundPool;
     private View background;
+    private boolean isMuted = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,6 +240,7 @@ public class PandiwaQuiz extends AppCompatActivity {
                         Toast.makeText(this, "Failed to load quiz data.", Toast.LENGTH_SHORT).show());
     }
 
+
     private void loadQuestion(int index) {
         if (countDownTimer != null) countDownTimer.cancel();
         if (quizList == null || quizList.isEmpty()) return;
@@ -264,7 +269,6 @@ public class PandiwaQuiz extends AppCompatActivity {
             totalQuestions = quizList.size();
         }
     }
-
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
         timeLeftInMillis = 30000;
@@ -308,6 +312,10 @@ public class PandiwaQuiz extends AppCompatActivity {
                     soundPool.stop(currentStreamId);
                 }
                 currentStreamId = soundPool.play(soundId, 1, 1, 0, -1, 1);
+
+                if (isMuted && currentStreamId != -1) {
+                    soundPool.setVolume(currentStreamId, 0f, 0f);
+                }
             }
 
 
@@ -376,6 +384,20 @@ public class PandiwaQuiz extends AppCompatActivity {
         exitDialog.show();
     }
 
+    private boolean hasPassedQuizBefore() {
+        Map<String, Object> cachedData = LessonProgressCache.getData();
+        if (cachedData == null) return false;
+
+        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_1");
+        if (module2 == null) return false;
+
+        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
+        if (lessons == null) return false;
+
+        Map<String, Object> pandiwaLesson = (Map<String, Object>) lessons.get("pandiwa");
+        return pandiwaLesson != null && "completed".equals(pandiwaLesson.get("status"));
+    }
+
     private void showResultDialog() {
         stopTimerSound();
 
@@ -416,6 +438,11 @@ public class PandiwaQuiz extends AppCompatActivity {
             resultText.setText("Ikaw ay nabigo, subukan muli!");
             taposButton.setEnabled(false);
             taposButton.setAlpha(0.5f);
+        }
+
+        resultDialog = builder.create();
+        if (resultDialog.getWindow() != null) {
+            resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
 
         resultDialog.setOnShowListener(d -> {
@@ -459,20 +486,6 @@ public class PandiwaQuiz extends AppCompatActivity {
             dismissAndReleaseResultDialog();
             navigateToLesson(BahagiNgPananalita.class);
         });
-    }
-
-    private boolean hasPassedQuizBefore() {
-        Map<String, Object> cachedData = LessonProgressCache.getData();
-        if (cachedData == null) return false;
-
-        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_1");
-        if (module2 == null) return false;
-
-        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
-        if (lessons == null) return false;
-
-        Map<String, Object> pandiwaLesson = (Map<String, Object>) lessons.get("pandiwa");
-        return pandiwaLesson != null && "completed".equals(pandiwaLesson.get("status"));
     }
 
     private void releaseResultPlayer() {
@@ -547,7 +560,7 @@ public class PandiwaQuiz extends AppCompatActivity {
     }
 
     private void unlockNextLesson() {
-        Toast.makeText(this, "Next Lesson Unlocked: Pang-uri!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Next Lesson Unlocked: Pang-Uri!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {
@@ -591,11 +604,11 @@ public class PandiwaQuiz extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        isMuted = true;
 
         if (currentStreamId != -1 && soundPool != null) {
             soundPool.setVolume(currentStreamId, 0f, 0f);
         }
-
         if (mediaPlayer != null) mediaPlayer.setVolume(0f, 0f);
         if (resultPlayer != null) resultPlayer.setVolume(0f, 0f);
         if (readyPlayer != null) readyPlayer.setVolume(0f, 0f);
@@ -603,20 +616,22 @@ public class PandiwaQuiz extends AppCompatActivity {
         TimerSoundUtils.setVolume(0f);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
+        isMuted = false;
 
         if (currentStreamId != -1 && soundPool != null) {
             soundPool.setVolume(currentStreamId, 1f, 1f);
         }
-
         if (mediaPlayer != null) mediaPlayer.setVolume(1f, 1f);
         if (resultPlayer != null) resultPlayer.setVolume(1f, 1f);
         if (readyPlayer != null) readyPlayer.setVolume(1f, 1f);
 
         TimerSoundUtils.setVolume(1f);
     }
+
 
     @Override
     protected void onDestroy() {

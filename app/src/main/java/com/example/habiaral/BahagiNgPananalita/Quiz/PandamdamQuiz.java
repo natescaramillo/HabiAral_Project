@@ -18,7 +18,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.Cache.LessonProgressCache;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
 import com.example.habiaral.BahagiNgPananalita.Lessons.PangawingLesson;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AppPreloaderUtils;
@@ -34,6 +34,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.example.habiaral.Cache.LessonProgressCache;
 
 public class PandamdamQuiz extends AppCompatActivity {
 
@@ -66,6 +68,8 @@ public class PandamdamQuiz extends AppCompatActivity {
     private FirebaseFirestore db;
     private SoundPool soundPool;
     private View background;
+    private boolean isMuted = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,6 +240,7 @@ public class PandamdamQuiz extends AppCompatActivity {
                         Toast.makeText(this, "Failed to load quiz data.", Toast.LENGTH_SHORT).show());
     }
 
+
     private void loadQuestion(int index) {
         if (countDownTimer != null) countDownTimer.cancel();
         if (quizList == null || quizList.isEmpty()) return;
@@ -264,7 +269,6 @@ public class PandamdamQuiz extends AppCompatActivity {
             totalQuestions = quizList.size();
         }
     }
-
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
         timeLeftInMillis = 30000;
@@ -308,6 +312,10 @@ public class PandamdamQuiz extends AppCompatActivity {
                     soundPool.stop(currentStreamId);
                 }
                 currentStreamId = soundPool.play(soundId, 1, 1, 0, -1, 1);
+
+                if (isMuted && currentStreamId != -1) {
+                    soundPool.setVolume(currentStreamId, 0f, 0f);
+                }
             }
 
 
@@ -376,9 +384,26 @@ public class PandamdamQuiz extends AppCompatActivity {
         exitDialog.show();
     }
 
+    private boolean hasPassedQuizBefore() {
+        Map<String, Object> cachedData = LessonProgressCache.getData();
+        if (cachedData == null) return false;
+
+        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_1");
+        if (module2 == null) return false;
+
+        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
+        if (lessons == null) return false;
+
+        Map<String, Object> pandamdamLesson = (Map<String, Object>) lessons.get("pandamdam");
+        return pandamdamLesson != null && "completed".equals(pandamdamLesson.get("status"));
+    }
+
     private void showResultDialog() {
         stopTimerSound();
-        if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
+
+        if (resultDialog != null && resultDialog.isShowing()) {
+            resultDialog.dismiss();
+        }
         releaseResultPlayer();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -389,6 +414,7 @@ public class PandamdamQuiz extends AppCompatActivity {
         Button retryButton = dialogView.findViewById(R.id.retryButton);
         Button taposButton = dialogView.findViewById(R.id.finishButton);
         Button homeButton = dialogView.findViewById(R.id.returnButton);
+
         ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
         TextView scoreNumber = dialogView.findViewById(R.id.textView6);
         TextView resultText = dialogView.findViewById(R.id.textView7);
@@ -415,8 +441,9 @@ public class PandamdamQuiz extends AppCompatActivity {
         }
 
         resultDialog = builder.create();
-        if (resultDialog.getWindow() != null)
+        if (resultDialog.getWindow() != null) {
             resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
         resultDialog.setOnShowListener(d -> {
             releaseResultPlayer();
@@ -425,11 +452,22 @@ public class PandamdamQuiz extends AppCompatActivity {
             if (resultPlayer != null) {
                 resultPlayer.setVolume(0.6f, 0.6f);
                 resultPlayer.setOnCompletionListener(mp -> releaseResultPlayer());
-                try { resultPlayer.start(); } catch (IllegalStateException e) { releaseResultPlayer(); }
+                try {
+                    resultPlayer.start();
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                    releaseResultPlayer();
+                }
             }
         });
 
-        if (!isFinishing() && !isDestroyed()) resultDialog.show();
+        if (!isFinishing() && !isDestroyed()) {
+            try {
+                resultDialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         retryButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
@@ -448,20 +486,6 @@ public class PandamdamQuiz extends AppCompatActivity {
             dismissAndReleaseResultDialog();
             navigateToLesson(BahagiNgPananalita.class);
         });
-    }
-
-    private boolean hasPassedQuizBefore() {
-        Map<String, Object> cachedData = LessonProgressCache.getData();
-        if (cachedData == null) return false;
-
-        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_1");
-        if (module2 == null) return false;
-
-        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
-        if (lessons == null) return false;
-
-        Map<String, Object> pandamdamLesson = (Map<String, Object>) lessons.get("pandamdam");
-        return pandamdamLesson != null && "completed".equals(pandamdamLesson.get("status"));
     }
 
     private void releaseResultPlayer() {
@@ -580,11 +604,11 @@ public class PandamdamQuiz extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        isMuted = true;
 
         if (currentStreamId != -1 && soundPool != null) {
             soundPool.setVolume(currentStreamId, 0f, 0f);
         }
-
         if (mediaPlayer != null) mediaPlayer.setVolume(0f, 0f);
         if (resultPlayer != null) resultPlayer.setVolume(0f, 0f);
         if (readyPlayer != null) readyPlayer.setVolume(0f, 0f);
@@ -592,20 +616,22 @@ public class PandamdamQuiz extends AppCompatActivity {
         TimerSoundUtils.setVolume(0f);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
+        isMuted = false;
 
         if (currentStreamId != -1 && soundPool != null) {
             soundPool.setVolume(currentStreamId, 1f, 1f);
         }
-
         if (mediaPlayer != null) mediaPlayer.setVolume(1f, 1f);
         if (resultPlayer != null) resultPlayer.setVolume(1f, 1f);
         if (readyPlayer != null) readyPlayer.setVolume(1f, 1f);
 
         TimerSoundUtils.setVolume(1f);
     }
+
 
     @Override
     protected void onDestroy() {

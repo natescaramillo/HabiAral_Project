@@ -18,8 +18,8 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.BahagiNgPananalita.Lessons.PandamdamLesson;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AppPreloaderUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
@@ -34,6 +34,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.example.habiaral.Cache.LessonProgressCache;
 
 public class PangAngkopQuiz extends AppCompatActivity {
 
@@ -66,6 +68,8 @@ public class PangAngkopQuiz extends AppCompatActivity {
     private FirebaseFirestore db;
     private SoundPool soundPool;
     private View background;
+    private boolean isMuted = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,6 +240,7 @@ public class PangAngkopQuiz extends AppCompatActivity {
                         Toast.makeText(this, "Failed to load quiz data.", Toast.LENGTH_SHORT).show());
     }
 
+
     private void loadQuestion(int index) {
         if (countDownTimer != null) countDownTimer.cancel();
         if (quizList == null || quizList.isEmpty()) return;
@@ -264,7 +269,6 @@ public class PangAngkopQuiz extends AppCompatActivity {
             totalQuestions = quizList.size();
         }
     }
-
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
         timeLeftInMillis = 30000;
@@ -308,6 +312,10 @@ public class PangAngkopQuiz extends AppCompatActivity {
                     soundPool.stop(currentStreamId);
                 }
                 currentStreamId = soundPool.play(soundId, 1, 1, 0, -1, 1);
+
+                if (isMuted && currentStreamId != -1) {
+                    soundPool.setVolume(currentStreamId, 0f, 0f);
+                }
             }
 
 
@@ -374,6 +382,20 @@ public class PangAngkopQuiz extends AppCompatActivity {
         });
 
         exitDialog.show();
+    }
+
+    private boolean hasPassedQuizBefore() {
+        Map<String, Object> cachedData = LessonProgressCache.getData();
+        if (cachedData == null) return false;
+
+        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_1");
+        if (module2 == null) return false;
+
+        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
+        if (lessons == null) return false;
+
+        Map<String, Object> pangangkopLesson = (Map<String, Object>) lessons.get("pangangkop");
+        return pangangkopLesson != null && "completed".equals(pangangkopLesson.get("status"));
     }
 
     private void showResultDialog() {
@@ -464,20 +486,6 @@ public class PangAngkopQuiz extends AppCompatActivity {
             dismissAndReleaseResultDialog();
             navigateToLesson(BahagiNgPananalita.class);
         });
-    }
-
-    private boolean hasPassedQuizBefore() {
-        Map<String, Object> cachedData = LessonProgressCache.getData();
-        if (cachedData == null) return false;
-
-        Map<String, Object> module2 = (Map<String, Object>) cachedData.get("module_1");
-        if (module2 == null) return false;
-
-        Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
-        if (lessons == null) return false;
-
-        Map<String, Object> pangangkopLesson = (Map<String, Object>) lessons.get("pangangkop");
-        return pangangkopLesson != null && "completed".equals(pangangkopLesson.get("status"));
     }
 
     private void releaseResultPlayer() {
@@ -596,11 +604,11 @@ public class PangAngkopQuiz extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        isMuted = true;
 
         if (currentStreamId != -1 && soundPool != null) {
             soundPool.setVolume(currentStreamId, 0f, 0f);
         }
-
         if (mediaPlayer != null) mediaPlayer.setVolume(0f, 0f);
         if (resultPlayer != null) resultPlayer.setVolume(0f, 0f);
         if (readyPlayer != null) readyPlayer.setVolume(0f, 0f);
@@ -608,20 +616,22 @@ public class PangAngkopQuiz extends AppCompatActivity {
         TimerSoundUtils.setVolume(0f);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
+        isMuted = false;
 
         if (currentStreamId != -1 && soundPool != null) {
             soundPool.setVolume(currentStreamId, 1f, 1f);
         }
-
         if (mediaPlayer != null) mediaPlayer.setVolume(1f, 1f);
         if (resultPlayer != null) resultPlayer.setVolume(1f, 1f);
         if (readyPlayer != null) readyPlayer.setVolume(1f, 1f);
 
         TimerSoundUtils.setVolume(1f);
     }
+
 
     @Override
     protected void onDestroy() {

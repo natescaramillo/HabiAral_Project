@@ -74,32 +74,15 @@ public class  HomepageActivity extends AppCompatActivity {
     private void RunActivity() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.botnav);
 
-        Fragment homeFragment = new HomeFragment();
-        Fragment progressFragment = new ProgressBarFragment();
-        Fragment achievementFragment = new AchievementFragment();
-        Fragment settingsFragment = new SettingsFragment();
-
-        fragmentMap.put(R.id.home_nav, homeFragment);
-        fragmentMap.put(R.id.progressbar_nav, progressFragment);
-        fragmentMap.put(R.id.achievement_nav, achievementFragment);
-        fragmentMap.put(R.id.settings_nav, settingsFragment);
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, homeFragment, "HOME")
-                .commit();
-        activeFragment = homeFragment;
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, progressFragment, "PROGRESS").hide(progressFragment)
-                .add(R.id.fragment_container, achievementFragment, "ACHIEVEMENT").hide(achievementFragment)
-                .add(R.id.fragment_container, settingsFragment, "SETTINGS").hide(settingsFragment)
-                .commit();
-
         ViewCompat.setOnApplyWindowInsetsListener(bottomNavigationView, (v, insets) -> {
             int bottomInset = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom;
             v.setPadding(0, 0, 0, bottomInset);
             return insets;
         });
+
+        // Default fragment = Home
+        loadFragment(new HomeFragment());
+        activeFragment = new HomeFragment();
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             long now = System.currentTimeMillis();
@@ -110,17 +93,33 @@ public class  HomepageActivity extends AppCompatActivity {
 
             SoundClickUtils.playClickSound(this, R.raw.button_click);
 
-            Fragment selectedFragment = fragmentMap.get(item.getItemId());
-            if (selectedFragment != null && selectedFragment != activeFragment) {
-                bottomNavigationView.setEnabled(false);
+            Fragment selectedFragment = null;
+            int itemId = item.getItemId();
 
+            if (itemId == R.id.home_nav) {
+                selectedFragment = new HomeFragment();
+            } else if (itemId == R.id.progressbar_nav) {
+                selectedFragment = new ProgressBarFragment();
+            } else if (itemId == R.id.achievement_nav) {
+                selectedFragment = new AchievementFragment();
+            } else if (itemId == R.id.settings_nav) {
+                selectedFragment = new SettingsFragment();
+            }
+
+            if (selectedFragment != null && !(selectedFragment.getClass().equals(activeFragment.getClass()))) {
                 loadFragmentDebounced(selectedFragment);
-
-                fragmentHandler.postDelayed(() -> bottomNavigationView.setEnabled(true), MIN_INTERVAL);
                 return true;
             }
             return false;
         });
+    }
+
+    private void loadFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+        activeFragment = fragment;
     }
 
     private void loadFragmentDebounced(Fragment fragment) {
@@ -129,16 +128,12 @@ public class  HomepageActivity extends AppCompatActivity {
         }
 
         pendingRunnable = () -> {
-            if (!isFinishing() && !isDestroyed() && fragment != null && fragment != activeFragment) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .hide(activeFragment)
-                        .show(fragment)
-                        .commitNowAllowingStateLoss();
-                activeFragment = fragment;
+            if (!isFinishing() && !isDestroyed()) {
+                loadFragment(fragment);
             }
         };
 
         fragmentHandler.postDelayed(pendingRunnable, 50);
     }
+
 }

@@ -18,8 +18,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.Cache.LessonProgressCache;
-import com.example.habiaral.BahagiNgPananalita.Lessons.PangAngkopLesson;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AppPreloaderUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
@@ -34,6 +33,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.example.habiaral.Cache.LessonProgressCache;
 
 public class PangUkolQuiz extends AppCompatActivity {
 
@@ -66,6 +67,8 @@ public class PangUkolQuiz extends AppCompatActivity {
     private FirebaseFirestore db;
     private SoundPool soundPool;
     private View background;
+    private boolean isMuted = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,6 +239,7 @@ public class PangUkolQuiz extends AppCompatActivity {
                         Toast.makeText(this, "Failed to load quiz data.", Toast.LENGTH_SHORT).show());
     }
 
+
     private void loadQuestion(int index) {
         if (countDownTimer != null) countDownTimer.cancel();
         if (quizList == null || quizList.isEmpty()) return;
@@ -264,7 +268,6 @@ public class PangUkolQuiz extends AppCompatActivity {
             totalQuestions = quizList.size();
         }
     }
-
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
         timeLeftInMillis = 30000;
@@ -308,6 +311,10 @@ public class PangUkolQuiz extends AppCompatActivity {
                     soundPool.stop(currentStreamId);
                 }
                 currentStreamId = soundPool.play(soundId, 1, 1, 0, -1, 1);
+
+                if (isMuted && currentStreamId != -1) {
+                    soundPool.setVolume(currentStreamId, 0f, 0f);
+                }
             }
 
 
@@ -470,7 +477,7 @@ public class PangUkolQuiz extends AppCompatActivity {
         taposButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             dismissAndReleaseResultDialog();
-            navigateToLesson(PangAngkopLesson.class);
+            navigateToLesson(PandiwaLesson.class);
         });
 
         homeButton.setOnClickListener(v -> {
@@ -552,7 +559,7 @@ public class PangUkolQuiz extends AppCompatActivity {
     }
 
     private void unlockNextLesson() {
-        Toast.makeText(this, "Next Lesson Unlocked: Pang-angkop!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Next Lesson Unlocked: Pang-Angkop!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {
@@ -562,15 +569,15 @@ public class PangUkolQuiz extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> pangangkopStatus = new HashMap<>();
-        pangangkopStatus.put("status", "completed");
+        Map<String, Object> pangukolStatus = new HashMap<>();
+        pangukolStatus.put("status", "completed");
 
         Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("pangangkop", pangangkopStatus);
+        lessonsMap.put("pangukol", pangukolStatus);
 
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put("lessons", lessonsMap);
-        updateMap.put("current_lesson", "pangangkop");
+        updateMap.put("current_lesson", "pangukol");
 
         Map<String, Object> moduleUpdate = Map.of("module_1", updateMap);
 
@@ -587,7 +594,7 @@ public class PangUkolQuiz extends AppCompatActivity {
 
             Map<String, Object> cachedModule1 = (Map<String, Object>) cachedData.get("module_1");
             cachedModule1.put("lessons", lessonsMap);
-            cachedModule1.put("current_lesson", "pangangkop");
+            cachedModule1.put("current_lesson", "pangukol");
 
             LessonProgressCache.setData(cachedData);
         }
@@ -596,11 +603,11 @@ public class PangUkolQuiz extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        isMuted = true;
 
         if (currentStreamId != -1 && soundPool != null) {
             soundPool.setVolume(currentStreamId, 0f, 0f);
         }
-
         if (mediaPlayer != null) mediaPlayer.setVolume(0f, 0f);
         if (resultPlayer != null) resultPlayer.setVolume(0f, 0f);
         if (readyPlayer != null) readyPlayer.setVolume(0f, 0f);
@@ -608,20 +615,22 @@ public class PangUkolQuiz extends AppCompatActivity {
         TimerSoundUtils.setVolume(0f);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
+        isMuted = false;
 
         if (currentStreamId != -1 && soundPool != null) {
             soundPool.setVolume(currentStreamId, 1f, 1f);
         }
-
         if (mediaPlayer != null) mediaPlayer.setVolume(1f, 1f);
         if (resultPlayer != null) resultPlayer.setVolume(1f, 1f);
         if (readyPlayer != null) readyPlayer.setVolume(1f, 1f);
 
         TimerSoundUtils.setVolume(1f);
     }
+
 
     @Override
     protected void onDestroy() {

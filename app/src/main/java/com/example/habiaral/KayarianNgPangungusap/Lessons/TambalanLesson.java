@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.KayarianNgPangungusap.Quiz.TambalanQuiz;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -73,6 +74,7 @@ public class TambalanLesson extends AppCompatActivity {
         quizButton.setEnabled(false);
         quizButton.setAlpha(0.5f);
         quizButton.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
