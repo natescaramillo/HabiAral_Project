@@ -16,7 +16,7 @@ public class SoundClickUtils {
     }
 
     public static void playClickSound(Context context, int soundResId) {
-        if (!canPlay()) return;
+        if (!MuteButtonUtils.isSoundEnabled(context)) return;
 
         MediaPlayer mp = MediaPlayer.create(context, soundResId);
         mp.setOnCompletionListener(MediaPlayer::release);

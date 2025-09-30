@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangHalipQuiz;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.MuteButtonUtils;
 import com.example.habiaral.Utils.ResumeDialogUtils;
 import com.example.habiaral.Utils.BahagiFirestoreUtils;
 import com.example.habiaral.Utils.FullScreenUtils;
@@ -302,7 +303,7 @@ public class PangHalipLesson extends AppCompatActivity {
                     if (!utteranceId.startsWith(utterancePage)) return;
                     index[0]++;
                     if (index[0] < lines.size()) {
-                        if (!SoundManagerUtils.isMuted(PangHalipLesson.this)) {
+                        if (MuteButtonUtils.isSoundEnabled(PangHalipLesson.this)) {
                             speak(lines.get(index[0]), utterancePage + "_" + index[0]);
                         }
                     } else onComplete.run();
@@ -312,7 +313,7 @@ public class PangHalipLesson extends AppCompatActivity {
             @Override public void onError(String s) {}
         });
 
-        if (!SoundManagerUtils.isMuted(this)) {
+        if (MuteButtonUtils.isSoundEnabled(PangHalipLesson.this)) {
             speak(lines.get(0), utterancePage + "_0");
         }
     }
