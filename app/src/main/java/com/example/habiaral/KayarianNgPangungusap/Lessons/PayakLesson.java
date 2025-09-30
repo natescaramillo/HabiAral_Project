@@ -13,6 +13,8 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
+import com.example.habiaral.BahagiNgPananalita.Lessons.PangUriLesson;
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.KayarianNgPangungusap.Quiz.PayakQuiz;
 import com.example.habiaral.R;
@@ -36,7 +38,7 @@ public class PayakLesson extends AppCompatActivity {
     FirebaseFirestore db;
     String uid;
     TextToSpeech textToSpeech;
-    ImageView descriptionImageView, imageView2, exampleImageView;
+    ImageView descriptionImageView, imageView2, exampleImageView, btnBack;
     Button quizButton;
     private boolean introCompleted = false;
     private Handler idleGifHandler = new Handler();
@@ -54,6 +56,14 @@ public class PayakLesson extends AppCompatActivity {
         }
 
         startIdleGifRandomizer();
+
+        btnBack = findViewById(R.id.back_button);
+        btnBack.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            startActivity(new Intent(PayakLesson.this, BahagiNgPananalita.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+            finish();
+        });
 
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
