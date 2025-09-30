@@ -17,7 +17,6 @@ import com.bumptech.glide.Glide;
 import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
 import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
 import com.example.habiaral.R;
-import com.example.habiaral.Utils.MuteButtonUtils;
 import com.example.habiaral.Utils.ResumeDialogUtils;
 import com.example.habiaral.Utils.BahagiFirestoreUtils;
 import com.example.habiaral.Utils.FullScreenUtils;
@@ -311,7 +310,7 @@ public class PangngalanLesson extends AppCompatActivity {
                     if (!utteranceId.startsWith(utterancePage)) return;
                     index[0]++;
                     if (index[0] < lines.size()) {
-                        if (MuteButtonUtils.isSoundEnabled(PangngalanLesson.this)) {
+                        if (!SoundManagerUtils.isMuted(PangngalanLesson.this)) {
                             speak(lines.get(index[0]), utterancePage + "_" + index[0]);
                         }
                     } else onComplete.run();
@@ -321,7 +320,7 @@ public class PangngalanLesson extends AppCompatActivity {
             @Override public void onError(String s) {}
         });
 
-        if (MuteButtonUtils.isSoundEnabled(PangngalanLesson.this)) {
+        if (!SoundManagerUtils.isMuted(this)) {
             speak(lines.get(0), utterancePage + "_0");
         }
     }
