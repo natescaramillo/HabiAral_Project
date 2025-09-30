@@ -235,7 +235,7 @@ public class HugnayanQuiz extends AppCompatActivity {
                         }
                     }
                 }).addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to load quiz data.", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(this, "Nabigong i-load ang datos ng pagsusulit.", Toast.LENGTH_SHORT).show());
     }
 
 
@@ -558,7 +558,7 @@ public class HugnayanQuiz extends AppCompatActivity {
     }
 
     private void unlockNextLesson() {
-        Toast.makeText(this, "Next Lesson Unlocked: Langkapan!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Bukas na ang Susunod na Aralin: Langkapan!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {

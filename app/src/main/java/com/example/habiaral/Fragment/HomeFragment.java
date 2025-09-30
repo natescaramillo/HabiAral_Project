@@ -263,7 +263,7 @@ public class HomeFragment extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> Toast.makeText(requireContext(),
-                        "Error checking streak: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        "Kamalian sa pagtingin ng streak: " + e.getMessage(), Toast.LENGTH_SHORT).show());
 
     }
 

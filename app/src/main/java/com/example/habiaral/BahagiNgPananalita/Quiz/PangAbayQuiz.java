@@ -237,7 +237,7 @@ public class PangAbayQuiz extends AppCompatActivity {
                         }
                     }
                 }).addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to load quiz data.", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(this, "Nabigong i-load ang datos ng pagsusulit.", Toast.LENGTH_SHORT).show());
     }
 
 
@@ -560,7 +560,7 @@ public class PangAbayQuiz extends AppCompatActivity {
     }
 
     private void unlockNextLesson() {
-        Toast.makeText(this, "Next Lesson Unlocked: Pangatnig!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Bukas na ang Susunod na Aralin: Pangatnig!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveQuizResultToFirestore() {

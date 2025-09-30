@@ -189,7 +189,7 @@ public class PangngalanLesson extends AppCompatActivity {
         });
     }
 
-    private void nextPage() {
+    private void nextPage () {
         if (currentPage < lessonPPT.length - 1 ) {
             currentPage++;
             updatePage();

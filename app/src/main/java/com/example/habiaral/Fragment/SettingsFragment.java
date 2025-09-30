@@ -138,7 +138,7 @@ public class SettingsFragment extends Fragment {
                                 getParentFragmentManager().setFragmentResult("nicknameKey", result);
                             })
                             .addOnFailureListener(e -> {
-                                Toast.makeText(requireContext(), "❌ Hindi na-update sa Firestore", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(requireContext(), "Hindi na-update sa Firestore", Toast.LENGTH_SHORT).show();
                             });
                 } else {
                     Toast.makeText(requireContext(), "Walang user na naka-login", Toast.LENGTH_SHORT).show();

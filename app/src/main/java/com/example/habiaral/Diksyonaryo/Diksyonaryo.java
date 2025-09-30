@@ -85,7 +85,7 @@ public class Diksyonaryo extends AppCompatActivity {
             displayWords(allWords);
 
         } else {
-            Toast.makeText(this, "Loading words...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Inaayos ang mga salita...", Toast.LENGTH_SHORT).show();
             TalasalitaanUtils.preloadWords(this, new TalasalitaanUtils.OnWordsLoadedListener() {
                 @Override
                 public void onWordsLoaded(List<DocumentSnapshot> words) {
