@@ -17,9 +17,11 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
 import com.example.habiaral.Panitikan.MaiklingKuwento.MaiklingKuwento;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AppPreloaderUtils;
+import com.example.habiaral.Utils.MuteButtonUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -304,6 +306,7 @@ public class MaiklingKuwento2Quiz extends AppCompatActivity {
             }
 
             private void playLoopingSound(int soundId) {
+                if (!MuteButtonUtils.isSoundEnabled(MaiklingKuwento2Quiz.this)) return;
                 if (currentStreamId != -1) {
                     soundPool.stop(currentStreamId);
                 }
@@ -446,15 +449,17 @@ public class MaiklingKuwento2Quiz extends AppCompatActivity {
         resultDialog.setOnShowListener(d -> {
             releaseResultPlayer();
             int soundRes = passed ? R.raw.success : R.raw.game_over;
-            resultPlayer = MediaPlayer.create(MaiklingKuwento2Quiz.this, soundRes);
-            if (resultPlayer != null) {
-                resultPlayer.setVolume(0.6f, 0.6f);
-                resultPlayer.setOnCompletionListener(mp -> releaseResultPlayer());
-                try {
-                    resultPlayer.start();
-                } catch (IllegalStateException e) {
-                    e.printStackTrace();
-                    releaseResultPlayer();
+            if (MuteButtonUtils.isSoundEnabled(MaiklingKuwento2Quiz.this)) {
+                resultPlayer = MediaPlayer.create(MaiklingKuwento2Quiz.this, soundRes);
+                if (resultPlayer != null) {
+                    resultPlayer.setVolume(0.6f, 0.6f);
+                    resultPlayer.setOnCompletionListener(mp -> releaseResultPlayer());
+                    try {
+                        resultPlayer.start();
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
+                        releaseResultPlayer();
+                    }
                 }
             }
         });
@@ -695,6 +700,7 @@ public class MaiklingKuwento2Quiz extends AppCompatActivity {
         releaseResultPlayer();
     }
     private void playReadySound() {
+        if (!MuteButtonUtils.isSoundEnabled(this)) return;
         releaseReadyPlayer();
         readyPlayer = MediaPlayer.create(this, R.raw.beep);
         if (readyPlayer != null) {
@@ -704,6 +710,7 @@ public class MaiklingKuwento2Quiz extends AppCompatActivity {
     }
 
     private void releaseReadyPlayer() {
+        if (!MuteButtonUtils.isSoundEnabled(this)) return;
         if (readyPlayer != null) {
             if (readyPlayer.isPlaying()) {
                 readyPlayer.stop();

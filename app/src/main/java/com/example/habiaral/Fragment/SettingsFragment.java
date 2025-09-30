@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import com.example.habiaral.Activity.WelcomeActivity;
 import com.example.habiaral.Activity.AboutUsActivity;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.MuteButtonUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.example.habiaral.Utils.SoundManagerUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -73,19 +74,31 @@ public class SettingsFragment extends Fragment {
         });
 
         btnSounds.setOnClickListener(v -> {
-            SoundManagerUtils.toggleMute(requireContext());
-            isMuted = SoundManagerUtils.isMuted(requireContext());
+            // Toggle mute/unmute
+            MuteButtonUtils.toggleSound(requireContext());
+
+            // Update local isMuted state
+            isMuted = !MuteButtonUtils.isSoundEnabled(requireContext());
+
+            // Update icon
             updateSoundIcon();
+
+            // Feedback
+            if (MuteButtonUtils.isSoundEnabled(requireContext())) {
+                Toast.makeText(requireContext(), "Sound ON", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(requireContext(), "Sound OFF", Toast.LENGTH_SHORT).show();
+            }
         });
 
         return view;
     }
 
     private void updateSoundIcon() {
-        if (isMuted) {
-            btnSound.setImageResource(R.drawable.speaker_off);
-        } else {
+        if (MuteButtonUtils.isSoundEnabled(requireContext())) {
             btnSound.setImageResource(R.drawable.speaker_on);
+        } else {
+            btnSound.setImageResource(R.drawable.speaker_off);
         }
     }
 

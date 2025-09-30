@@ -47,7 +47,7 @@ public class PangUkolLesson extends AppCompatActivity {
     private final boolean[] isFullScreen = {false};
     private boolean isNavigatingInsideApp = false;
     private boolean waitForResumeChoice = false;
-    private ImageView backOption, nextOption, imageView, imageView2, fullScreenOption;
+    private ImageView backOption, nextOption, imageView, imageView2, fullScreenOption, btnBack;
     private boolean isLessonDone = false;
     private boolean isFirstTime = true;
     private TextToSpeech textToSpeech;
@@ -71,6 +71,14 @@ public class PangUkolLesson extends AppCompatActivity {
         }
 
         startIdleGifRandomizer();
+
+        btnBack = findViewById(R.id.back_button);
+        btnBack.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            startActivity(new Intent(PangUkolLesson.this, BahagiNgPananalita.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+            finish();
+        });
 
         unlockButton = findViewById(R.id.button_unlock);
         imageView = findViewById(R.id.lesson_image);

@@ -16,10 +16,13 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
+import com.example.habiaral.KayarianNgPangungusap.Lessons.PayakLesson;
 import com.example.habiaral.Panitikan.Pabula.Pabula;
 import com.example.habiaral.Panitikan.Pabula.Quiz.PabulaKwento1Quiz;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.ResumeDialogUtils;
+import com.example.habiaral.Utils.SoundClickUtils;
 import com.example.habiaral.Utils.SoundManagerUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,7 +51,7 @@ public class PabulaKwento1 extends AppCompatActivity {
 
     private boolean isLessonDone = false;
     private boolean introFinished = false;
-    private ImageView storyImage;
+    private ImageView storyImage, btnBack;
     private Button unlockButton;
     private int currentPage = 0;
 
@@ -77,6 +80,14 @@ public class PabulaKwento1 extends AppCompatActivity {
         if (audioManager != null) {
             originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         }
+
+        btnBack = findViewById(R.id.back_button);
+        btnBack.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            startActivity(new Intent(PabulaKwento1.this, BahagiNgPananalita.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+            finish();
+        });
 
         storyImage = findViewById(R.id.imageViewComic4);
         unlockButton = findViewById(R.id.UnlockButton);

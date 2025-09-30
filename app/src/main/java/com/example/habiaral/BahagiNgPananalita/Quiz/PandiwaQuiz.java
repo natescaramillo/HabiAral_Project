@@ -22,6 +22,7 @@ import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
 import com.example.habiaral.BahagiNgPananalita.Lessons.PangUriLesson;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AppPreloaderUtils;
+import com.example.habiaral.Utils.MuteButtonUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -308,6 +309,7 @@ public class PandiwaQuiz extends AppCompatActivity {
             }
 
             private void playLoopingSound(int soundId) {
+                if (!MuteButtonUtils.isSoundEnabled(PandiwaQuiz.this)) return;
                 if (currentStreamId != -1) {
                     soundPool.stop(currentStreamId);
                 }
@@ -448,15 +450,17 @@ public class PandiwaQuiz extends AppCompatActivity {
         resultDialog.setOnShowListener(d -> {
             releaseResultPlayer();
             int soundRes = passed ? R.raw.success : R.raw.game_over;
-            resultPlayer = MediaPlayer.create(PandiwaQuiz.this, soundRes);
-            if (resultPlayer != null) {
-                resultPlayer.setVolume(0.6f, 0.6f);
-                resultPlayer.setOnCompletionListener(mp -> releaseResultPlayer());
-                try {
-                    resultPlayer.start();
-                } catch (IllegalStateException e) {
-                    e.printStackTrace();
-                    releaseResultPlayer();
+            if (MuteButtonUtils.isSoundEnabled(PandiwaQuiz.this)) {
+                resultPlayer = MediaPlayer.create(PandiwaQuiz.this, soundRes);
+                if (resultPlayer != null) {
+                    resultPlayer.setVolume(0.6f, 0.6f);
+                    resultPlayer.setOnCompletionListener(mp -> releaseResultPlayer());
+                    try {
+                        resultPlayer.start();
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
+                        releaseResultPlayer();
+                    }
                 }
             }
         });
@@ -649,6 +653,7 @@ public class PandiwaQuiz extends AppCompatActivity {
         releaseResultPlayer();
     }
     private void playReadySound() {
+        if (!MuteButtonUtils.isSoundEnabled(this)) return;
         releaseReadyPlayer();
         readyPlayer = MediaPlayer.create(this, R.raw.beep);
         if (readyPlayer != null) {
@@ -658,6 +663,7 @@ public class PandiwaQuiz extends AppCompatActivity {
     }
 
     private void releaseReadyPlayer() {
+        if (!MuteButtonUtils.isSoundEnabled(this)) return;
         if (readyPlayer != null) {
             if (readyPlayer.isPlaying()) {
                 readyPlayer.stop();
