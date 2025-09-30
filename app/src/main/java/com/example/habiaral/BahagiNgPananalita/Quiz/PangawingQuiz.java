@@ -309,6 +309,7 @@ public class PangawingQuiz extends AppCompatActivity {
             }
 
             private void playLoopingSound(int soundId) {
+                if (!MuteButtonUtils.isSoundEnabled(PangawingQuiz.this)) return;
                 if (currentStreamId != -1) {
                     soundPool.stop(currentStreamId);
                 }

@@ -309,6 +309,7 @@ public class PandiwaQuiz extends AppCompatActivity {
             }
 
             private void playLoopingSound(int soundId) {
+                if (!MuteButtonUtils.isSoundEnabled(PandiwaQuiz.this)) return;
                 if (currentStreamId != -1) {
                     soundPool.stop(currentStreamId);
                 }

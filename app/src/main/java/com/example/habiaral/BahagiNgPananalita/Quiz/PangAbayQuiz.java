@@ -309,6 +309,7 @@ public class PangAbayQuiz extends AppCompatActivity {
             }
 
             private void playLoopingSound(int soundId) {
+                if (!MuteButtonUtils.isSoundEnabled(PangAbayQuiz.this)) return;
                 if (currentStreamId != -1) {
                     soundPool.stop(currentStreamId);
                 }

@@ -309,6 +309,7 @@ public class PandamdamQuiz extends AppCompatActivity {
             }
 
             private void playLoopingSound(int soundId) {
+                if (!MuteButtonUtils.isSoundEnabled(PandamdamQuiz.this)) return;
                 if (currentStreamId != -1) {
                     soundPool.stop(currentStreamId);
                 }
