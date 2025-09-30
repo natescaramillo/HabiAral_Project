@@ -28,16 +28,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/back_button" />
 
-        <ImageView
-            android:id="@+id/imageView16"
-            android:layout_width="33dp"
-            android:layout_height="35dp"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/white_question_mark" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

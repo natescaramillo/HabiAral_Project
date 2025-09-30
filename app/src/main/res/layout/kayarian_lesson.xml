@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background">
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageView2"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="#A47148"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/RoundedStyle"
+        app:srcCompat="@drawable/back_button" />
+
     <ImageView
         android:id="@+id/lesson_idle_gif"
         android:layout_width="523dp"

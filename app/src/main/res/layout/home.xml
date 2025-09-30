@@ -14,10 +14,10 @@
     <ImageView
         android:id="@+id/imageView7"
         android:layout_width="353dp"
-        android:layout_height="262dp"
+        android:layout_height="300dp"
         android:layout_marginStart="250dp"
         android:layout_marginTop="-10dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="90dp"
         android:src="@drawable/idle"
         android:translationZ="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -368,7 +368,7 @@
         android:layout_width="0dp"
         android:layout_height="120dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="16dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="6dp"
@@ -403,6 +403,5 @@
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -142,4 +142,16 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.95" />
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageView2"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="#A47148"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/RoundedStyle"
+        app:srcCompat="@drawable/back_button" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
