@@ -1,30 +1,19 @@
 package com.example.habiaral.Palaro;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Button;
+import android.app.AlertDialog;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.KayarianNgPangungusap.Quiz.LangkapanQuiz;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
@@ -38,37 +27,26 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-
 public class Palaro extends AppCompatActivity {
 
-    View button1, button2, button3;
-    ImageView gameMechanicsIcon;
-    TextView userPointText, currentEnergyText, energyTimerText;
-    ProgressBar palaroProgress;
+    private View button1, button2, button3;
+    private ImageView gameMechanicsIcon;
+    private TextView userPointText, currentEnergyText, energyTimerText;
+    private ProgressBar palaroProgress;
 
-    int userPoints;
-    int userEnergy;
+    private int userPoints = 0;
+    private int userEnergy = 100;
 
-    final int ENERGY_COST = 20;
-    final int ENERGY_MAX = 100;
-    final long ENERGY_INTERVAL = 3 * 60 * 1000;
+    private final int ENERGY_COST = 20;
+    private final int ENERGY_MAX = 100;
+    private final long ENERGY_INTERVAL = 3 * 60 * 1000; // 3 minutes
 
-    CountDownTimer energyTimer;
-
-    SharedPreferences prefs;
-    SharedPreferences.Editor editor;
-    private static final String PREF_NAME = "PalaroPrefs";
-    private static final String KEY_ENERGY = "userEnergy";
-    private static final String KEY_POINTS = "userPoints";
-    private static final String KEY_LAST_ENERGY_TIME = "lastEnergyTime";
-
-    private static final int BAGUHAN_REQUEST_CODE = 1;
-
+    private CountDownTimer energyTimer;
     private FirebaseFirestore db;
     private boolean isUnlocking = false;
     private MediaPlayer mediaPlayer;
 
-
+    private static final int BAGUHAN_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,21 +66,9 @@ public class Palaro extends AppCompatActivity {
         palaroProgress = findViewById(R.id.palaro_progress);
         ImageView palaroBack = findViewById(R.id.palaro_back);
 
-        prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        editor = prefs.edit();
-
-        userEnergy = prefs.getInt(KEY_ENERGY, 100);
-        userPoints = prefs.getInt(KEY_POINTS, 0);
-
-        if (!prefs.contains(KEY_LAST_ENERGY_TIME)) {
-            editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis());
-            editor.apply();
-        }
-
         updateUI();
         checkLocks();
-        startEnergyRegeneration();
-        loadTotalScoreFromFirestore();
+        loadTotalScoreAndEnergyFromFirestore();
 
         palaroBack.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
@@ -114,80 +80,227 @@ public class Palaro extends AppCompatActivity {
             showGameMechanics();
         });
 
-        button1.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click);
-            if (userEnergy >= ENERGY_COST) {
-                userEnergy -= ENERGY_COST;
-
-                if (userEnergy == ENERGY_MAX - ENERGY_COST) {
-                    editor.putLong(KEY_LAST_ENERGY_TIME, System.currentTimeMillis());
-                }
-
-                editor.putInt(KEY_ENERGY, userEnergy).apply();
-
-                updateUI();
-                checkLocks();
-                startEnergyRegeneration();
-
-                Intent intent = new Intent(this, PalaroBaguhan.class);
-                intent.putExtra("resetProgress", true);
-                startActivityForResult(intent, BAGUHAN_REQUEST_CODE);
-            } else {
-                Toast.makeText(this, "Not enough energy!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        button1.setOnClickListener(v -> playBaguhan());
         button2.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
-            if (userPoints >= 0) {
-                startActivity(new Intent(Palaro.this, PalaroHusay.class));
-            } else {
-                Toast.makeText(this, "Unlock Husay at 400 points!", Toast.LENGTH_SHORT).show();
-            }
+            if (userPoints >= 400) startActivity(new Intent(Palaro.this, PalaroHusay.class));
+            else Toast.makeText(this, "Unlock Husay at 400 points!", Toast.LENGTH_SHORT).show();
         });
-
         button3.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
-            if (userPoints >= 0) {
-                startActivity(new Intent(Palaro.this, PalaroDalubhasa.class));
-            } else {
-                Toast.makeText(this, "Unlock Dalubhasa at 800 points!", Toast.LENGTH_SHORT).show();
-            }
+            if (userPoints >= 800) startActivity(new Intent(Palaro.this, PalaroDalubhasa.class));
+            else Toast.makeText(this, "Unlock Dalubhasa at 800 points!", Toast.LENGTH_SHORT).show();
         });
     }
 
-    private void loadTotalScoreFromFirestore() {
+    private void playBaguhan() {
+        SoundClickUtils.playClickSound(this, R.raw.button_click);
+        if (userEnergy >= ENERGY_COST) {
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser == null) return;
+            String userId = currentUser.getUid();
+
+            // Bawasan ang energy at i-save sa Firebase
+            userEnergy -= ENERGY_COST;
+            long now = System.currentTimeMillis();
+
+            Map<String, Object> update = new HashMap<>();
+            update.put("userEnergy", userEnergy);
+            db.collection("minigame_progress").document(userId)
+                    .set(update, SetOptions.merge());
+
+            updateUI();
+            checkLocks();
+
+            // Restart energy regeneration
+            startEnergyRegeneration(userId, now);
+
+            Intent intent = new Intent(this, PalaroBaguhan.class);
+            intent.putExtra("resetProgress", true);
+            startActivityForResult(intent, BAGUHAN_REQUEST_CODE);
+        } else {
+            Toast.makeText(this, "Not enough energy!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadTotalScoreAndEnergyFromFirestore() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) return;
 
         String userId = currentUser.getUid();
         DocumentReference docRef = db.collection("minigame_progress").document(userId);
 
-        docRef.get().addOnSuccessListener(snapshot -> {
-            if (snapshot.exists()) {
-                int baguhan = snapshot.contains("baguhan_score") ? snapshot.getLong("baguhan_score").intValue() : 0;
-                int husay = snapshot.contains("husay_score") ? snapshot.getLong("husay_score").intValue() : 0;
-                int dalubhasa = snapshot.contains("dalubhasa_score") ? snapshot.getLong("dalubhasa_score").intValue() : 0;
+        docRef.addSnapshotListener((snapshot, error) -> {
+            if (error != null) {
+                Toast.makeText(this, "Error loading progress", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                int totalScore = baguhan + husay + dalubhasa;
-                userPoints = totalScore;
-                editor.putInt(KEY_POINTS, userPoints).apply();
+            if (snapshot != null && snapshot.exists()) {
+                int firebasePoints = snapshot.getLong("total_score") != null ? snapshot.getLong("total_score").intValue() : 0;
+                long firebaseEnergy = snapshot.getLong("userEnergy") != null ? snapshot.getLong("userEnergy") : ENERGY_MAX;
+                long lastEnergyTime = snapshot.getLong("lastEnergyTime") != null ? snapshot.getLong("lastEnergyTime") : System.currentTimeMillis();
+
+                // Prevent score rollback
+                userPoints = Math.max(userPoints, firebasePoints);
+                userEnergy = (int) firebaseEnergy;
+
                 updateUI();
                 checkLocks();
-                unlockGanapNaKaalamanAchievement();
-                unlockBatangHenyoAchievement(totalScore);
+                startEnergyRegeneration(userId, lastEnergyTime);
 
+                unlockGanapNaKaalamanAchievement();
+                unlockBatangHenyoAchievement(userPoints);
 
             } else {
+                Map<String, Object> initData = new HashMap<>();
+                initData.put("total_score", 0);
+                initData.put("userEnergy", ENERGY_MAX);
+                initData.put("lastEnergyTime", System.currentTimeMillis());
+                docRef.set(initData);
+
                 userPoints = 0;
-                editor.putInt(KEY_POINTS, userPoints).apply();
+                userEnergy = ENERGY_MAX;
+
                 updateUI();
                 checkLocks();
             }
-        }).addOnFailureListener(e -> {
-            Toast.makeText(this, "Failed to load progress", Toast.LENGTH_SHORT).show();
         });
     }
+
+    private boolean energyTimerRunning = false;
+
+    private void startEnergyRegeneration(String userId, long lastTime) {
+        long currentTime = System.currentTimeMillis();
+        long elapsed = currentTime - lastTime;
+
+        int regenCount = (int) (elapsed / ENERGY_INTERVAL);
+        if (regenCount > 0) {
+            userEnergy = Math.min(userEnergy + regenCount, ENERGY_MAX);
+            lastTime += regenCount * ENERGY_INTERVAL;
+
+            // I-update lang sa Firebase
+            Map<String, Object> update = new HashMap<>();
+            update.put("userEnergy", userEnergy);
+            update.put("lastEnergyTime", lastTime);
+            db.collection("minigame_progress").document(userId).set(update, SetOptions.merge());
+        }
+
+        updateUI();
+        checkLocks();
+
+        // Kung energy full, itago ang timer
+        if (userEnergy >= ENERGY_MAX) {
+            energyTimerText.setVisibility(View.GONE);
+            energyTimerRunning = false;
+        } else {
+            // Restart timer lang kung hindi pa tumatakbo
+            if (!energyTimerRunning) {
+                long timeSinceLastEnergy = currentTime - lastTime;
+                long timeUntilNext = ENERGY_INTERVAL - timeSinceLastEnergy;
+                startEnergyCountDown(userId, timeUntilNext);
+            }
+        }
+    }
+
+    private void startEnergyCountDown(String userId, long millisUntilFinished) {
+        if (energyTimer != null) energyTimer.cancel();
+
+        energyTimerRunning = true;
+        energyTimerText.setVisibility(View.VISIBLE); // Siguraduhin na visible kapag countdown
+
+        energyTimer = new CountDownTimer(millisUntilFinished, 1000) {
+            public void onTick(long millisUntilFinished) {
+                int minutes = (int) (millisUntilFinished / 1000) / 60;
+                int seconds = (int) (millisUntilFinished / 1000) % 60;
+                energyTimerText.setText(String.format(Locale.getDefault(), "%d:%02d", minutes, seconds));
+            }
+
+            public void onFinish() {
+                long now = System.currentTimeMillis();
+                if (userEnergy < ENERGY_MAX) {
+                    userEnergy = Math.min(userEnergy + 1, ENERGY_MAX);
+
+                    Map<String, Object> update = new HashMap<>();
+                    update.put("userEnergy", userEnergy);
+                    update.put("lastEnergyTime", now);
+                    db.collection("minigame_progress").document(userId).set(update, SetOptions.merge());
+
+                    updateUI();
+                    checkLocks();
+
+                    if (userEnergy < ENERGY_MAX) {
+                        startEnergyCountDown(userId, ENERGY_INTERVAL);
+                    } else {
+                        // Kapag full na, hide timer
+                        energyTimerText.setText("FULL");
+                        energyTimerText.setVisibility(View.GONE);
+                        energyTimerRunning = false;
+                    }
+                } else {
+                    energyTimerText.setVisibility(View.GONE);
+                    energyTimerRunning = false;
+                }
+            }
+        }.start();
+    }
+
+
+    private void updateUI() {
+        String displayPoints;
+        if (userPoints < 400) displayPoints = userPoints + "/400";
+        else if (userPoints < 800) displayPoints = userPoints + "/800";
+        else if (userPoints < 1200) displayPoints = userPoints + "/1200";
+        else displayPoints = String.valueOf(userPoints);
+
+        userPointText.setText(displayPoints);
+        currentEnergyText.setText(String.valueOf(userEnergy));
+
+        ImageView trophyImage = findViewById(R.id.trophy_image);
+        int tierStart = 0;
+        int progressPercent = 0;
+
+        if (userPoints >= 1200) { trophyImage.setImageResource(R.drawable.trophy_gold); tierStart = 800; progressPercent = calculatePercent(userPoints, tierStart);}
+        else if (userPoints >= 800) { trophyImage.setImageResource(R.drawable.trophy_silver); tierStart = 800; progressPercent = calculatePercent(userPoints, tierStart);}
+        else if (userPoints >= 400) { trophyImage.setImageResource(R.drawable.trophy_bronze); tierStart = 400; progressPercent = calculatePercent(userPoints, tierStart);}
+        else { trophyImage.setImageResource(R.drawable.trophy_unranked); progressPercent = calculatePercent(userPoints, tierStart);}
+
+        palaroProgress.setMax(100);
+        palaroProgress.setProgress(progressPercent);
+    }
+
+    private void checkLocks() {
+        button2.setEnabled(userPoints >= 400);
+        button2.setAlpha(userPoints >= 400 ? 1f : 0.5f);
+        button3.setEnabled(userPoints >= 800);
+        button3.setAlpha(userPoints >= 800 ? 1f : 0.5f);
+    }
+
+    private void showGameMechanics() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_box_game_mechanics, null);
+        AlertDialog dialog = new AlertDialog.Builder(this).setView(dialogView).create();
+        if (dialog.getWindow() != null) dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        ImageView imgIsara = dialogView.findViewById(R.id.img_Isara);
+        imgIsara.setOnClickListener(v -> { SoundClickUtils.playClickSound(this, R.raw.button_click); dialog.dismiss(); });
+
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) { mediaPlayer.release(); mediaPlayer = null; }
+    }
+
+    private int calculatePercent(int points, int tierStart) {
+        int raw = points - tierStart;
+        if (raw < 0) raw = 0;
+        if (raw > 400) raw = 400;
+        return Math.round((raw / 400f) * 100);
+    }
+
     private void unlockGanapNaKaalamanAchievement() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String achievementCode = "SA1"; // Display key
@@ -293,198 +406,6 @@ public class Palaro extends AppCompatActivity {
                         }));
             });
         });
-    }
-
-
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == BAGUHAN_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            int baguhanScore = data.getIntExtra("baguhanPoints", 0);
-
-            if (baguhanScore > 0) {
-                userPoints += baguhanScore;
-                editor.putInt(KEY_POINTS, userPoints);
-                editor.apply();
-
-                updateUI();
-                checkLocks();
-
-                Toast.makeText(this, "Nagdagdag ng " + baguhanScore + " puntos!", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void updateUI() {
-        String displayPoints;
-
-        if (userPoints < 400) {
-            displayPoints = userPoints + "/400";
-        } else if (userPoints < 800) {
-            displayPoints = userPoints + "/800";
-        } else if (userPoints < 1200) {
-            displayPoints = userPoints + "/1200";
-        } else {
-            displayPoints = String.valueOf(userPoints);
-        }
-
-        userPointText.setText(displayPoints);
-        currentEnergyText.setText(String.valueOf(userEnergy));
-
-        ImageView trophyImage = findViewById(R.id.trophy_image);
-
-        int tierStart = 0;
-        int progressPercent = 0;
-
-        if (userPoints >= 1200) {
-            trophyImage.setImageResource(R.drawable.trophy_gold);
-            tierStart = 800;
-            progressPercent = calculatePercent(userPoints, tierStart);
-        } else if (userPoints >= 800) {
-            trophyImage.setImageResource(R.drawable.trophy_silver);
-            tierStart = 800;
-            progressPercent = calculatePercent(userPoints, tierStart);
-        } else if (userPoints >= 400) {
-            trophyImage.setImageResource(R.drawable.trophy_bronze);
-            tierStart = 400;
-            progressPercent = calculatePercent(userPoints, tierStart);
-        } else {
-            trophyImage.setImageResource(R.drawable.trophy_unranked);
-            progressPercent = calculatePercent(userPoints, tierStart);
-        }
-
-        palaroProgress.setMax(100);
-        palaroProgress.setProgress(progressPercent);
-    }
-
-
-
-    private void checkLocks() {
-        button2.setEnabled(userPoints >= 0);
-        button2.setAlpha(userPoints >= 0 ? 1f : 0.5f);
-        button3.setEnabled(userPoints >= 0);
-        button3.setAlpha(userPoints >= 0 ? 1f : 0.5f);
-    }
-
-    private void startEnergyRegeneration() {
-        long currentTime = System.currentTimeMillis();
-        long lastTime = prefs.getLong(KEY_LAST_ENERGY_TIME, currentTime);
-
-        long elapsed = currentTime - lastTime;
-        int regenCount = (int) (elapsed / ENERGY_INTERVAL);
-
-        if (regenCount > 0 && userEnergy < ENERGY_MAX) {
-            userEnergy = Math.min(userEnergy + regenCount, ENERGY_MAX);
-            lastTime = currentTime - (elapsed % ENERGY_INTERVAL);
-            editor.putInt(KEY_ENERGY, userEnergy);
-            editor.putLong(KEY_LAST_ENERGY_TIME, lastTime);
-            editor.apply();
-        }
-
-        updateUI();
-        checkLocks();
-
-        if (userEnergy < ENERGY_MAX) {
-            long timeSinceLastEnergy = currentTime - lastTime;
-            long timeUntilNext = ENERGY_INTERVAL - timeSinceLastEnergy;
-
-            if (energyTimerText != null) {
-                energyTimerText.setVisibility(View.VISIBLE);
-            }
-
-            startEnergyCountDown(timeUntilNext);
-        } else {
-            if (energyTimer != null) {
-                energyTimer.cancel();
-            }
-
-            if (energyTimerText != null) {
-                energyTimerText.setText("FULL");
-                energyTimerText.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    private void startEnergyCountDown(long millisUntilFinished) {
-        if (energyTimer != null) {
-            energyTimer.cancel();
-        }
-
-        energyTimer = new CountDownTimer(millisUntilFinished, 1000) {
-            public void onTick(long millisUntilFinished) {
-                int minutes = (int) (millisUntilFinished / 1000) / 60;
-                int seconds = (int) (millisUntilFinished / 1000) % 60;
-                String time = String.format(Locale.getDefault(), "%d:%02d", minutes, seconds);
-                energyTimerText.setText(time);
-            }
-
-            public void onFinish() {
-                energyTimerText.setText("0:00");
-                startEnergyRegeneration();
-            }
-        }.start();
-    }
-
-    private void showGameMechanics() {
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_box_game_mechanics, null);
-
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(dialogView)
-                .create();
-
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        }
-
-        ImageView imgIsara = dialogView.findViewById(R.id.img_Isara);
-        imgIsara.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click);
-            dialog.dismiss();
-        });
-
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (energyTimer != null) {
-            energyTimer.cancel();
-        }
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        editor.putInt(KEY_ENERGY, userEnergy);
-        editor.putInt(KEY_POINTS, userPoints);
-        editor.apply();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        userEnergy = prefs.getInt(KEY_ENERGY, 100);
-        userPoints = prefs.getInt(KEY_POINTS, 0);
-        updateUI();
-        loadTotalScoreFromFirestore();
-        checkLocks();
-    }
-
-    private int calculatePercent(int points, int tierStart) {
-        int raw = points - tierStart;
-        if (raw < 0) raw = 0;
-        if (raw > 400) raw = 400;
-
-        return Math.round((raw / 400f) * 100);
     }
 
 }
