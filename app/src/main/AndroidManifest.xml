@@ -146,6 +146,7 @@
             android:screenOrientation="portrait" />
         <activity android:name=".Panitikan.MaiklingKuwento.Quiz.MaiklingKuwento2Quiz"
             android:screenOrientation="portrait" />
+        <activity android:name=".Panitikan.Pabula.Pabula"
             android:screenOrientation="portrait" />
         <activity android:name=".Panitikan.Pabula.Stories.PabulaKwento1"
             android:screenOrientation="portrait" />
