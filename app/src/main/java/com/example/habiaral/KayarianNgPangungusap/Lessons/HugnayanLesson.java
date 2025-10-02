@@ -64,7 +64,9 @@ public class HugnayanLesson extends AppCompatActivity {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
-            startActivity(new Intent(HugnayanLesson.this, BahagiNgPananalita.class));
+            startActivity(new Intent(HugnayanLesson.this, KayarianNgPangungusap.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+            finish();
         });
 
         db = FirebaseFirestore.getInstance();
@@ -103,7 +105,9 @@ public class HugnayanLesson extends AppCompatActivity {
                     textToSpeech.stop();
                     textToSpeech.shutdown();
                 }
-                startActivity(new Intent(HugnayanLesson.this, KayarianNgPangungusap.class));
+                startActivity(new Intent(HugnayanLesson.this, KayarianNgPangungusap.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+                finish();
             }
         });
 

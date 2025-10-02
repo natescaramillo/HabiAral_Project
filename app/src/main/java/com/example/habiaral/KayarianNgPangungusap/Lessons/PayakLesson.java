@@ -64,7 +64,9 @@ public class PayakLesson extends AppCompatActivity {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
-            startActivity(new Intent(PayakLesson.this, KayarianNgPangungusap.class));
+            startActivity(new Intent(PayakLesson.this, KayarianNgPangungusap.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+            finish();
         });
 
         db = FirebaseFirestore.getInstance();
@@ -103,7 +105,9 @@ public class PayakLesson extends AppCompatActivity {
                     textToSpeech.stop();
                     textToSpeech.shutdown();
                 }
-                startActivity(new Intent(PayakLesson.this, KayarianNgPangungusap.class));
+                startActivity(new Intent(PayakLesson.this, KayarianNgPangungusap.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+                finish();
             }
         });
 
