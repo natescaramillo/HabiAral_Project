@@ -84,7 +84,7 @@ public class PabulaKwento1 extends AppCompatActivity {
         btnBack = findViewById(R.id.back_button);
         btnBack.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
-            startActivity(new Intent(PabulaKwento1.this, BahagiNgPananalita.class)
+            startActivity(new Intent(PabulaKwento1.this, Pabula.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
             finish();
         });
