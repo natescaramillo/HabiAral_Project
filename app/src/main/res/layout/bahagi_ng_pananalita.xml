@@ -92,13 +92,12 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:paddingBottom="16dp">
+            android:paddingVertical="30dp">
 
             <LinearLayout
                 android:id="@+id/pangngalan"
                 android:layout_width="333dp"
                 android:layout_height="86dp"
-                android:layout_marginTop="16dp"
                 android:background="@drawable/button_color"
                 android:clickable="true"
                 android:focusable="true"
