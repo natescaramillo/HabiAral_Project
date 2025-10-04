@@ -37,13 +37,12 @@ import java.util.Map;
 public class EpikoKwento2 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.cover_page_rosas, R.drawable.kwento1_page01, R.drawable.kwento1_page02,
-            R.drawable.kwento1_page03, R.drawable.kwento1_page04, R.drawable.kwento1_page05,
-            R.drawable.kwento1_page06, R.drawable.kwento1_page07, R.drawable.kwento1_page08
-            , R.drawable.kwento1_page09, R.drawable.kwento1_page10, R.drawable.kwento1_page11
-            , R.drawable.kwento1_page12, R.drawable.kwento1_page13, R.drawable.kwento1_page14
-            , R.drawable.kwento1_page15, R.drawable.kwento1_page16, R.drawable.kwento1_page17
-            , R.drawable.kwento1_page18, R.drawable.kwento1_page19
+            R.drawable.gilgamesh1, R.drawable.gilgamesh2, R.drawable.gilgamesh3,
+            R.drawable.gilgamesh4, R.drawable.gilgamesh5, R.drawable.gilgamesh6,
+            R.drawable.gilgamesh7, R.drawable.gilgamesh8, R.drawable.gilgamesh9,
+            R.drawable.gilgamesh10, R.drawable.gilgamesh11, R.drawable.gilgamesh12,
+            R.drawable.gilgamesh13, R.drawable.gilgamesh14, R.drawable.gilgamesh15,
+            R.drawable.gilgamesh16, R.drawable.gilgamesh17, R.drawable.gilgamesh18
     };
 
     private static final String STORY_ID = "EpikoKwento2";

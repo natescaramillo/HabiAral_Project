@@ -37,13 +37,15 @@ import java.util.Map;
 public class ParabulaKwento1 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.cover_page_rosas, R.drawable.kwento1_page01, R.drawable.kwento1_page02,
-            R.drawable.kwento1_page03, R.drawable.kwento1_page04, R.drawable.kwento1_page05,
-            R.drawable.kwento1_page06, R.drawable.kwento1_page07, R.drawable.kwento1_page08
-            , R.drawable.kwento1_page09, R.drawable.kwento1_page10, R.drawable.kwento1_page11
-            , R.drawable.kwento1_page12, R.drawable.kwento1_page13, R.drawable.kwento1_page14
-            , R.drawable.kwento1_page15, R.drawable.kwento1_page16, R.drawable.kwento1_page17
-            , R.drawable.kwento1_page18, R.drawable.kwento1_page19
+            R.drawable.alibugha1, R.drawable.alibugha2, R.drawable.alibugha3,
+            R.drawable.alibugha4, R.drawable.alibugha5, R.drawable.alibugha6,
+            R.drawable.alibugha7, R.drawable.alibugha8, R.drawable.alibugha9,
+            R.drawable.alibugha10, R.drawable.alibugha11, R.drawable.alibugha12,
+            R.drawable.alibugha13, R.drawable.alibugha14, R.drawable.alibugha15,
+            R.drawable.alibugha16, R.drawable.alibugha17, R.drawable.alibugha18,
+            R.drawable.alibugha19, R.drawable.alibugha20, R.drawable.alibugha21,
+            R.drawable.alibugha22, R.drawable.alibugha23, R.drawable.alibugha24,
+            R.drawable.alibugha25
     };
 
     private static final String STORY_ID = "ParabulaKwento1";

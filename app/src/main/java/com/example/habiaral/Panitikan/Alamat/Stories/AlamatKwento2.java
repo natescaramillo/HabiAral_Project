@@ -36,13 +36,15 @@ import java.util.Map;
 public class AlamatKwento2 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.cover_page_rosas, R.drawable.kwento1_page01, R.drawable.kwento1_page02,
-            R.drawable.kwento1_page03, R.drawable.kwento1_page04, R.drawable.kwento1_page05,
-            R.drawable.kwento1_page06, R.drawable.kwento1_page07, R.drawable.kwento1_page08
-            , R.drawable.kwento1_page09, R.drawable.kwento1_page10, R.drawable.kwento1_page11
-            , R.drawable.kwento1_page12, R.drawable.kwento1_page13, R.drawable.kwento1_page14
-            , R.drawable.kwento1_page15, R.drawable.kwento1_page16, R.drawable.kwento1_page17
-            , R.drawable.kwento1_page18, R.drawable.kwento1_page19
+            R.drawable.unggoy1, R.drawable.unggoy2, R.drawable.unggoy3,
+            R.drawable.unggoy4, R.drawable.unggoy5, R.drawable.unggoy6,
+            R.drawable.unggoy7, R.drawable.unggoy8, R.drawable.unggoy9,
+            R.drawable.unggoy10, R.drawable.unggoy11, R.drawable.unggoy12,
+            R.drawable.unggoy13, R.drawable.unggoy14, R.drawable.unggoy15,
+            R.drawable.unggoy16, R.drawable.unggoy17, R.drawable.unggoy18,
+            R.drawable.unggoy19, R.drawable.unggoy20, R.drawable.unggoy21,
+            R.drawable.unggoy22, R.drawable.unggoy23, R.drawable.unggoy24,
+            R.drawable.unggoy25, R.drawable.unggoy26, R.drawable.unggoy27
     };
 
     private static final String STORY_ID = "AlamatKwento2";
