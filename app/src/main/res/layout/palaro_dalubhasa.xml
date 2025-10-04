@@ -249,7 +249,7 @@
         android:layout_weight="1"
         android:background="@drawable/rounded_rect"
         android:backgroundTint="#FFEFEA"
-        android:fontFamily="@font/special"
+        android:fontFamily="@font/ala_sans"
         android:gravity="center"
         android:textAlignment="center"
         android:textColor="#000000"

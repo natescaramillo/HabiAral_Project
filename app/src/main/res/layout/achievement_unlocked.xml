@@ -6,8 +6,9 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="346dp"
-        android:layout_height="97dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50dp"
         android:background="@drawable/pop_up_main_color"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
