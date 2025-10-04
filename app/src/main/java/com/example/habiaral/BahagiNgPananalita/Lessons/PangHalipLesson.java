@@ -233,6 +233,11 @@ public class PangHalipLesson extends AppCompatActivity {
         stopSpeaking();
         updateNavigationButtons();
 
+        if (currentPage == lessonPPT.length - 1) {
+            unlockButton.setEnabled(true);
+            unlockButton.setAlpha(1f);
+        }
+
         List<String> lines = pageLines.get(currentPage);
         if (lines != null && !lines.isEmpty()) {
             speakSequentialLines(lines, () -> {});

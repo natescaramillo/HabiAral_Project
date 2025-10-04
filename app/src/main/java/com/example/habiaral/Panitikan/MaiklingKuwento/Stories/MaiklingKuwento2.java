@@ -37,13 +37,19 @@ import java.util.Map;
 public class MaiklingKuwento2 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.cover_page_rosas, R.drawable.kwento1_page01, R.drawable.kwento1_page02,
-            R.drawable.kwento1_page03, R.drawable.kwento1_page04, R.drawable.kwento1_page05,
-            R.drawable.kwento1_page06, R.drawable.kwento1_page07, R.drawable.kwento1_page08
-            , R.drawable.kwento1_page09, R.drawable.kwento1_page10, R.drawable.kwento1_page11
-            , R.drawable.kwento1_page12, R.drawable.kwento1_page13, R.drawable.kwento1_page14
-            , R.drawable.kwento1_page15, R.drawable.kwento1_page16, R.drawable.kwento1_page17
-            , R.drawable.kwento1_page18, R.drawable.kwento1_page19
+            R.drawable.tahanan1, R.drawable.tahanan2, R.drawable.tahanan3,
+            R.drawable.tahanan4, R.drawable.tahanan5, R.drawable.tahanan6,
+            R.drawable.tahanan7, R.drawable.tahanan8, R.drawable.tahanan9,
+            R.drawable.tahanan10, R.drawable.tahanan11, R.drawable.tahanan12,
+            R.drawable.tahanan13, R.drawable.tahanan14, R.drawable.tahanan15,
+            R.drawable.tahanan16, R.drawable.tahanan17, R.drawable.tahanan18,
+            R.drawable.tahanan19, R.drawable.tahanan20, R.drawable.tahanan21,
+            R.drawable.tahanan22, R.drawable.tahanan23, R.drawable.tahanan24,
+            R.drawable.tahanan25, R.drawable.tahanan26, R.drawable.tahanan27,
+            R.drawable.tahanan28, R.drawable.tahanan29, R.drawable.tahanan30,
+            R.drawable.tahanan31, R.drawable.tahanan32, R.drawable.tahanan33,
+            R.drawable.tahanan34, R.drawable.tahanan35, R.drawable.tahanan36,
+            R.drawable.tahanan37, R.drawable.tahanan38
     };
 
     private static final String STORY_ID = "MaiklingKuwento2";

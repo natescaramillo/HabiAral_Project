@@ -108,6 +108,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private Runnable hideErrorTooltipRunnable = () -> errorTooltip.setVisibility(View.GONE);
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
+    private boolean hasSpokenMDCL1 = false;
+
 
 
     @Override
@@ -156,9 +158,13 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     tts.setVoice(selected);
                 }
 
-                tts.setSpeechRate(1.3f);
+                tts.setSpeechRate(1.2f);
 
-                new Handler().postDelayed(() -> loadCharacterLine("MDCL1"), 300);
+                // **Tawagin lang kung first time**
+                if (!hasSpokenMDCL1) {
+                    new Handler().postDelayed(() -> loadCharacterLine("MDCL1"), 300);
+                    hasSpokenMDCL1 = true; // mark as spoken
+                }
                 new Handler().postDelayed(this::showCountdownThenLoadInstruction, 4000);
 
             } else {
@@ -285,6 +291,28 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
             return;
         }
+        // ✅ Word count excluding keywords check (max 10 words only)
+        int wordCount = countWordsExcludingKeywords(sentence, currentKeywords);
+        if (wordCount > 10) {
+            showErrorTooltip("Pinakamataas na bilang ay sampung salita, ngunit hindi kabilang ang panuto.");
+
+            if (!isFinishing() && !isDestroyed()) {
+                Glide.with(this).asGif()
+                        .load(R.drawable.wrong)
+                        .transition(DrawableTransitionOptions.withCrossFade(300))
+                        .into(characterIcon);
+            }
+            new Handler().postDelayed(() -> {
+                if (!isFinishing() && !isDestroyed()) {
+                    Glide.with(this).asGif()
+                            .load(R.drawable.idle)
+                            .transition(DrawableTransitionOptions.withCrossFade(300))
+                            .into(characterIcon);
+                }
+            }, 2300);
+            return; // hindi na itutuloy ang grammar checking
+        }
+
 
         List<String> missingKeywords = new ArrayList<>();
         for (String keyword : currentKeywords) {
@@ -318,6 +346,34 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
             return;
         }
+        // 🟡 Check kung puro keywords lang (no extra words)
+        boolean onlyKeywordsUsed = true;
+        String[] cleanWords = sentence
+                .replaceAll("[^a-zA-Z0-9\\s]", "") // tanggal lahat punctuation
+                .toLowerCase()
+                .trim()
+                .split("\\s+");
+
+        for (String word : cleanWords) {
+            boolean isKeyword = false;
+            for (String keyword : currentKeywords) {
+                if (word.equalsIgnoreCase(keyword.trim())) {
+                    isKeyword = true;
+                    break;
+                }
+            }
+            if (!isKeyword) {
+                onlyKeywordsUsed = false;
+                break;
+            }
+        }
+
+        if (onlyKeywordsUsed) {
+            showErrorTooltip("HHindi maaaring basta isulat lamang ang nakasaad sa panuto. Kailangang dagdagan ito ng mga pangungusap.");
+            deductHeart(); // bawas heart
+            return; // ❌ stop, bawal mag-next
+        }
+
 
         GrammarChecker.checkGrammar(this, sentence, new GrammarChecker.GrammarCallback() {
             @Override
@@ -587,6 +643,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void loadCharacterLine(String lineId) {
+        // MDCL1 should only play once
+        if (lineId.equals("MDCL1") && hasSpokenMDCL1) return;
+
         db.collection("minigame_character_lines").document(lineId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -1200,5 +1259,26 @@ public class PalaroDalubhasa extends AppCompatActivity {
         super.onStop();
         endAllAndFinish();
     }
+    private int countWordsExcludingKeywords(String sentence, List<String> keywords) {
+        // alisin punctuation tulad ng tuldok at kuwit
+        String cleaned = sentence.replaceAll("[^a-zA-ZÀ-ÿ0-9\\s]", "").toLowerCase();
+        String[] words = cleaned.trim().split("\\s+");
+
+        int count = 0;
+        for (String word : words) {
+            boolean isKeyword = false;
+            for (String keyword : keywords) {
+                if (word.equalsIgnoreCase(keyword)) {
+                    isKeyword = true;
+                    break;
+                }
+            }
+            if (!isKeyword && !word.isEmpty()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
 
 }

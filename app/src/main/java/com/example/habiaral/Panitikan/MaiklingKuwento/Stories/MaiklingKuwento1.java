@@ -37,13 +37,16 @@ import java.util.Map;
 public class MaiklingKuwento1 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.cover_page_rosas, R.drawable.kwento1_page01, R.drawable.kwento1_page02,
-            R.drawable.kwento1_page03, R.drawable.kwento1_page04, R.drawable.kwento1_page05,
-            R.drawable.kwento1_page06, R.drawable.kwento1_page07, R.drawable.kwento1_page08
-            , R.drawable.kwento1_page09, R.drawable.kwento1_page10, R.drawable.kwento1_page11
-            , R.drawable.kwento1_page12, R.drawable.kwento1_page13, R.drawable.kwento1_page14
-            , R.drawable.kwento1_page15, R.drawable.kwento1_page16, R.drawable.kwento1_page17
-            , R.drawable.kwento1_page18, R.drawable.kwento1_page19
+            R.drawable.suyuan1, R.drawable.suyuan2, R.drawable.suyuan3,
+            R.drawable.suyuan4, R.drawable.suyuan5, R.drawable.suyuan6,
+            R.drawable.suyuan7, R.drawable.suyuan8, R.drawable.suyuan9,
+            R.drawable.suyuan10, R.drawable.suyuan11, R.drawable.suyuan12,
+            R.drawable.suyuan13, R.drawable.suyuan14, R.drawable.suyuan15,
+            R.drawable.suyuan16, R.drawable.suyuan17, R.drawable.suyuan18,
+            R.drawable.suyuan19, R.drawable.suyuan20, R.drawable.suyuan21,
+            R.drawable.suyuan22, R.drawable.suyuan23, R.drawable.suyuan24,
+            R.drawable.suyuan25, R.drawable.suyuan26, R.drawable.suyuan27,
+            R.drawable.suyuan28
     };
 
     private static final String STORY_ID = "MaiklingKuwento1";

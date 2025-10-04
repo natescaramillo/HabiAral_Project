@@ -38,13 +38,12 @@ import java.util.Map;
 public class PabulaKwento2 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.cover_page_rosas, R.drawable.kwento1_page01, R.drawable.kwento1_page02,
-            R.drawable.kwento1_page03, R.drawable.kwento1_page04, R.drawable.kwento1_page05,
-            R.drawable.kwento1_page06, R.drawable.kwento1_page07, R.drawable.kwento1_page08
-            , R.drawable.kwento1_page09, R.drawable.kwento1_page10, R.drawable.kwento1_page11
-            , R.drawable.kwento1_page12, R.drawable.kwento1_page13, R.drawable.kwento1_page14
-            , R.drawable.kwento1_page15, R.drawable.kwento1_page16, R.drawable.kwento1_page17
-            , R.drawable.kwento1_page18, R.drawable.kwento1_page19
+            R.drawable.magina1, R.drawable.magina2, R.drawable.magina3,
+            R.drawable.magina4, R.drawable.magina5, R.drawable.magina6,
+            R.drawable.magina7, R.drawable.magina8, R.drawable.magina9,
+            R.drawable.magina10, R.drawable.magina11, R.drawable.magina12,
+            R.drawable.magina13, R.drawable.magina14, R.drawable.magina15,
+            R.drawable.magina16, R.drawable.magina17, R.drawable.magina18
     };
 
     private static final String STORY_ID = "PabulaKwento2";

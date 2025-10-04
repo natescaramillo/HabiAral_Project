@@ -37,13 +37,10 @@ import java.util.Map;
 public class ParabulaKwento2 extends AppCompatActivity {
 
     private final int[] comicPages = {
-            R.drawable.cover_page_rosas, R.drawable.kwento1_page01, R.drawable.kwento1_page02,
-            R.drawable.kwento1_page03, R.drawable.kwento1_page04, R.drawable.kwento1_page05,
-            R.drawable.kwento1_page06, R.drawable.kwento1_page07, R.drawable.kwento1_page08
-            , R.drawable.kwento1_page09, R.drawable.kwento1_page10, R.drawable.kwento1_page11
-            , R.drawable.kwento1_page12, R.drawable.kwento1_page13, R.drawable.kwento1_page14
-            , R.drawable.kwento1_page15, R.drawable.kwento1_page16, R.drawable.kwento1_page17
-            , R.drawable.kwento1_page18, R.drawable.kwento1_page19
+            R.drawable.tupa1, R.drawable.tupa2, R.drawable.tupa3,
+            R.drawable.tupa4, R.drawable.tupa5, R.drawable.tupa6,
+            R.drawable.tupa7, R.drawable.tupa8, R.drawable.tupa9,
+            R.drawable.tupa10, R.drawable.tupa11
     };
 
     private static final String STORY_ID = "ParabulaKwento2";

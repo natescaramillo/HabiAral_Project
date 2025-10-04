@@ -27,7 +27,7 @@
         android:layout_marginTop="24dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/juan_01"
+        android:src="@drawable/sulayman_01"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
