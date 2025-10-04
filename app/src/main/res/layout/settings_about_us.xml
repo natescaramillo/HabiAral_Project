@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView15"
+            android:id="@+id/back_button"
             android:layout_width="33dp"
             android:layout_height="35dp"
             android:layout_marginStart="20dp"
