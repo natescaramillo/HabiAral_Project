@@ -6,7 +6,24 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background">
 
-        <ImageView
+    <Button
+        android:id="@+id/button_unlock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/rounded_button_achievement"
+        android:fontFamily="@font/special"
+        android:text="Pagsusulit"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/example_image"
+        app:layout_constraintVertical_bias="0.843" />
+
+    <ImageView
         android:id="@+id/lesson_idle_gif"
         android:layout_width="523dp"
         android:layout_height="305dp"
@@ -96,21 +113,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guideline39" />
-
-    <Button
-        android:id="@+id/button_unlock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/rounded_button_achievement"
-        android:fontFamily="@font/special"
-        android:text="Pagsusulit"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/example_image" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline38"

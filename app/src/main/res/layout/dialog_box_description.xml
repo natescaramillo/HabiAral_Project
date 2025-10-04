@@ -33,6 +33,7 @@
             android:id="@+id/constraintLayout4"
             android:layout_width="match_parent"
             android:layout_height="75dp"
+            android:padding="10dp"
             android:background="@drawable/log_out_highlight"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
