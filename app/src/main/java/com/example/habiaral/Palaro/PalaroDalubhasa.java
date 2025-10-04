@@ -408,6 +408,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         }
 
         int wordCount = countWordsExcludingKeywords(sentence, currentKeywords);
+
         if (wordCount > 10) {
             showErrorTooltip("Pinakamataas na bilang ay sampung salita, ngunit hindi kabilang ang panuto.");
 
