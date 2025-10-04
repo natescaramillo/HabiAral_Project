@@ -67,8 +67,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:paddingHorizontal="10dp">
+            android:orientation="horizontal">
 
             <!-- Diksyonaryo Card -->
             <androidx.cardview.widget.CardView
