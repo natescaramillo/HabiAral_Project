@@ -68,7 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:paddingRight="10dp">
+            android:paddingHorizontal="10dp">
 
             <!-- Diksyonaryo Card -->
             <androidx.cardview.widget.CardView
@@ -370,7 +370,7 @@
         android:layout_width="0dp"
         android:layout_height="120dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="6dp"
