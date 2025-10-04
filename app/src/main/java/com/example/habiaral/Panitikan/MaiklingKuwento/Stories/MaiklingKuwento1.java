@@ -244,9 +244,9 @@ public class MaiklingKuwento1 extends AppCompatActivity {
 
         if (currentPage < comicPages.length - 1) {
             currentPage++;
-            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
+            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.lesson_fade_out));
             storyImage.setImageResource(comicPages[currentPage]);
-            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
+            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.lesson_fade_in));
 
             updateCheckpoint(currentPage);
 
@@ -273,9 +273,9 @@ public class MaiklingKuwento1 extends AppCompatActivity {
 
         if (currentPage > 0) {
             currentPage--;
-            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
+            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.lesson_fade_out));
             storyImage.setImageResource(comicPages[currentPage]);
-            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
+            storyImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.lesson_fade_in));
 
             updateCheckpoint(currentPage);
 
