@@ -42,7 +42,7 @@ public class Pabula extends AppCompatActivity {
         initViews();
         lockAllButtons();
 
-        ImageView pabulaBack = findViewById(R.id.pabula_back);
+        ImageView pabulaBack = findViewById(R.id.back_button);
 
         pabulaBack.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);

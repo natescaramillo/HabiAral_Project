@@ -19,7 +19,6 @@
         app:shapeAppearanceOverlay="@style/RoundedStyle"
         app:srcCompat="@drawable/back_button" />
 
-
     <ImageView
         android:id="@+id/imageViewComic"
         android:layout_width="334dp"
@@ -27,9 +26,8 @@
         android:layout_marginTop="24dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/agila_01"
+        android:src="@drawable/unggoy1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/back_button" />
 
@@ -43,6 +41,7 @@
         android:text="Pagsusulit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.528"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewComic"
         app:layout_constraintVertical_bias="1.0" />

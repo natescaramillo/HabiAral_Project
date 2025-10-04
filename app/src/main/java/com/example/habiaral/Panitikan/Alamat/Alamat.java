@@ -42,7 +42,7 @@ public class Alamat extends AppCompatActivity {
         initViews();
         lockAllButtons();
 
-        ImageView alamatBack = findViewById(R.id.alamat_back);
+        ImageView alamatBack = findViewById(R.id.back_button);
 
         alamatBack.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);

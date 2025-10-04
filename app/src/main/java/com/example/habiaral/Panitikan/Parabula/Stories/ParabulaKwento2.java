@@ -86,7 +86,7 @@ public class ParabulaKwento2 extends AppCompatActivity {
             finish();
         });
 
-        storyImage = findViewById(R.id.imageViewComic4);
+        storyImage = findViewById(R.id.imageViewComic);
         unlockButton = findViewById(R.id.UnlockButton);
 
         db = FirebaseFirestore.getInstance();

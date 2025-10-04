@@ -90,8 +90,8 @@ public class EpikoKwento1 extends AppCompatActivity {
             finish();
         });
 
-        storyImage = findViewById(R.id.imageViewComic3);
-        unlockButton = findViewById(R.id.UnlockButtonEpikoKwento1);
+        storyImage = findViewById(R.id.imageViewComic);
+        unlockButton = findViewById(R.id.UnlockButton);
 
         db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

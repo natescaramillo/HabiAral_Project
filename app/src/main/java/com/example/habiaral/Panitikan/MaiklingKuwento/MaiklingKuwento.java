@@ -42,7 +42,7 @@ public class MaiklingKuwento extends AppCompatActivity {
         initViews();
         lockAllButtons();
 
-        ImageView maiklingKuwentoBack = findViewById(R.id.maikling_kuwento_back);
+        ImageView maiklingKuwentoBack = findViewById(R.id.back_button);
 
         maiklingKuwentoBack.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);

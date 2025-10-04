@@ -19,7 +19,7 @@
 
         <!-- Back button -->
         <ImageView
-            android:id="@+id/maikling_kuwento_back"
+            android:id="@+id/back_button"
             android:layout_width="28dp"
             android:layout_height="25dp"
             android:layout_marginStart="20dp"
@@ -48,7 +48,7 @@
             android:text="Maikling kuwento"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@id/maikling_kuwento_back"
+            app:layout_constraintStart_toEndOf="@id/back_button"
             app:layout_constraintEnd_toStartOf="@id/imageView14"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

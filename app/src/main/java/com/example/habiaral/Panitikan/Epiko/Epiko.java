@@ -42,7 +42,7 @@ public class Epiko extends AppCompatActivity {
         initViews();
         lockAllButtons();
 
-        ImageView epikoBack = findViewById(R.id.epiko_back);
+        ImageView epikoBack = findViewById(R.id.back_button);
 
         epikoBack.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);

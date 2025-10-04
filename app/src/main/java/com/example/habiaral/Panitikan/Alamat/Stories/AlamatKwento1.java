@@ -91,7 +91,7 @@ public class AlamatKwento1 extends AppCompatActivity {
         });
 
         storyImage = findViewById(R.id.imageViewComic);
-        unlockButton = findViewById(R.id.UnlockButtonKwento1);
+        unlockButton = findViewById(R.id.UnlockButton);
 
         db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

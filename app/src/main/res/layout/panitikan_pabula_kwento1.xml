@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,17 +19,15 @@
         app:shapeAppearanceOverlay="@style/RoundedStyle"
         app:srcCompat="@drawable/back_button" />
 
-
     <ImageView
-        android:id="@+id/imageViewComic4"
+        android:id="@+id/imageViewComic"
         android:layout_width="334dp"
         android:layout_height="517dp"
         android:layout_marginTop="24dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/sulayman_01"
+        android:src="@drawable/agila_01"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/back_button" />
 
@@ -42,8 +41,8 @@
         android:text="Pagsusulit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.528"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewComic4"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewComic"
         app:layout_constraintVertical_bias="1.0" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

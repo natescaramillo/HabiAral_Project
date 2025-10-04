@@ -32,7 +32,7 @@
         app:layout_constraintTop_toBottomOf="@+id/back_button" />
 
     <Button
-        android:id="@+id/UnlockButtonKwento1"
+        android:id="@+id/UnlockButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"

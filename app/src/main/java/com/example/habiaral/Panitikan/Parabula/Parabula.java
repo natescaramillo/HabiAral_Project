@@ -42,7 +42,7 @@ public class Parabula extends AppCompatActivity {
         initViews();
         lockAllButtons();
 
-        ImageView parabulaBack = findViewById(R.id.parabula_back);
+        ImageView parabulaBack = findViewById(R.id.back_button);
 
         parabulaBack.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
