@@ -2,12 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background"
     tools:context=".KayarianNgPangungusap.KayarianNgPangungusap">
 
+    <!-- Header -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/view1"
         android:layout_width="0dp"
@@ -15,10 +15,8 @@
         android:alpha="0.6"
         android:background="#A27B5C"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
 
         <TextView
             android:id="@+id/title"
@@ -38,9 +36,10 @@
             android:id="@+id/kayarian_back"
             android:layout_width="28dp"
             android:layout_height="25dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="15dp"
             app:layout_constraintBottom_toBottomOf="@+id/view1"
-            app:layout_constraintEnd_toStartOf="@+id/title"
+            app:layout_constraintEnd_toStartOf="@+id/guideline30"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/view1"
             app:srcCompat="@drawable/back_button" />
@@ -49,11 +48,11 @@
             android:id="@+id/imageView14"
             android:layout_width="28dp"
             android:layout_height="25dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="15dp"
             app:layout_constraintBottom_toBottomOf="@+id/view1"
             app:layout_constraintEnd_toEndOf="@+id/view1"
-            app:layout_constraintStart_toEndOf="@+id/title"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline33"
+            app:layout_constraintTop_toTopOf="@+id/view1"
             app:srcCompat="@drawable/white_question_mark" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -72,193 +71,179 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/payak"
-        android:layout_width="310dp"
-        android:layout_height="89dp"
-        android:layout_marginTop="25dp"
-        android:background="@drawable/button_color"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
-        app:layout_constraintHorizontal_bias="0.499"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/view1"
-        app:layout_constraintVertical_bias="0.0">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/special"
-            android:text="PAYAK"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
-        <FrameLayout
-            android:id="@+id/payakLock"
-            android:layout_width="49dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/square"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/design_lock" />
-        </FrameLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/tambalan"
-        android:layout_width="310dp"
-        android:layout_height="89dp"
-        android:layout_marginTop="10dp"
-        android:alpha="0.5"
-        android:background="@drawable/button_color"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/payak">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/special"
-            android:text="TAMBALAN"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
-        <FrameLayout
-            android:id="@+id/tambalanLock"
-            android:layout_width="49dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/square">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/design_lock" />
-        </FrameLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/hugnayan"
-        android:layout_width="310dp"
-        android:layout_height="89dp"
-        android:layout_marginTop="10dp"
-        android:alpha="0.5"
-        android:background="@drawable/button_color"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tambalan">
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/special"
-            android:text="HUGNAYAN"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingVertical="30dp">
 
-        <FrameLayout
-            android:id="@+id/hugnayanLock"
-            android:layout_width="49dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/square">
+            <!-- PAYAK -->
+            <LinearLayout
+                android:id="@+id/payak"
+                android:layout_width="333dp"
+                android:layout_height="86dp"
+                android:background="@drawable/button_color"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/design_lock" />
-        </FrameLayout>
-    </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:text="PAYAK"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
 
-    <LinearLayout
-        android:id="@+id/langkapan"
-        android:layout_width="310dp"
-        android:layout_height="89dp"
-        android:layout_marginTop="10dp"
-        android:alpha="0.5"
-        android:background="@drawable/button_color"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/hugnayan">
+                <FrameLayout
+                    android:id="@+id/payakLock"
+                    android:layout_width="49dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/square"
+                    android:visibility="gone">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/special"
-            android:text="LANGKAPAN"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/design_lock" />
+                </FrameLayout>
+            </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/langkapanLock"
-            android:layout_width="49dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/square">
+            <!-- TAMBALAN -->
+            <LinearLayout
+                android:id="@+id/tambalan"
+                android:layout_width="333dp"
+                android:layout_height="86dp"
+                android:layout_marginTop="10dp"
+                android:alpha="0.5"
+                android:background="@drawable/button_color"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/design_lock" />
-        </FrameLayout>
-    </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:text="TAMBALAN"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.10" />
+                <FrameLayout
+                    android:id="@+id/tambalanLock"
+                    android:layout_width="49dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/square">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.90" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/design_lock" />
+                </FrameLayout>
+            </LinearLayout>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.70" />
+            <!-- HUGNAYAN -->
+            <LinearLayout
+                android:id="@+id/hugnayan"
+                android:layout_width="333dp"
+                android:layout_height="86dp"
+                android:layout_marginTop="10dp"
+                android:alpha="0.5"
+                android:background="@drawable/button_color"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:text="HUGNAYAN"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <FrameLayout
+                    android:id="@+id/hugnayanLock"
+                    android:layout_width="49dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/square">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/design_lock" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <!-- LANGKAPAN -->
+            <LinearLayout
+                android:id="@+id/langkapan"
+                android:layout_width="333dp"
+                android:layout_height="86dp"
+                android:layout_marginTop="10dp"
+                android:alpha="0.5"
+                android:background="@drawable/button_color"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:text="LANGKAPAN"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <FrameLayout
+                    android:id="@+id/langkapanLock"
+                    android:layout_width="49dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/square">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/design_lock" />
+                </FrameLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
