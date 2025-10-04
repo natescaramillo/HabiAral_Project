@@ -113,402 +113,151 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.palaro_dalubhasa);
-
-        connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            networkCallback = new ConnectivityManager.NetworkCallback() {
-                @Override
-                public void onLost(android.net.Network network) {
-                    super.onLost(network);
-                    runOnUiThread(() -> {
-                        finishQuiz();
-                    });
-                }
-            };
-            connectivityManager.registerDefaultNetworkCallback(networkCallback);
-        } else {
-        }
-
-        tts = new TextToSpeech(this, status -> {
-            if (status == TextToSpeech.SUCCESS) {
-                isTtsReady = true;
-
-                Locale tagalogLocale = new Locale("fil", "PH");
-                int result = tts.setLanguage(tagalogLocale);
-
-                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    Locale fallbackLocale = new Locale("tl", "PH");
-                    result = tts.setLanguage(fallbackLocale);
-                }
-
-                Voice selected = null;
-                for (Voice v : tts.getVoices()) {
-                    Locale vLocale = v.getLocale();
-                    if (vLocale != null &&
-                            (vLocale.getLanguage().equals("fil") || vLocale.getLanguage().equals("tl"))) {
-                        selected = v;
-                        break;
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.palaro_dalubhasa);
+    
+            connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+    
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                networkCallback = new ConnectivityManager.NetworkCallback() {
+                    @Override
+                    public void onLost(android.net.Network network) {
+                        super.onLost(network);
+                        runOnUiThread(() -> {
+                            finishQuiz();
+                        });
                     }
-                }
-                if (selected != null) {
-                    tts.setVoice(selected);
-                }
-
-                tts.setSpeechRate(1.2f);
-
-                // **Tawagin lang kung first time**
-                if (!hasSpokenMDCL1) {
-                    new Handler().postDelayed(() -> loadCharacterLine("MDCL1"), 300);
-                    hasSpokenMDCL1 = true; // mark as spoken
-                }
-                new Handler().postDelayed(this::showCountdownThenLoadInstruction, 4000);
-
+                };
+                connectivityManager.registerDefaultNetworkCallback(networkCallback);
             } else {
-                Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
             }
-        });
-
-
-        dalubhasaInstruction = findViewById(R.id.dalubhasa_instructionText);
-        grammarFeedbackText = findViewById(R.id.grammar_feedback);
-        userSentenceInput = findViewById(R.id.dalubhasa_answer);
-        timerBar = findViewById(R.id.timerBar);
-        btnTapos = findViewById(R.id.UnlockButtonPalaro);
-        btnSuriin = findViewById(R.id.btnSuriin);
-        Button btnUmalis = findViewById(R.id.UnlockButtonPalaro1);
-        errorIcon = findViewById(R.id.error_icon);
-        errorTooltip = findViewById(R.id.errorTooltip);
-        characterIcon = findViewById(R.id.characterIcon);
-
-        if (!isFinishing() && !isDestroyed()) {
-            Glide.with(getApplicationContext())
-                    .asGif()
-                    .load(R.drawable.idle)
-                    .into(characterIcon);
-        }
-
-        btnUmalis.setOnClickListener(v -> {
-            playButtonClickSound();
-            showUmalisDialog();
-        });
-
-        heartIcons = new ImageView[]{
-                findViewById(R.id.heart01),
-                findViewById(R.id.heart02),
-                findViewById(R.id.heart03),
-                findViewById(R.id.heart04),
-                findViewById(R.id.heart05)
-        };
-
-        db = FirebaseFirestore.getInstance();
-
-        userSentenceInput.setEnabled(false);
-        btnTapos.setEnabled(false);
-
-        btnTapos.setOnClickListener(v -> {
-            if (hasSubmitted) {
-
-                nextQuestion();
-                userSentenceInput.setEnabled(true);
-                userSentenceInput.setText("");
-                btnTapos.setEnabled(true);
-
-                String firebaseUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                String questionId = currentDalubhasaID;
-                saveDalubhasaAnswer(firebaseUID, questionId);
-
-                hasSubmitted = false;
-            } else {
-                showErrorTooltip("Pakipindot ang Enter para i-check ang grammar muna.");
+    
+            tts = new TextToSpeech(this, status -> {
+                if (status == TextToSpeech.SUCCESS) {
+                    isTtsReady = true;
+    
+                    Locale tagalogLocale = new Locale("fil", "PH");
+                    int result = tts.setLanguage(tagalogLocale);
+    
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Locale fallbackLocale = new Locale("tl", "PH");
+                        result = tts.setLanguage(fallbackLocale);
+                    }
+    
+                    Voice selected = null;
+                    for (Voice v : tts.getVoices()) {
+                        Locale vLocale = v.getLocale();
+                        if (vLocale != null &&
+                                (vLocale.getLanguage().equals("fil") || vLocale.getLanguage().equals("tl"))) {
+                            selected = v;
+                            break;
+                        }
+                    }
+                    if (selected != null) {
+                        tts.setVoice(selected);
+                    }
+    
+                    tts.setSpeechRate(1.2f);
+    
+                    // **Tawagin lang kung first time**
+                    if (!hasSpokenMDCL1) {
+                        new Handler().postDelayed(() -> loadCharacterLine("MDCL1"), 300);
+                        hasSpokenMDCL1 = true; // mark as spoken
+                    }
+                    new Handler().postDelayed(this::showCountdownThenLoadInstruction, 4000);
+    
+                } else {
+                    Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
+                }
+            });
+    
+    
+            dalubhasaInstruction = findViewById(R.id.dalubhasa_instructionText);
+            grammarFeedbackText = findViewById(R.id.grammar_feedback);
+            userSentenceInput = findViewById(R.id.dalubhasa_answer);
+            timerBar = findViewById(R.id.timerBar);
+            btnTapos = findViewById(R.id.UnlockButtonPalaro);
+            btnSuriin = findViewById(R.id.btnSuriin);
+            Button btnUmalis = findViewById(R.id.UnlockButtonPalaro1);
+            errorIcon = findViewById(R.id.error_icon);
+            errorTooltip = findViewById(R.id.errorTooltip);
+            characterIcon = findViewById(R.id.characterIcon);
+    
+            if (!isFinishing() && !isDestroyed()) {
+                Glide.with(getApplicationContext())
+                        .asGif()
+                        .load(R.drawable.idle)
+                        .into(characterIcon);
             }
-        });
-
-        btnSuriin.setOnClickListener(v -> {
-            playButtonClickSound();
-            checkGrammar();
-        });
-
-        userSentenceInput.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE ||
-                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                checkGrammar();
-                return true;
-            }
-            return false;
-        });
-
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
+    
+            btnUmalis.setOnClickListener(v -> {
                 playButtonClickSound();
-                showBackConfirmationDialog();
-            }
-        });
-
-    }
-
-    private void checkGrammar() {
-        String sentence = userSentenceInput.getText().toString().trim();
-        if (sentence.isEmpty()) {
-            showErrorTooltip("Pakisulat ang iyong pangungusap.");
-            if (!isFinishing() && !isDestroyed()) {
-                Glide.with(this).asGif()
-                        .load(R.drawable.wrong)
-                        .transition(DrawableTransitionOptions.withCrossFade(300))
-                        .into(characterIcon);
-            }
-            new Handler().postDelayed(() -> {
+                showUmalisDialog();
+            });
+    
+            heartIcons = new ImageView[]{
+                    findViewById(R.id.heart01),
+                    findViewById(R.id.heart02),
+                    findViewById(R.id.heart03),
+                    findViewById(R.id.heart04),
+                    findViewById(R.id.heart05)
+            };
+    
+            db = FirebaseFirestore.getInstance();
+    
+            userSentenceInput.setEnabled(false);
+            btnTapos.setEnabled(false);
+    
+            btnTapos.setOnClickListener(v -> {
+                if (hasSubmitted) {
+    
+                    nextQuestion();
+                    userSentenceInput.setEnabled(true);
+                    userSentenceInput.setText("");
+                    btnTapos.setEnabled(true);
+    
+                    String firebaseUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    String questionId = currentDalubhasaID;
+                    saveDalubhasaAnswer(firebaseUID, questionId);
+    
+                    hasSubmitted = false;
+                } else {
+                    showErrorTooltip("Pakipindot ang Enter para i-check ang grammar muna.");
+                }
+            });
+    
+            btnSuriin.setOnClickListener(v -> {
+                playButtonClickSound();
+                checkGrammar();
+            });
+    
+            userSentenceInput.setOnEditorActionListener((v, actionId, event) -> {
+                if (actionId == EditorInfo.IME_ACTION_DONE ||
+                        (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                    checkGrammar();
+                    return true;
+                }
+                return false;
+            });
+    
+            getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
+                    playButtonClickSound();
+                    showBackConfirmationDialog();
+                }
+            });
+    
+        }
+    
+        private void checkGrammar() {
+            String sentence = userSentenceInput.getText().toString().trim();
+            if (sentence.isEmpty()) {
+                showErrorTooltip("Pakisulat ang iyong pangungusap.");
                 if (!isFinishing() && !isDestroyed()) {
                     Glide.with(this).asGif()
-                            .load(R.drawable.idle)
-                            .transition(DrawableTransitionOptions.withCrossFade(300))
-                            .into(characterIcon);
-                }
-            }, 2300);
-
-            return;
-        } else if (!sentence.endsWith(".")) {
-            showErrorTooltip("Siguraduhing nagtatapos ang pangungusap sa tuldok (.)");
-
-            if (!isFinishing() && !isDestroyed()) {
-                Glide.with(this).asGif()
-                        .load(R.drawable.wrong)
-                        .transition(DrawableTransitionOptions.withCrossFade(300))
-                        .into(characterIcon);
-            }
-            new Handler().postDelayed(() -> {
-                if (!isFinishing() && !isDestroyed()) {
-                    Glide.with(this).asGif()
-                            .load(R.drawable.idle)
-                            .transition(DrawableTransitionOptions.withCrossFade(300))
-                            .into(characterIcon);
-                }
-            }, 2300);
-
-            return;
-        }
-        // ✅ Word count excluding keywords check (max 10 words only)
-        int wordCount = countWordsExcludingKeywords(sentence, currentKeywords);
-        if (wordCount > 10) {
-            showErrorTooltip("Pinakamataas na bilang ay sampung salita, ngunit hindi kabilang ang panuto.");
-
-            if (!isFinishing() && !isDestroyed()) {
-                Glide.with(this).asGif()
-                        .load(R.drawable.wrong)
-                        .transition(DrawableTransitionOptions.withCrossFade(300))
-                        .into(characterIcon);
-            }
-            new Handler().postDelayed(() -> {
-                if (!isFinishing() && !isDestroyed()) {
-                    Glide.with(this).asGif()
-                            .load(R.drawable.idle)
-                            .transition(DrawableTransitionOptions.withCrossFade(300))
-                            .into(characterIcon);
-                }
-            }, 2300);
-            return; // hindi na itutuloy ang grammar checking
-        }
-
-
-        List<String> missingKeywords = new ArrayList<>();
-        for (String keyword : currentKeywords) {
-            if (!sentence.toLowerCase().contains(keyword.toLowerCase())) {
-                missingKeywords.add(keyword);
-            }
-        }
-
-        if (!missingKeywords.isEmpty()) {
-            String details = "Kulang: " + String.join(", ", missingKeywords);
-            errorIcon.setVisibility(View.VISIBLE);
-            errorTooltip.setVisibility(View.VISIBLE);
-            errorTooltip.setText(details);
-            speakLine("Wala ka ng kinakailangang bahagi sa iyong sagot. Pakibasa muli ang mga panuto.");
-            loadCharacterLine(currentDalubhasaID);
-
-            if (!isFinishing() && !isDestroyed()) {
-                Glide.with(this).asGif()
-                        .load(R.drawable.wrong)
-                        .transition(DrawableTransitionOptions.withCrossFade(300))
-                        .into(characterIcon);
-            }
-            new Handler().postDelayed(() -> {
-                if (!isFinishing() && !isDestroyed()) {
-                    Glide.with(this).asGif()
-                            .load(R.drawable.idle)
-                            .transition(DrawableTransitionOptions.withCrossFade(300))
-                            .into(characterIcon);
-                }
-            }, 2300);
-
-            return;
-        }
-        // 🟡 Check kung puro keywords lang (no extra words)
-        boolean onlyKeywordsUsed = true;
-        String[] cleanWords = sentence
-                .replaceAll("[^a-zA-Z0-9\\s]", "") // tanggal lahat punctuation
-                .toLowerCase()
-                .trim()
-                .split("\\s+");
-
-        for (String word : cleanWords) {
-            boolean isKeyword = false;
-            for (String keyword : currentKeywords) {
-                if (word.equalsIgnoreCase(keyword.trim())) {
-                    isKeyword = true;
-                    break;
-                }
-            }
-            if (!isKeyword) {
-                onlyKeywordsUsed = false;
-                break;
-            }
-        }
-
-        if (onlyKeywordsUsed) {
-            showErrorTooltip("HHindi maaaring basta isulat lamang ang nakasaad sa panuto. Kailangang dagdagan ito ng mga pangungusap.");
-            deductHeart(); // bawas heart
-            return; // ❌ stop, bawal mag-next
-        }
-
-
-        GrammarChecker.checkGrammar(this, sentence, new GrammarChecker.GrammarCallback() {
-            @Override
-            public void onResult(String response) {
-                runOnUiThread(() -> {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        JSONArray matches = jsonObject.getJSONArray("matches");
-                        currentErrorCount = matches.length();
-
-                        if (matches.length() > 0 && !hasSubmitted) {
-                            Toast.makeText(PalaroDalubhasa.this, "Mali ang grammar! Heart deducted.", Toast.LENGTH_SHORT).show();
-                            deductHeart();
-
-                            stopAllTimerSounds();
-                        }
-
-                        highlightGrammarIssues(response, sentence);
-                        hasSubmitted = true;
-                        userSentenceInput.setEnabled(false);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        grammarFeedbackText.setText("Invalid grammar response format.");
-                    }
-                });
-            }
-
-            @Override
-            public void onError(String error) {
-                runOnUiThread(() -> {
-                    Toast.makeText(PalaroDalubhasa.this, "Grammar Check Failed: " + error, Toast.LENGTH_SHORT).show();
-
-                    if (!isFinishing() && !isDestroyed()) {
-                        Glide.with(PalaroDalubhasa.this).asGif()
-                                .load(R.drawable.wrong)
-                                .transition(DrawableTransitionOptions.withCrossFade(300))
-                                .into(characterIcon);
-                    }
-                    new Handler().postDelayed(() -> {
-                        if (!isFinishing() && !isDestroyed()) {
-                            Glide.with(PalaroDalubhasa.this).asGif()
-                                    .load(R.drawable.idle)
-                                    .transition(DrawableTransitionOptions.withCrossFade(300))
-                                    .into(characterIcon);
-                        }
-                    }, 2300);
-                });
-            }
-        });
-    }
-
-    private void restartTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-        stopAllTimerSounds();
-        startTimer();
-    }
-
-    private void showErrorTooltip(String message) {
-        errorTooltip.setText(message);
-        errorIcon.setVisibility(View.VISIBLE);
-        errorTooltip.setVisibility(View.VISIBLE);
-
-        errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
-
-        errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 2500);
-
-        errorIcon.setOnClickListener(v -> {
-            if (errorTooltip.getVisibility() == View.VISIBLE) {
-                errorTooltip.setVisibility(View.GONE);
-            } else {
-                errorTooltip.setVisibility(View.VISIBLE);
-                errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
-                errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 2500);
-            }
-        });
-    }
-
-
-    private void showUmalisDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(PalaroDalubhasa.this);
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
-
-        Button btnOo = dialogView.findViewById(R.id.button5);
-        Button btnHindi = dialogView.findViewById(R.id.button6);
-
-        builder.setView(dialogView);
-        AlertDialog dialog = builder.create();
-        dialog.setCancelable(false);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
-        btnOo.setOnClickListener(v -> {
-            playButtonClickSound();
-
-            if (countDownTimer != null) countDownTimer.cancel();
-            if (tts != null) tts.stop();
-            dialog.dismiss();
-            finish();
-        });
-
-        btnHindi.setOnClickListener(v -> {
-            playButtonClickSound();
-            dialog.dismiss();
-        });
-
-        dialog.show();
-    }
-
-
-    private void highlightGrammarIssues(String response, String originalSentence) {
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            JSONArray matches = jsonObject.getJSONArray("matches");
-            currentErrorCount = matches.length();
-            int scoreForThisSentence;
-
-            if (matches.length() == 0) {
-                scoreForThisSentence = 15;
-                dalubhasaScore += scoreForThisSentence;
-                perfectAnswerCount++;
-                playCorrectSound();
-
-                if (countDownTimer != null) {
-                    countDownTimer.cancel();
-                }
-                stopAllTimerSounds();
-
-                btnSuriin.setVisibility(View.GONE);
-                btnTapos.setVisibility(View.VISIBLE);
-
-                if (!isFinishing() && !isDestroyed()) {
-                    Glide.with(this).asGif()
-                            .load(R.drawable.right_1)
+                            .load(R.drawable.wrong)
                             .transition(DrawableTransitionOptions.withCrossFade(300))
                             .into(characterIcon);
                 }
@@ -519,494 +268,769 @@ public class PalaroDalubhasa extends AppCompatActivity {
                                 .transition(DrawableTransitionOptions.withCrossFade(300))
                                 .into(characterIcon);
                     }
-                }, 3000);
-
-                loadCharacterLine("MDCL2");
-            } else {
-                if (matches.length() == 1) {
-                    scoreForThisSentence = 13;
-                } else {
-                    scoreForThisSentence = 10;
-                }
-
-                dalubhasaScore += scoreForThisSentence;
-
-                playWrongSound();
-                Glide.with(this)
-                        .asGif()
-                        .load(R.drawable.wrong)
-                        .transition(DrawableTransitionOptions.withCrossFade(300))
-                        .into(characterIcon);
-                new Handler().postDelayed(() -> {
-                    Glide.with(this)
-                            .asGif()
-                            .load(R.drawable.idle)
+                }, 2300);
+    
+                return;
+            } else if (!sentence.endsWith(".")) {
+                showErrorTooltip("Siguraduhing nagtatapos ang pangungusap sa tuldok (.)");
+    
+                if (!isFinishing() && !isDestroyed()) {
+                    Glide.with(this).asGif()
+                            .load(R.drawable.wrong)
                             .transition(DrawableTransitionOptions.withCrossFade(300))
                             .into(characterIcon);
-                }, 2300);
-
-                if (scoreForThisSentence == 13 || scoreForThisSentence == 15) {
-                    perfectAnswerCount++;
-                } else {
-                    perfectAnswerCount = 0;
                 }
-
-                if (perfectAnswerCount >= 5) {
-                    unlockSagotBayaniAchievement();
-                }
-
-                loadCharacterLine("MDCL3");
-
                 new Handler().postDelayed(() -> {
-                    try {
-                        SpannableStringBuilder builder = new SpannableStringBuilder();
-                        builder.append("Maling salita o grammar:\n\n");
-
-                        SpannableString highlightedSentence = new SpannableString(originalSentence);
-                        for (int i = 0; i < matches.length(); i++) {
-                            JSONObject match = matches.getJSONObject(i);
-                            int offset = match.getInt("offset");
-                            int length = match.getInt("length");
-                            highlightedSentence.setSpan(new UnderlineSpan(), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            highlightedSentence.setSpan(new ForegroundColorSpan(Color.RED), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-                        builder.append(highlightedSentence);
-                        builder.append("\n\n");
-
-                        for (int i = 0; i < matches.length(); i++) {
-                            JSONObject match = matches.getJSONObject(i);
-                            int offset = match.getInt("offset");
-                            int length = match.getInt("length");
-                            String wrongWord = originalSentence.substring(offset, offset + length);
-                            String message = match.optString("message", "Error sa grammar");
-                            builder.append("- ").append(wrongWord).append(": ").append(message).append("\n");
-                        }
-
-                        errorTooltip.setText(builder);
-                        errorTooltip.setVisibility(View.VISIBLE);
-                        errorIcon.setVisibility(View.VISIBLE);
-
-                        errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
-                        errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 3500);
-
-                        errorIcon.setOnClickListener(v -> {
-                            if (errorTooltip.getVisibility() == View.VISIBLE) {
-                                errorTooltip.setVisibility(View.GONE);
-                            } else {
-                                errorTooltip.setVisibility(View.VISIBLE);
+                    if (!isFinishing() && !isDestroyed()) {
+                        Glide.with(this).asGif()
+                                .load(R.drawable.idle)
+                                .transition(DrawableTransitionOptions.withCrossFade(300))
+                                .into(characterIcon);
+                    }
+                }, 2300);
+    
+                return;
+            }
+            // ✅ Word count excluding keywords check (max 10 words only)
+            int wordCount = countWordsExcludingKeywords(sentence, currentKeywords);
+            if (wordCount > 10) {
+                showErrorTooltip("Pinakamataas na bilang ay sampung salita, ngunit hindi kabilang ang panuto.");
+    
+                if (!isFinishing() && !isDestroyed()) {
+                    Glide.with(this).asGif()
+                            .load(R.drawable.wrong)
+                            .transition(DrawableTransitionOptions.withCrossFade(300))
+                            .into(characterIcon);
+                }
+                new Handler().postDelayed(() -> {
+                    if (!isFinishing() && !isDestroyed()) {
+                        Glide.with(this).asGif()
+                                .load(R.drawable.idle)
+                                .transition(DrawableTransitionOptions.withCrossFade(300))
+                                .into(characterIcon);
+                    }
+                }, 2300);
+                return; // hindi na itutuloy ang grammar checking
+            }
+    
+    
+            List<String> missingKeywords = new ArrayList<>();
+            for (String keyword : currentKeywords) {
+                if (!sentence.toLowerCase().contains(keyword.toLowerCase())) {
+                    missingKeywords.add(keyword);
+                }
+            }
+    
+            if (!missingKeywords.isEmpty()) {
+                String details = "Kulang: " + String.join(", ", missingKeywords);
+                errorIcon.setVisibility(View.VISIBLE);
+                errorTooltip.setVisibility(View.VISIBLE);
+                errorTooltip.setText(details);
+                speakLine("Wala ka ng kinakailangang bahagi sa iyong sagot. Pakibasa muli ang mga panuto.");
+                loadCharacterLine(currentDalubhasaID);
+    
+                if (!isFinishing() && !isDestroyed()) {
+                    Glide.with(this).asGif()
+                            .load(R.drawable.wrong)
+                            .transition(DrawableTransitionOptions.withCrossFade(300))
+                            .into(characterIcon);
+                }
+                new Handler().postDelayed(() -> {
+                    if (!isFinishing() && !isDestroyed()) {
+                        Glide.with(this).asGif()
+                                .load(R.drawable.idle)
+                                .transition(DrawableTransitionOptions.withCrossFade(300))
+                                .into(characterIcon);
+                    }
+                }, 2300);
+    
+                return;
+            }
+            // 🟡 Check kung puro keywords lang (no extra words)
+            boolean onlyKeywordsUsed = true;
+    
+    // Clean the sentence
+            String cleanedSentence = sentence
+                    .replaceAll("[^a-zA-Z0-9\\s]", "")
+                    .toLowerCase()
+                    .trim();
+    
+    // Check if the sentence only contains keywords (ignoring word order)
+            for (String keyword : currentKeywords) {
+                String cleanKeyword = keyword.toLowerCase().trim();
+    
+                // If the sentence contains the keyword phrase, remove it temporarily
+                if (cleanedSentence.contains(cleanKeyword)) {
+                    cleanedSentence = cleanedSentence.replace(cleanKeyword, "").trim();
+                }
+            }
+    
+    // After removing keywords, check if anything else remains besides spaces
+            if (!cleanedSentence.isBlank()) {
+                onlyKeywordsUsed = false;
+            }
+    
+            if (onlyKeywordsUsed) {
+                showErrorTooltip("Hindi maaaring basta isulat lamang ang nakasaad sa panuto. Kailangang dagdagan ito ng mga pangungusap.");
+                deductHeart(); // bawas heart
+                return; // ❌ stop, bawal mag-next
+            }
+    
+    
+            GrammarChecker.checkGrammar(this, sentence, new GrammarChecker.GrammarCallback() {
+                @Override
+                public void onResult(String response) {
+                    runOnUiThread(() -> {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray matches = jsonObject.getJSONArray("matches");
+                            currentErrorCount = matches.length();
+    
+                            if (matches.length() > 0 && !hasSubmitted) {
+                                Toast.makeText(PalaroDalubhasa.this, "Mali ang grammar! Heart deducted.", Toast.LENGTH_SHORT).show();
+                                deductHeart();
+    
+                                stopAllTimerSounds();
                             }
-                        });
-
-                        new Handler().postDelayed(this::nextQuestion, 4000);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        grammarFeedbackText.setText("Error habang hinahati ang mga mali.");
-                    }
-                }, 2000);
-            }
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            grammarFeedbackText.setText("Invalid grammar response format.");
-        }
-    }
-
-    private void showBackConfirmationDialog() {
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(dialogView)
-                .setCancelable(false)
-                .create();
-
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        }
-
-        Button yesButton = dialogView.findViewById(R.id.button5);
-        Button noButton = dialogView.findViewById(R.id.button6);
-
-        yesButton.setOnClickListener(v -> {
-            playButtonClickSound();
-            if (countDownTimer != null) countDownTimer.cancel();
-            if (tts != null) tts.stop();
-            dialog.dismiss();
-            finish();
-        });
-
-        noButton.setOnClickListener(v -> {
-            playButtonClickSound();
-            dialog.dismiss();
-        });
-        dialog.show();
-    }
-
-    private void loadCharacterLine(String lineId) {
-        // MDCL1 should only play once
-        if (lineId.equals("MDCL1") && hasSpokenMDCL1) return;
-
-        db.collection("minigame_character_lines").document(lineId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String line = documentSnapshot.getString("line");
-
-                        if (line != null && !line.isEmpty()) {
-                            speakLine(line);
+    
+                            highlightGrammarIssues(response, sentence);
+                            hasSubmitted = true;
+                            userSentenceInput.setEnabled(false);
+    
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            grammarFeedbackText.setText("Invalid grammar response format.");
                         }
-                    }
-                });
-    }
-
-    private void loadAllDalubhasaInstructions() {
-        db.collection("dalubhasa")
-                .orderBy(FieldPath.documentId())
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    if (!querySnapshot.isEmpty()) {
-                        instructionList.clear();
-                        keywordList.clear();
-
-                        for (QueryDocumentSnapshot document : querySnapshot) {
-                            String instruction = document.getString("instruction");
-                            List<String> keywords = (List<String>) document.get("keywords");
-
-                            instructionList.add(instruction);
-                            keywordList.add(keywords);
-                        }
-
-                        shuffleQuestions();
-
-                        nextQuestion();
-                    }
-                });
-    }
-
-    private void shuffleQuestions() {
-        List<Integer> indices = new ArrayList<>();
-        for (int i = 0; i < instructionList.size(); i++) {
-            indices.add(i);
-        }
-        java.util.Collections.shuffle(indices);
-
-        List<String> shuffledInstructions = new ArrayList<>();
-        List<List<String>> shuffledKeywords = new ArrayList<>();
-
-        for (int idx : indices) {
-            shuffledInstructions.add(instructionList.get(idx));
-            shuffledKeywords.add(keywordList.get(idx));
-        }
-
-        instructionList = shuffledInstructions;
-        keywordList = shuffledKeywords;
-    }
-
-    private void speakLine(String text) {
-        if (text == null || text.trim().isEmpty()) return;
-
-        if (isTtsReady && tts != null) {
-            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
-        }
-    }
-
-    private void nextQuestion() {
-        if (isGameOver) return;
-
-        if (currentQuestionNumber < instructionList.size()) {
-            String instruction = instructionList.get(currentQuestionNumber);
-            dalubhasaInstruction.setText(instruction);
-            currentKeywords = keywordList.get(currentQuestionNumber);
-            currentDalubhasaID = "D" + (currentQuestionNumber + 1);
-
-            userSentenceInput.setText("");
-            userSentenceInput.setEnabled(true);
-
-            btnSuriin.setVisibility(View.VISIBLE);
-            btnTapos.setVisibility(View.GONE);
-
-            btnTapos.setEnabled(true);
-            hasSubmitted = false;
-            grammarFeedbackText.setText("");
-            currentQuestionNumber++;
-
-            startTimer();
-        } else {
-            if (countDownTimer != null) countDownTimer.cancel();
-            saveDalubhasaScore();
-            finishQuiz();
-        }
-    }
-
-    private void showCountdownThenLoadInstruction() {
-        if (countdownHandler != null) {
-            countdownHandler.removeCallbacksAndMessages(null);
-        }
-        countdownHandler = new Handler();
-        final int[] countdown = {3};
-
-        if (countdownBeepPlayer != null) {
-            try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
-            countdownBeepPlayer.release();
-            countdownBeepPlayer = null;
-        }
-
-        countdownRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (isFinishing() || isDestroyed() || isGameOver) {
-                    if (countdownBeepPlayer != null) {
-                        try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
-                        countdownBeepPlayer.release();
-                        countdownBeepPlayer = null;
-                    }
-                    return;
-                }
-
-                if (countdown[0] > 0) {
-                    dalubhasaInstruction.setText(String.valueOf(countdown[0]));
-
-                    if (countdownBeepPlayer != null) {
-                        try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
-                        countdownBeepPlayer.release();
-                        countdownBeepPlayer = null;
-                    }
-                    countdownBeepPlayer = MediaPlayer.create(PalaroDalubhasa.this, R.raw.beep);
-                    countdownBeepPlayer.setOnCompletionListener(mp -> {
-                        try { mp.release(); } catch (Exception ignored) {}
-                        if (mp == countdownBeepPlayer) countdownBeepPlayer = null;
                     });
-                    countdownBeepPlayer.start();
-
-                    countdown[0]--;
-                    countdownHandler.postDelayed(this, 1000);
-                } else {
-                    dalubhasaInstruction.setText("");
-                    if (countdownBeepPlayer != null) {
-                        try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
-                        countdownBeepPlayer.release();
-                        countdownBeepPlayer = null;
-                    }
-                    if (!isFinishing() && !isDestroyed() && !isGameOver) {
-                        loadAllDalubhasaInstructions();
-                        startTimer();
-                    }
                 }
-            }
-        };
-
-        countdownHandler.post(countdownRunnable);
-    }
-
-
-    private void startTimer() {
-
-        timeLeft = TOTAL_TIME;
-        lastTimerZone = "";
-
-        if (countDownTimer != null) countDownTimer.cancel();
-        stopAllTimerSounds();
-
-        countDownTimer = new CountDownTimer(TOTAL_TIME, 100) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timeLeft = millisUntilFinished;
-                int percent = (int) (timeLeft * 100 / TOTAL_TIME);
-                timerBar.setProgress(percent);
-
-                if (percent <= 25) {
-                    updateTimerZone("RED", R.drawable.timer_color_red, R.raw.red_timer);
-                } else if (percent <= 50) {
-                    updateTimerZone("ORANGE", R.drawable.timer_color_orange, R.raw.orange_timer);
-                } else {
-                    updateTimerZone("GREEN", R.drawable.timer_color_green, R.raw.green_timer);
+    
+                @Override
+                public void onError(String error) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(PalaroDalubhasa.this, "Grammar Check Failed: " + error, Toast.LENGTH_SHORT).show();
+    
+                        if (!isFinishing() && !isDestroyed()) {
+                            Glide.with(PalaroDalubhasa.this).asGif()
+                                    .load(R.drawable.wrong)
+                                    .transition(DrawableTransitionOptions.withCrossFade(300))
+                                    .into(characterIcon);
+                        }
+                        new Handler().postDelayed(() -> {
+                            if (!isFinishing() && !isDestroyed()) {
+                                Glide.with(PalaroDalubhasa.this).asGif()
+                                        .load(R.drawable.idle)
+                                        .transition(DrawableTransitionOptions.withCrossFade(300))
+                                        .into(characterIcon);
+                            }
+                        }, 2300);
+                    });
                 }
+            });
+        }
+    
+        private void restartTimer() {
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
             }
-
-            @Override
-            public void onFinish() {
-                timerBar.setProgress(0);
-                userSentenceInput.setEnabled(false);
-                btnTapos.setEnabled(false);
-
-                stopAllTimerSounds();
-
-                loadCharacterLine("MCL5");
-                saveDalubhasaScore();
-            }
-        }.start();
-    }
-
-    private void updateTimerZone(String zone, int drawableRes, int soundRes) {
-        if (!lastTimerZone.equals(zone)) {
             stopAllTimerSounds();
-            timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, drawableRes));
-            playTimerSound(soundRes);
-            lastTimerZone = zone;
+            startTimer();
         }
-    }
-
-    private void stopAllTimerSounds() {
-        if (greenTimerSoundPlayer != null) { greenTimerSoundPlayer.stop(); greenTimerSoundPlayer.release(); greenTimerSoundPlayer = null; }
-        if (orangeTimerSoundPlayer != null) { orangeTimerSoundPlayer.stop(); orangeTimerSoundPlayer.release(); orangeTimerSoundPlayer = null; }
-        if (redTimerSoundPlayer != null) { redTimerSoundPlayer.stop(); redTimerSoundPlayer.release(); redTimerSoundPlayer = null; }
-
-        greenSound = false;
-        orangeSound = false;
-        redSound = false;
-    }
-
-    private void playTimerSound(int soundResId) {
-        stopAllTimerSounds();
-
-        MediaPlayer mp = MediaPlayer.create(this, soundResId);
-
-        if (soundResId == R.raw.green_timer) greenTimerSoundPlayer = mp;
-        else if (soundResId == R.raw.orange_timer) orangeTimerSoundPlayer = mp;
-        else if (soundResId == R.raw.red_timer) redTimerSoundPlayer = mp;
-
-        mp.setOnCompletionListener(mediaPlayer -> {
-            mediaPlayer.release();
-            if (soundResId == R.raw.green_timer) greenTimerSoundPlayer = null;
-            else if (soundResId == R.raw.orange_timer) orangeTimerSoundPlayer = null;
-            else if (soundResId == R.raw.red_timer) redTimerSoundPlayer = null;
-        });
-
-        mp.start();
-    }
-
-    private void finishQuiz() {
-        if (isGameOver) return;
-        isGameOver = true;
-
-        MediaPlayer gameOverSound = MediaPlayer.create(this, R.raw.game_over);
-        gameOverSound.setOnCompletionListener(MediaPlayer::release);
-        gameOverSound.start();
-
-        View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
-        AlertDialog dialog = new AlertDialog.Builder(PalaroDalubhasa.this)
-                .setView(showTotalPoints)
-                .setCancelable(false)
-                .create();
-        dialog.show();
-
-        if (dialog.getWindow() != null) {
+    
+        private void showErrorTooltip(String message) {
+            errorTooltip.setText(message);
+            errorIcon.setVisibility(View.VISIBLE);
+            errorTooltip.setVisibility(View.VISIBLE);
+    
+            errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
+    
+            errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 2500);
+    
+            errorIcon.setOnClickListener(v -> {
+                if (errorTooltip.getVisibility() == View.VISIBLE) {
+                    errorTooltip.setVisibility(View.GONE);
+                } else {
+                    errorTooltip.setVisibility(View.VISIBLE);
+                    errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
+                    errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 2500);
+                }
+            });
+        }
+    
+    
+        private void showUmalisDialog() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(PalaroDalubhasa.this);
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
+    
+            Button btnOo = dialogView.findViewById(R.id.button5);
+            Button btnHindi = dialogView.findViewById(R.id.button6);
+    
+            builder.setView(dialogView);
+            AlertDialog dialog = builder.create();
+            dialog.setCancelable(false);
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+    
+            btnOo.setOnClickListener(v -> {
+                playButtonClickSound();
+    
+                if (countDownTimer != null) countDownTimer.cancel();
+                if (tts != null) tts.stop();
+                dialog.dismiss();
+                finish();
+            });
+    
+            btnHindi.setOnClickListener(v -> {
+                playButtonClickSound();
+                dialog.dismiss();
+            });
+    
+            dialog.show();
+        }
+    
+    
+        private void highlightGrammarIssues(String response, String originalSentence) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                JSONArray matches = jsonObject.getJSONArray("matches");
+                currentErrorCount = matches.length();
+                int scoreForThisSentence;
+    
+                if (matches.length() == 0) {
+                    // ✅ TAMANG GRAMMAR
+                    scoreForThisSentence = 15;
+                    dalubhasaScore += scoreForThisSentence;
+                    perfectAnswerCount++;
+                    playCorrectSound();
+    
+                    if (countDownTimer != null) {
+                        countDownTimer.cancel();
+                    }
+                    stopAllTimerSounds();
+    
+                    userSentenceInput.setEnabled(false);
+                    btnSuriin.setVisibility(View.GONE);
+                    btnTapos.setVisibility(View.GONE); // wala ng tapos pag tama
+    
+                    if (!isFinishing() && !isDestroyed()) {
+                        Glide.with(this).asGif()
+                                .load(R.drawable.right_1)
+                                .transition(DrawableTransitionOptions.withCrossFade(300))
+                                .into(characterIcon);
+                    }
+    
+                    // dialogue for correct answer
+                    loadCharacterLine("MDCL2");
+    
+                    // 🟢 automatic move to next question after short delay
+                    new Handler().postDelayed(() -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            Glide.with(this).asGif()
+                                    .load(R.drawable.idle)
+                                    .transition(DrawableTransitionOptions.withCrossFade(300))
+                                    .into(characterIcon);
+                        }
+                        nextQuestion(); // automatic proceed
+                    }, 3000);
+    
+                } else {
+                    // ❌ MALI ANG GRAMMAR
+                    if (matches.length() == 1) {
+                        scoreForThisSentence = 13;
+                    } else {
+                        scoreForThisSentence = 10;
+                    }
+    
+                    dalubhasaScore += scoreForThisSentence;
+    
+                    playWrongSound();
+    
+                    if (!isFinishing() && !isDestroyed()) {
+                        Glide.with(this).asGif()
+                                .load(R.drawable.wrong)
+                                .transition(DrawableTransitionOptions.withCrossFade(300))
+                                .into(characterIcon);
+    
+                        new Handler().postDelayed(() -> {
+                            if (!isFinishing() && !isDestroyed()) {
+                                Glide.with(this).asGif()
+                                        .load(R.drawable.idle)
+                                        .transition(DrawableTransitionOptions.withCrossFade(300))
+                                        .into(characterIcon);
+                            }
+                        }, 2300);
+                    }
+    
+                    if (scoreForThisSentence == 13 || scoreForThisSentence == 15) {
+                        perfectAnswerCount++;
+                    } else {
+                        perfectAnswerCount = 0;
+                    }
+    
+                    if (perfectAnswerCount >= 5) {
+                        unlockSagotBayaniAchievement();
+                    }
+    
+                    loadCharacterLine("MDCL3");
+    
+                    // 🔹 Ipakita ang mga mali at ipakita ang “Tapos” button
+                    new Handler().postDelayed(() -> {
+                        try {
+                            SpannableStringBuilder builder = new SpannableStringBuilder();
+                            builder.append("Maling salita o grammar:\n\n");
+    
+                            SpannableString highlightedSentence = new SpannableString(originalSentence);
+                            for (int i = 0; i < matches.length(); i++) {
+                                JSONObject match = matches.getJSONObject(i);
+                                int offset = match.getInt("offset");
+                                int length = match.getInt("length");
+                                highlightedSentence.setSpan(new UnderlineSpan(), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                highlightedSentence.setSpan(new ForegroundColorSpan(Color.RED), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }
+                            builder.append(highlightedSentence);
+                            builder.append("\n\n");
+    
+                            for (int i = 0; i < matches.length(); i++) {
+                                JSONObject match = matches.getJSONObject(i);
+                                int offset = match.getInt("offset");
+                                int length = match.getInt("length");
+                                String wrongWord = originalSentence.substring(offset, offset + length);
+                                String message = match.optString("message", "Error sa grammar");
+                                builder.append("- ").append(wrongWord).append(": ").append(message).append("\n");
+                            }
+    
+                            errorTooltip.setText(builder);
+                            errorTooltip.setVisibility(View.VISIBLE);
+                            errorIcon.setVisibility(View.VISIBLE);
+    
+                            errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
+                            errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 3500);
+    
+                            errorIcon.setOnClickListener(v -> {
+                                if (errorTooltip.getVisibility() == View.VISIBLE) {
+                                    errorTooltip.setVisibility(View.GONE);
+                                } else {
+                                    errorTooltip.setVisibility(View.VISIBLE);
+                                }
+                            });
+    
+                            // 🔹 Enable & show “Tapos” para may option magpatuloy
+                            btnSuriin.setVisibility(View.GONE);
+                            btnTapos.setVisibility(View.VISIBLE);
+                            btnTapos.setEnabled(true);
+                            userSentenceInput.setEnabled(false);
+    
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            grammarFeedbackText.setText("Error habang hinahati ang mga mali.");
+                        }
+                    }, 2000);
+                }
+    
+            } catch (JSONException e) {
+                e.printStackTrace();
+                grammarFeedbackText.setText("Invalid grammar response format.");
+            }
+        }
+    
+    
+        private void showBackConfirmationDialog() {
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setView(dialogView)
+                    .setCancelable(false)
+                    .create();
+    
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+    
+            Button yesButton = dialogView.findViewById(R.id.button5);
+            Button noButton = dialogView.findViewById(R.id.button6);
+    
+            yesButton.setOnClickListener(v -> {
+                playButtonClickSound();
+                if (countDownTimer != null) countDownTimer.cancel();
+                if (tts != null) tts.stop();
+                dialog.dismiss();
+                finish();
+            });
+    
+            noButton.setOnClickListener(v -> {
+                playButtonClickSound();
+                dialog.dismiss();
+            });
+            dialog.show();
+        }
+    
+        private void loadCharacterLine(String lineId) {
+            // MDCL1 should only play once
+            if (lineId.equals("MDCL1") && hasSpokenMDCL1) return;
+    
+            db.collection("minigame_character_lines").document(lineId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String line = documentSnapshot.getString("line");
+    
+                            if (line != null && !line.isEmpty()) {
+                                speakLine(line);
+                            }
+                        }
+                    });
+        }
+    
+        private void loadAllDalubhasaInstructions() {
+            db.collection("dalubhasa")
+                    .orderBy(FieldPath.documentId())
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        if (!querySnapshot.isEmpty()) {
+                            instructionList.clear();
+                            keywordList.clear();
+    
+                            for (QueryDocumentSnapshot document : querySnapshot) {
+                                String instruction = document.getString("instruction");
+                                List<String> keywords = (List<String>) document.get("keywords");
+    
+                                instructionList.add(instruction);
+                                keywordList.add(keywords);
+                            }
+    
+                            shuffleQuestions();
+    
+                            nextQuestion();
+                        }
+                    });
+        }
+    
+        private void shuffleQuestions() {
+            List<Integer> indices = new ArrayList<>();
+            for (int i = 0; i < instructionList.size(); i++) {
+                indices.add(i);
+            }
+            java.util.Collections.shuffle(indices);
+    
+            List<String> shuffledInstructions = new ArrayList<>();
+            List<List<String>> shuffledKeywords = new ArrayList<>();
+    
+            for (int idx : indices) {
+                shuffledInstructions.add(instructionList.get(idx));
+                shuffledKeywords.add(keywordList.get(idx));
+            }
+    
+            instructionList = shuffledInstructions;
+            keywordList = shuffledKeywords;
+        }
+    
+        private void speakLine(String text) {
+            if (text == null || text.trim().isEmpty()) return;
+    
+            if (isTtsReady && tts != null) {
+                tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+            }
         }
 
-        TextView scoreTextDialog = showTotalPoints.findViewById(R.id.scoreText);
-        scoreTextDialog.setText(String.valueOf(dalubhasaScore));
-
-        Button balik = showTotalPoints.findViewById(R.id.btn_balik);
-        balik.setOnClickListener(v -> {
-            dialog.dismiss();
-            finish();
-        });
-    }
-
-    private void saveDalubhasaScore() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser == null || dalubhasaScore <= 0) return;
-
-        String uid = currentUser.getUid();
-
-        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
-            if (!studentDoc.exists()) {
-                Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            String studentId = studentDoc.getString("studentId");
-            if (studentId == null || studentId.isEmpty()) {
-                Toast.makeText(this, "Student ID not found", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            DocumentReference docRef = db.collection("minigame_progress").document(uid);
-
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("dalubhasa_score", com.google.firebase.firestore.FieldValue.increment(dalubhasaScore));
-            updates.put("total_score", com.google.firebase.firestore.FieldValue.increment(dalubhasaScore));
-            updates.put("studentId", studentId);
-
-            docRef.set(updates, SetOptions.merge())
-                    .addOnSuccessListener(aVoid -> {
-                        dalubhasaScore = 0;
-
-                        docRef.get().addOnSuccessListener(snapshot -> {
-                            int totalScore = snapshot.contains("total_score") ? snapshot.getLong("total_score").intValue() : 0;
-                        });
-                    });
-        });
-    }
-
-    private void deductHeart() {
-        if (remainingHearts > 0) {
-            remainingHearts--;
-            MediaPlayer heartPop = MediaPlayer.create(this, R.raw.heart_pop);
-            heartPop.setOnCompletionListener(MediaPlayer::release);
-            heartPop.start();
-
-            if (heartIcons != null && remainingHearts >= 0 && remainingHearts < heartIcons.length) {
-                heartIcons[remainingHearts].setVisibility(View.INVISIBLE);
-            }
-
-            if (remainingHearts == 0) {
-                Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
-
+        private void nextQuestion() {
+            if (isGameOver) return;
+            // 🟢 Idagdag ito bago mag-load ng bagong question
+            errorTooltip.setVisibility(View.GONE);
+            errorIcon.setVisibility(View.GONE);
+            errorTooltip.setText(""); // para ma-clear din ang dating message
+            errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
+    
+            if (currentQuestionNumber < instructionList.size()) {
+                String instruction = instructionList.get(currentQuestionNumber);
+                dalubhasaInstruction.setText(instruction);
+                currentKeywords = keywordList.get(currentQuestionNumber);
+                currentDalubhasaID = "D" + (currentQuestionNumber + 1);
+    
+                userSentenceInput.setText("");
+                userSentenceInput.setEnabled(true);
+    
+                btnSuriin.setVisibility(View.VISIBLE);
+                btnTapos.setVisibility(View.GONE);
+    
+                btnTapos.setEnabled(true);
+                hasSubmitted = false;
+                grammarFeedbackText.setText("");
+                currentQuestionNumber++;
+    
+                startTimer();
+            } else {
                 if (countDownTimer != null) countDownTimer.cancel();
-                stopAllTimerSounds();
-
-                userSentenceInput.setEnabled(false);
-                btnTapos.setEnabled(false);
-
-                loadCharacterLine("MCL5");
-
                 saveDalubhasaScore();
                 finishQuiz();
             }
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        endAllAndFinish();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-            countDownTimer = null;
+    
+        private void showCountdownThenLoadInstruction() {
+            if (countdownHandler != null) {
+                countdownHandler.removeCallbacksAndMessages(null);
+            }
+            countdownHandler = new Handler();
+            final int[] countdown = {3};
+    
+            if (countdownBeepPlayer != null) {
+                try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
+                countdownBeepPlayer.release();
+                countdownBeepPlayer = null;
+            }
+    
+            countdownRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (isFinishing() || isDestroyed() || isGameOver) {
+                        if (countdownBeepPlayer != null) {
+                            try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
+                            countdownBeepPlayer.release();
+                            countdownBeepPlayer = null;
+                        }
+                        return;
+                    }
+    
+                    if (countdown[0] > 0) {
+                        dalubhasaInstruction.setText(String.valueOf(countdown[0]));
+    
+                        if (countdownBeepPlayer != null) {
+                            try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
+                            countdownBeepPlayer.release();
+                            countdownBeepPlayer = null;
+                        }
+                        countdownBeepPlayer = MediaPlayer.create(PalaroDalubhasa.this, R.raw.beep);
+                        countdownBeepPlayer.setOnCompletionListener(mp -> {
+                            try { mp.release(); } catch (Exception ignored) {}
+                            if (mp == countdownBeepPlayer) countdownBeepPlayer = null;
+                        });
+                        countdownBeepPlayer.start();
+    
+                        countdown[0]--;
+                        countdownHandler.postDelayed(this, 1000);
+                    } else {
+                        dalubhasaInstruction.setText("");
+                        if (countdownBeepPlayer != null) {
+                            try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
+                            countdownBeepPlayer.release();
+                            countdownBeepPlayer = null;
+                        }
+                        if (!isFinishing() && !isDestroyed() && !isGameOver) {
+                            loadAllDalubhasaInstructions();
+                            startTimer();
+                        }
+                    }
+                }
+            };
+    
+            countdownHandler.post(countdownRunnable);
         }
-
-        if (tts != null) {
-            tts.stop();
+    
+    
+        private void startTimer() {
+    
+            timeLeft = TOTAL_TIME;
+            lastTimerZone = "";
+    
+            if (countDownTimer != null) countDownTimer.cancel();
+            stopAllTimerSounds();
+    
+            countDownTimer = new CountDownTimer(TOTAL_TIME, 100) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    timeLeft = millisUntilFinished;
+                    int percent = (int) (timeLeft * 100 / TOTAL_TIME);
+                    timerBar.setProgress(percent);
+    
+                    if (percent <= 25) {
+                        updateTimerZone("RED", R.drawable.timer_color_red, R.raw.red_timer);
+                    } else if (percent <= 50) {
+                        updateTimerZone("ORANGE", R.drawable.timer_color_orange, R.raw.orange_timer);
+                    } else {
+                        updateTimerZone("GREEN", R.drawable.timer_color_green, R.raw.green_timer);
+                    }
+                }
+    
+                @Override
+                public void onFinish() {
+                    timerBar.setProgress(0);
+                    userSentenceInput.setEnabled(false);
+                    btnTapos.setEnabled(false);
+    
+                    stopAllTimerSounds();
+    
+                    loadCharacterLine("MCL5");
+                    saveDalubhasaScore();
+                }
+            }.start();
         }
-
-        stopAllTimerSounds();
-
-        if (internetHandler != null && internetRunnable != null) {
-            internetHandler.removeCallbacks(internetRunnable);
+    
+        private void updateTimerZone(String zone, int drawableRes, int soundRes) {
+            if (!lastTimerZone.equals(zone)) {
+                stopAllTimerSounds();
+                timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, drawableRes));
+                playTimerSound(soundRes);
+                lastTimerZone = zone;
+            }
         }
-
-        if (errorTooltipHandler != null) {
-            errorTooltipHandler.removeCallbacksAndMessages(null);
+    
+        private void stopAllTimerSounds() {
+            if (greenTimerSoundPlayer != null) { greenTimerSoundPlayer.stop(); greenTimerSoundPlayer.release(); greenTimerSoundPlayer = null; }
+            if (orangeTimerSoundPlayer != null) { orangeTimerSoundPlayer.stop(); orangeTimerSoundPlayer.release(); orangeTimerSoundPlayer = null; }
+            if (redTimerSoundPlayer != null) { redTimerSoundPlayer.stop(); redTimerSoundPlayer.release(); redTimerSoundPlayer = null; }
+    
+            greenSound = false;
+            orangeSound = false;
+            redSound = false;
         }
-        if (connectivityManager != null && networkCallback != null) {
-            connectivityManager.unregisterNetworkCallback(networkCallback);
+    
+        private void playTimerSound(int soundResId) {
+            stopAllTimerSounds();
+    
+            MediaPlayer mp = MediaPlayer.create(this, soundResId);
+    
+            if (soundResId == R.raw.green_timer) greenTimerSoundPlayer = mp;
+            else if (soundResId == R.raw.orange_timer) orangeTimerSoundPlayer = mp;
+            else if (soundResId == R.raw.red_timer) redTimerSoundPlayer = mp;
+    
+            mp.setOnCompletionListener(mediaPlayer -> {
+                mediaPlayer.release();
+                if (soundResId == R.raw.green_timer) greenTimerSoundPlayer = null;
+                else if (soundResId == R.raw.orange_timer) orangeTimerSoundPlayer = null;
+                else if (soundResId == R.raw.red_timer) redTimerSoundPlayer = null;
+            });
+    
+            mp.start();
         }
-
-        if (countdownHandler != null) {
-            try { countdownHandler.removeCallbacksAndMessages(null); } catch (Exception ignored) {}
-            countdownHandler = null;
+    
+        private void finishQuiz() {
+            if (isGameOver) return;
+            isGameOver = true;
+    
+            MediaPlayer gameOverSound = MediaPlayer.create(this, R.raw.game_over);
+            gameOverSound.setOnCompletionListener(MediaPlayer::release);
+            gameOverSound.start();
+    
+            View showTotalPoints = getLayoutInflater().inflate(R.layout.dialog_box_time_up, null);
+            AlertDialog dialog = new AlertDialog.Builder(PalaroDalubhasa.this)
+                    .setView(showTotalPoints)
+                    .setCancelable(false)
+                    .create();
+            dialog.show();
+    
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+    
+            TextView scoreTextDialog = showTotalPoints.findViewById(R.id.scoreText);
+            scoreTextDialog.setText(String.valueOf(dalubhasaScore));
+    
+            Button balik = showTotalPoints.findViewById(R.id.btn_balik);
+            balik.setOnClickListener(v -> {
+                dialog.dismiss();
+                finish();
+            });
         }
-        if (countdownRunnable != null) {
-            countdownRunnable = null;
+    
+        private void saveDalubhasaScore() {
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser == null || dalubhasaScore <= 0) return;
+    
+            String uid = currentUser.getUid();
+    
+            db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
+                if (!studentDoc.exists()) {
+                    Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+    
+                String studentId = studentDoc.getString("studentId");
+                if (studentId == null || studentId.isEmpty()) {
+                    Toast.makeText(this, "Student ID not found", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+    
+                DocumentReference docRef = db.collection("minigame_progress").document(uid);
+    
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("dalubhasa_score", com.google.firebase.firestore.FieldValue.increment(dalubhasaScore));
+                updates.put("total_score", com.google.firebase.firestore.FieldValue.increment(dalubhasaScore));
+                updates.put("studentId", studentId);
+    
+                docRef.set(updates, SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> {
+                            dalubhasaScore = 0;
+    
+                            docRef.get().addOnSuccessListener(snapshot -> {
+                                int totalScore = snapshot.contains("total_score") ? snapshot.getLong("total_score").intValue() : 0;
+                            });
+                        });
+            });
         }
-        if (countdownBeepPlayer != null) {
-            try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
-            try { countdownBeepPlayer.release(); } catch (Exception ignored) {}
-            countdownBeepPlayer = null;
+    
+        private void deductHeart() {
+            if (remainingHearts > 0) {
+                remainingHearts--;
+                MediaPlayer heartPop = MediaPlayer.create(this, R.raw.heart_pop);
+                heartPop.setOnCompletionListener(MediaPlayer::release);
+                heartPop.start();
+    
+                if (heartIcons != null && remainingHearts >= 0 && remainingHearts < heartIcons.length) {
+                    heartIcons[remainingHearts].setVisibility(View.INVISIBLE);
+                }
+    
+                if (remainingHearts == 0) {
+                    Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
+    
+                    if (countDownTimer != null) countDownTimer.cancel();
+                    stopAllTimerSounds();
+    
+                    userSentenceInput.setEnabled(false);
+                    btnTapos.setEnabled(false);
+    
+                    loadCharacterLine("MCL5");
+    
+                    saveDalubhasaScore();
+                    finishQuiz();
+                }
+            }
         }
-    }
+    
+        @Override
+        protected void onDestroy() {
+            super.onDestroy();
+            endAllAndFinish();
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
+                countDownTimer = null;
+            }
+    
+            if (tts != null) {
+                tts.stop();
+            }
+    
+            stopAllTimerSounds();
+    
+            if (internetHandler != null && internetRunnable != null) {
+                internetHandler.removeCallbacks(internetRunnable);
+            }
+    
+            if (errorTooltipHandler != null) {
+                errorTooltipHandler.removeCallbacksAndMessages(null);
+            }
+            if (connectivityManager != null && networkCallback != null) {
+                connectivityManager.unregisterNetworkCallback(networkCallback);
+            }
+    
+            if (countdownHandler != null) {
+                try { countdownHandler.removeCallbacksAndMessages(null); } catch (Exception ignored) {}
+                countdownHandler = null;
+            }
+            if (countdownRunnable != null) {
+                countdownRunnable = null;
+            }
+            if (countdownBeepPlayer != null) {
+                try { countdownBeepPlayer.stop(); } catch (Exception ignored) {}
+                try { countdownBeepPlayer.release(); } catch (Exception ignored) {}
+                countdownBeepPlayer = null;
+            }
+        }
 
     private void saveDalubhasaAnswer(String firebaseUID, String questionId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
