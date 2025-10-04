@@ -60,6 +60,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="0dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/view1"
         app:layout_constraintHorizontal_bias="0.0"
@@ -78,7 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="115dp"
                 android:layout_margin="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="70dp"
                 android:background="@drawable/button_color"
                 android:clickable="true"
@@ -118,7 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="115dp"
                 android:layout_margin="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="70dp"
                 android:background="@drawable/button_color"
                 android:clickable="true"
@@ -153,12 +154,14 @@
             </LinearLayout>
 
             <!-- BUTTON 3 -->
+
+            <!-- BUTTON 4 -->
             <LinearLayout
                 android:id="@+id/maikling_kuwento"
                 android:layout_width="match_parent"
                 android:layout_height="115dp"
                 android:layout_margin="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="70dp"
                 android:background="@drawable/button_color"
                 android:clickable="true"
@@ -192,13 +195,14 @@
 
             </LinearLayout>
 
-            <!-- BUTTON 4 -->
+            <!-- BUTTON 5 -->
+
             <LinearLayout
                 android:id="@+id/pabula"
                 android:layout_width="match_parent"
                 android:layout_height="115dp"
                 android:layout_margin="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="70dp"
                 android:background="@drawable/button_color"
                 android:clickable="true"
@@ -231,13 +235,12 @@
                     android:textSize="18sp" />
             </LinearLayout>
 
-            <!-- BUTTON 5 -->
             <LinearLayout
                 android:id="@+id/parabula"
                 android:layout_width="match_parent"
                 android:layout_height="115dp"
                 android:layout_margin="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="70dp"
                 android:background="@drawable/button_color"
                 android:clickable="true"
