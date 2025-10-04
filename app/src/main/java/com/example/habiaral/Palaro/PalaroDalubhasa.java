@@ -1,6 +1,7 @@
 package com.example.habiaral.Palaro;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -10,10 +11,16 @@ import android.speech.tts.Voice;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +39,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.habiaral.GrammarChecker.GrammarChecker;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AchievementDialogUtils;
+import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -86,6 +94,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private Handler countdownHandler;
     private Runnable countdownRunnable;
     private MediaPlayer countdownBeepPlayer;
+
     private ImageView errorIcon;
     private TextView errorTooltip;
     private MediaPlayer greenTimerSoundPlayer;
@@ -100,6 +109,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
     private boolean hasSpokenMDCL1 = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,9 +160,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                 tts.setSpeechRate(1.2f);
 
+                // **Tawagin lang kung first time**
                 if (!hasSpokenMDCL1) {
                     new Handler().postDelayed(() -> loadCharacterLine("MDCL1"), 300);
-                    hasSpokenMDCL1 = true;
+                    hasSpokenMDCL1 = true; // mark as spoken
                 }
                 new Handler().postDelayed(this::showCountdownThenLoadInstruction, 4000);
 
@@ -159,6 +171,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
             }
         });
+
 
         dalubhasaInstruction = findViewById(R.id.dalubhasa_instructionText);
         grammarFeedbackText = findViewById(R.id.grammar_feedback);
@@ -278,7 +291,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
             return;
         }
-
+        // ✅ Word count excluding keywords check (max 10 words only)
         int wordCount = countWordsExcludingKeywords(sentence, currentKeywords);
         if (wordCount > 10) {
             showErrorTooltip("Pinakamataas na bilang ay sampung salita, ngunit hindi kabilang ang panuto.");
@@ -297,8 +310,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
                             .into(characterIcon);
                 }
             }, 2300);
-            return;
+            return; // hindi na itutuloy ang grammar checking
         }
+
 
         List<String> missingKeywords = new ArrayList<>();
         for (String keyword : currentKeywords) {
@@ -332,29 +346,34 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
             return;
         }
+        // 🟡 Check kung puro keywords lang (no extra words)
         boolean onlyKeywordsUsed = true;
 
+        // Clean the sentence
         String cleanedSentence = sentence
                 .replaceAll("[^a-zA-Z0-9\\s]", "")
                 .toLowerCase()
                 .trim();
 
+        // Check if the sentence only contains keywords (ignoring word order)
         for (String keyword : currentKeywords) {
             String cleanKeyword = keyword.toLowerCase().trim();
 
+            // If the sentence contains the keyword phrase, remove it temporarily
             if (cleanedSentence.contains(cleanKeyword)) {
                 cleanedSentence = cleanedSentence.replace(cleanKeyword, "").trim();
             }
         }
 
+        // After removing keywords, check if anything else remains besides spaces
         if (!cleanedSentence.isBlank()) {
             onlyKeywordsUsed = false;
         }
 
         if (onlyKeywordsUsed) {
             showErrorTooltip("Hindi maaaring basta isulat lamang ang nakasaad sa panuto. Kailangang dagdagan ito ng mga pangungusap.");
-            deductHeart();
-            return;
+            deductHeart(); // bawas heart
+            return; // ❌ stop, bawal mag-next
         }
 
 
@@ -409,6 +428,14 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
     }
 
+    private void restartTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        stopAllTimerSounds();
+        startTimer();
+    }
+
     private void showErrorTooltip(String message) {
         errorTooltip.setText(message);
         errorIcon.setVisibility(View.VISIBLE);
@@ -428,6 +455,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             }
         });
     }
+
 
     private void showUmalisDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PalaroDalubhasa.this);
@@ -458,6 +486,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         dialog.show();
     }
 
+
     private void highlightGrammarIssues(String response, String originalSentence) {
         try {
             JSONObject jsonObject = new JSONObject(response);
@@ -466,6 +495,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             int scoreForThisSentence;
 
             if (matches.length() == 0) {
+                // ✅ TAMANG GRAMMAR
                 scoreForThisSentence = 15;
                 dalubhasaScore += scoreForThisSentence;
                 perfectAnswerCount++;
@@ -478,7 +508,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                 userSentenceInput.setEnabled(false);
                 btnSuriin.setVisibility(View.GONE);
-                btnTapos.setVisibility(View.GONE);
+                btnTapos.setVisibility(View.GONE); // wala ng tapos pag tama
 
                 if (!isFinishing() && !isDestroyed()) {
                     Glide.with(this).asGif()
@@ -487,8 +517,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
                             .into(characterIcon);
                 }
 
+                // dialogue for correct answer
                 loadCharacterLine("MDCL2");
 
+                // 🟢 automatic move to next question after short delay
                 new Handler().postDelayed(() -> {
                     if (!isFinishing() && !isDestroyed()) {
                         Glide.with(this).asGif()
@@ -496,10 +528,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
                                 .transition(DrawableTransitionOptions.withCrossFade(300))
                                 .into(characterIcon);
                     }
-                    nextQuestion();
+                    nextQuestion(); // automatic proceed
                 }, 3000);
 
             } else {
+                // ❌ MALI ANG GRAMMAR
                 if (matches.length() == 1) {
                     scoreForThisSentence = 13;
                 } else {
@@ -538,6 +571,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                 loadCharacterLine("MDCL3");
 
+                // 🔹 Ipakita ang mga mali at ipakita ang “Tapos” button
                 new Handler().postDelayed(() -> {
                     try {
                         SpannableStringBuilder builder = new SpannableStringBuilder();
@@ -578,6 +612,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                             }
                         });
 
+                        // 🔹 Enable & show “Tapos” para may option magpatuloy
                         btnSuriin.setVisibility(View.GONE);
                         btnTapos.setVisibility(View.VISIBLE);
                         btnTapos.setEnabled(true);
@@ -627,6 +662,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     }
 
     private void loadCharacterLine(String lineId) {
+        // MDCL1 should only play once
         if (lineId.equals("MDCL1") && hasSpokenMDCL1) return;
 
         db.collection("minigame_character_lines").document(lineId)
@@ -695,9 +731,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private void nextQuestion() {
         if (isGameOver) return;
+        // 🟢 Idagdag ito bago mag-load ng bagong question
         errorTooltip.setVisibility(View.GONE);
         errorIcon.setVisibility(View.GONE);
-        errorTooltip.setText("");
+        errorTooltip.setText(""); // para ma-clear din ang dating message
         errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
 
         if (currentQuestionNumber < instructionList.size()) {
@@ -1247,6 +1284,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         endAllAndFinish();
     }
     private int countWordsExcludingKeywords(String sentence, List<String> keywords) {
+        // alisin punctuation tulad ng tuldok at kuwit
         String cleaned = sentence.replaceAll("[^a-zA-ZÀ-ÿ0-9\\s]", "").toLowerCase();
         String[] words = cleaned.trim().split("\\s+");
 
