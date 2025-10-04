@@ -16,8 +16,6 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.KayarianNgPangungusap.Lessons.PayakLesson;
 import com.example.habiaral.Panitikan.Parabula.Parabula;
 import com.example.habiaral.Panitikan.Parabula.Quiz.ParabulaKwento2Quiz;
 import com.example.habiaral.R;
@@ -66,7 +64,7 @@ public class ParabulaKwento2 extends AppCompatActivity {
     private AudioManager audioManager;
     private int originalVolume;
     private boolean isNavigatingToQuiz = false;
-
+    private boolean isFirst = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,15 +86,14 @@ public class ParabulaKwento2 extends AppCompatActivity {
 
         storyImage = findViewById(R.id.imageViewComic);
         unlockButton = findViewById(R.id.UnlockButton);
-
-        db = FirebaseFirestore.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) uid = user.getUid();
-
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
         storyImage.setImageResource(comicPages[currentPage]);
+
+        db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) uid = user.getUid();
 
         initTTS();
 
@@ -115,11 +112,9 @@ public class ParabulaKwento2 extends AppCompatActivity {
                 if (audioManager != null) {
                     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
                 }
-
                 if (textToSpeech != null) {
                     textToSpeech.stop();
                 }
-
                 isNavigatingToQuiz = true;
                 startActivity(new Intent(ParabulaKwento2.this, ParabulaKwento2Quiz.class));
             }
@@ -177,7 +172,7 @@ public class ParabulaKwento2 extends AppCompatActivity {
                     SharedPreferences prefs = getSharedPreferences("StoryPrefs", MODE_PRIVATE);
                     boolean isFirst = prefs.getBoolean("isFirstOpenParabula2", true);
 
-                    if (isFirst) {
+                    if (isFirst && !isLessonDone) {
                         loadIntroLines();
                         prefs.edit().putBoolean("isFirstOpenParabula2", false).apply();
                     }
@@ -207,7 +202,6 @@ public class ParabulaKwento2 extends AppCompatActivity {
                 });
     }
 
-
     private void speakIntro() {
         if (introLines != null && currentIntroIndex < introLines.size()) {
             String line = introLines.get(currentIntroIndex);
@@ -224,7 +218,6 @@ public class ParabulaKwento2 extends AppCompatActivity {
                             speakIntro();
                         } else {
                             introFinished = true;
-
                             isLessonDone = true;
                             unlockButton.setEnabled(true);
                             unlockButton.setAlpha(1f);
@@ -234,13 +227,11 @@ public class ParabulaKwento2 extends AppCompatActivity {
             });
         } else {
             introFinished = true;
-
             isLessonDone = true;
             unlockButton.setEnabled(true);
             unlockButton.setAlpha(1f);
         }
     }
-
 
     private void nextPage() {
         SharedPreferences prefs = getSharedPreferences("StoryPrefs", MODE_PRIVATE);
@@ -253,18 +244,14 @@ public class ParabulaKwento2 extends AppCompatActivity {
 
             updateCheckpoint(currentPage);
 
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-            }
+            if (textToSpeech != null) textToSpeech.stop();
             currentLineIndex = 0;
 
-            if (currentPage == 1) {
-                if (!introPlayed) {
-                    loadPageLines(currentPage);
-                    introPlayed = true;
-                    prefs.edit().putBoolean("isFirstOpenParabula2", false).apply();
-                }
-            } else {
+            if (currentPage == 1 && !introPlayed && !isLessonDone) {
+                loadPageLines(currentPage);
+                introPlayed = true;
+                prefs.edit().putBoolean("isFirstOpenParabula2", false).apply();
+            } else if (currentPage >= 1) {
                 loadPageLines(currentPage);
             }
 
@@ -274,7 +261,6 @@ public class ParabulaKwento2 extends AppCompatActivity {
             }
         }
     }
-
 
     private void previousPage() {
         SharedPreferences prefs = getSharedPreferences("StoryPrefs", MODE_PRIVATE);
@@ -287,27 +273,27 @@ public class ParabulaKwento2 extends AppCompatActivity {
 
             updateCheckpoint(currentPage);
 
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-            }
+            if (textToSpeech != null) textToSpeech.stop();
             currentLineIndex = 0;
 
             if (currentPage == 0) {
-                introFinished = false;
-                introPlayed = false;
-                loadIntroLines();
-                prefs.edit().putBoolean("isFirstOpenParabula2", true).apply();
-            } else if (currentPage >= 2) {
+                if (!isLessonDone) {
+                    introFinished = false;
+                    introPlayed = false;
+                    loadIntroLines();
+                    prefs.edit().putBoolean("isFirstOpenParabula2", true).apply();
+                } else {
+                    introFinished = true;
+                    introPlayed = true;
+                }
+            } else if (currentPage >= 1) {
                 loadPageLines(currentPage);
             }
         }
     }
 
-
     private void loadPageLines(int page) {
-        if (pageLines != null) {
-            textToSpeech.stop();
-        }
+        if (pageLines != null) textToSpeech.stop();
 
         db.collection("lesson_character_lines").document("LCL24").get()
                 .addOnSuccessListener(snapshot -> {
@@ -333,7 +319,6 @@ public class ParabulaKwento2 extends AppCompatActivity {
                     }
                 });
     }
-
 
     private void speakPageLine() {
         if (pageLines == null || currentLineIndex >= pageLines.size()) return;
@@ -368,7 +353,7 @@ public class ParabulaKwento2 extends AppCompatActivity {
                     introPlayed = introFinished;
 
                     if (currentPage == 0) {
-                        loadIntroLines();
+                        if (!isLessonDone) loadIntroLines();
                     } else {
                         loadPageLines(currentPage);
                     }
@@ -390,7 +375,7 @@ public class ParabulaKwento2 extends AppCompatActivity {
                 }
             });
         } else {
-            if (currentPage == 0) {
+            if (currentPage == 0 && !isLessonDone) {
                 introFinished = false;
                 introPlayed = false;
                 loadIntroLines();
@@ -415,10 +400,10 @@ public class ParabulaKwento2 extends AppCompatActivity {
                     Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                     if (categories == null) return;
 
-                    Map<String, Object> parabula = (Map<String, Object>) categories.get("Parabula");
-                    if (parabula == null) return;
+                    Map<String, Object> storya = (Map<String, Object>) categories.get("Parabula");
+                    if (storya == null) return;
 
-                    Map<String, Object> stories = (Map<String, Object>) parabula.get("stories");
+                    Map<String, Object> stories = (Map<String, Object>) storya.get("stories");
                     if (stories == null) return;
 
                     Map<String, Object> story = (Map<String, Object>) stories.get(STORY_ID);
@@ -442,7 +427,6 @@ public class ParabulaKwento2 extends AppCompatActivity {
                 });
     }
 
-
     private void updateCheckpoint(int checkpoint) {
         if (uid == null) return;
 
@@ -454,9 +438,9 @@ public class ParabulaKwento2 extends AppCompatActivity {
                         if (module3 != null) {
                             Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                             if (categories != null) {
-                                Map<String, Object> parabula = (Map<String, Object>) categories.get("Parabula");
-                                if (parabula != null) {
-                                    Map<String, Object> stories = (Map<String, Object>) parabula.get("stories");
+                                Map<String, Object> storya = (Map<String, Object>) categories.get("Parabula");
+                                if (storya != null) {
+                                    Map<String, Object> stories = (Map<String, Object>) storya.get("stories");
                                     if (stories != null) {
                                         Map<String, Object> story = (Map<String, Object>) stories.get(STORY_ID);
                                         if (story != null && story.get("status") != null) {
@@ -473,11 +457,11 @@ public class ParabulaKwento2 extends AppCompatActivity {
                     storyData.put("title", STORY_TITLE);
                     storyData.put("status", currentStatus);
 
-                    Map<String, Object> parabulaData = new HashMap<>();
-                    parabulaData.put("stories", Map.of(STORY_ID, storyData));
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("stories", Map.of(STORY_ID, storyData));
 
                     Map<String, Object> categories = new HashMap<>();
-                    categories.put("Parabula", parabulaData);
+                    categories.put("Parabula", data);
 
                     Map<String, Object> module3 = new HashMap<>();
                     module3.put("categories", categories);
@@ -490,8 +474,6 @@ public class ParabulaKwento2 extends AppCompatActivity {
                         isLessonDone = true;
                         unlockButton.setEnabled(true);
                         unlockButton.setAlpha(1f);
-
-
                     }
                 });
     }

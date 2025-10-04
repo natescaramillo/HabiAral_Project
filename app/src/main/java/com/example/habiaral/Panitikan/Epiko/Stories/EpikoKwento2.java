@@ -16,8 +16,6 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.KayarianNgPangungusap.Lessons.PayakLesson;
 import com.example.habiaral.Panitikan.Epiko.Epiko;
 import com.example.habiaral.Panitikan.Epiko.Quiz.EpikoKwento2Quiz;
 import com.example.habiaral.R;
@@ -42,7 +40,7 @@ public class EpikoKwento2 extends AppCompatActivity {
             R.drawable.gilgamesh7, R.drawable.gilgamesh8, R.drawable.gilgamesh9,
             R.drawable.gilgamesh10, R.drawable.gilgamesh11, R.drawable.gilgamesh12,
             R.drawable.gilgamesh13, R.drawable.gilgamesh14, R.drawable.gilgamesh15,
-            R.drawable.gilgamesh16, R.drawable.gilgamesh17, R.drawable.gilgamesh18
+            R.drawable.gilgamesh16, R.drawable.gilgamesh17, R.drawable.gilgamesh18,
     };
 
     private static final String STORY_ID = "EpikoKwento2";
@@ -68,7 +66,7 @@ public class EpikoKwento2 extends AppCompatActivity {
     private AudioManager audioManager;
     private int originalVolume;
     private boolean isNavigatingToQuiz = false;
-
+    private boolean isFirst = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,15 +88,14 @@ public class EpikoKwento2 extends AppCompatActivity {
 
         storyImage = findViewById(R.id.imageViewComic);
         unlockButton = findViewById(R.id.UnlockButton);
-
-        db = FirebaseFirestore.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) uid = user.getUid();
-
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
 
         storyImage.setImageResource(comicPages[currentPage]);
+
+        db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) uid = user.getUid();
 
         initTTS();
 
@@ -117,11 +114,9 @@ public class EpikoKwento2 extends AppCompatActivity {
                 if (audioManager != null) {
                     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
                 }
-
                 if (textToSpeech != null) {
                     textToSpeech.stop();
                 }
-
                 isNavigatingToQuiz = true;
                 startActivity(new Intent(EpikoKwento2.this, EpikoKwento2Quiz.class));
             }
@@ -179,7 +174,7 @@ public class EpikoKwento2 extends AppCompatActivity {
                     SharedPreferences prefs = getSharedPreferences("StoryPrefs", MODE_PRIVATE);
                     boolean isFirst = prefs.getBoolean("isFirstOpenEpiko2", true);
 
-                    if (isFirst) {
+                    if (isFirst && !isLessonDone) {
                         loadIntroLines();
                         prefs.edit().putBoolean("isFirstOpenEpiko2", false).apply();
                     }
@@ -209,7 +204,6 @@ public class EpikoKwento2 extends AppCompatActivity {
                 });
     }
 
-
     private void speakIntro() {
         if (introLines != null && currentIntroIndex < introLines.size()) {
             String line = introLines.get(currentIntroIndex);
@@ -226,7 +220,6 @@ public class EpikoKwento2 extends AppCompatActivity {
                             speakIntro();
                         } else {
                             introFinished = true;
-
                             isLessonDone = true;
                             unlockButton.setEnabled(true);
                             unlockButton.setAlpha(1f);
@@ -236,13 +229,11 @@ public class EpikoKwento2 extends AppCompatActivity {
             });
         } else {
             introFinished = true;
-
             isLessonDone = true;
             unlockButton.setEnabled(true);
             unlockButton.setAlpha(1f);
         }
     }
-
 
     private void nextPage() {
         SharedPreferences prefs = getSharedPreferences("StoryPrefs", MODE_PRIVATE);
@@ -255,18 +246,14 @@ public class EpikoKwento2 extends AppCompatActivity {
 
             updateCheckpoint(currentPage);
 
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-            }
+            if (textToSpeech != null) textToSpeech.stop();
             currentLineIndex = 0;
 
-            if (currentPage == 1) {
-                if (!introPlayed) {
-                    loadPageLines(currentPage);
-                    introPlayed = true;
-                    prefs.edit().putBoolean("isFirstOpenEpiko2", false).apply();
-                }
-            } else {
+            if (currentPage == 1 && !introPlayed && !isLessonDone) {
+                loadPageLines(currentPage);
+                introPlayed = true;
+                prefs.edit().putBoolean("isFirstOpenEpiko2", false).apply();
+            } else if (currentPage >= 1) {
                 loadPageLines(currentPage);
             }
 
@@ -276,7 +263,6 @@ public class EpikoKwento2 extends AppCompatActivity {
             }
         }
     }
-
 
     private void previousPage() {
         SharedPreferences prefs = getSharedPreferences("StoryPrefs", MODE_PRIVATE);
@@ -289,27 +275,27 @@ public class EpikoKwento2 extends AppCompatActivity {
 
             updateCheckpoint(currentPage);
 
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-            }
+            if (textToSpeech != null) textToSpeech.stop();
             currentLineIndex = 0;
 
             if (currentPage == 0) {
-                introFinished = false;
-                introPlayed = false;
-                loadIntroLines();
-                prefs.edit().putBoolean("isFirstOpenEpiko2", true).apply();
-            } else if (currentPage >= 2) {
+                if (!isLessonDone) {
+                    introFinished = false;
+                    introPlayed = false;
+                    loadIntroLines();
+                    prefs.edit().putBoolean("isFirstOpenEpiko2", true).apply();
+                } else {
+                    introFinished = true;
+                    introPlayed = true;
+                }
+            } else if (currentPage >= 1) {
                 loadPageLines(currentPage);
             }
         }
     }
 
-
     private void loadPageLines(int page) {
-        if (pageLines != null) {
-            textToSpeech.stop();
-        }
+        if (pageLines != null) textToSpeech.stop();
 
         db.collection("lesson_character_lines").document("LCL18").get()
                 .addOnSuccessListener(snapshot -> {
@@ -335,7 +321,6 @@ public class EpikoKwento2 extends AppCompatActivity {
                     }
                 });
     }
-
 
     private void speakPageLine() {
         if (pageLines == null || currentLineIndex >= pageLines.size()) return;
@@ -370,7 +355,7 @@ public class EpikoKwento2 extends AppCompatActivity {
                     introPlayed = introFinished;
 
                     if (currentPage == 0) {
-                        loadIntroLines();
+                        if (!isLessonDone) loadIntroLines();
                     } else {
                         loadPageLines(currentPage);
                     }
@@ -392,7 +377,7 @@ public class EpikoKwento2 extends AppCompatActivity {
                 }
             });
         } else {
-            if (currentPage == 0) {
+            if (currentPage == 0 && !isLessonDone) {
                 introFinished = false;
                 introPlayed = false;
                 loadIntroLines();
@@ -417,10 +402,10 @@ public class EpikoKwento2 extends AppCompatActivity {
                     Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                     if (categories == null) return;
 
-                    Map<String, Object> epiko = (Map<String, Object>) categories.get("Epiko");
-                    if (epiko == null) return;
+                    Map<String, Object> storya = (Map<String, Object>) categories.get("Epiko");
+                    if (storya == null) return;
 
-                    Map<String, Object> stories = (Map<String, Object>) epiko.get("stories");
+                    Map<String, Object> stories = (Map<String, Object>) storya.get("stories");
                     if (stories == null) return;
 
                     Map<String, Object> story = (Map<String, Object>) stories.get(STORY_ID);
@@ -444,7 +429,6 @@ public class EpikoKwento2 extends AppCompatActivity {
                 });
     }
 
-
     private void updateCheckpoint(int checkpoint) {
         if (uid == null) return;
 
@@ -456,9 +440,9 @@ public class EpikoKwento2 extends AppCompatActivity {
                         if (module3 != null) {
                             Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                             if (categories != null) {
-                                Map<String, Object> epiko = (Map<String, Object>) categories.get("Epiko");
-                                if (epiko != null) {
-                                    Map<String, Object> stories = (Map<String, Object>) epiko.get("stories");
+                                Map<String, Object> storya = (Map<String, Object>) categories.get("Epiko");
+                                if (storya != null) {
+                                    Map<String, Object> stories = (Map<String, Object>) storya.get("stories");
                                     if (stories != null) {
                                         Map<String, Object> story = (Map<String, Object>) stories.get(STORY_ID);
                                         if (story != null && story.get("status") != null) {
@@ -475,11 +459,11 @@ public class EpikoKwento2 extends AppCompatActivity {
                     storyData.put("title", STORY_TITLE);
                     storyData.put("status", currentStatus);
 
-                    Map<String, Object> epikoData = new HashMap<>();
-                    epikoData.put("stories", Map.of(STORY_ID, storyData));
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("stories", Map.of(STORY_ID, storyData));
 
                     Map<String, Object> categories = new HashMap<>();
-                    categories.put("Epiko", epikoData);
+                    categories.put("Epiko", data);
 
                     Map<String, Object> module3 = new HashMap<>();
                     module3.put("categories", categories);
@@ -492,8 +476,6 @@ public class EpikoKwento2 extends AppCompatActivity {
                         isLessonDone = true;
                         unlockButton.setEnabled(true);
                         unlockButton.setAlpha(1f);
-
-
                     }
                 });
     }
