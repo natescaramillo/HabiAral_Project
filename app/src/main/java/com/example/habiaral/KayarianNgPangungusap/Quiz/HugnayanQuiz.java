@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -17,8 +16,8 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
+import com.example.habiaral.KayarianNgPangungusap.Lessons.HugnayanLesson;
 import com.example.habiaral.KayarianNgPangungusap.Lessons.LangkapanLesson;
 import com.example.habiaral.KayarianNgPangungusap.Lessons.TambalanLesson;
 import com.example.habiaral.R;
@@ -45,19 +44,14 @@ public class HugnayanQuiz extends AppCompatActivity {
     private Button answer1, answer2, answer3, nextButton, introButton;
     private List<Map<String, Object>> quizList = new ArrayList<>();
     private Drawable redDrawable, orangeDrawable, greenDrawable;
-    private int greenSoundId, orangeSoundId, redSoundId;
     private TextView questionText, questionTitle;
     private CountDownTimer countDownTimer;
     private long timeLeftInMillis = 30000;
     private boolean quizFinished = false;
-    private boolean orangePlayed = false;
-    private boolean greenPlayed = false;
     private boolean isAnswered = false;
     private String correctAnswer = "";
-    private boolean redPlayed = false;
     private AlertDialog resultDialog;
     private MediaPlayer resultPlayer;
-    private int currentStreamId = -1;
     private MediaPlayer mediaPlayer;
     private MediaPlayer readyPlayer;
     private int lastColorStage = 3;
@@ -68,9 +62,10 @@ public class HugnayanQuiz extends AppCompatActivity {
     private int currentIndex = -1;
     private ProgressBar timerBar;
     private FirebaseFirestore db;
-    private SoundPool soundPool;
     private View background;
     private boolean isMuted = false;
+    private MediaPlayer timerPlayer;
+    private CountDownTimer startCountdownTimer;
 
 
     @Override
@@ -79,11 +74,6 @@ public class HugnayanQuiz extends AppCompatActivity {
         setContentView(R.layout.all_quiz_layout);
 
         AppPreloaderUtils.init(this);
-
-        soundPool = AppPreloaderUtils.soundPool;
-        greenSoundId = AppPreloaderUtils.greenSoundId;
-        orangeSoundId = AppPreloaderUtils.orangeSoundId;
-        redSoundId = AppPreloaderUtils.redSoundId;
 
         redDrawable = AppPreloaderUtils.redDrawable;
         orangeDrawable = AppPreloaderUtils.orangeDrawable;
@@ -95,11 +85,9 @@ public class HugnayanQuiz extends AppCompatActivity {
         timerBar = findViewById(R.id.timer_bar);
         introButton = findViewById(R.id.intro_button);
         background = findViewById(R.id.bottom_bar);
-
         answer1 = findViewById(R.id.answer1);
         answer2 = findViewById(R.id.answer2);
         answer3 = findViewById(R.id.answer3);
-
         db = FirebaseFirestore.getInstance();
 
         answer1.setVisibility(View.GONE);
@@ -108,7 +96,6 @@ public class HugnayanQuiz extends AppCompatActivity {
         timerBar.setVisibility(View.GONE);
         nextButton.setVisibility(View.GONE);
         background.setVisibility(View.GONE);
-
         introButton.setVisibility(View.VISIBLE);
 
         loadQuizDocument();
@@ -138,14 +125,12 @@ public class HugnayanQuiz extends AppCompatActivity {
 
         nextButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
-
             if (!isAnswered) {
                 Toast.makeText(this, "Pumili muna ng sagot bago mag-next!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             currentIndex++;
-
             if (currentIndex < quizList.size()) {
                 loadQuestion(currentIndex);
             } else {
@@ -174,11 +159,9 @@ public class HugnayanQuiz extends AppCompatActivity {
         answer1.setBackgroundResource(defaultBg);
         answer2.setBackgroundResource(defaultBg);
         answer3.setBackgroundResource(defaultBg);
-
         answer1.setEnabled(true);
         answer2.setEnabled(true);
         answer3.setEnabled(true);
-
         isAnswered = false;
         nextButton.setEnabled(false);
     }
@@ -190,15 +173,24 @@ public class HugnayanQuiz extends AppCompatActivity {
     }
 
     private void showCountdownThenLoadQuestion() {
-        new CountDownTimer(3000, 1000) {
+        if (startCountdownTimer != null) {
+            startCountdownTimer.cancel();
+            startCountdownTimer = null;
+        }
+
+        startCountdownTimer = new CountDownTimer(3000, 1000) {
             int count = 3;
+
             @Override
             public void onTick(long millisUntilFinished) {
                 questionText.setText(String.valueOf(count--));
                 playReadySound();
             }
+
             @Override
             public void onFinish() {
+                if (isFinishing() || isDestroyed()) return;
+
                 questionText.setText("");
                 currentIndex = 0;
                 loadQuestion(currentIndex);
@@ -210,22 +202,24 @@ public class HugnayanQuiz extends AppCompatActivity {
                 timerBar.setVisibility(View.VISIBLE);
                 nextButton.setVisibility(View.VISIBLE);
                 background.setVisibility(View.VISIBLE);
+
+                startCountdownTimer = null;
             }
         }.start();
     }
 
+
     private void loadQuizDocument() {
         db.collection("quiz").document("Q13")
-                .get().addOnSuccessListener(doc -> {
+                .get()
+                .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
                         introText = doc.getString("intro");
                         lessonName = doc.getString("lesson");
-
                         allQuizList = (List<Map<String, Object>>) doc.get("Quizzes");
 
                         if (allQuizList != null && !allQuizList.isEmpty()) {
                             Collections.shuffle(allQuizList);
-
                             int limit = Math.min(10, allQuizList.size());
                             quizList = new ArrayList<>(allQuizList.subList(0, limit));
                         }
@@ -236,19 +230,17 @@ public class HugnayanQuiz extends AppCompatActivity {
                             nextButton.setEnabled(true);
                         }
                     }
-                }).addOnFailureListener(e ->
+                })
+                .addOnFailureListener(e ->
                         Toast.makeText(this, "Nabigong i-load ang datos ng pagsusulit.", Toast.LENGTH_SHORT).show());
     }
-
 
     private void loadQuestion(int index) {
         if (countDownTimer != null) countDownTimer.cancel();
         if (quizList == null || quizList.isEmpty()) return;
 
         timerBar.setVisibility(View.VISIBLE);
-
         Map<String, Object> qData = quizList.get(index);
-
         String question = (String) qData.get("question");
         List<String> choices = (List<String>) qData.get("choices");
         correctAnswer = (String) qData.get("correct_choice");
@@ -256,81 +248,57 @@ public class HugnayanQuiz extends AppCompatActivity {
         if (choices != null && choices.size() >= 3) {
             List<String> shuffledChoices = new ArrayList<>(choices);
             Collections.shuffle(shuffledChoices);
+
             questionTitle.setText(getQuestionOrdinal(index + 1));
             questionText.setText(question);
-
             answer1.setText(shuffledChoices.get(0));
             answer2.setText(shuffledChoices.get(1));
             answer3.setText(shuffledChoices.get(2));
 
             resetButtons();
             startTimer();
-
             totalQuestions = quizList.size();
         }
     }
+
     private void startTimer() {
-        if (countDownTimer != null) countDownTimer.cancel();
+        if (startCountdownTimer != null) {
+            startCountdownTimer.cancel();
+            startCountdownTimer = null;
+        }
+
         timeLeftInMillis = 30000;
-
         lastColorStage = 3;
-
-        redPlayed = false;
-        orangePlayed = false;
-        greenPlayed = false;
-
         timerBar.setMax((int) timeLeftInMillis);
         timerBar.setProgress((int) timeLeftInMillis);
 
-        countDownTimer = new CountDownTimer(timeLeftInMillis, 100) {
+        playTimerSound();
+
+        countDownTimer = new CountDownTimer(timeLeftInMillis, 200) {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
-
-                int progress = (int) Math.min(millisUntilFinished, Integer.MAX_VALUE);
-                timerBar.setProgress(progress);
+                timerBar.setProgress((int) timeLeftInMillis);
 
                 int percent = (int) ((timeLeftInMillis * 100) / 30000);
-
-                if (percent <= 25 && lastColorStage > 0) {
+                if (percent <= 32 && lastColorStage > 0) {
                     timerBar.setProgressDrawable(redDrawable);
-                    playLoopingSound(redSoundId);
                     lastColorStage = 0;
-                } else if (percent <= 50 && percent > 25 && lastColorStage > 1) {
+                } else if (percent <= 65 && lastColorStage > 1) {
                     timerBar.setProgressDrawable(orangeDrawable);
-                    playLoopingSound(orangeSoundId);
                     lastColorStage = 1;
-                } else if (percent > 50 && lastColorStage > 2) {
+                } else if (percent > 65 && lastColorStage > 2) {
                     timerBar.setProgressDrawable(greenDrawable);
-                    playLoopingSound(greenSoundId);
                     lastColorStage = 2;
                 }
             }
 
-            private void playLoopingSound(int soundId) {
-                if (!MuteButtonUtils.isSoundEnabled(HugnayanQuiz.this)) return;
-                if (currentStreamId != -1) {
-                    soundPool.stop(currentStreamId);
-                }
-                currentStreamId = soundPool.play(soundId, 1, 1, 0, -1, 1);
-
-                if (isMuted && currentStreamId != -1) {
-                    soundPool.setVolume(currentStreamId, 0f, 0f);
-                }
-            }
-
-
             @Override
             public void onFinish() {
-                if (quizFinished) return;
                 isAnswered = true;
                 disableAnswers();
                 nextButton.setEnabled(true);
-
-                if (currentStreamId != -1) {
-                    soundPool.stop(currentStreamId);
-                    currentStreamId = -1;
-                }
+                stopTimerSound();
 
                 new Handler().postDelayed(() -> {
                     if (!quizFinished) nextButton.performClick();
@@ -339,23 +307,21 @@ public class HugnayanQuiz extends AppCompatActivity {
         }.start();
     }
 
+    private void playTimerSound() {
+        stopTimerSound();
+        timerPlayer = MediaPlayer.create(this, R.raw.quiz_timer);
+        timerPlayer.setLooping(false);
+        timerPlayer.setVolume(1f, 1f);
+        timerPlayer.start();
+    }
+
     private void stopTimerSound() {
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
+        if (timerPlayer != null) {
+            if (timerPlayer.isPlaying()) {
+                timerPlayer.stop();
             }
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-
-        if (currentStreamId != -1 && soundPool != null) {
-            soundPool.stop(currentStreamId);
-            currentStreamId = -1;
-        }
-
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-            countDownTimer = null;
+            timerPlayer.release();
+            timerPlayer = null;
         }
     }
 
@@ -363,7 +329,6 @@ public class HugnayanQuiz extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_exit, null);
         builder.setView(dialogView);
-
         AlertDialog exitDialog = builder.create();
         exitDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
@@ -372,10 +337,23 @@ public class HugnayanQuiz extends AppCompatActivity {
 
         yesBtn.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
+
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
+                countDownTimer = null;
+            }
+            if (startCountdownTimer != null) {
+                startCountdownTimer.cancel();
+                startCountdownTimer = null;
+            }
+
             stopTimerSound();
+            releaseReadyPlayer();
+
             exitDialog.dismiss();
             finish();
         });
+
 
         noBtn.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
@@ -395,8 +373,8 @@ public class HugnayanQuiz extends AppCompatActivity {
         Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
         if (lessons == null) return false;
 
-        Map<String, Object> hugnayanLesson = (Map<String, Object>) lessons.get("hugnayan");
-        return hugnayanLesson != null && "completed".equals(hugnayanLesson.get("status"));
+        Map<String, Object> lessonss = (Map<String, Object>) lessons.get("hugnayan");
+        return lessonss != null && "completed".equals(lessonss.get("status"));
     }
 
     private void showResultDialog() {
@@ -405,6 +383,7 @@ public class HugnayanQuiz extends AppCompatActivity {
         if (resultDialog != null && resultDialog.isShowing()) {
             resultDialog.dismiss();
         }
+
         releaseResultPlayer();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -415,7 +394,6 @@ public class HugnayanQuiz extends AppCompatActivity {
         Button retryButton = dialogView.findViewById(R.id.retryButton);
         Button taposButton = dialogView.findViewById(R.id.finishButton);
         Button homeButton = dialogView.findViewById(R.id.returnButton);
-
         ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
         TextView scoreNumber = dialogView.findViewById(R.id.textView6);
         TextView resultText = dialogView.findViewById(R.id.textView7);
@@ -442,6 +420,7 @@ public class HugnayanQuiz extends AppCompatActivity {
         }
 
         resultDialog = builder.create();
+
         if (resultDialog.getWindow() != null) {
             resultDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
@@ -449,6 +428,7 @@ public class HugnayanQuiz extends AppCompatActivity {
         resultDialog.setOnShowListener(d -> {
             releaseResultPlayer();
             int soundRes = passed ? R.raw.success : R.raw.game_over;
+
             if (MuteButtonUtils.isSoundEnabled(HugnayanQuiz.this)) {
                 resultPlayer = MediaPlayer.create(HugnayanQuiz.this, soundRes);
                 if (resultPlayer != null) {
@@ -532,14 +512,12 @@ public class HugnayanQuiz extends AppCompatActivity {
         timerBar.setVisibility(View.VISIBLE);
         nextButton.setVisibility(View.VISIBLE);
         background.setVisibility(View.VISIBLE);
-
         loadQuestion(currentIndex);
     }
 
     private void navigateToLesson(Class<?> lessonActivityClass) {
         stopTimerSound();
         releaseResultPlayer();
-
         Intent intent = new Intent(HugnayanQuiz.this, lessonActivityClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
@@ -573,11 +551,11 @@ public class HugnayanQuiz extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = user.getUid();
 
-        Map<String, Object> hugnayanStatus = new HashMap<>();
-        hugnayanStatus.put("status", "completed");
+        Map<String, Object> status = new HashMap<>();
+        status.put("status", "completed");
 
         Map<String, Object> lessonsMap = new HashMap<>();
-        lessonsMap.put("hugnayan", hugnayanStatus);
+        lessonsMap.put("hugnayan", status);
 
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put("lessons", lessonsMap);
@@ -593,10 +571,10 @@ public class HugnayanQuiz extends AppCompatActivity {
             Map<String, Object> cachedData = LessonProgressCache.getData();
 
             if (!cachedData.containsKey("module_2")) {
-                cachedData.put("module_1", new HashMap<String, Object>());
+                cachedData.put("module_2", new HashMap<String, Object>());
             }
 
-            Map<String, Object> cachedModule1 = (Map<String, Object>) cachedData.get("module_1");
+            Map<String, Object> cachedModule1 = (Map<String, Object>) cachedData.get("module_2");
             cachedModule1.put("lessons", lessonsMap);
             cachedModule1.put("current_lesson", "hugnayan");
 
@@ -609,12 +587,10 @@ public class HugnayanQuiz extends AppCompatActivity {
         super.onPause();
         isMuted = true;
 
-        if (currentStreamId != -1 && soundPool != null) {
-            soundPool.setVolume(currentStreamId, 0f, 0f);
-        }
         if (mediaPlayer != null) mediaPlayer.setVolume(0f, 0f);
         if (resultPlayer != null) resultPlayer.setVolume(0f, 0f);
         if (readyPlayer != null) readyPlayer.setVolume(0f, 0f);
+        if (timerPlayer != null) timerPlayer.setVolume(0f, 0f);
 
         TimerSoundUtils.setVolume(0f);
     }
@@ -625,12 +601,10 @@ public class HugnayanQuiz extends AppCompatActivity {
         super.onResume();
         isMuted = false;
 
-        if (currentStreamId != -1 && soundPool != null) {
-            soundPool.setVolume(currentStreamId, 1f, 1f);
-        }
         if (mediaPlayer != null) mediaPlayer.setVolume(1f, 1f);
         if (resultPlayer != null) resultPlayer.setVolume(1f, 1f);
         if (readyPlayer != null) readyPlayer.setVolume(1f, 1f);
+        if (timerPlayer != null) timerPlayer.setVolume(1f, 1f);
 
         TimerSoundUtils.setVolume(1f);
     }
@@ -639,20 +613,30 @@ public class HugnayanQuiz extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (resultDialog != null && resultDialog.isShowing()) {
-            resultDialog.dismiss();
+
+        if (startCountdownTimer != null) {
+            startCountdownTimer.cancel();
+            startCountdownTimer = null;
         }
-        resultDialog = null;
 
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
         }
+
+        if (resultDialog != null && resultDialog.isShowing()) {
+            resultDialog.dismiss();
+        }
+
         stopTimerSound();
+        releaseReadyPlayer();
         releaseResultPlayer();
     }
+
+
     private void playReadySound() {
         if (!MuteButtonUtils.isSoundEnabled(this)) return;
+
         releaseReadyPlayer();
         readyPlayer = MediaPlayer.create(this, R.raw.beep);
         if (readyPlayer != null) {
@@ -662,13 +646,37 @@ public class HugnayanQuiz extends AppCompatActivity {
     }
 
     private void releaseReadyPlayer() {
-        if (!MuteButtonUtils.isSoundEnabled(this)) return;
         if (readyPlayer != null) {
-            if (readyPlayer.isPlaying()) {
-                readyPlayer.stop();
+            try {
+                if (readyPlayer.isPlaying()) {
+                    readyPlayer.stop();
+                }
+                readyPlayer.release();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                readyPlayer = null;
             }
-            readyPlayer.release();
-            readyPlayer = null;
         }
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (isFinishing() || isDestroyed()) {
+            if (startCountdownTimer != null) {
+                startCountdownTimer.cancel();
+                startCountdownTimer = null;
+            }
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
+                countDownTimer = null;
+            }
+
+            stopTimerSound();
+            releaseReadyPlayer();
+        }
+    }
+
 }
