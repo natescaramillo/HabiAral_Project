@@ -60,12 +60,21 @@ public class HomeFragment extends Fragment {
         for (Map.Entry<Integer, Class<?>> entry : lessonMap.entrySet()) {
             View button = view.findViewById(entry.getKey()); // FIX: use View instead of LinearLayout
             Class<?> activityClass = entry.getValue();
-            if (button != null) {
-                button.setOnClickListener(v -> {
-                    SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
-                    startActivity(new Intent(getActivity(), activityClass));
-                });
-            }
+            button.setOnClickListener(v -> {
+                SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
+
+                // Play click animation
+                v.startAnimation(android.view.animation.AnimationUtils.loadAnimation(getContext(), R.anim.card_click));
+
+                // Delay the activity start slightly so animation plays first
+                new Handler().postDelayed(() -> {
+                    if (isAdded()) {
+                        Intent intent = new Intent(getActivity(), activityClass);
+                        startActivity(intent);
+                    }
+                }, 150);
+            });
+
         }
 
         // Listen for nickname changes
