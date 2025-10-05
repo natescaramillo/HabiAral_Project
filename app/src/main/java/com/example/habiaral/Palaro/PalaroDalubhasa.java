@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -86,6 +87,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private Handler countdownHandler;
     private Runnable countdownRunnable;
     private MediaPlayer countdownBeepPlayer;
+
     private ImageView errorIcon;
     private TextView errorTooltip;
     private MediaPlayer greenTimerSoundPlayer;
@@ -100,7 +102,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
     private boolean hasSpokenMDCL1 = false;
-    private MediaPlayer timerSoundPlayer;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,13 +151,65 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     tts.setVoice(selected);
                 }
 
-                tts.setSpeechRate(1.2f);
+                tts.setSpeechRate(1.0f);
 
-                if (!hasSpokenMDCL1) {
-                    new Handler().postDelayed(() -> loadCharacterLine("MDCL1"), 300);
-                    hasSpokenMDCL1 = true;
-                }
-                new Handler().postDelayed(this::showCountdownThenLoadInstruction, 4000);
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                String uid = auth.getCurrentUser().getUid();
+
+                DocumentReference docRef = db.collection("minigame_progress").document(uid);
+                docRef.get().addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Boolean isFirstTime = documentSnapshot.getBoolean("dalubhasa_intro");
+
+                        if (isFirstTime == null || isFirstTime) {
+                            String text = getString(R.string.mdcl1_line);
+                            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "MDCL1_UTTERANCE");
+
+                            tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                                @Override
+                                public void onStart(String utteranceId) {}
+
+                                @Override
+                                public void onDone(String utteranceId) {
+                                    if ("MDCL1_UTTERANCE".equals(utteranceId)) {
+                                        runOnUiThread(() -> showCountdownThenLoadInstruction());
+                                    }
+                                }
+
+                                @Override
+                                public void onError(String utteranceId) {}
+                            });
+
+                            docRef.update("dalubhasa_intro", false);
+
+                        } else {
+                            showCountdownThenLoadInstruction();
+                        }
+                    } else {
+                        String text = getString(R.string.mdcl1_line);
+                        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "MDCL1_UTTERANCE");
+
+                        tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                            @Override
+                            public void onStart(String utteranceId) {}
+
+                            @Override
+                            public void onDone(String utteranceId) {
+                                if ("MDCL1_UTTERANCE".equals(utteranceId)) {
+                                    runOnUiThread(() -> showCountdownThenLoadInstruction());
+                                }
+                            }
+
+                            @Override
+                            public void onError(String utteranceId) {}
+                        });
+
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("dalubhasa_intro", false);
+                        docRef.set(data, SetOptions.merge());
+                    }
+                });
 
             } else {
                 Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
@@ -239,133 +294,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     }
 
-    private void startTimer() {
-
-        timeLeft = TOTAL_TIME;
-        lastTimerZone = "";
-
-        if (countDownTimer != null) countDownTimer.cancel();
-        stopAllTimerSounds();
-
-        countDownTimer = new CountDownTimer(TOTAL_TIME, 100) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timeLeft = millisUntilFinished;
-                int percent = (int) (timeLeft * 100 / TOTAL_TIME);
-                timerBar.setProgress(percent);
-
-                if (percent <= 25) {
-                    updateTimerZone("RED", R.drawable.timer_color_red);
-                } else if (percent <= 50) {
-                    updateTimerZone("ORANGE", R.drawable.timer_color_orange);
-                } else {
-                    updateTimerZone("GREEN", R.drawable.timer_color_green);
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                timerBar.setProgress(0);
-                userSentenceInput.setEnabled(false);
-                btnTapos.setEnabled(false);
-
-                stopAllTimerSounds();
-
-                loadCharacterLine("MCL5");
-                saveDalubhasaScore();
-            }
-        }.start();
-    }
-
-    private void updateTimerZone(String zone, int drawableRes) {
-        if (!lastTimerZone.equals(zone)) {
-            stopAllTimerSounds();
-            timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, drawableRes));
-            playTimerSound();
-            lastTimerZone = zone;
-        }
-    }
-
-    private void stopAllTimerSounds() {
-        if (timerSoundPlayer != null) {
-            timerSoundPlayer.stop();
-            timerSoundPlayer.release();
-            timerSoundPlayer = null;
-        }
-    }
-
-    private void playTimerSound() {
-        stopAllTimerSounds();
-
-        timerSoundPlayer = MediaPlayer.create(this, R.raw.sound_new);
-        timerSoundPlayer.setOnCompletionListener(mediaPlayer -> {
-            mediaPlayer.release();
-            timerSoundPlayer = null;
-        });
-
-        timerSoundPlayer.start();
-    }
-
-    private void loadCharacterLine(String lineId) {
-        if (lineId.equals("MDCL1") && hasSpokenMDCL1) return;
-
-        db.collection("minigame_character_lines").document(lineId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String line = documentSnapshot.getString("line");
-
-                        if (line != null && !line.isEmpty()) {
-                            speakLine(line);
-                        }
-                    }
-                });
-    }
-
-    private void speakLine(String text) {
-        if (text == null || text.trim().isEmpty()) return;
-
-        if (isTtsReady && tts != null) {
-            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
-        }
-    }
-
-    private void saveDalubhasaScore() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser == null || dalubhasaScore <= 0) return;
-
-        String uid = currentUser.getUid();
-
-        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
-            if (!studentDoc.exists()) {
-                Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            String studentId = studentDoc.getString("studentId");
-            if (studentId == null || studentId.isEmpty()) {
-                Toast.makeText(this, "Student ID not found", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            DocumentReference docRef = db.collection("minigame_progress").document(uid);
-
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("dalubhasa_score", com.google.firebase.firestore.FieldValue.increment(dalubhasaScore));
-            updates.put("total_score", com.google.firebase.firestore.FieldValue.increment(dalubhasaScore));
-            updates.put("studentId", studentId);
-
-            docRef.set(updates, SetOptions.merge())
-                    .addOnSuccessListener(aVoid -> {
-                        dalubhasaScore = 0;
-
-                        docRef.get().addOnSuccessListener(snapshot -> {
-                            int totalScore = snapshot.contains("total_score") ? snapshot.getLong("total_score").intValue() : 0;
-                        });
-                    });
-        });
-    }
-
     private void checkGrammar() {
         String sentence = userSentenceInput.getText().toString().trim();
         if (sentence.isEmpty()) {
@@ -406,9 +334,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
             return;
         }
-
         int wordCount = countWordsExcludingKeywords(sentence, currentKeywords);
-
         if (wordCount > 10) {
             showErrorTooltip("Pinakamataas na bilang ay sampung salita, ngunit hindi kabilang ang panuto.");
 
@@ -428,6 +354,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             }, 2300);
             return;
         }
+
 
         List<String> missingKeywords = new ArrayList<>();
         for (String keyword : currentKeywords) {
@@ -538,6 +465,14 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
     }
 
+    private void restartTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        stopAllTimerSounds();
+        startTimer();
+    }
+
     private void showErrorTooltip(String message) {
         errorTooltip.setText(message);
         errorIcon.setVisibility(View.VISIBLE);
@@ -557,6 +492,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             }
         });
     }
+
 
     private void showUmalisDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PalaroDalubhasa.this);
@@ -586,6 +522,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         dialog.show();
     }
+
 
     private void highlightGrammarIssues(String response, String originalSentence) {
         try {
@@ -755,6 +692,21 @@ public class PalaroDalubhasa extends AppCompatActivity {
         dialog.show();
     }
 
+    private void loadCharacterLine(String lineId) {
+        if (lineId.equals("MDCL1") && hasSpokenMDCL1) return;
+
+        db.collection("minigame_character_lines").document(lineId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String line = documentSnapshot.getString("line");
+
+                        if (line != null && !line.isEmpty()) {
+                            speakLine(line);
+                        }
+                    }
+                });
+    }
 
     private void loadAllDalubhasaInstructions() {
         db.collection("dalubhasa")
@@ -799,6 +751,13 @@ public class PalaroDalubhasa extends AppCompatActivity {
         keywordList = shuffledKeywords;
     }
 
+    private void speakLine(String text) {
+        if (text == null || text.trim().isEmpty()) return;
+
+        if (isTtsReady && tts != null) {
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+        }
+    }
 
     private void nextQuestion() {
         if (isGameOver) return;
@@ -892,6 +851,83 @@ public class PalaroDalubhasa extends AppCompatActivity {
         countdownHandler.post(countdownRunnable);
     }
 
+
+    private void startTimer() {
+
+        timeLeft = TOTAL_TIME;
+        lastTimerZone = "";
+
+        if (countDownTimer != null) countDownTimer.cancel();
+        stopAllTimerSounds();
+
+        countDownTimer = new CountDownTimer(TOTAL_TIME, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeft = millisUntilFinished;
+                int percent = (int) (timeLeft * 100 / TOTAL_TIME);
+                timerBar.setProgress(percent);
+
+                if (percent <= 25) {
+                    updateTimerZone("RED", R.drawable.timer_color_red, R.raw.red_timer);
+                } else if (percent <= 50) {
+                    updateTimerZone("ORANGE", R.drawable.timer_color_orange, R.raw.orange_timer);
+                } else {
+                    updateTimerZone("GREEN", R.drawable.timer_color_green, R.raw.green_timer);
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                timerBar.setProgress(0);
+                userSentenceInput.setEnabled(false);
+                btnTapos.setEnabled(false);
+
+                stopAllTimerSounds();
+
+                loadCharacterLine("MCL5");
+                saveDalubhasaScore();
+            }
+        }.start();
+    }
+
+    private void updateTimerZone(String zone, int drawableRes, int soundRes) {
+        if (!lastTimerZone.equals(zone)) {
+            stopAllTimerSounds();
+            timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, drawableRes));
+            playTimerSound(soundRes);
+            lastTimerZone = zone;
+        }
+    }
+
+    private void stopAllTimerSounds() {
+        if (greenTimerSoundPlayer != null) { greenTimerSoundPlayer.stop(); greenTimerSoundPlayer.release(); greenTimerSoundPlayer = null; }
+        if (orangeTimerSoundPlayer != null) { orangeTimerSoundPlayer.stop(); orangeTimerSoundPlayer.release(); orangeTimerSoundPlayer = null; }
+        if (redTimerSoundPlayer != null) { redTimerSoundPlayer.stop(); redTimerSoundPlayer.release(); redTimerSoundPlayer = null; }
+
+        greenSound = false;
+        orangeSound = false;
+        redSound = false;
+    }
+
+    private void playTimerSound(int soundResId) {
+        stopAllTimerSounds();
+
+        MediaPlayer mp = MediaPlayer.create(this, soundResId);
+
+        if (soundResId == R.raw.green_timer) greenTimerSoundPlayer = mp;
+        else if (soundResId == R.raw.orange_timer) orangeTimerSoundPlayer = mp;
+        else if (soundResId == R.raw.red_timer) redTimerSoundPlayer = mp;
+
+        mp.setOnCompletionListener(mediaPlayer -> {
+            mediaPlayer.release();
+            if (soundResId == R.raw.green_timer) greenTimerSoundPlayer = null;
+            else if (soundResId == R.raw.orange_timer) orangeTimerSoundPlayer = null;
+            else if (soundResId == R.raw.red_timer) redTimerSoundPlayer = null;
+        });
+
+        mp.start();
+    }
+
     private void finishQuiz() {
         if (isGameOver) return;
         isGameOver = true;
@@ -921,7 +957,41 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
     }
 
+    private void saveDalubhasaScore() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null || dalubhasaScore <= 0) return;
 
+        String uid = currentUser.getUid();
+
+        db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
+            if (!studentDoc.exists()) {
+                Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String studentId = studentDoc.getString("studentId");
+            if (studentId == null || studentId.isEmpty()) {
+                Toast.makeText(this, "Student ID not found", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            DocumentReference docRef = db.collection("minigame_progress").document(uid);
+
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("dalubhasa_score", com.google.firebase.firestore.FieldValue.increment(dalubhasaScore));
+            updates.put("total_score", com.google.firebase.firestore.FieldValue.increment(dalubhasaScore));
+            updates.put("studentId", studentId);
+
+            docRef.set(updates, SetOptions.merge())
+                    .addOnSuccessListener(aVoid -> {
+                        dalubhasaScore = 0;
+
+                        docRef.get().addOnSuccessListener(snapshot -> {
+                            int totalScore = snapshot.contains("total_score") ? snapshot.getLong("total_score").intValue() : 0;
+                        });
+                    });
+        });
+    }
 
     private void deductHeart() {
         if (remainingHearts > 0) {

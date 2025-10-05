@@ -92,4 +92,11 @@
         • Naghintay sila hanggang dumating ang guro.\n
         • Kumakanta siya habang nagluluto ang nanay niya.
     </string>
+    
+    <string name="mdcl1_line">
+        Ito na ang huling yugto ng palaro, humanda sa pinakamahirap na gawain.
+    </string>
+    <string name="mcl1_line">
+        Tara! Simulan na natin ang baguhan!
+    </string>
 </resources>

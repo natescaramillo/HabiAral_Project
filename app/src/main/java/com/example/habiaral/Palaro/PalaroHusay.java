@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -98,6 +99,7 @@ public class PalaroHusay extends AppCompatActivity {
     private Runnable countdownRunnable;
     private MediaPlayer countdownBeep;
     private int countdownValue = 3;
+    private boolean playMHCL2 = false;
 
 
     @Override
@@ -106,21 +108,6 @@ public class PalaroHusay extends AppCompatActivity {
         setContentView(R.layout.palaro_husay);
 
         connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        SharedPreferences prefs = getSharedPreferences("HusayPrefs", MODE_PRIVATE);
-        boolean firstTime = prefs.getBoolean("firstTimeMHCL1", true);
-
-        if (firstTime) {
-            // Play MHCL1 first time
-            new Handler().postDelayed(() -> loadCharacterLine("MHCL1"), 200);
-            new Handler().postDelayed(this::showCountdownThenLoadWords, 4000);
-
-            // Set to false so next time it won't play
-            prefs.edit().putBoolean("firstTimeMHCL1", false).apply();
-        } else {
-            // Skip MHCL1, just show countdown
-            new Handler().postDelayed(this::showCountdownThenLoadWords, 200);
-        }
-
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             networkCallback = new ConnectivityManager.NetworkCallback() {
@@ -197,7 +184,39 @@ public class PalaroHusay extends AppCompatActivity {
                         textToSpeech.setVoice(selected);
                     }
                     textToSpeech.setSpeechRate(1.0f);
-                    SoundManagerUtils.setTts(textToSpeech);  // Assuming this method does further setup
+
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    FirebaseAuth auth = FirebaseAuth.getInstance();
+                    String uid = auth.getCurrentUser().getUid();
+
+                    DocumentReference docRef = db.collection("minigame_progress").document(uid);
+                    docRef.get().addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            Boolean isFirstTime = documentSnapshot.getBoolean("husay_intro");
+
+                            if (isFirstTime == null || isFirstTime) {
+                                playMHCL2 = true;
+                                loadCharacterLineWithCallback("MHCL1", () -> {
+                                    runOnUiThread(this::showCountdownThenLoadWords);
+                                });
+                                docRef.update("husay_intro", false);
+
+                            } else {
+                                // NEXT TIMES
+                                playMHCL2 = false;
+                                showCountdownThenLoadWords();
+                            }
+                        } else {
+                            playMHCL2 = true;
+                            loadCharacterLineWithCallback("MHCL1", () -> {
+                                runOnUiThread(this::showCountdownThenLoadWords);
+                            });
+
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("husay_intro", false);
+                            docRef.set(data, SetOptions.merge());
+                        }
+                    });
                 }
             } else {
                 Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
@@ -542,7 +561,6 @@ public class PalaroHusay extends AppCompatActivity {
                 }
 
                 if (countdownValue > 0) {
-                    // release previous beep if any
                     if (countdownBeep != null) {
                         try { countdownBeep.stop(); } catch (Exception ignored) {}
                         try { countdownBeep.release(); } catch (Exception ignored) {}
@@ -567,12 +585,19 @@ public class PalaroHusay extends AppCompatActivity {
                     }
 
                     if (!isGameOver && !isFinishing() && !isDestroyed()) {
-                        loadCharacterLineWithCallback("MHCL2", () -> {
+                        if (playMHCL2) {
+                            loadCharacterLineWithCallback("MHCL2", () -> {
+                                if (!questionIds.isEmpty() && !isGameOver) {
+                                    loadHusayWords(questionIds.get(currentQuestionIndex));
+                                }
+                                startTimer();
+                            });
+                        } else {
                             if (!questionIds.isEmpty() && !isGameOver) {
                                 loadHusayWords(questionIds.get(currentQuestionIndex));
                             }
                             startTimer();
-                        });
+                        }
                     }
                 }
             }

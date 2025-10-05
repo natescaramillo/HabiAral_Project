@@ -37,7 +37,7 @@ public class Palaro extends AppCompatActivity {
     private int userPoints = 0;
     private int userEnergy = 100;
 
-    private final int ENERGY_COST = 20;
+    private final int ENERGY_COST = 0;
     private final int ENERGY_MAX = 100;
     private final long ENERGY_INTERVAL = 3 * 60 * 1000; // 3 minutes
 
@@ -81,16 +81,8 @@ public class Palaro extends AppCompatActivity {
         });
 
         button1.setOnClickListener(v -> playBaguhan());
-        button2.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click);
-            if (userPoints >= 400) startActivity(new Intent(Palaro.this, PalaroHusay.class));
-            else Toast.makeText(this, "Unlock Husay at 400 points!", Toast.LENGTH_SHORT).show();
-        });
-        button3.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(this, R.raw.button_click);
-            if (userPoints >= 800) startActivity(new Intent(Palaro.this, PalaroDalubhasa.class));
-            else Toast.makeText(this, "Unlock Dalubhasa at 800 points!", Toast.LENGTH_SHORT).show();
-        });
+        button2.setOnClickListener(v -> playHusay());
+        button3.setOnClickListener(v -> playDalubhasa());
     }
 
     private void playBaguhan() {
@@ -118,6 +110,72 @@ public class Palaro extends AppCompatActivity {
             Intent intent = new Intent(this, PalaroBaguhan.class);
             intent.putExtra("resetProgress", true);
             startActivityForResult(intent, BAGUHAN_REQUEST_CODE);
+        } else {
+            Toast.makeText(this, "Not enough energy!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void playHusay() {
+        SoundClickUtils.playClickSound(this, R.raw.button_click);
+
+        if (userPoints < 400) {
+            Toast.makeText(this, "Unlock Husay at 400 points!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (userEnergy >= ENERGY_COST) {
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser == null) return;
+            String userId = currentUser.getUid();
+
+            // Bawasan energy
+            userEnergy -= ENERGY_COST;
+            long now = System.currentTimeMillis();
+
+            Map<String, Object> update = new HashMap<>();
+            update.put("userEnergy", userEnergy);
+            update.put("lastEnergyTime", now);
+            db.collection("minigame_progress").document(userId)
+                    .set(update, SetOptions.merge());
+
+            updateUI();
+            checkLocks();
+            startEnergyRegeneration(userId, now);
+
+            startActivity(new Intent(this, PalaroHusay.class));
+        } else {
+            Toast.makeText(this, "Not enough energy!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void playDalubhasa() {
+        SoundClickUtils.playClickSound(this, R.raw.button_click);
+
+        if (userPoints < 800) {
+            Toast.makeText(this, "Unlock Dalubhasa at 800 points!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (userEnergy >= ENERGY_COST) {
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser == null) return;
+            String userId = currentUser.getUid();
+
+            // Bawasan energy
+            userEnergy -= ENERGY_COST;
+            long now = System.currentTimeMillis();
+
+            Map<String, Object> update = new HashMap<>();
+            update.put("userEnergy", userEnergy);
+            update.put("lastEnergyTime", now);
+            db.collection("minigame_progress").document(userId)
+                    .set(update, SetOptions.merge());
+
+            updateUI();
+            checkLocks();
+            startEnergyRegeneration(userId, now);
+
+            startActivity(new Intent(this, PalaroDalubhasa.class));
         } else {
             Toast.makeText(this, "Not enough energy!", Toast.LENGTH_SHORT).show();
         }

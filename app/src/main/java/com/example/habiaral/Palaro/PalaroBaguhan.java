@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -85,9 +86,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private String lastTimerZone = "";
     private Handler handler = new Handler();
-    private Runnable loadLineRunnable, startCountdownRunnable;
     private Button[] answerButtons;
-    public static final String LINE_START = "MCL1";
     public static final String LINE_ONE_CORRECT = "MCL2";
     public static final String LINE_TWO_CORRECT = "MCL3";
     public static final String LINE_STREAK = "MCL4";
@@ -97,15 +96,10 @@ public class PalaroBaguhan extends AppCompatActivity {
     private static final String FIELD_HUSAY = "husay_score";
     private static final String FIELD_DALUBHASA = "dalubhasa_score";
     private static final String FIELD_TOTAL = "total_score";
-
     private static final String FIELD_HUSAY_UNLOCKED = "husay_unlocked";
     private static final String FIELD_DALUBHASA_UNLOCKED = "dalubhasa_unlocked";
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
-    private static final String PREFS_NAME = "PalaroPrefs";
-    private static final String KEY_SEEN_INTRO = "seen_intro";
-    private boolean hasSeenIntro = false;
-    private SharedPreferences prefs;
 
 
 
@@ -113,12 +107,6 @@ public class PalaroBaguhan extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.palaro_baguhan);
-
-        prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        hasSeenIntro = prefs.getBoolean(KEY_SEEN_INTRO, false);
-
-        startCountdownRunnable = this::showCountdownThenLoadQuestion;
-
 
         ImageView imageView = findViewById(R.id.characterIcon);
         if (!isFinishing() && !isDestroyed()) {
@@ -165,7 +153,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    // Piliin ang voice na may Filipino language kung available
                     Voice selected = null;
                     for (Voice v : tts.getVoices()) {
                         Locale vLocale = v.getLocale();
@@ -183,26 +170,67 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                     tts.setSpeechRate(1.0f);
 
-                    // Optional: kung merong TTS manager utils sa app
-                    // SoundManagerUtils.setTts(tts);
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    FirebaseAuth auth = FirebaseAuth.getInstance();
+                    String uid = auth.getCurrentUser().getUid();
 
-                    // Simulan agad ang intro line o countdown
-                    if (!hasSeenIntro) {
-                        loadLineRunnable = () -> loadCharacterLine(LINE_START);
-                        handler.postDelayed(loadLineRunnable, 300);
-                        handler.postDelayed(startCountdownRunnable, 3000);
+                    DocumentReference docRef = db.collection("minigame_progress").document(uid);
+                    docRef.get().addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            Boolean isFirstTime = documentSnapshot.getBoolean("baguhan_intro");
 
-                        prefs.edit().putBoolean(KEY_SEEN_INTRO, true).apply();
-                        hasSeenIntro = true;
-                    } else {
-                        handler.post(startCountdownRunnable);
-                    }
+                            if (isFirstTime == null || isFirstTime) {
+                                String text = getString(R.string.mcl1_line);
+                                tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "MCL1_UTTERANCE");
+
+                                tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                                    @Override
+                                    public void onStart(String utteranceId) {}
+
+                                    @Override
+                                    public void onDone(String utteranceId) {
+                                        if ("MCL1_UTTERANCE".equals(utteranceId)) {
+                                            runOnUiThread(() -> showCountdownThenLoadQuestion());
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(String utteranceId) {}
+                                });
+
+                                docRef.update("baguhan_intro", false);
+
+                            } else {
+                                showCountdownThenLoadQuestion();
+                            }
+                        } else {
+                            String text = getString(R.string.mdcl1_line);
+                            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "MCL1_UTTERANCE");
+
+                            tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                                @Override
+                                public void onStart(String utteranceId) {}
+
+                                @Override
+                                public void onDone(String utteranceId) {
+                                    if ("MCL1_UTTERANCE".equals(utteranceId)) {
+                                        runOnUiThread(() -> showCountdownThenLoadQuestion());
+                                    }
+                                }
+
+                                @Override
+                                public void onError(String utteranceId) {}
+                            });
+
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("dalubhasa_intro", false);
+                            docRef.set(data, SetOptions.merge());
+                        }
+                    });
                 }
 
             } else {
                 Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
-                // Fallback sa countdown kahit hindi ma-init TTS
-                handler.post(startCountdownRunnable);
             }
         });
 
@@ -362,11 +390,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
-        }
-
-        if (handler != null) {
-            if (loadLineRunnable != null) handler.removeCallbacks(loadLineRunnable);
-            if (startCountdownRunnable != null) handler.removeCallbacks(startCountdownRunnable);
         }
 
         if (mediaPlayer != null) {
@@ -1027,11 +1050,6 @@ public class PalaroBaguhan extends AppCompatActivity {
                 } catch (Exception ignored) {}
             }
 
-            if (handler != null) {
-                if (loadLineRunnable != null) handler.removeCallbacks(loadLineRunnable);
-                if (startCountdownRunnable != null) handler.removeCallbacks(startCountdownRunnable);
-                handler.removeCallbacksAndMessages(null);
-            }
 
             try {
                 if (connectivityManager != null && networkCallback != null) {
