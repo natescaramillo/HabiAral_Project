@@ -101,8 +101,6 @@ public class PalaroBaguhan extends AppCompatActivity {
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -252,6 +250,8 @@ public class PalaroBaguhan extends AppCompatActivity {
         unlockButton = findViewById(R.id.UnlockButtonPalaro);
         unlockButton1 = findViewById(R.id.UnlockButtonPalaro1);
 
+        setButtonsEnabled(false);
+
         heartIcons = new ImageView[]{
                 findViewById(R.id.heart01),
                 findViewById(R.id.heart02),
@@ -381,6 +381,25 @@ public class PalaroBaguhan extends AppCompatActivity {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             showExitConfirmationDialog();
         });
+    }
+
+    private void setButtonsEnabled(boolean enabled) {
+        float alpha = enabled ? 1.0f : 0.5f;
+
+        for (Button btn : answerButtons) {
+            btn.setEnabled(enabled);
+            btn.setAlpha(alpha);
+        }
+
+        if (unlockButton != null) {
+            unlockButton.setEnabled(enabled);
+            unlockButton.setAlpha(alpha);
+        }
+
+        if (unlockButton1 != null) {
+            unlockButton1.setEnabled(enabled);
+            unlockButton1.setAlpha(alpha);
+        }
     }
 
     private void exitGame() {
@@ -700,6 +719,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     private MediaPlayer beepPlayer;
 
     private void showCountdownThenLoadQuestion() {
+
         db.collection("baguhan").get().addOnSuccessListener(querySnapshot -> {
             if (!querySnapshot.isEmpty()) {
                 for (var doc : querySnapshot.getDocuments()) {
@@ -737,6 +757,8 @@ public class PalaroBaguhan extends AppCompatActivity {
                                 beepPlayer[0].release();
                                 beepPlayer[0] = null;
                             }
+
+                            setButtonsEnabled(true);
                             loadBaguhanQuestion();
                             startTimer(timeLeft);
                         }
