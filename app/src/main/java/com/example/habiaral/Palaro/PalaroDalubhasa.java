@@ -887,6 +887,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                 loadCharacterLine("MCL5");
                 saveDalubhasaScore();
+
+                finishQuiz();
             }
         }.start();
     }
