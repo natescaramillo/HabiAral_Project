@@ -253,6 +253,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         btnTapos.setEnabled(false);
 
         btnTapos.setOnClickListener(v -> {
+            playButtonClickSound();
             if (hasSubmitted) {
 
                 nextQuestion();
