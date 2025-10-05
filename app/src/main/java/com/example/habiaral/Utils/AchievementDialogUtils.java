@@ -24,39 +24,28 @@ import com.example.habiaral.R;
 
 public class AchievementDialogUtils {
 
-    /**
-     * Shows an achievement popup that will not crash when the user navigates away.
-     * Visible for ~1 second (1000 ms). Uses overlay when overlay-permission is granted;
-     * otherwise falls back to a Toast (safe).
-     */
     public static void showAchievementUnlockedDialog(Context context, String title, int imageRes) {
         final Context appCtx = context.getApplicationContext();
         final Handler main = new Handler(Looper.getMainLooper());
 
-        // Ensure UI work runs on main thread
         main.post(() -> {
             LayoutInflater inflater = LayoutInflater.from(appCtx);
 
-            // Create the view we'll try to show via WindowManager first
             final View overlayView = inflater.inflate(R.layout.achievement_unlocked, null);
             bindView(overlayView, title, imageRes);
 
-            // Try WindowManager overlay path (only if we have overlay permission when required)
             try {
                 WindowManager wm = (WindowManager) appCtx.getSystemService(Context.WINDOW_SERVICE);
                 if (wm == null) throw new RuntimeException("WindowManager is null");
 
                 int type;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    // On modern Android, TYPE_APPLICATION_OVERLAY requires permission
                     if (Settings.canDrawOverlays(appCtx)) {
                         type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
                     } else {
-                        // No overlay permission -> force fallback to Toast
                         throw new SecurityException("No overlay permission (Settings.canDrawOverlays==false)");
                     }
                 } else {
-                    // For older devices, TYPE_TOAST works more reliably without special permission
                     type = WindowManager.LayoutParams.TYPE_TOAST;
                 }
 
@@ -72,10 +61,8 @@ public class AchievementDialogUtils {
                 params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
                 params.y = 50;
 
-                // Add the view (may throw BadTokenException / SecurityException on some devices)
                 wm.addView(overlayView, params);
 
-                // Start the slide in / out animation and lifecycle (1 second visible)
                 overlayView.post(() -> {
                     int height = overlayView.getHeight();
                     overlayView.setTranslationY(-height);
@@ -103,40 +90,30 @@ public class AchievementDialogUtils {
                             .start();
                 });
 
-                // success path return
                 return;
 
             } catch (Exception e) {
-                // Fall through to Toast fallback if any problem occurs (permission, BadToken, etc).
-                // (We intentionally don't throw so it won't crash the app.)
             }
 
-            // --- FALLBACK: use a Toast with a freshly inflated view (safer) ---
             try {
-                // Inflate fresh view for the Toast to avoid "view already has parent"
                 final View toastView = inflater.inflate(R.layout.achievement_unlocked, null);
                 bindView(toastView, title, imageRes);
 
                 Toast toast = new Toast(appCtx);
                 toast.setView(toastView);
-                // We'll cancel it manually after 1 second
-                toast.setDuration(Toast.LENGTH_LONG); // duration is overridden/cancelled manually
+                toast.setDuration(Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 50);
                 toast.show();
 
-                // play sound
                 safeCreateAndStartPlayer(appCtx);
 
-                // cancel after 1 second
                 main.postDelayed(toast::cancel, 3000);
 
             } catch (Exception ex) {
-                // last-resort: don't crash — silently ignore
             }
         });
     }
 
-    // Helper to bind image + spannable text into the inflated layout
     private static void bindView(View view, String title, int imageRes) {
         ImageView iv = view.findViewById(R.id.imageView19);
         TextView tv = view.findViewById(R.id.textView14);
@@ -158,16 +135,12 @@ public class AchievementDialogUtils {
         if (tv != null) tv.setText(ssb);
     }
 
-    // Safe MediaPlayer creation and start (returns null if cannot create)
-    // Keep a static reference para hindi made-destroy agad pag lumipat ng activity
     private static MediaPlayer globalPlayer;
 
     private static MediaPlayer safeCreateAndStartPlayer(Context ctx) {
         try {
-            // Gumamit ng ApplicationContext para hindi sumama sa Activity lifecycle
             Context appContext = ctx.getApplicationContext();
 
-            // Kung may dati pang tumutunog, i-release muna
             if (globalPlayer != null) {
                 try { globalPlayer.release(); } catch (Exception ignored) {}
                 globalPlayer = null;
