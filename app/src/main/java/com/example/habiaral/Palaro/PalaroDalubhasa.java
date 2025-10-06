@@ -299,7 +299,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         }
 
         showErrorTooltip("Sinusuri...");
-        // disable submit/input while server is checking so user can't change the answer
         if (userSentenceInput != null) {
             userSentenceInput.setEnabled(false);
             userSentenceInput.setFocusable(false);
@@ -351,7 +350,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 return;
             }
 
-            // disable input so user can't keep editing or submitting after MALI
             if (userSentenceInput != null) {
                 userSentenceInput.setEnabled(false);
                 userSentenceInput.setFocusable(false);
@@ -756,7 +754,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         try {
             timerSoundPlayer = MediaPlayer.create(this, soundResId);
             if (timerSoundPlayer != null) {
-                timerSoundPlayer.setLooping(false); // hindi looping kasi 1min fixed sound file
+                timerSoundPlayer.setLooping(false);
                 timerSoundPlayer.start();
             }
         } catch (Exception ignored) {}
