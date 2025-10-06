@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
+    tools:context=".Activity.AboutUsActivity">
+
+    <!-- Fixed Header -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/viewHeader"
+        android:layout_width="0dp"
+        android:layout_height="93dp"
+        android:alpha="0.6"
+        android:background="#A27B5C"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView15"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/viewHeader"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/back_button" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/textAboutUs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/special"
+        android:gravity="center"
+        android:text="Tungkol sa Amin"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@id/viewHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/viewHeader" />
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:id="@+id/scrollContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/viewHeader"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="40dp">
+
+            <!-- Mascot Image -->
+            <ImageView
+                android:id="@+id/imageMascot"
+                android:layout_width="243dp"
+                android:layout_height="191dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/tarsier_logo" />
+
+            <!-- LAYUNIN Title -->
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/special"
+                android:text="LAYUNIN"
+                android:textColor="#4C2121"
+                android:textSize="25sp"
+                app:layout_constraintTop_toBottomOf="@id/imageMascot"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- LAYUNIN Box -->
+            <LinearLayout
+                android:id="@+id/linearAboutUs"
+                android:layout_width="match_parent"
+                android:layout_height="166dp"
+                android:layout_marginHorizontal="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/search_bar"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                app:layout_constraintTop_toBottomOf="@id/textView12"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:id="@+id/textDescription"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:gravity="center"
+                    android:textSize="25sp"
+                    android:justificationMode="inter_word"
+                    android:text="@string/about_us_goal" />
+            </LinearLayout>
+
+            <!-- AMING GRUPO Title -->
+            <TextView
+                android:id="@+id/textViewOurTeamTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/special"
+                android:text="AMING GRUPO"
+                android:textColor="#4C2121"
+                android:textSize="25sp"
+                app:layout_constraintTop_toBottomOf="@id/linearAboutUs"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- AMING GRUPO Box -->
+            <LinearLayout
+                android:id="@+id/linearOurTeam"
+                android:layout_width="match_parent"
+                android:layout_height="166dp"
+                android:layout_marginHorizontal="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/search_bar"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                app:layout_constraintTop_toBottomOf="@id/textViewOurTeamTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:id="@+id/textTeamDescription"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:gravity="center"
+                    android:textSize="25sp"
+                    android:justificationMode="inter_word"
+                    android:text= "@string/about_us_information"/>
+            </LinearLayout>
+
+            <!-- SAMAHAN NIYO KAMI Title -->
+            <TextView
+                android:id="@+id/textViewJoinUsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/special"
+                android:text="SAMAHAN NIYO KAMI"
+                android:textColor="#4C2121"
+                android:textSize="25sp"
+                app:layout_constraintTop_toBottomOf="@id/linearOurTeam"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- SAMAHAN NIYO KAMI Box -->
+            <LinearLayout
+                android:id="@+id/linearJoinUs"
+                android:layout_width="match_parent"
+                android:layout_height="166dp"
+                android:layout_marginHorizontal="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/search_bar"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                app:layout_constraintTop_toBottomOf="@id/textViewJoinUsTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:id="@+id/textFinalNote"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/special"
+                    android:gravity="center"
+                    android:textSize="25sp"
+                    android:justificationMode="inter_word"
+                    android:text="@string/about_us_thanks" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

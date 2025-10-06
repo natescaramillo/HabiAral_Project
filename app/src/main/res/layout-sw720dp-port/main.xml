@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/gradient_background">
+
+    <ImageView
+        android:id="@+id/tarsierImage"
+        android:layout_width="194dp"
+        android:layout_height="188dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="300dp"
+        android:src="@drawable/tarsier_logo" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-10dp"
+        android:fontFamily="@font/special"
+        android:text="HabiAral"
+        android:textColor="#A27B5C"
+        android:textSize="50sp" />
+
+    <!-- ProgressBar (Hidden by default) -->
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:indeterminateTint="#A27B5C"
+        android:visibility="gone" />
+
+    <!-- Waiting Text (Hidden by default) -->
+    <TextView
+        android:id="@+id/waiting_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/special"
+        android:text="Waiting for internet connection..."
+        android:textSize="30sp"
+        android:textColor="#A27B5C"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:visibility="gone" />
+</LinearLayout>

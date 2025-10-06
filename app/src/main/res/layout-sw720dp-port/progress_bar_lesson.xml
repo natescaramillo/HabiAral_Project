@@ -1,0 +1,294 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragment.ProgressBarFragment">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="628dp"
+        android:layout_marginTop="120dp"
+        android:scrollbars="none"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <!-- Second card -->
+            <LinearLayout
+                android:layout_width="420dp"
+                android:layout_height="750dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="450dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-50dp"
+                    android:alpha="0.6"
+                    android:background="@drawable/progress_bar_color">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <FrameLayout
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_marginTop="30dp">
+
+                            <ProgressBar
+                                android:id="@+id/progressBarBahagi"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:indeterminateOnly="false"
+                                android:max="100"
+                                android:progress="0"
+                                android:progressDrawable="@drawable/design_progress_bar"
+                                android:rotation="270"
+                                android:visibility="visible" />
+
+                            <View
+                                android:id="@+id/innerCircle"
+                                android:layout_width="140dp"
+                                android:layout_height="140dp"
+                                android:layout_gravity="center"
+                                android:layout_margin="30dp"
+                                android:background="@drawable/inner_circle" />
+
+                            <TextView
+                                android:id="@+id/progressPercentageBahagi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="0%"
+                                android:textColor="#FFFFFF"
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="@font/special"
+                            android:gravity="center"
+                            android:text="Bahagi ng Pananalita"
+                            android:textColor="#FFFFFF"
+                            android:textSize="25sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/bahagi_progress_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textSize="18sp"
+                            android:justificationMode="inter_word"
+                            android:text="Wala pang progreso."
+                            android:textColor="#fff" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="420dp"
+                android:layout_height="750dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center"
+
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="450dp"
+                    android:background="@drawable/progress_bar_color"
+                    android:alpha="0.6"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-50dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
+
+                        <FrameLayout
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_marginTop="30dp">
+
+
+                            <ProgressBar
+                                android:id="@+id/progressBarPagUnawa"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:indeterminateOnly="false"
+                                android:max="100"
+                                android:progress="0"
+                                android:progressDrawable="@drawable/design_progress_bar"
+                                android:rotation="270"
+                                android:visibility="visible" />
+
+                            <View
+                                android:id="@+id/innerCircle2"
+                                android:layout_width="140dp"
+                                android:layout_height="140dp"
+                                android:layout_gravity="center"
+                                android:layout_margin="30dp"
+                                android:background="@drawable/inner_circle" />
+
+
+                            <TextView
+                                android:id="@+id/progressPercentagePagUnawa"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="0%"
+                                android:textColor="#FFFFFF"
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="@font/special"
+                            android:text="Panitikan"
+                            android:textColor="#FFFFFF"
+                            android:textSize="25sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/pag_unawa_progress_description"
+                            android:layout_width="match_parent"
+                            android:gravity="center"
+                            android:justificationMode="inter_word"
+                            android:textColor="#fff"
+                            android:textSize="18sp"
+                            android:layout_height="wrap_content"
+                            android:text="Wala pang progreso." />
+
+                    </LinearLayout>
+
+                </FrameLayout>
+            </LinearLayout>
+
+            <!-- Third Card -->
+            <LinearLayout
+                android:layout_width="420dp"
+                android:layout_height="750dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="450dp"
+                    android:background="@drawable/progress_bar_color"
+                    android:alpha="0.6"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-50dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
+
+
+                        <FrameLayout
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_marginTop="30dp">
+
+                            <ProgressBar
+                                android:id="@+id/progressBarKayarian"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:indeterminateOnly="false"
+                                android:max="100"
+                                android:progress="0"
+                                android:visibility="visible"
+                                android:rotation="270"
+                                android:progressDrawable="@drawable/design_progress_bar" />
+
+                            <View
+                                android:id="@+id/innerCircle3"
+                                android:layout_width="140dp"
+                                android:layout_height="140dp"
+                                android:layout_gravity="center"
+                                android:layout_margin="30dp"
+                                android:background="@drawable/inner_circle" />
+
+                            <TextView
+                                android:id="@+id/progressPercentageKayarian"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="0%"
+                                android:textColor="#FFFFFF"
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:gravity="center"
+                            android:fontFamily="@font/special"
+                            android:text="Kayarian ng Pangungusap"
+                            android:textColor="#FFFFFF"
+                            android:textSize="25sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/kayarian_progress_description"
+                            android:layout_width="match_parent"
+                            android:gravity="center"
+                            android:justificationMode="inter_word"
+                            android:textColor="#fff"
+                            android:textSize="18sp"
+                            android:layout_height="wrap_content"
+                            android:text="Wala pang progreso." />
+
+
+                    </LinearLayout>
+
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <View
+        android:id="@+id/view5"
+        android:alpha="0.6"
+        android:layout_width="wrap_content"
+        android:layout_height="93dp"
+        android:background="#A27B5C" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#FFFFFF"
+        android:fontFamily="@font/special"
+        android:textSize="30sp"
+        android:text="Katayuan" />
+</FrameLayout>

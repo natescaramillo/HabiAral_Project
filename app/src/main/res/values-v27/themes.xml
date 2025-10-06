@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.HabiAral" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#F5F5DC</item>
+        <item name="colorPrimaryVariant">#E0D5B8</item>
+        <item name="colorOnPrimary">#000000</item>
+        <item name="android:colorAccent">#F5F5DC</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">never</item>
+
+    </style>
+</resources>

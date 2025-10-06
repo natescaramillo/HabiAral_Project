@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/questionHusay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/question_bg_drawable"
+    android:fitsSystemWindows="false"
+    tools:context=".Activity.PalaroHusay">
+
+
+    <ImageView
+        android:id="@+id/characterIcon"
+        android:layout_width="875dp"
+        android:layout_height="612dp"
+        android:src="@drawable/idle"
+        app:layout_constraintBottom_toTopOf="@+id/guideline22"
+        app:layout_constraintDimensionRatio="16:11"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bottom_bar_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline22">
+
+        <LinearLayout
+            android:id="@+id/heartsRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/bottomBar">
+
+            <ImageView
+                android:id="@+id/heart01"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:srcCompat="@drawable/design_heart" />
+
+            <ImageView
+                android:id="@+id/heart02"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="4dp"
+                app:srcCompat="@drawable/design_heart" />
+
+            <ImageView
+                android:id="@+id/heart03"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="4dp"
+                app:srcCompat="@drawable/design_heart" />
+
+            <ImageView
+                android:id="@+id/heart04"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="4dp"
+                app:srcCompat="@drawable/design_heart" />
+
+            <ImageView
+                android:id="@+id/heart05"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="4dp"
+                app:srcCompat="@drawable/design_heart" />
+
+        </LinearLayout>
+
+
+        <ProgressBar
+            android:id="@+id/timerBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="67dp"
+            android:layout_marginTop="8dp"
+            android:background="@null"
+            android:backgroundTint="#E0E0E0"
+            android:clipToOutline="true"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="100"
+            android:progressDrawable="@drawable/timer_color_green"
+            app:layout_constraintEnd_toStartOf="@+id/guidelinehorizontal4"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guidelinehorizontal3"
+            app:layout_constraintTop_toBottomOf="@+id/whole_answer" />
+
+        <TextView
+            android:id="@+id/whole_answer"
+            android:layout_width="720dp"
+            android:layout_height="116dp"
+            android:layout_marginTop="56dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_rect"
+            android:backgroundTint="#FFEFEA"
+            android:fontFamily="@font/ala_sans"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guidelinehorizontal4"
+            app:layout_constraintStart_toStartOf="@+id/guidelinehorizontal3"
+            app:layout_constraintTop_toTopOf="@+id/bottomBar"
+            app:layout_constraintVertical_bias="0.056" />
+
+        <GridLayout
+            android:id="@+id/husay_grid"
+            android:layout_width="607dp"
+            android:layout_height="315dp"
+            android:alignmentMode="alignMargins"
+            android:columnCount="3"
+            android:rowCount="3"
+            android:useDefaultMargins="true"
+            app:layout_constraintBottom_toTopOf="@id/UnlockButtonPalaro"
+            app:layout_constraintEnd_toEndOf="@id/guideline8"
+            app:layout_constraintHorizontal_bias="0.445"
+            app:layout_constraintStart_toStartOf="@id/guideline8"
+            app:layout_constraintTop_toBottomOf="@id/timerBar"
+            app:layout_constraintVertical_bias="0.487">
+
+
+            <Button
+                android:id="@+id/husay_answer1"
+                android:layout_width="184dp"
+                android:layout_height="85dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/ala_sans"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/husay_answer2"
+                android:layout_width="184dp"
+                android:layout_height="85dp"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/ala_sans"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/husay_answer3"
+                android:layout_width="184dp"
+                android:layout_height="85dp"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/ala_sans"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textSize="15sp"/>
+
+            <Button
+                android:id="@+id/husay_answer4"
+                android:layout_width="184dp"
+                android:layout_height="85dp"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/ala_sans"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/husay_answer5"
+                android:layout_width="184dp"
+                android:layout_height="85dp"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/ala_sans"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/husay_answer6"
+                android:layout_width="184dp"
+                android:layout_height="85dp"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/ala_sans"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/husay_answer7"
+                android:layout_width="184dp"
+                android:layout_height="85dp"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/ala_sans"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/husay_answer8"
+                android:layout_width="184dp"
+                android:layout_height="85dp"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/ala_sans"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/husay_answer9"
+                android:layout_width="184dp"
+                android:layout_height="85dp"
+                android:layout_margin="9dp"
+                android:background="@drawable/answer_option_bg"
+                android:fontFamily="@font/ala_sans"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textSize="15sp" />
+
+        </GridLayout>
+
+        <Button
+            android:id="@+id/UnlockButtonPalaro"
+            android:layout_width="161dp"
+            android:layout_height="69dp"
+            android:textSize="20sp"
+            android:background="@drawable/rounded_button_achievement"
+            android:fontFamily="@font/special"
+            android:text="Tapos"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guidelinehorizontal4"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline8"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.962" />
+
+        <Button
+            android:id="@+id/UnlockButtonPalaro1"
+            android:layout_width="161dp"
+            android:layout_height="69dp"
+            android:background="@drawable/rounded_button_achievement"
+            android:fontFamily="@font/special"
+            android:text="Umalis"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline8"
+            app:layout_constraintHorizontal_bias="0.244"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.962" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelinehorizontal3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelinehorizontal4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.34" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

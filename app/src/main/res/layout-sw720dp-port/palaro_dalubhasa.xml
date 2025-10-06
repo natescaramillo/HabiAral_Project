@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/questionDalubhasa"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/question_bg_drawable"
+    tools:context=".Activity.PalaroDalubhasa">
+
+
+    <ImageView
+        android:id="@+id/characterIcon"
+        android:layout_width="679dp"
+        android:layout_height="394dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/idle"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintDimensionRatio="16:11"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.371"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dalubhasa_instructionText"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bottom_bar_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline43"
+        app:layout_constraintVertical_bias="1.0">
+
+
+        <LinearLayout
+            android:id="@+id/heartsRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline13"
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <ImageView
+                android:id="@+id/heart01"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:srcCompat="@drawable/design_heart" />
+
+            <ImageView
+                android:id="@+id/heart02"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="4dp"
+                app:srcCompat="@drawable/design_heart" />
+
+            <ImageView
+                android:id="@+id/heart03"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="4dp"
+                app:srcCompat="@drawable/design_heart" />
+
+            <ImageView
+                android:id="@+id/heart04"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="4dp"
+                app:srcCompat="@drawable/design_heart" />
+
+            <ImageView
+                android:id="@+id/heart05"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="4dp"
+                app:srcCompat="@drawable/design_heart" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/grammar_feedback"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="4dp"
+            android:textColor="#FF0000"
+            android:textIsSelectable="true"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:layout_editor_absoluteY="142dp" />
+
+        <EditText
+            android:id="@+id/dalubhasa_answer"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rounded_rect"
+            android:gravity="top|start"
+            android:textSize="20sp"
+            android:hint="Ilagay ang iyong sagot dito..."
+            android:inputType="textMultiLine"
+            android:padding="12dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline13"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toBottomOf="@+id/answerLabel" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.08" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.92" />
+
+        <TextView
+            android:id="@+id/answerLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/ala_sans"
+            android:text="Sagot mo:"
+            android:textColor="#000"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline13"
+            app:layout_constraintHorizontal_bias="0.029"
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toBottomOf="@+id/timerBar" />
+
+
+        <ProgressBar
+            android:id="@+id/timerBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="67dp"
+            android:layout_marginTop="48dp"
+            android:background="@null"
+            android:backgroundTint="#E0E0E0"
+            android:clipToOutline="true"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="100"
+            android:progressDrawable="@drawable/timer_color_green"
+            app:layout_constraintEnd_toStartOf="@+id/guideline13"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toBottomOf="@+id/heartsRow" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="20dp" />
+
+        <Button
+            android:id="@+id/UnlockButtonPalaro1"
+            android:layout_width="161dp"
+            android:layout_height="69dp"
+            android:layout_marginVertical="20dp"
+            android:background="@drawable/rounded_button_achievement"
+            android:fontFamily="@font/ala_sans"
+            android:text="Umalis"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline13"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toBottomOf="@+id/dalubhasa_answer" />
+
+        <Button
+            android:id="@+id/UnlockButtonPalaro"
+            android:layout_width="161dp"
+            android:layout_height="69dp"
+            android:layout_marginVertical="20dp"
+            android:background="@drawable/rounded_button_achievement"
+            android:fontFamily="@font/special"
+            android:text="Tapos"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline13"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toBottomOf="@+id/dalubhasa_answer" />
+
+        <Button
+            android:id="@+id/btnSuriin"
+            android:layout_width="161dp"
+            android:layout_height="69dp"
+            android:layout_marginVertical="20dp"
+            android:background="@drawable/rounded_button_achievement"
+            android:fontFamily="@font/ala_sans"
+            android:text="Suriin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline13"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toBottomOf="@+id/dalubhasa_answer" />
+
+
+        <ImageView
+            android:id="@+id/error_icon"
+            android:layout_width="23dp"
+            android:layout_height="22dp"
+            android:src="@drawable/exclamation_mark"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/dalubhasa_answer"
+            app:layout_constraintEnd_toEndOf="@+id/dalubhasa_answer"
+            app:layout_constraintHorizontal_bias="0.979"
+            app:layout_constraintStart_toStartOf="@+id/dalubhasa_answer"
+            app:layout_constraintTop_toTopOf="@+id/dalubhasa_answer"
+            app:layout_constraintVertical_bias="0.036" />
+
+        <TextView
+            android:id="@+id/errorTooltip"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/tooltip_bubble"
+            android:padding="4dp"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/timerBar"
+            app:layout_constraintEnd_toStartOf="@+id/guideline13"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toTopOf="@+id/heartsRow"
+            app:layout_constraintVertical_bias="0.0" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/dalubhasa_instructionText"
+        android:layout_width="673dp"
+        android:layout_height="162dp"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_rect"
+        android:backgroundTint="#FFEFEA"
+        android:fontFamily="@font/ala_sans"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline20"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toStartOf="@+id/guideline15"
+        app:layout_constraintTop_toTopOf="@+id/guideline19" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.4" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.08" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.92" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline43"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

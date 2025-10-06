@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/questionPangngalan"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
+    android:background="@drawable/question_bg_drawable">
+
+    <TextView
+        android:id="@+id/question_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/rounded_rect"
+        android:backgroundTint="#DDB28D"
+        android:fontFamily="@font/special"
+        android:padding="12dp"
+        android:text="Unang tanong"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/question_text"
+        android:layout_width="654dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="112dp"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_rect"
+        android:backgroundTint="#FFEFEA"
+        android:fontFamily="@font/ala_sans"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/bottom_bar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bottom_bar_bg"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline21"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ProgressBar
+        android:id="@+id/timer_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="32dp"
+        android:background="@null"
+        android:backgroundTint="#E0E0E0"
+        android:clipToOutline="true"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="100"
+        android:progressDrawable="@drawable/timer_color_green"
+        app:layout_constraintBottom_toBottomOf="@+id/bottom_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline21"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/answer1"
+        android:layout_width="0dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/answer_option_bg"
+        android:fontFamily="@font/ala_sans"
+        android:padding="10dp"
+        android:text="Answer 1"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timer_bar" />
+
+    <Button
+        android:id="@+id/answer2"
+        android:layout_width="0dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/answer_option_bg"
+        android:text="Answer 2"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:padding="10dp"
+        android:fontFamily="@font/ala_sans"
+        app:layout_constraintEnd_toEndOf="@id/answer1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/answer1"
+        app:layout_constraintTop_toBottomOf="@id/answer1" />
+
+    <Button
+        android:id="@+id/answer3"
+        android:layout_width="0dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/answer_option_bg"
+        android:text="Answer 3"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:padding="10dp"
+        android:fontFamily="@font/ala_sans"
+        app:layout_constraintEnd_toEndOf="@id/answer1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/answer1"
+        app:layout_constraintTop_toBottomOf="@id/answer2" />
+
+    <Button
+        android:id="@+id/intro_button"
+        android:layout_width="336dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="172dp"
+        android:background="@drawable/rounded_button_achievement"
+        android:fontFamily="@font/special"
+        android:text="Magsimula"
+        android:textColor="#000000"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/answer3" />
+
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="172dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/rounded_button_achievement"
+        android:fontFamily="@font/special"
+        android:text="Sunod"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/intro_button"
+        app:layout_constraintTop_toBottomOf="@id/answer3" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.45" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

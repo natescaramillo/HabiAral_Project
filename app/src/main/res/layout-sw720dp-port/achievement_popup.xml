@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/pop_up_main_color"
+    android:padding="30dp"
+    android:layout_marginHorizontal="150dp"
+    android:layout_gravity="center">
+
+    <!-- X Mark (Close Button) -->
+    <ImageView
+        android:id="@+id/xmark"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/design_x_close" />
+
+    <!-- FrameLayout to stack image + lock -->
+    <FrameLayout
+        android:id="@+id/image_container"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imagepop_up"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="@drawable/rounded_image"
+            android:src="@drawable/achievement01"
+            android:clipToOutline="true"
+            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
+
+        <ImageView
+            android:id="@+id/lock_overlay"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:src="@drawable/design_lock" />
+    </FrameLayout>
+
+    <!-- Achievement Title -->
+    <TextView
+        android:id="@+id/achievement_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image_container"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Achievement Title"
+        android:textColor="#ffffff"
+        android:fontFamily="@font/special"
+        android:textSize="25sp" />
+
+    <!-- Description -->
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/achievement_name"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_centerHorizontal="true"
+        android:text="Description here"
+        android:textColor="#ffffff"
+        android:fontFamily="@font/special"
+        android:gravity="center"
+        android:textSize="18sp" />
+
+    <!-- Date -->
+    <TextView
+        android:id="@+id/unlocked_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/description"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/special"
+        android:textColor="#ffffff"
+        android:textSize="14sp"
+        android:gravity="center" />
+
+</RelativeLayout>
