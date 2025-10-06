@@ -215,7 +215,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
             playButtonClickSound();
             if (hasSubmitted) {
                 nextQuestion();
-                userSentenceInput.setEnabled(true);
+                // re-enable input for the next question (nextQuestion already clears text, but ensure focus)
+                if (userSentenceInput != null) {
+                    userSentenceInput.setEnabled(true);
+                    userSentenceInput.setFocusableInTouchMode(true);
+                }
                 userSentenceInput.setText("");
                 btnTapos.setEnabled(true);
                 btnTapos.setAlpha(1.0f);
@@ -295,8 +299,15 @@ public class PalaroDalubhasa extends AppCompatActivity {
         }
 
         showErrorTooltip("Sinusuri...");
-        btnSuriin.setEnabled(false);
-        btnSuriin.setAlpha(0.5f);
+        // disable submit/input while server is checking so user can't change the answer
+        if (userSentenceInput != null) {
+            userSentenceInput.setEnabled(false);
+            userSentenceInput.setFocusable(false);
+        }
+        if (btnSuriin != null) {
+            btnSuriin.setEnabled(false);
+            btnSuriin.setAlpha(0.5f);
+        }
         checkGrammarFromServer(sentence);
     }
 
@@ -338,6 +349,12 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
             if (isGameOver || remainingHearts == 0) {
                 return;
+            }
+
+            // disable input so user can't keep editing or submitting after MALI
+            if (userSentenceInput != null) {
+                userSentenceInput.setEnabled(false);
+                userSentenceInput.setFocusable(false);
             }
 
             btnSuriin.setVisibility(View.GONE);
