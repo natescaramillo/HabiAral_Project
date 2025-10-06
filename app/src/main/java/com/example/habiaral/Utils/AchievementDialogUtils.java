@@ -58,10 +58,10 @@ public class AchievementDialogUtils {
                                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                         PixelFormat.TRANSLUCENT
                 );
-                params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-                params.y = 50;
 
-                wm.addView(overlayView, params);
+                params.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+                params.windowAnimations = android.R.style.Animation_Toast;
+
 
                 overlayView.post(() -> {
                     int height = overlayView.getHeight();
