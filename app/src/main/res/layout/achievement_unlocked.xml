@@ -11,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="109dp"
-        android:layout_marginHorizontal="20dp"
+        android:layout_marginHorizontal="15dp"
         android:background="@drawable/pop_up_main_color"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
