@@ -224,7 +224,6 @@ public class LangkapanLesson extends AppCompatActivity {
         }
     }
 
-
     private void initTextToSpeech() {
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {

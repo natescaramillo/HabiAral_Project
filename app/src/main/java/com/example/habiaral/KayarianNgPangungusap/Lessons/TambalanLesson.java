@@ -224,7 +224,6 @@ public class TambalanLesson extends AppCompatActivity {
         }
     }
 
-
     private void initTextToSpeech() {
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
