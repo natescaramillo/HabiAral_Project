@@ -56,5 +56,14 @@ dependencies {
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
+    // OkHttp for HTTP requests
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    // If you want OkHttp logging (optional, useful for debugging)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+    // JSON handling (if not already in your project)
+    implementation ("org.json:json:20230227")
+
 }
 apply(plugin = "com.google.gms.google-services")

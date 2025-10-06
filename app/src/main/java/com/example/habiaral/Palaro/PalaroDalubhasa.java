@@ -1,6 +1,5 @@
 package com.example.habiaral.Palaro;
 
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -10,9 +9,6 @@ import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.UnderlineSpan;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -30,7 +26,6 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.example.habiaral.GrammarChecker.GrammarChecker;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.TimerSoundUtils;
@@ -43,10 +38,9 @@ import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +48,10 @@ import java.util.Map;
 
 import android.speech.tts.TextToSpeech;
 import java.util.Locale;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 public class PalaroDalubhasa extends AppCompatActivity {
 
@@ -75,11 +73,20 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private List<List<String>> keywordList = new ArrayList<>();
     private List<String> currentKeywords = new ArrayList<>();
     private TextToSpeech tts;
-    private MediaPlayer countdownBeepPlayer, greenTimerSoundPlayer, orangeTimerSoundPlayer, redTimerSoundPlayer;
-    private boolean greenSound = false, orangeSound = false, redSound = false;
+    private MediaPlayer countdownBeepPlayer, timerSoundPlayer;
+    private boolean isShowingErrorTooltip = false;
     private Handler countdownHandler, internetHandler = new Handler(), errorTooltipHandler = new Handler();
     private Runnable countdownRunnable, internetRunnable;
-    private final Runnable hideErrorTooltipRunnable = () -> errorTooltip.setVisibility(View.GONE);
+    private final Runnable hideErrorTooltipRunnable = () -> {
+        if (errorTooltip != null) {
+            errorTooltip.setVisibility(View.GONE);
+        }
+        if (errorIcon != null) {
+            errorIcon.setVisibility(View.GONE);
+        }
+        isShowingErrorTooltip = false;
+    };
+
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
     private boolean hasSpokenMDCL1 = false;
@@ -247,7 +254,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
     }
 
-
     private void checkGrammar() {
         String sentence = userSentenceInput.getText().toString().trim();
 
@@ -273,12 +279,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         if (!missing.isEmpty()) {
             String details = "Kulang: " + String.join(", ", missing);
-            errorTooltip.setVisibility(View.VISIBLE);
-            errorTooltip.setText(details);
-            errorIcon.setVisibility(View.VISIBLE);
-
-            speakLine("Wala ka ng kinakailangang bahagi sa iyong sagot. Pakibasa muli ang mga panuto.");
-            loadCharacterLine(currentDalubhasaID);
+            showErrorTooltip(details);
             showWrongAnimation();
             return;
         }
@@ -293,38 +294,123 @@ public class PalaroDalubhasa extends AppCompatActivity {
             return;
         }
 
-        GrammarChecker.checkGrammar(this, sentence, new GrammarChecker.GrammarCallback() {
-            @Override
-            public void onResult(String response) {
-                runOnUiThread(() -> {
-                    try {
-                        JSONArray matches = new JSONObject(response).getJSONArray("matches");
-                        currentErrorCount = matches.length();
+        showErrorTooltip("Sinusuri...");
+        btnSuriin.setEnabled(false);
+        btnSuriin.setAlpha(0.5f);
+        checkGrammarFromServer(sentence);
+    }
 
-                        if (matches.length() > 0 && !hasSubmitted) {
-                            Toast.makeText(PalaroDalubhasa.this, "Mali ang grammar! Heart deducted.", Toast.LENGTH_SHORT).show();
-                            deductHeart();
-                            stopAllTimerSounds();
+    private void showGrammarResultTooltip(String res) {
+        if (res == null || res.isEmpty()) {
+            showErrorTooltip("Walang sagot mula sa server.");
+            return;
+        }
+
+        boolean hasError = res.contains("MALI:");
+
+        res = res.replace("TAMANG SAGOT:", "\nTAMANG SAGOT:");
+
+        SpannableString spannable = new SpannableString(res);
+        String[] headers = {"MALI:", "TAMANG SAGOT:"};
+
+        for (String header : headers) {
+            int start = res.indexOf(header);
+            if (start >= 0) {
+                int end = start + header.length();
+                spannable.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                        start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+
+        errorTooltip.setText(spannable);
+        errorTooltip.setTextSize(17);
+        errorTooltip.setVisibility(View.VISIBLE);
+        errorIcon.setVisibility(View.VISIBLE);
+
+        errorTooltipHandler.removeCallbacksAndMessages(null);
+        isShowingErrorTooltip = true;
+
+        if (hasError) {
+            playWrongSound();
+            showWrongAnimation();
+
+            deductHeart();
+
+            if (isGameOver || remainingHearts == 0) {
+                return;
+            }
+
+            btnSuriin.setVisibility(View.GONE);
+            btnTapos.setVisibility(View.VISIBLE);
+            btnTapos.setEnabled(true);
+            btnTapos.setAlpha(1.0f);
+            hasSubmitted = true;
+
+            errorTooltipHandler.removeCallbacksAndMessages(null);
+            errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 5000);
+        } else {
+            playCorrectSound();
+
+            perfectAnswerCount++;
+            if (perfectAnswerCount >= 5) {
+                unlockSagotBayaniAchievement();
+            }
+
+            errorTooltipHandler.postDelayed(() -> {
+                if (!isFinishing() && !isDestroyed()) {
+                    errorTooltip.setVisibility(View.GONE);
+                    errorIcon.setVisibility(View.GONE);
+                    isShowingErrorTooltip = false;
+                    nextQuestion();
+                }
+            }, 1200);
+        }
+    }
+
+    private void checkGrammarFromServer(String sentence) {
+        OkHttpClient client = new OkHttpClient();
+        String BACKEND_URL = "https://filipino-grammar-checker-backend.onrender.com/suriin-gramar";
+
+        try {
+            JSONObject body = new JSONObject();
+            body.put("pangungusap", sentence);
+
+            RequestBody rb = RequestBody.create(
+                    body.toString(),
+                    okhttp3.MediaType.get("application/json; charset=utf-8")
+            );
+
+            Request req = new Request.Builder()
+                    .url(BACKEND_URL)
+                    .post(rb)
+                    .build();
+
+            client.newCall(req).enqueue(new okhttp3.Callback() {
+                @Override
+                public void onFailure(okhttp3.Call call, IOException e) {
+                    runOnUiThread(() -> {
+                        showErrorTooltip("Network error: " + e.getMessage());
+                        if (btnSuriin != null) {
+                            btnSuriin.setEnabled(true);
+                            btnSuriin.setAlpha(1.0f);
                         }
+                    });
+                }
 
-                        highlightGrammarIssues(response, sentence);
-                        hasSubmitted = true;
-                        userSentenceInput.setEnabled(false);
-
-                    } catch (JSONException e) {
-                        grammarFeedbackText.setText("Invalid grammar response format.");
+                @Override
+                public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+                    if (response.code() == 204) {
+                        runOnUiThread(() -> showErrorTooltip("Walang error sa pangungusap."));
+                        return;
                     }
-                });
-            }
 
-            @Override
-            public void onError(String error) {
-                runOnUiThread(() -> {
-                    Toast.makeText(PalaroDalubhasa.this, "Grammar Check Failed: " + error, Toast.LENGTH_SHORT).show();
-                    showWrongAnimation();
-                });
-            }
-        });
+                    final String res = response.body().string().trim();
+                    runOnUiThread(() -> showGrammarResultTooltip(res));
+                }
+            });
+        } catch (Exception e) {
+            showErrorTooltip("Error: " + e.getMessage());
+        }
     }
 
     private void showInputError(String message) {
@@ -355,17 +441,23 @@ public class PalaroDalubhasa extends AppCompatActivity {
         errorIcon.setVisibility(View.VISIBLE);
         errorTooltip.setVisibility(View.VISIBLE);
 
-        errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
+        isShowingErrorTooltip = true;
 
-        errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 2500);
+        errorTooltipHandler.removeCallbacksAndMessages(null);
+        errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 3500);
 
         errorIcon.setOnClickListener(v -> {
             if (errorTooltip.getVisibility() == View.VISIBLE) {
                 errorTooltip.setVisibility(View.GONE);
+                errorIcon.setVisibility(View.GONE);
+                isShowingErrorTooltip = false;
+                errorTooltipHandler.removeCallbacksAndMessages(null);
             } else {
                 errorTooltip.setVisibility(View.VISIBLE);
-                errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
-                errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 2500);
+                errorIcon.setVisibility(View.VISIBLE);
+                isShowingErrorTooltip = true;
+                errorTooltipHandler.removeCallbacksAndMessages(null);
+                errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 3500);
             }
         });
     }
@@ -397,105 +489,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
 
         dialog.show();
-    }
-
-    private void highlightGrammarIssues(String response, String originalSentence) {
-        try {
-            JSONObject json = new JSONObject(response);
-            JSONArray matches = json.getJSONArray("matches");
-            currentErrorCount = matches.length();
-            int score = matches.length() == 0 ? 15 : (matches.length() == 1 ? 13 : 10);
-
-            dalubhasaScore += score;
-
-            if (matches.length() == 0) {
-                perfectAnswerCount++;
-                playCorrectSound();
-                if (countDownTimer != null) countDownTimer.cancel();
-                stopAllTimerSounds();
-                userSentenceInput.setEnabled(false);
-                btnSuriin.setVisibility(View.GONE);
-                btnTapos.setVisibility(View.GONE);
-
-                showCharacterGif(R.drawable.right_1, 300, 3000, () -> nextQuestion());
-                loadCharacterLine("MDCL2");
-                return;
-            }
-
-            playWrongSound();
-            showCharacterGif(R.drawable.wrong, 300, 2300, null);
-
-            perfectAnswerCount = (score >= 13) ? perfectAnswerCount + 1 : 0;
-            if (perfectAnswerCount >= 5) unlockSagotBayaniAchievement();
-
-            loadCharacterLine("MDCL3");
-
-            new Handler().postDelayed(() -> {
-                try {
-                    SpannableStringBuilder builder = new SpannableStringBuilder("Maling salita o grammar:\n\n");
-                    SpannableString highlighted = new SpannableString(originalSentence);
-
-                    for (int i = 0; i < matches.length(); i++) {
-                        JSONObject match = matches.getJSONObject(i);
-                        int offset = match.getInt("offset"), length = match.getInt("length");
-                        highlighted.setSpan(new UnderlineSpan(), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        highlighted.setSpan(new ForegroundColorSpan(Color.RED), offset, offset + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    builder.append(highlighted).append("\n\n");
-
-                    for (int i = 0; i < matches.length(); i++) {
-                        JSONObject m = matches.getJSONObject(i);
-                        int offset = m.getInt("offset"), length = m.getInt("length");
-                        String wrong = originalSentence.substring(offset, offset + length);
-                        builder.append("- ").append(wrong).append(": ")
-                                .append(m.optString("message", "Error sa grammar"))
-                                .append("\n");
-                    }
-
-                    errorTooltip.setText(builder);
-                    errorTooltip.setVisibility(View.VISIBLE);
-                    errorIcon.setVisibility(View.VISIBLE);
-
-                    errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
-                    errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 3500);
-
-                    errorIcon.setOnClickListener(v ->
-                            errorTooltip.setVisibility(errorTooltip.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE));
-
-                    btnSuriin.setVisibility(View.GONE);
-                    btnTapos.setVisibility(View.VISIBLE);
-                    btnTapos.setEnabled(true);
-                    btnTapos.setAlpha(1f);
-                    userSentenceInput.setEnabled(false);
-
-                } catch (JSONException e) {
-                    grammarFeedbackText.setText("Error habang hinahati ang mga mali.");
-                }
-            }, 2000);
-
-        } catch (JSONException e) {
-            grammarFeedbackText.setText("Invalid grammar response format.");
-        }
-    }
-
-    private void showCharacterGif(int gifRes, int crossFade, int delay, Runnable onFinish) {
-        if (isFinishing() || isDestroyed()) return;
-
-        Glide.with(this).asGif()
-                .load(gifRes)
-                .transition(DrawableTransitionOptions.withCrossFade(crossFade))
-                .into(characterIcon);
-
-        new Handler().postDelayed(() -> {
-            if (!isFinishing() && !isDestroyed()) {
-                Glide.with(this).asGif()
-                        .load(R.drawable.idle)
-                        .transition(DrawableTransitionOptions.withCrossFade(crossFade))
-                        .into(characterIcon);
-                if (onFinish != null) onFinish.run();
-            }
-        }, delay);
     }
 
     private void showBackConfirmationDialog() {
@@ -596,10 +589,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private void nextQuestion() {
         if (isGameOver) return;
-        errorTooltip.setVisibility(View.GONE);
-        errorIcon.setVisibility(View.GONE);
-        errorTooltip.setText("");
-        errorTooltipHandler.removeCallbacks(hideErrorTooltipRunnable);
+
+        if (errorTooltipHandler != null) errorTooltipHandler.removeCallbacksAndMessages(null);
+        if (errorTooltip != null) errorTooltip.setVisibility(View.GONE);
+        if (errorIcon != null) errorIcon.setVisibility(View.GONE);
+        isShowingErrorTooltip = false;
 
         if (currentQuestionNumber < instructionList.size()) {
             String instruction = instructionList.get(currentQuestionNumber);
@@ -612,6 +606,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
             btnSuriin.setVisibility(View.VISIBLE);
             btnTapos.setVisibility(View.GONE);
+
+            setButtonsEnabled(true);
 
             btnTapos.setEnabled(true);
             btnTapos.setAlpha(1.0f);
@@ -654,7 +650,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     if (!isFinishing() && !isDestroyed() && !isGameOver) {
                         setButtonsEnabled(true);
                         loadAllDalubhasaInstructions();
-                        startTimer();
                     }
                 }
             }
@@ -703,6 +698,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
         if (countDownTimer != null) countDownTimer.cancel();
         stopAllTimerSounds();
 
+        playTimerSound(R.raw.sound_new);
+
         countDownTimer = new CountDownTimer(TOTAL_TIME, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -710,12 +707,12 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(percent);
 
-                if (percent <= 25) {
-                    updateTimerZone("RED", R.drawable.timer_color_red, R.raw.red_timer);
-                } else if (percent <= 50) {
-                    updateTimerZone("ORANGE", R.drawable.timer_color_orange, R.raw.orange_timer);
+                if (percent <= 26) {
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_red));
+                } else if (percent <= 48) {
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_orange));
                 } else {
-                    updateTimerZone("GREEN", R.drawable.timer_color_green, R.raw.green_timer);
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, R.drawable.timer_color_green));
                 }
             }
 
@@ -736,42 +733,26 @@ public class PalaroDalubhasa extends AppCompatActivity {
         }.start();
     }
 
-    private void updateTimerZone(String zone, int drawableRes, int soundRes) {
-        if (!lastTimerZone.equals(zone)) {
-            stopAllTimerSounds();
-            timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroDalubhasa.this, drawableRes));
-            playTimerSound(soundRes);
-            lastTimerZone = zone;
-        }
-    }
-
-    private void stopAllTimerSounds() {
-        if (greenTimerSoundPlayer != null) { greenTimerSoundPlayer.stop(); greenTimerSoundPlayer.release(); greenTimerSoundPlayer = null; }
-        if (orangeTimerSoundPlayer != null) { orangeTimerSoundPlayer.stop(); orangeTimerSoundPlayer.release(); orangeTimerSoundPlayer = null; }
-        if (redTimerSoundPlayer != null) { redTimerSoundPlayer.stop(); redTimerSoundPlayer.release(); redTimerSoundPlayer = null; }
-
-        greenSound = false;
-        orangeSound = false;
-        redSound = false;
-    }
-
     private void playTimerSound(int soundResId) {
         stopAllTimerSounds();
 
-        MediaPlayer mp = MediaPlayer.create(this, soundResId);
+        try {
+            timerSoundPlayer = MediaPlayer.create(this, soundResId);
+            if (timerSoundPlayer != null) {
+                timerSoundPlayer.setLooping(false); // hindi looping kasi 1min fixed sound file
+                timerSoundPlayer.start();
+            }
+        } catch (Exception ignored) {}
+    }
 
-        if (soundResId == R.raw.green_timer) greenTimerSoundPlayer = mp;
-        else if (soundResId == R.raw.orange_timer) orangeTimerSoundPlayer = mp;
-        else if (soundResId == R.raw.red_timer) redTimerSoundPlayer = mp;
-
-        mp.setOnCompletionListener(mediaPlayer -> {
-            mediaPlayer.release();
-            if (soundResId == R.raw.green_timer) greenTimerSoundPlayer = null;
-            else if (soundResId == R.raw.orange_timer) orangeTimerSoundPlayer = null;
-            else if (soundResId == R.raw.red_timer) redTimerSoundPlayer = null;
-        });
-
-        mp.start();
+    private void stopAllTimerSounds() {
+        if (timerSoundPlayer != null) {
+            try {
+                if (timerSoundPlayer.isPlaying()) timerSoundPlayer.stop();
+            } catch (Exception ignored) {}
+            try { timerSoundPlayer.release(); } catch (Exception ignored) {}
+            timerSoundPlayer = null;
+        }
     }
 
     private void finishQuiz() {
@@ -1009,7 +990,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
     }
 
-
     private void unlockSagotBayaniAchievement() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String achievementCode = "SA3";
@@ -1055,6 +1035,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         });
 
     }
+
     private void playSound(int soundResId) {
         MediaPlayer mp = MediaPlayer.create(this, soundResId);
         mp.setOnCompletionListener(MediaPlayer::release);
@@ -1069,10 +1050,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        if (greenTimerSoundPlayer != null) greenTimerSoundPlayer.setVolume(0f, 0f);
-        if (orangeTimerSoundPlayer != null) orangeTimerSoundPlayer.setVolume(0f, 0f);
-        if (redTimerSoundPlayer != null) redTimerSoundPlayer.setVolume(0f, 0f);
-
+        if (timerSoundPlayer != null) timerSoundPlayer.setVolume(0f, 0f);
         TimerSoundUtils.setVolume(0f);
 
         if (tts != null) tts.stop();
@@ -1082,10 +1060,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (greenTimerSoundPlayer != null) greenTimerSoundPlayer.setVolume(1f, 1f);
-        if (orangeTimerSoundPlayer != null) orangeTimerSoundPlayer.setVolume(1f, 1f);
-        if (redTimerSoundPlayer != null) redTimerSoundPlayer.setVolume(1f, 1f);
-
+        if (timerSoundPlayer != null) timerSoundPlayer.setVolume(1f, 1f);
         TimerSoundUtils.setVolume(0.2f);
     }
 
@@ -1113,9 +1088,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             }
         } catch (Exception ignored) {}
 
-        if (greenTimerSoundPlayer != null) { greenTimerSoundPlayer.stop(); greenTimerSoundPlayer = null; }
-        if (orangeTimerSoundPlayer != null) { orangeTimerSoundPlayer.stop(); orangeTimerSoundPlayer = null; }
-        if (redTimerSoundPlayer != null) { redTimerSoundPlayer.stop(); redTimerSoundPlayer = null; }
+        if (timerSoundPlayer != null) { timerSoundPlayer.stop(); timerSoundPlayer = null; }
 
         if (errorTooltipHandler != null) errorTooltipHandler.removeCallbacksAndMessages(null);
         if (internetHandler != null && internetRunnable != null) internetHandler.removeCallbacks(internetRunnable);

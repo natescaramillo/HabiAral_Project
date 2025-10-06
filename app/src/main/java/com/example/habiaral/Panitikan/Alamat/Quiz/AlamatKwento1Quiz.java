@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -17,9 +16,6 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.BahagiNgPananalita.Lessons.PandiwaLesson;
-import com.example.habiaral.BahagiNgPananalita.Quiz.PangngalanQuiz;
 import com.example.habiaral.Panitikan.Alamat.Alamat;
 import com.example.habiaral.Panitikan.Alamat.Stories.AlamatKwento2;
 import com.example.habiaral.R;
@@ -378,14 +374,14 @@ public class AlamatKwento1Quiz extends AppCompatActivity {
         Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
         if (categories == null) return false;
 
-        Map<String, Object> alamatCategory = (Map<String, Object>) categories.get("Alamat");
-        if (alamatCategory == null) return false;
+        Map<String, Object> storyCategory = (Map<String, Object>) categories.get("Alamat");
+        if (storyCategory == null) return false;
 
-        Map<String, Object> stories = (Map<String, Object>) alamatCategory.get("stories");
+        Map<String, Object> stories = (Map<String, Object>) storyCategory.get("stories");
         if (stories == null) return false;
 
-        Map<String, Object> alamat1Story = (Map<String, Object>) stories.get("AlamatKwento1");
-        return alamat1Story != null && "completed".equals(alamat1Story.get("status"));
+        Map<String, Object> storiesStory = (Map<String, Object>) stories.get("AlamatKwento1");
+        return storiesStory != null && "completed".equals(storiesStory.get("status"));
     }
 
     private void showResultDialog() {

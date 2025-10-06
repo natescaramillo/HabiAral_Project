@@ -60,47 +60,31 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 public class PalaroHusay extends AppCompatActivity {
 
-    private Button answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9;
+    private Button answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9, unlockButton;
     private TextView fullAnswerView;
     private ProgressBar timerBar;
-    private Button unlockButton;
-
-    private CountDownTimer countDownTimer;
-    private static final long TOTAL_TIME = 60000;
-    private long timeLeft = TOTAL_TIME;
-
     private FirebaseFirestore db;
-    private int correctAnswerCount = 0;
-
-    private final List<TextView> selectedWords = new ArrayList<>();
-    private boolean isTimeUp = false;
-    private boolean isAnswered = false;
-    private int currentQuestionNumber = 1;
-    private int husayScore = 0;
-    private int correctStreak = 0;
-    private int remainingHearts = 5;
-    private ImageView[] heartIcons;
     private TextToSpeech textToSpeech;
-    private boolean isTtsReady = false;
-    private int attemptCount = 0;
-    private boolean isGameOver = false;
-    private Handler handler = new Handler();
-    private MediaPlayer greenSound, orangeSound, redSound;
-    private boolean playedGreen = false;
-    private boolean playedOrange = false;
-    private boolean playedRed = false;
-    private String lastTimerZone = "";
-    private ImageView characterIcon;
-    private List<String> questionIds = new ArrayList<>();
-    private int currentQuestionIndex = 0;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
-    private Handler countdownHandler;
+    private CountDownTimer countDownTimer;
+    private Handler handler = new Handler(), countdownHandler;
     private Runnable countdownRunnable;
-    private MediaPlayer countdownBeep;
-    private int countdownValue = 3;
-    private boolean playMHCL2 = false;
+    private MediaPlayer greenSound, orangeSound, redSound, countdownBeep;
+    private static final long TOTAL_TIME = 60000;
+    private long timeLeft = TOTAL_TIME;
+    private int correctAnswerCount = 0, currentQuestionNumber = 1, husayScore = 0,
+            correctStreak = 0, remainingHearts = 5, attemptCount = 0,
+            currentQuestionIndex = 0, countdownValue = 3;
 
+    private boolean isTimeUp = false, isAnswered = false, isTtsReady = false,
+            isGameOver = false, playedGreen = false, playedOrange = false,
+            playedRed = false, playMHCL2 = false;
+    private ImageView[] heartIcons;
+    private ImageView characterIcon;
+    private final List<TextView> selectedWords = new ArrayList<>();
+    private final List<String> questionIds = new ArrayList<>();
+    private String lastTimerZone = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +104,6 @@ public class PalaroHusay extends AppCompatActivity {
                 }
             };
             connectivityManager.registerDefaultNetworkCallback(networkCallback);
-        } else {
         }
 
         answer1 = findViewById(R.id.husay_answer1);
@@ -169,9 +152,7 @@ public class PalaroHusay extends AppCompatActivity {
                         Toast.makeText(this, "Hindi ma-open ang installer ng TTS.", Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    // TTS is ready, set the flag
                     isTtsReady = true;
-                    // Set TTS to use Filipino voices
                     Voice selected = null;
                     for (Voice v : textToSpeech.getVoices()) {
                         Locale vLocale = v.getLocale();
@@ -202,7 +183,6 @@ public class PalaroHusay extends AppCompatActivity {
                                 docRef.update("husay_intro", false);
 
                             } else {
-                                // NEXT TIMES
                                 playMHCL2 = false;
                                 showCountdownThenLoadWords();
                             }
@@ -301,111 +281,98 @@ public class PalaroHusay extends AppCompatActivity {
 
             isAnswered = true;
             long startTime = System.currentTimeMillis();
-
             String husayDocId = "H" + currentQuestionNumber;
-            db.collection("husay").document(husayDocId)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            String correctAnswer = documentSnapshot.getString("correctAnswer");
 
-                            long endTime = System.currentTimeMillis();
-                            long elapsedTimeInSeconds = (endTime - startTime) / 1000;
+            db.collection("husay").document(husayDocId).get().addOnSuccessListener(doc -> {
+                if (!doc.exists()) return;
 
-                            if (userAnswer.equalsIgnoreCase(correctAnswer)) {
-                                MediaPlayer correctSound = MediaPlayer.create(this, R.raw.correct);
-                                correctSound.setOnCompletionListener(MediaPlayer::release);
-                                correctSound.start();
-                                if (!isFinishing() && !isDestroyed()) {
-                                    Glide.with(this)
-                                            .asGif()
-                                            .load(R.drawable.right_1)
-                                            .transition(DrawableTransitionOptions.withCrossFade(300))
-                                            .into(characterIcon);
-                                }
-                                if (!isFinishing() && !isDestroyed()) {
-                                    Glide.with(this)
-                                            .asGif()
-                                            .load(R.drawable.idle)
-                                            .transition(DrawableTransitionOptions.withCrossFade(300))
-                                            .into(characterIcon);
-                                }
+                String correctAnswer = doc.getString("correctAnswer");
+                long elapsed = (System.currentTimeMillis() - startTime) / 1000;
 
-                                correctAnswerCount++;
-                                husayScore += 3;
-                                correctStreak++;
+                if (userAnswer.equalsIgnoreCase(correctAnswer)) {
+                    handleCorrectAnswer(elapsed, husayDocId);
+                } else {
+                    handleWrongAnswer();
+                }
 
-                                if (elapsedTimeInSeconds <= 5) {
-                                    unlockFastAnswerAchievement();
-                                }
-                                if (correctStreak == 1) {
-                                    loadCharacterLine("MCL2");
-                                } else if (correctStreak == 2) {
-                                    loadCharacterLine("MCL3");
-                                } else {
-                                    loadCharacterLine("MCL4");
-                                }
-
-                                Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
-                                timeLeft = Math.min(timeLeft + 3000, TOTAL_TIME);
-                                restartTimer(timeLeft);
-                                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                saveCorrectHusayAnswer(userId, userId, husayDocId);
-                            } else {
-                                MediaPlayer wrongSound = MediaPlayer.create(this, R.raw.wrong);
-                                wrongSound.setOnCompletionListener(MediaPlayer::release);
-                                wrongSound.start();
-                                if (!isFinishing() && !isDestroyed()) {
-                                    Glide.with(PalaroHusay.this)
-                                            .asGif()
-                                            .load(R.drawable.wrong)
-                                            .transition(DrawableTransitionOptions.withCrossFade(300))
-                                            .into(characterIcon);
-
-                                    new Handler().postDelayed(() -> {
-                                        if (!isFinishing() && !isDestroyed()) {
-                                            Glide.with(PalaroHusay.this)
-                                                    .asGif()
-                                                    .load(R.drawable.idle)
-                                                    .transition(DrawableTransitionOptions.withCrossFade(300))
-                                                    .into(characterIcon);
-                                        }
-                                    }, 2300);
-                                }
-
-                                correctStreak = 0;
-                                deductHeart();
-                                String lineId = remainingHearts > 0 ? "MCL6" : "MCL5";
-                                loadCharacterLine(lineId);
-                                speakText("Mali ang sagot.");
-                                Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
-
-                            }
-
-                            currentQuestionNumber++;
-                            if (currentQuestionIndex < questionIds.size() && !isGameOver) {
-                                loadHusayWords(questionIds.get(currentQuestionIndex));
-
-                                currentQuestionIndex++;
-                                new Handler().postDelayed(() -> {
-                                    if (!isGameOver && currentQuestionIndex < questionIds.size()) {
-                                        loadHusayWords(questionIds.get(currentQuestionIndex));
-                                        fullAnswerView.setText("");
-                                        isAnswered = false;
-                                        isTimeUp = false;
-                                        startTimer();
-                                    } else {
-                                        finishQuiz();
-                                    }
-                                }, 3000);
-                            } else {
-                                if (countDownTimer != null) countDownTimer.cancel();
-                                finishQuiz();
-                            }
-
-                        }
-                    });
+                proceedToNextQuestion();
+            });
         });
+    }
+
+    private void handleCorrectAnswer(long elapsedTime, String docId) {
+        playSound(R.raw.correct);
+        playGif(R.drawable.right_1, 300);
+        playGif(R.drawable.idle, 300);
+
+        correctAnswerCount++;
+        husayScore += 3;
+        correctStreak++;
+
+        if (elapsedTime <= 5) unlockFastAnswerAchievement();
+
+        loadCharacterLine(
+                correctStreak == 1 ? "MCL2" :
+                correctStreak == 2 ? "MCL3" : "MCL4"
+        );
+
+        Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
+        timeLeft = Math.min(timeLeft + 3000, TOTAL_TIME);
+        restartTimer(timeLeft);
+
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        saveCorrectHusayAnswer(userId, userId, docId);
+    }
+
+    private void handleWrongAnswer() {
+        playSound(R.raw.wrong);
+        playGif(R.drawable.wrong, 300);
+        new Handler().postDelayed(() -> playGif(R.drawable.idle, 300), 2300);
+
+        correctStreak = 0;
+        deductHeart();
+        loadCharacterLine(remainingHearts > 0 ? "MCL6" : "MCL5");
+        speakText("Mali ang sagot.");
+        Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void playSound(int resId) {
+        MediaPlayer sound = MediaPlayer.create(this, resId);
+        sound.setOnCompletionListener(MediaPlayer::release);
+        sound.start();
+    }
+
+    private void playGif(int drawableId, int fadeMs) {
+        if (!isFinishing() && !isDestroyed()) {
+            Glide.with(this)
+                    .asGif()
+                    .load(drawableId)
+                    .transition(DrawableTransitionOptions.withCrossFade(fadeMs))
+                    .into(characterIcon);
+        }
+    }
+
+    private void proceedToNextQuestion() {
+        currentQuestionNumber++;
+        if (currentQuestionIndex >= questionIds.size() || isGameOver) {
+            if (countDownTimer != null) countDownTimer.cancel();
+            finishQuiz();
+            return;
+        }
+
+        new Handler().postDelayed(() -> {
+            if (!isGameOver && currentQuestionIndex < questionIds.size()) {
+                loadHusayWords(questionIds.get(currentQuestionIndex));
+                fullAnswerView.setText("");
+                isAnswered = false;
+                isTimeUp = false;
+                startTimer();
+            } else {
+                finishQuiz();
+            }
+        }, 3000);
+
+        loadHusayWords(questionIds.get(currentQuestionIndex++));
     }
 
     private void setupAnswerSelection() {
@@ -480,130 +447,120 @@ public class PalaroHusay extends AppCompatActivity {
     }
 
     private void loadHusayWords(String docId) {
-        db.collection("husay").document(docId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        List<String> words = (List<String>) documentSnapshot.get("words");
-                        if (words != null && words.size() >= 9) {
-                            TextView[] answers = {
-                                    answer1, answer2, answer3,
-                                    answer4, answer5, answer6,
-                                    answer7, answer8, answer9
-                            };
+        db.collection("husay").document(docId).get().addOnSuccessListener(doc -> {
+            if (!doc.exists()) return;
 
-                            selectedWords.clear();
-                            fullAnswerView.setText("");
+            List<String> words = (List<String>) doc.get("words");
+            if (words == null || words.size() < 9) return;
 
-                            for (int i = 0; i < 9; i++) {
-                                TextView answer = answers[i];
-                                answer.setText(words.get(i));
-                                answer.setEnabled(true);
+            TextView[] answers = {answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9};
+            selectedWords.clear();
+            fullAnswerView.setText("");
 
-                                answer.setOnClickListener(view -> {
-                                    SoundClickUtils.playClickSound(this, R.raw.button_click);
-                                    if (view.isEnabled()) {
-                                        String current = fullAnswerView.getText().toString().trim();
-                                        fullAnswerView.setText((current + " " + ((TextView) view).getText()).trim());
-                                        view.setEnabled(false);
-                                        selectedWords.add((TextView) view);
-                                        if (selectedWords.size() == 9) {
-                                            String currentText = fullAnswerView.getText().toString();
-                                            if (!currentText.endsWith(".")) {
-                                                fullAnswerView.append(".");
-                                                currentText = fullAnswerView.getText().toString();
-                                            }
-                                        }
+            for (int i = 0; i < 9; i++) {
+                TextView answer = answers[i];
+                answer.setText(words.get(i));
+                answer.setEnabled(true);
 
-                                    }
-                                });
+                answer.setOnClickListener(view -> onWordClicked((TextView) view));
+                answer.setOnTouchListener(new DoubleTapListener((TextView) answer));
+            }
+        });
+    }
 
-                                answer.setOnTouchListener(new View.OnTouchListener() {
-                                    private long lastTapTime = 0;
+    private void onWordClicked(TextView view) {
+        SoundClickUtils.playClickSound(this, R.raw.button_click);
+        if (!view.isEnabled()) return;
 
-                                    @Override
-                                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                                            long currentTime = System.currentTimeMillis();
-                                            if (currentTime - lastTapTime < 300) {
-                                                TextView tapped = (TextView) view;
-                                                if (selectedWords.contains(tapped)) {
-                                                    selectedWords.remove(tapped);
-                                                    tapped.setEnabled(true);
-                                                    String word = tapped.getText().toString();
-                                                    String currentText = fullAnswerView.getText().toString();
-                                                    fullAnswerView.setText(currentText.replaceFirst("\\b" + word + "\\b", "").trim());
-                                                }
-                                            }
-                                            lastTapTime = currentTime;
-                                        }
-                                        return false;
-                                    }
-                                });
-                            }
-                        }
-                    }
-                });
+        String current = fullAnswerView.getText().toString().trim();
+        fullAnswerView.setText((current + " " + view.getText()).trim());
+        view.setEnabled(false);
+        selectedWords.add(view);
+
+        if (selectedWords.size() == 9 && !fullAnswerView.getText().toString().endsWith(".")) {
+            fullAnswerView.append(".");
+        }
+    }
+
+    private class DoubleTapListener implements View.OnTouchListener {
+        private long lastTap = 0;
+        private final TextView view;
+
+        DoubleTapListener(TextView view) { this.view = view; }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent e) {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
+                long now = System.currentTimeMillis();
+                if (now - lastTap < 300 && selectedWords.contains(view)) {
+                    selectedWords.remove(view);
+                    view.setEnabled(true);
+                    String word = view.getText().toString();
+                    fullAnswerView.setText(fullAnswerView.getText().toString()
+                            .replaceFirst("\\b" + word + "\\b", "").trim());
+                }
+                lastTap = now;
+            }
+            return false;
+        }
     }
 
     private void showCountdownThenLoadWords() {
         stopCountdownSequence();
-
         countdownHandler = new Handler();
         countdownValue = 3;
 
-        countdownRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (isGameOver || isFinishing() || isDestroyed()) {
-                    stopCountdownSequence();
-                    return;
+        countdownRunnable = () -> {
+            if (isGameOver || isFinishing() || isDestroyed()) {
+                stopCountdownSequence();
+                return;
+            }
+
+            if (countdownValue > 0) {
+                releaseBeepPlayer();
+
+                countdownBeep = MediaPlayer.create(this, R.raw.beep);
+                if (countdownBeep != null) {
+                    countdownBeep.setOnCompletionListener(mp -> releasePlayer(mp));
+                    try { countdownBeep.start(); } catch (IllegalStateException ignored) {}
                 }
 
-                if (countdownValue > 0) {
-                    if (countdownBeep != null) {
-                        try { countdownBeep.stop(); } catch (Exception ignored) {}
-                        try { countdownBeep.release(); } catch (Exception ignored) {}
-                        countdownBeep = null;
-                    }
+                countdownValue--;
+                countdownHandler.postDelayed(countdownRunnable, 1000);
+            } else {
+                releaseBeepPlayer();
 
-                    countdownBeep = MediaPlayer.create(PalaroHusay.this, R.raw.beep);
-                    if (countdownBeep != null) {
-                        countdownBeep.setOnCompletionListener(mp -> {
-                            try { mp.release(); } catch (Exception ignored) {}
-                        });
-                        try { countdownBeep.start(); } catch (IllegalStateException ignored) {}
-                    }
-
-                    countdownValue--;
-                    countdownHandler.postDelayed(this, 1000);
-                } else {
-                    if (countdownBeep != null) {
-                        try { if (countdownBeep.isPlaying()) countdownBeep.stop(); } catch (Exception ignored) {}
-                        try { countdownBeep.release(); } catch (Exception ignored) {}
-                        countdownBeep = null;
-                    }
-
-                    if (!isGameOver && !isFinishing() && !isDestroyed()) {
-                        if (playMHCL2) {
-                            loadCharacterLineWithCallback("MHCL2", () -> {
-                                if (!questionIds.isEmpty() && !isGameOver) {
-                                    loadHusayWords(questionIds.get(currentQuestionIndex));
-                                }
-                                startTimer();
-                            });
-                        } else {
-                            if (!questionIds.isEmpty() && !isGameOver) {
+                if (!isGameOver && !isFinishing() && !isDestroyed()) {
+                    if (playMHCL2) {
+                        loadCharacterLineWithCallback("MHCL2", () -> {
+                            if (!questionIds.isEmpty() && !isGameOver)
                                 loadHusayWords(questionIds.get(currentQuestionIndex));
-                            }
                             startTimer();
-                        }
+                        });
+                    } else {
+                        if (!questionIds.isEmpty() && !isGameOver)
+                            loadHusayWords(questionIds.get(currentQuestionIndex));
+                        startTimer();
                     }
                 }
             }
         };
 
         countdownHandler.post(countdownRunnable);
+    }
+
+    private void releaseBeepPlayer() {
+        if (countdownBeep != null) {
+            try {
+                if (countdownBeep.isPlaying()) countdownBeep.stop();
+                countdownBeep.release();
+            } catch (Exception ignored) {}
+            countdownBeep = null;
+        }
+    }
+
+    private void releasePlayer(MediaPlayer mp) {
+        try { mp.release(); } catch (Exception ignored) {}
     }
 
     private void stopCountdownSequence() {
@@ -709,7 +666,6 @@ public class PalaroHusay extends AppCompatActivity {
         }
     }
 
-
     private void stopTimerSounds() {
         if (isMediaPlayerPlaying(greenSound)) {
             greenSound.pause();
@@ -725,8 +681,6 @@ public class PalaroHusay extends AppCompatActivity {
         }
     }
 
-
-
     private boolean isMediaPlayerPlaying(MediaPlayer player) {
         if (player == null) return false;
         try {
@@ -735,7 +689,6 @@ public class PalaroHusay extends AppCompatActivity {
             return false;
         }
     }
-
 
     private void finishQuiz() {
         if (isGameOver) return;
@@ -861,20 +814,16 @@ public class PalaroHusay extends AppCompatActivity {
     private void speakText(String text) {
         if (text == null || text.trim().isEmpty()) return;
 
-        // Check if TTS is ready
         if (isTtsReady && textToSpeech != null) {
-            // Speak the text
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
         } else {
-            // Retry after a delay if TTS is not ready
             new Handler().postDelayed(() -> {
                 if (isTtsReady && textToSpeech != null) {
                     textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
                 }
-            }, 500);  // Wait a bit before trying again
+            }, 500);
         }
     }
-
 
     @Override
     protected void onDestroy() {
@@ -1147,76 +1096,71 @@ public class PalaroHusay extends AppCompatActivity {
         }
 
         isGameOver = true;
-
         cleanupResources();
-
         finish();
     }
 
     private void cleanupResources() {
         stopCountdownSequence();
-        try {
+
+        safeRun(() -> {
             if (countDownTimer != null) {
                 countDownTimer.cancel();
                 countDownTimer = null;
             }
-        } catch (Exception ignored) {}
+        });
 
-        try {
-            stopTimerSounds();
-        } catch (Exception ignored) {}
+        safeRun(this::stopTimerSounds);
 
-        try {
-            if (greenSound != null) {
-                try { if (greenSound.isPlaying()) greenSound.stop(); } catch (Exception ignored) {}
-                try { greenSound.release(); } catch (Exception ignored) {}
-                greenSound = null;
-            }
-        } catch (Exception ignored) {}
+        releaseMediaPlayer(greenSound);
+        greenSound = null;
 
-        try {
-            if (orangeSound != null) {
-                try { if (orangeSound.isPlaying()) orangeSound.stop(); } catch (Exception ignored) {}
-                try { orangeSound.release(); } catch (Exception ignored) {}
-                orangeSound = null;
-            }
-        } catch (Exception ignored) {}
+        releaseMediaPlayer(orangeSound);
+        orangeSound = null;
 
-        try {
-            if (redSound != null) {
-                try { if (redSound.isPlaying()) redSound.stop(); } catch (Exception ignored) {}
-                try { redSound.release(); } catch (Exception ignored) {}
-                redSound = null;
-            }
-        } catch (Exception ignored) {}
+        releaseMediaPlayer(redSound);
+        redSound = null;
 
-        try {
+        safeRun(() -> {
             if (textToSpeech != null) {
-                try { textToSpeech.stop(); } catch (Exception ignored) {}
-                try { textToSpeech.shutdown(); } catch (Exception ignored) {}
+                textToSpeech.stop();
+                textToSpeech.shutdown();
                 textToSpeech = null;
                 isTtsReady = false;
             }
-        } catch (Exception ignored) {}
+        });
 
-        try {
+        safeRun(() -> {
             if (handler != null) handler.removeCallbacksAndMessages(null);
-        } catch (Exception ignored) {}
+        });
 
-        try {
+        safeRun(() -> {
             if (connectivityManager != null && networkCallback != null) {
                 try {
                     connectivityManager.unregisterNetworkCallback(networkCallback);
-                } catch (IllegalArgumentException | SecurityException ignored) {
-                }
+                } catch (IllegalArgumentException | SecurityException ignored) {}
                 networkCallback = null;
             }
-        } catch (Exception ignored) {}
+        });
 
         playedGreen = playedOrange = playedRed = false;
         lastTimerZone = "";
     }
 
+    private void releaseMediaPlayer(MediaPlayer player) {
+        safeRun(() -> {
+            if (player != null) {
+                if (player.isPlaying()) player.stop();
+                player.release();
+            }
+        });
+    }
+
+    private void safeRun(Runnable action) {
+        try {
+            action.run();
+        } catch (Exception ignored) {}
+    }
 
     @Override
     protected void onStop() {
