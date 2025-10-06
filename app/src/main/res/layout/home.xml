@@ -346,20 +346,8 @@
             android:textSize="18sp" />
 
         <!-- Spacer to push image to the end -->
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
 
         <!-- Image at the other end -->
-        <ImageView
-            android:id="@+id/profile_image"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="10dp"
-            android:src="@drawable/tarsier_logo"
-            android:contentDescription="Profile Image"
-            android:scaleType="centerCrop"/>
     </LinearLayout>
 
 
