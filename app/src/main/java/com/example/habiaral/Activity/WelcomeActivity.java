@@ -24,12 +24,10 @@ import java.util.Map;
 public class WelcomeActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 1000;
-
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseFirestore db;
     private ConstraintLayout btnGoogleLogin;
-
     private Handler handler = new Handler();
     private Runnable internetCheckRunnable;
     private boolean activityInitialized = false;
@@ -81,14 +79,11 @@ public class WelcomeActivity extends AppCompatActivity {
             signInWithGoogle();
         });
 
-        // 🔹 SILENT SIGN-IN CHECK
         GoogleSignInAccount lastAccount = GoogleSignIn.getLastSignedInAccount(this);
         if (lastAccount != null && mAuth.getCurrentUser() != null) {
-            // Already signed in before → auto proceed
             String uid = mAuth.getCurrentUser().getUid();
             checkAndGreetUser(uid);
         } else {
-            // Try silent sign-in (no picker)
             mGoogleSignInClient.silentSignIn().addOnCompleteListener(this, task -> {
                 if (task.isSuccessful()) {
                     GoogleSignInAccount account = task.getResult();
@@ -106,7 +101,6 @@ public class WelcomeActivity extends AppCompatActivity {
                         btnGoogleLogin.setEnabled(true);
                     }
                 } else {
-                    // No saved Google account — show button
                     btnGoogleLogin.setEnabled(true);
                 }
             });
