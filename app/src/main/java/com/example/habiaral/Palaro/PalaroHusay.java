@@ -2,24 +2,14 @@ package com.example.habiaral.Palaro;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -39,7 +29,6 @@ import java.util.Locale;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
-import com.example.habiaral.Utils.SoundManagerUtils;
 import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
@@ -60,7 +49,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 public class PalaroHusay extends AppCompatActivity {
 
-    private Button answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9, unlockButton;
+    private Button answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9, unlockButton, btnUmalis;
     private TextView fullAnswerView;
     private ProgressBar timerBar;
     private FirebaseFirestore db;
@@ -73,6 +62,7 @@ public class PalaroHusay extends AppCompatActivity {
     private MediaPlayer greenSound, orangeSound, redSound, countdownBeep;
     private static final long TOTAL_TIME = 60000;
     private long timeLeft = TOTAL_TIME;
+    private String currentHusayDocId = null;
     private int correctAnswerCount = 0, currentQuestionNumber = 1, husayScore = 0,
             correctStreak = 0, remainingHearts = 5, attemptCount = 0,
             currentQuestionIndex = 0, countdownValue = 3;
@@ -119,7 +109,11 @@ public class PalaroHusay extends AppCompatActivity {
         timerBar = findViewById(R.id.timerBar);
         unlockButton = findViewById(R.id.UnlockButtonPalaro);
 
-        Button btnUmalis = findViewById(R.id.UnlockButtonPalaro1);
+        btnUmalis = findViewById(R.id.UnlockButtonPalaro1);
+
+        if (unlockButton != null) unlockButton.setEnabled(false);
+        if (btnUmalis != null) btnUmalis.setEnabled(false);
+
         btnUmalis.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             showUmalisDialog();
@@ -203,7 +197,6 @@ public class PalaroHusay extends AppCompatActivity {
             }
         });
 
-
         characterIcon = findViewById(R.id.characterIcon);
         if (!isFinishing() && !isDestroyed()) {
             Glide.with(getApplicationContext())
@@ -281,7 +274,12 @@ public class PalaroHusay extends AppCompatActivity {
 
             isAnswered = true;
             long startTime = System.currentTimeMillis();
-            String husayDocId = "H" + currentQuestionNumber;
+
+            String husayDocId = currentHusayDocId;
+            if (husayDocId == null) {
+                Toast.makeText(this, "Walang kasalukuyang tanong.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             db.collection("husay").document(husayDocId).get().addOnSuccessListener(doc -> {
                 if (!doc.exists()) return;
@@ -289,7 +287,7 @@ public class PalaroHusay extends AppCompatActivity {
                 String correctAnswer = doc.getString("correctAnswer");
                 long elapsed = (System.currentTimeMillis() - startTime) / 1000;
 
-                if (userAnswer.equalsIgnoreCase(correctAnswer)) {
+                if (normalize(userAnswer).equals(normalize(correctAnswer))) {
                     handleCorrectAnswer(elapsed, husayDocId);
                 } else {
                     handleWrongAnswer();
@@ -300,10 +298,22 @@ public class PalaroHusay extends AppCompatActivity {
         });
     }
 
+    private String normalize(String s) {
+        if (s == null) return "";
+        String n = s.trim().replaceAll("\\s+", " ").toLowerCase();
+        n = n.replaceAll("[\\p{Punct}&&[^']]+$", "");
+        return n;
+    }
+
     private void handleCorrectAnswer(long elapsedTime, String docId) {
         playSound(R.raw.correct);
         playGif(R.drawable.right_1, 300);
-        playGif(R.drawable.idle, 300);
+
+        new Handler().postDelayed(() -> {
+            if (!isFinishing() && !isDestroyed()) {
+                playGif(R.drawable.idle, 300);
+            }
+        }, 2300);
 
         correctAnswerCount++;
         husayScore += 3;
@@ -337,9 +347,15 @@ public class PalaroHusay extends AppCompatActivity {
     }
 
     private void playSound(int resId) {
-        MediaPlayer sound = MediaPlayer.create(this, resId);
-        sound.setOnCompletionListener(MediaPlayer::release);
-        sound.start();
+        try {
+            MediaPlayer mp = MediaPlayer.create(this, resId);
+            mp.setOnCompletionListener(m -> {
+                m.release();
+            });
+            mp.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void playGif(int drawableId, int fadeMs) {
@@ -354,6 +370,7 @@ public class PalaroHusay extends AppCompatActivity {
 
     private void proceedToNextQuestion() {
         currentQuestionNumber++;
+
         if (currentQuestionIndex >= questionIds.size() || isGameOver) {
             if (countDownTimer != null) countDownTimer.cancel();
             finishQuiz();
@@ -362,18 +379,23 @@ public class PalaroHusay extends AppCompatActivity {
 
         new Handler().postDelayed(() -> {
             if (!isGameOver && currentQuestionIndex < questionIds.size()) {
-                loadHusayWords(questionIds.get(currentQuestionIndex));
-                fullAnswerView.setText("");
-                isAnswered = false;
-                isTimeUp = false;
-                startTimer();
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questionIds.size()) {
+                    loadHusayWords(questionIds.get(currentQuestionIndex));
+                    fullAnswerView.setText("");
+                    isAnswered = false;
+                    isTimeUp = false;
+                    if (countDownTimer != null) countDownTimer.cancel();
+                    startTimer();
+                } else {
+                    finishQuiz();
+                }
             } else {
                 finishQuiz();
             }
         }, 3000);
-
-        loadHusayWords(questionIds.get(currentQuestionIndex++));
     }
+
 
     private void setupAnswerSelection() {
         TextView[] answers = {answer1, answer2, answer3, answer4, answer5, answer6};
@@ -447,6 +469,7 @@ public class PalaroHusay extends AppCompatActivity {
     }
 
     private void loadHusayWords(String docId) {
+        currentHusayDocId = docId;
         db.collection("husay").document(docId).get().addOnSuccessListener(doc -> {
             if (!doc.exists()) return;
 
@@ -465,6 +488,8 @@ public class PalaroHusay extends AppCompatActivity {
                 answer.setOnClickListener(view -> onWordClicked((TextView) view));
                 answer.setOnTouchListener(new DoubleTapListener((TextView) answer));
             }
+
+            unlockInputs();
         });
     }
 
@@ -505,8 +530,30 @@ public class PalaroHusay extends AppCompatActivity {
         }
     }
 
+    private void lockInputs() {
+        TextView[] allAnswers = {answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9};
+        for (TextView a : allAnswers) {
+            if (a != null) {
+                a.setEnabled(false);
+                a.setBackgroundResource(R.drawable.answer_option_bg);
+            }
+        }
+        if (unlockButton != null) unlockButton.setEnabled(false);
+        if (btnUmalis != null) btnUmalis.setEnabled(false);
+    }
+
+    private void unlockInputs() {
+        TextView[] allAnswers = {answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9};
+        for (TextView a : allAnswers) {
+            if (a != null) a.setEnabled(true);
+        }
+        if (unlockButton != null) unlockButton.setEnabled(true);
+        if (btnUmalis != null) btnUmalis.setEnabled(true);
+    }
+
     private void showCountdownThenLoadWords() {
         stopCountdownSequence();
+        lockInputs();
         countdownHandler = new Handler();
         countdownValue = 3;
 

@@ -215,7 +215,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
             playButtonClickSound();
             if (hasSubmitted) {
                 nextQuestion();
-                // re-enable input for the next question (nextQuestion already clears text, but ensure focus)
                 if (userSentenceInput != null) {
                     userSentenceInput.setEnabled(true);
                     userSentenceInput.setFocusableInTouchMode(true);

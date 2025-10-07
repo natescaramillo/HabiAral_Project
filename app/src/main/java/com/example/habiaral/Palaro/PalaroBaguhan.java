@@ -83,9 +83,11 @@ public class PalaroBaguhan extends AppCompatActivity {
     private ImageView[] heartIcons;
     private List<String> questionIds = new ArrayList<>();
     private long startTime;
-    private MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer, beepPlayer;
     private String lastTimerZone = "";
     private Handler handler = new Handler();
+    private Handler countdownHandler;
+    private Runnable countdownRunnable;
     private Button[] answerButtons;
     public static final String LINE_ONE_CORRECT = "MCL2";
     public static final String LINE_TWO_CORRECT = "MCL3";
@@ -127,14 +129,11 @@ public class PalaroBaguhan extends AppCompatActivity {
                 }
             };
             connectivityManager.registerDefaultNetworkCallback(networkCallback);
-        } else {
         }
-
 
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
 
-                // Gamitin ang mas kumpletong Filipino locale
                 Locale filLocale = new Locale.Builder().setLanguage("fil").setRegion("PH").build();
                 int result = tts.setLanguage(filLocale);
 
@@ -411,6 +410,12 @@ public class PalaroBaguhan extends AppCompatActivity {
             countDownTimer = null;
         }
 
+        if (countdownHandler != null && countdownRunnable != null) {
+            countdownHandler.removeCallbacks(countdownRunnable);
+            countdownHandler = null;
+            countdownRunnable = null;
+        }
+
         if (mediaPlayer != null) {
             try {
                 if (mediaPlayer.isPlaying()) mediaPlayer.stop();
@@ -418,11 +423,12 @@ public class PalaroBaguhan extends AppCompatActivity {
             mediaPlayer.release();
             mediaPlayer = null;
         }
+
         if (beepPlayer != null) {
             try {
                 if (beepPlayer.isPlaying()) beepPlayer.stop();
             } catch (IllegalStateException ignored) {}
-            beepPlayer.release();
+            try { beepPlayer.release(); } catch (IllegalStateException ignored) {}
             beepPlayer = null;
         }
 
@@ -526,18 +532,15 @@ public class PalaroBaguhan extends AppCompatActivity {
         db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
             if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
 
-            // Get both studentId and Firebase UID
             String studentId = studentDoc.getString("studentId");
             String firebaseUID = studentDoc.getId();
 
-            // Fetch all Baguhan questions
             db.collection("baguhan").get().addOnSuccessListener(allQuestionsSnapshot -> {
                 List<String> allQuestionIds = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : allQuestionsSnapshot) {
                     allQuestionIds.add(doc.getId());
                 }
 
-                // Fetch answered questions using firebaseUID (palaro_answered)
                 db.collection("palaro_answered").document(firebaseUID).get().addOnSuccessListener(userDoc -> {
                     if (!userDoc.exists()) return;
 
@@ -546,18 +549,15 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                     List<String> answeredIds = new ArrayList<>(answeredMap.keySet());
 
-                    // Check if all questions are answered
                     if (answeredIds.containsAll(allQuestionIds)) {
                         db.collection("student_achievements").document(studentId).get().addOnSuccessListener(achSnapshot -> {
                             if (achSnapshot.exists()) {
                                 Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
                                 if (achievements != null && achievements.containsKey(achievementCode)) {
-                                    // Already unlocked, do nothing
                                     return;
                                 }
                             }
 
-                            // Unlock achievement if not yet unlocked
                             continueUnlockingAchievement(studentId, achievementCode, achievementId);
                         });
                     }
@@ -716,8 +716,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         });
     }
 
-    private MediaPlayer beepPlayer;
-
     private void showCountdownThenLoadQuestion() {
 
         db.collection("baguhan").get().addOnSuccessListener(querySnapshot -> {
@@ -730,9 +728,8 @@ public class PalaroBaguhan extends AppCompatActivity {
 
                 currentQuestionNumber = 0;
 
-                final Handler countdownHandler = new Handler();
+                countdownHandler = new Handler();
                 final int[] countdown = {3};
-                final MediaPlayer[] beepPlayer = {null};
 
                 countdownHandler.post(new Runnable() {
                     @Override
@@ -742,21 +739,35 @@ public class PalaroBaguhan extends AppCompatActivity {
                         if (countdown[0] > 0) {
                             baguhanQuestion.setText(String.valueOf(countdown[0]));
 
-                            if (beepPlayer[0] != null) {
-                                beepPlayer[0].release();
-                            }
-                            beepPlayer[0] = MediaPlayer.create(PalaroBaguhan.this, R.raw.beep);
-                            beepPlayer[0].setOnCompletionListener(mp -> mp.release());
-                            beepPlayer[0].start();
+                            try {
+                                if (beepPlayer != null) {
+                                    if (beepPlayer.isPlaying()) beepPlayer.stop();
+                                    beepPlayer.release();
+                                    beepPlayer = null;
+                                }
+                            } catch (IllegalStateException ignored) {}
+
+                            beepPlayer = MediaPlayer.create(PalaroBaguhan.this, R.raw.beep);
+                            if (beepPlayer != null) {
+                                beepPlayer.setOnCompletionListener(mp -> {
+                                    try { mp.release(); } catch (IllegalStateException ignored) {}
+                                    beepPlayer = null;
+                                });
+                                beepPlayer.start();
+                            };
 
                             countdown[0]--;
                             countdownHandler.postDelayed(this, 1000);
                         } else {
                             baguhanQuestion.setText("");
-                            if (beepPlayer[0] != null) {
-                                beepPlayer[0].release();
-                                beepPlayer[0] = null;
-                            }
+
+                            try {
+                                if (beepPlayer != null) {
+                                    if (beepPlayer.isPlaying()) beepPlayer.stop();
+                                    beepPlayer.release();
+                                    beepPlayer = null;
+                                }
+                            } catch (IllegalStateException ignored) {}
 
                             setButtonsEnabled(true);
                             loadBaguhanQuestion();
@@ -764,6 +775,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                         }
                     }
                 });
+                countdownHandler.post(countdownRunnable);
             }
         });
     }
@@ -953,6 +965,20 @@ public class PalaroBaguhan extends AppCompatActivity {
         if (connectivityManager != null && networkCallback != null) {
             connectivityManager.unregisterNetworkCallback(networkCallback);
         }
+
+        if (countdownHandler != null && countdownRunnable != null) {
+            countdownHandler.removeCallbacks(countdownRunnable);
+            countdownHandler = null;
+            countdownRunnable = null;
+        }
+
+        if (beepPlayer != null) {
+            try {
+                if (beepPlayer.isPlaying()) beepPlayer.stop();
+            } catch (IllegalStateException ignored) {}
+            try { beepPlayer.release(); } catch (IllegalStateException ignored) {}
+            beepPlayer = null;
+        }
         super.onDestroy();
     }
 
@@ -1004,27 +1030,22 @@ public class PalaroBaguhan extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        try {
-            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                mediaPlayer.setVolume(0f, 0f);
-            }
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            if (beepPlayer != null && beepPlayer.isPlaying()) {
-                beepPlayer.setVolume(0f, 0f);
-            }
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        }
-
+        try { if (mediaPlayer != null && mediaPlayer.isPlaying()) mediaPlayer.setVolume(0f, 0f); } catch (IllegalStateException ignored) {}
         TimerSoundUtils.setVolume(0f);
 
-        if (tts != null) {
-            tts.stop();
+        if (countdownHandler != null && countdownRunnable != null) {
+            countdownHandler.removeCallbacks(countdownRunnable);
         }
+
+        if (beepPlayer != null) {
+            try {
+                if (beepPlayer.isPlaying()) beepPlayer.stop();
+            } catch (IllegalStateException ignored) {}
+            try { beepPlayer.release(); } catch (IllegalStateException ignored) {}
+            beepPlayer = null;
+        }
+
+        if (tts != null) tts.stop();
     }
 
     @Override
@@ -1092,5 +1113,19 @@ public class PalaroBaguhan extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         endAllAndFinish();
+
+        if (countdownHandler != null && countdownRunnable != null) {
+            countdownHandler.removeCallbacks(countdownRunnable);
+            countdownHandler = null;
+            countdownRunnable = null;
+        }
+
+        if (beepPlayer != null) {
+            try {
+                if (beepPlayer.isPlaying()) beepPlayer.stop();
+            } catch (IllegalStateException ignored) {}
+            try { beepPlayer.release(); } catch (IllegalStateException ignored) {}
+            beepPlayer = null;
+        }
     }
 }
