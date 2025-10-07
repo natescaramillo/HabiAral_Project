@@ -214,6 +214,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
         btnTapos.setOnClickListener(v -> {
             playButtonClickSound();
             if (hasSubmitted) {
+                if (countDownTimer != null) countDownTimer.cancel();
+                stopAllTimerSounds();
+                startTimer();
                 nextQuestion();
                 if (userSentenceInput != null) {
                     userSentenceInput.setEnabled(true);
@@ -284,6 +287,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             String details = "Kulang: " + String.join(", ", missing);
             showErrorTooltip(details);
             showWrongAnimation();
+            loadCharacterLine("MDCL4");
             return;
         }
 
@@ -343,6 +347,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
             playWrongSound();
             showWrongAnimation();
 
+            if (countDownTimer != null) countDownTimer.cancel();
+            stopAllTimerSounds();
+            loadCharacterLine("MDCL3");
+
             deductHeart();
 
             if (isGameOver || remainingHearts == 0) {
@@ -372,15 +380,34 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
             hasSubmitted = false;
 
-            errorTooltipHandler.postDelayed(() -> {
-                if (!isFinishing() && !isDestroyed()) {
-                    errorTooltip.setVisibility(View.GONE);
-                    errorIcon.setVisibility(View.GONE);
-                    isShowingErrorTooltip = false;
-                    nextQuestion();
-                }
-            }, 1200);
+            if (tts != null && isTtsReady) {
+                tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                    @Override public void onStart(String id) {}
+                    @Override public void onError(String id) {}
+                    @Override
+                    public void onDone(String id) {
+                        runOnUiThread(() -> {
+                            if (!isFinishing() && !isDestroyed()) {
+                                errorTooltip.setVisibility(View.GONE);
+                                errorIcon.setVisibility(View.GONE);
+                                isShowingErrorTooltip = false;
+                                nextQuestion();
+                            }
+                        });
+                    }
+                });
+            } else {
+                errorTooltipHandler.postDelayed(() -> {
+                    if (!isFinishing() && !isDestroyed()) {
+                        errorTooltip.setVisibility(View.GONE);
+                        errorIcon.setVisibility(View.GONE);
+                        isShowingErrorTooltip = false;
+                        nextQuestion();
+                    }
+                }, 1200);
+            }
         }
+
     }
 
     private void checkGrammarFromServer(String sentence) {
@@ -416,9 +443,53 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 @Override
                 public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
                     if (response.code() == 204) {
-                        runOnUiThread(() -> showErrorTooltip("Walang error sa pangungusap."));
+                        runOnUiThread(() -> {
+                            playCorrectSound();
+
+                            if (countDownTimer != null) {
+                                countDownTimer.cancel();
+                                countDownTimer = null;
+                            }
+                            stopAllTimerSounds();
+
+                            errorTooltip.setText("Walang mali sa pangungusap.");
+                            errorTooltip.setVisibility(View.VISIBLE);
+                            errorIcon.setVisibility(View.VISIBLE);
+
+                            if (tts != null && isTtsReady) {
+                                tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                                    @Override public void onStart(String id) {}
+                                    @Override public void onError(String id) {}
+                                    @Override
+                                    public void onDone(String id) {
+                                        if ("MDCL2_UTTERANCE".equals(id)) {
+                                            runOnUiThread(() -> {
+                                                if (!isFinishing() && !isDestroyed()) {
+                                                    errorTooltip.setVisibility(View.GONE);
+                                                    errorIcon.setVisibility(View.GONE);
+                                                    isShowingErrorTooltip = false;
+                                                    nextQuestion();
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+
+                                loadCharacterLine("MDCL2");
+                            } else {
+                                errorTooltipHandler.postDelayed(() -> {
+                                    if (!isFinishing() && !isDestroyed()) {
+                                        errorTooltip.setVisibility(View.GONE);
+                                        errorIcon.setVisibility(View.GONE);
+                                        isShowingErrorTooltip = false;
+                                        nextQuestion();
+                                    }
+                                }, 1200);
+                            }
+                        });
                         return;
                     }
+
 
                     final String res = response.body().string().trim();
                     runOnUiThread(() -> showGrammarResultTooltip(res));
@@ -599,7 +670,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         if (text == null || text.trim().isEmpty()) return;
 
         if (isTtsReady && tts != null) {
-            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "MDCL2_UTTERANCE");
         }
     }
 

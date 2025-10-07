@@ -59,7 +59,7 @@ public class PalaroHusay extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private Handler handler = new Handler(), countdownHandler;
     private Runnable countdownRunnable;
-    private MediaPlayer greenSound, orangeSound, redSound, countdownBeep;
+    private MediaPlayer timerSound, countdownBeep;
     private static final long TOTAL_TIME = 60000;
     private long timeLeft = TOTAL_TIME;
     private String currentHusayDocId = null;
@@ -68,8 +68,7 @@ public class PalaroHusay extends AppCompatActivity {
             currentQuestionIndex = 0, countdownValue = 3;
 
     private boolean isTimeUp = false, isAnswered = false, isTtsReady = false,
-            isGameOver = false, playedGreen = false, playedOrange = false,
-            playedRed = false, playMHCL2 = false;
+            isGameOver = false, playMHCL2 = false;
     private ImageView[] heartIcons;
     private ImageView characterIcon;
     private final List<TextView> selectedWords = new ArrayList<>();
@@ -105,6 +104,7 @@ public class PalaroHusay extends AppCompatActivity {
         answer7 = findViewById(R.id.husay_answer7);
         answer8 = findViewById(R.id.husay_answer8);
         answer9 = findViewById(R.id.husay_answer9);
+
         fullAnswerView = findViewById(R.id.whole_answer);
         timerBar = findViewById(R.id.timerBar);
         unlockButton = findViewById(R.id.UnlockButtonPalaro);
@@ -126,9 +126,9 @@ public class PalaroHusay extends AppCompatActivity {
                 findViewById(R.id.heart04),
                 findViewById(R.id.heart05)
         };
-        greenSound = MediaPlayer.create(this, R.raw.green_timer);
-        orangeSound = MediaPlayer.create(this, R.raw.orange_timer);
-        redSound = MediaPlayer.create(this, R.raw.red_timer);
+
+        timerSound = MediaPlayer.create(this, R.raw.sound_new);
+        timerSound.setLooping(false);
 
         db = FirebaseFirestore.getInstance();
 
@@ -255,9 +255,7 @@ public class PalaroHusay extends AppCompatActivity {
     }
 
     private void stopAllSounds() {
-        if (greenSound != null && greenSound.isPlaying()) greenSound.pause();
-        if (orangeSound != null && orangeSound.isPlaying()) orangeSound.pause();
-        if (redSound != null && redSound.isPlaying()) redSound.pause();
+        if (timerSound != null && timerSound.isPlaying()) timerSound.pause();
         if (textToSpeech != null) textToSpeech.stop();
     }
 
@@ -382,11 +380,21 @@ public class PalaroHusay extends AppCompatActivity {
                 currentQuestionIndex++;
                 if (currentQuestionIndex < questionIds.size()) {
                     loadHusayWords(questionIds.get(currentQuestionIndex));
+
                     fullAnswerView.setText("");
                     isAnswered = false;
                     isTimeUp = false;
-                    if (countDownTimer != null) countDownTimer.cancel();
-                    startTimer();
+
+                    if (countDownTimer != null) {
+                        countDownTimer.cancel();
+                        countDownTimer = null;
+                    }
+
+                    timeLeft = TOTAL_TIME;
+
+                    timerBar.setProgress(100);
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_green));
+
                 } else {
                     finishQuiz();
                 }
@@ -484,14 +492,16 @@ public class PalaroHusay extends AppCompatActivity {
                 TextView answer = answers[i];
                 answer.setText(words.get(i));
                 answer.setEnabled(true);
-
                 answer.setOnClickListener(view -> onWordClicked((TextView) view));
                 answer.setOnTouchListener(new DoubleTapListener((TextView) answer));
             }
 
             unlockInputs();
+
+            startTimer();
         });
     }
+
 
     private void onWordClicked(TextView view) {
         SoundClickUtils.playClickSound(this, R.raw.button_click);
@@ -582,12 +592,10 @@ public class PalaroHusay extends AppCompatActivity {
                         loadCharacterLineWithCallback("MHCL2", () -> {
                             if (!questionIds.isEmpty() && !isGameOver)
                                 loadHusayWords(questionIds.get(currentQuestionIndex));
-                            startTimer();
                         });
                     } else {
                         if (!questionIds.isEmpty() && !isGameOver)
                             loadHusayWords(questionIds.get(currentQuestionIndex));
-                        startTimer();
                     }
                 }
             }
@@ -666,6 +674,11 @@ public class PalaroHusay extends AppCompatActivity {
     private void restartTimer(long duration) {
         if (countDownTimer != null) countDownTimer.cancel();
 
+        if (timerSound != null) {
+            timerSound.seekTo(0);
+            timerSound.start();
+        }
+
         countDownTimer = new CountDownTimer(duration, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -677,12 +690,12 @@ public class PalaroHusay extends AppCompatActivity {
                 int percent = (int) (timeLeft * 100 / TOTAL_TIME);
                 timerBar.setProgress(percent);
 
-                if (percent > 50) {
-                    updateTimerZone("GREEN", R.drawable.timer_color_green, greenSound);
-                } else if (percent > 25) {
-                    updateTimerZone("ORANGE", R.drawable.timer_color_orange, orangeSound);
+                if (percent > 48) {
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_green));
+                } else if (percent > 26) {
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_orange));
                 } else {
-                    updateTimerZone("RED", R.drawable.timer_color_red, redSound);
+                    timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, R.drawable.timer_color_red));
                 }
             }
 
@@ -690,50 +703,19 @@ public class PalaroHusay extends AppCompatActivity {
             public void onFinish() {
                 timerBar.setProgress(0);
                 isTimeUp = true;
+                stopTimerSound();
                 loadCharacterLine("MCL5");
                 finishQuiz();
             }
         }.start();
     }
 
-    private void updateTimerZone(String zone, int drawableRes, MediaPlayer sound) {
-        if (!lastTimerZone.equals(zone)) {
-            stopTimerSounds();
-            timerBar.setProgressDrawable(ContextCompat.getDrawable(PalaroHusay.this, drawableRes));
-            if (sound != null) {
-                try {
-                    sound.seekTo(0);
-                    sound.start();
-                } catch (IllegalStateException e) {
-                    sound = MediaPlayer.create(this, R.raw.green_timer);
-                    sound.start();
-                }
-            }
-            lastTimerZone = zone;
-        }
-    }
-
-    private void stopTimerSounds() {
-        if (isMediaPlayerPlaying(greenSound)) {
-            greenSound.pause();
-            greenSound.seekTo(0);
-        }
-        if (isMediaPlayerPlaying(orangeSound)) {
-            orangeSound.pause();
-            orangeSound.seekTo(0);
-        }
-        if (isMediaPlayerPlaying(redSound)) {
-            redSound.pause();
-            redSound.seekTo(0);
-        }
-    }
-
-    private boolean isMediaPlayerPlaying(MediaPlayer player) {
-        if (player == null) return false;
-        try {
-            return player.isPlaying();
-        } catch (IllegalStateException e) {
-            return false;
+    private void stopTimerSound() {
+        if (timerSound != null && timerSound.isPlaying()) {
+            timerSound.stop();
+            try {
+                timerSound.prepare();
+            } catch (Exception ignored) {}
         }
     }
 
@@ -848,7 +830,8 @@ public class PalaroHusay extends AppCompatActivity {
                 countDownTimer.cancel();
                 countDownTimer = null;
             }
-            stopTimerSounds();
+
+            stopTimerSound();
 
             Toast.makeText(this, "Ubos na ang puso!", Toast.LENGTH_SHORT).show();
 
@@ -877,9 +860,11 @@ public class PalaroHusay extends AppCompatActivity {
         endAllAndFinish();
         if (countDownTimer != null) countDownTimer.cancel();
 
-        if (greenSound != null) greenSound.stop();
-        if (orangeSound != null) orangeSound.stop();
-        if (redSound != null) redSound.stop();
+        if (timerSound != null) {
+            timerSound.stop();
+            timerSound.release();
+        }
+
         handler.removeCallbacksAndMessages(null);
         if (connectivityManager != null && networkCallback != null) {
             connectivityManager.unregisterNetworkCallback(networkCallback);
@@ -1115,9 +1100,7 @@ public class PalaroHusay extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        if (greenSound != null) greenSound.setVolume(0f, 0f);
-        if (orangeSound != null) orangeSound.setVolume(0f, 0f);
-        if (redSound != null) redSound.setVolume(0f, 0f);
+        if (timerSound != null) timerSound.setVolume(0f, 0f);
 
         TimerSoundUtils.setVolume(0f);
 
@@ -1128,9 +1111,7 @@ public class PalaroHusay extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (greenSound != null) greenSound.setVolume(1f, 1f);
-        if (orangeSound != null) orangeSound.setVolume(1f, 1f);
-        if (redSound != null) redSound.setVolume(1f, 1f);
+        if (timerSound != null) timerSound.setVolume(1f, 1f);
 
         TimerSoundUtils.setVolume(0.2f);
     }
@@ -1157,17 +1138,6 @@ public class PalaroHusay extends AppCompatActivity {
             }
         });
 
-        safeRun(this::stopTimerSounds);
-
-        releaseMediaPlayer(greenSound);
-        greenSound = null;
-
-        releaseMediaPlayer(orangeSound);
-        orangeSound = null;
-
-        releaseMediaPlayer(redSound);
-        redSound = null;
-
         safeRun(() -> {
             if (textToSpeech != null) {
                 textToSpeech.stop();
@@ -1190,17 +1160,7 @@ public class PalaroHusay extends AppCompatActivity {
             }
         });
 
-        playedGreen = playedOrange = playedRed = false;
         lastTimerZone = "";
-    }
-
-    private void releaseMediaPlayer(MediaPlayer player) {
-        safeRun(() -> {
-            if (player != null) {
-                if (player.isPlaying()) player.stop();
-                player.release();
-            }
-        });
     }
 
     private void safeRun(Runnable action) {
