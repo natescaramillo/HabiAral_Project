@@ -110,8 +110,6 @@ public class HugnayanLesson extends AppCompatActivity {
                 finish();
             }
         });
-
-        initTextToSpeech();
     }
 
     private void startIdleGifRandomizer() {
@@ -198,6 +196,8 @@ public class HugnayanLesson extends AppCompatActivity {
                         db.collection("module_progress").document(uid)
                                 .set(update, SetOptions.merge());
                     }
+
+                    initTextToSpeech();
 
                 });
     }

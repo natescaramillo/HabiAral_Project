@@ -111,7 +111,6 @@ public class LangkapanLesson extends AppCompatActivity {
             }
         });
 
-        initTextToSpeech();
     }
 
     private void startIdleGifRandomizer() {
@@ -198,6 +197,8 @@ public class LangkapanLesson extends AppCompatActivity {
                         db.collection("module_progress").document(uid)
                                 .set(update, SetOptions.merge());
                     }
+
+                    initTextToSpeech();
 
                 });
     }

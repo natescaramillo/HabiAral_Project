@@ -214,10 +214,25 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         hugnayanLock = findViewById(R.id.hugnayanLock);
         langkapanLock = findViewById(R.id.langkapanLock);
 
-        btnPayak.setOnClickListener(v -> startActivity(new Intent(this, PayakLesson.class)));
-        btnTambalan.setOnClickListener(v -> startActivity(new Intent(this, TambalanLesson.class)));
-        btnHugnayan.setOnClickListener(v -> startActivity(new Intent(this, HugnayanLesson.class)));
-        btnLangkapan.setOnClickListener(v -> startActivity(new Intent(this, LangkapanLesson.class)));
+        btnPayak.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            startActivity(new Intent(this, PayakLesson.class));
+        });
+
+        btnTambalan.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            startActivity(new Intent(this, TambalanLesson.class));
+        });
+
+        btnHugnayan.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            startActivity(new Intent(this, HugnayanLesson.class));
+        });
+
+        btnLangkapan.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            startActivity(new Intent(this, LangkapanLesson.class));
+        });
     }
 
     private void lockAllButtons() {

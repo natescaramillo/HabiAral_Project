@@ -104,6 +104,9 @@ public class PabulaKwento1Quiz extends AppCompatActivity {
 
         introButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
+
+            introButton.setEnabled(false);
+
             showCountdownThenLoadQuestion();
         });
 
@@ -205,6 +208,8 @@ public class PabulaKwento1Quiz extends AppCompatActivity {
                 timerBar.setVisibility(View.VISIBLE);
                 nextButton.setVisibility(View.VISIBLE);
                 background.setVisibility(View.VISIBLE);
+
+                introButton.setEnabled(true);
 
                 startCountdownTimer = null;
             }
@@ -717,16 +722,32 @@ public class PabulaKwento1Quiz extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
+        if (startCountdownTimer != null) {
+            startCountdownTimer.cancel();
+            startCountdownTimer = null;
+
+            stopTimerSound();
+            releaseReadyPlayer();
+
+            answer1.setVisibility(View.GONE);
+            answer2.setVisibility(View.GONE);
+            answer3.setVisibility(View.GONE);
+            timerBar.setVisibility(View.GONE);
+            nextButton.setVisibility(View.GONE);
+            background.setVisibility(View.GONE);
+            introButton.setVisibility(View.VISIBLE);
+            introButton.setEnabled(true);
+
+            questionTitle.setText("Simula");
+            questionText.setText(introText);
+            currentIndex = -1;
+        }
+
         if (isFinishing() || isDestroyed()) {
-            if (startCountdownTimer != null) {
-                startCountdownTimer.cancel();
-                startCountdownTimer = null;
-            }
             if (countDownTimer != null) {
                 countDownTimer.cancel();
                 countDownTimer = null;
             }
-
             stopTimerSound();
             releaseReadyPlayer();
         }
