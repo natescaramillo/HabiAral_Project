@@ -7,16 +7,17 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.habiaral.Cache.LessonProgressCache;
-import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.google.android.gms.auth.api.signin.*;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
-import androidx.constraintlayout.widget.ConstraintLayout;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,6 @@ public class WelcomeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseFirestore db;
-
     private ConstraintLayout btnGoogleLogin;
 
     private Handler handler = new Handler();
@@ -38,6 +38,9 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         startInternetChecking();
     }
@@ -52,11 +55,9 @@ public class WelcomeActivity extends AppCompatActivity {
                         activityInitialized = true;
                     }
                 });
-
                 handler.postDelayed(this, 3000);
             }
         };
-
         handler.post(internetCheckRunnable);
     }
 
@@ -68,9 +69,6 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void RunActivity() {
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -80,20 +78,38 @@ public class WelcomeActivity extends AppCompatActivity {
         btnGoogleLogin = findViewById(R.id.btnGoogleLogin);
         btnGoogleLogin.setOnClickListener(v -> {
             btnGoogleLogin.setEnabled(false);
-
-            mAuth.signOut();
-            mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
-                mGoogleSignInClient.revokeAccess().addOnCompleteListener(revokeTask -> {
-                    signInWithGoogle();
-                });
-            });
+            signInWithGoogle();
         });
 
-        if (mAuth.getCurrentUser() != null) {
+        // 🔹 SILENT SIGN-IN CHECK
+        GoogleSignInAccount lastAccount = GoogleSignIn.getLastSignedInAccount(this);
+        if (lastAccount != null && mAuth.getCurrentUser() != null) {
+            // Already signed in before → auto proceed
             String uid = mAuth.getCurrentUser().getUid();
             checkAndGreetUser(uid);
         } else {
-            btnGoogleLogin.setEnabled(true);
+            // Try silent sign-in (no picker)
+            mGoogleSignInClient.silentSignIn().addOnCompleteListener(this, task -> {
+                if (task.isSuccessful()) {
+                    GoogleSignInAccount account = task.getResult();
+                    if (account != null && account.getIdToken() != null) {
+                        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                        mAuth.signInWithCredential(credential)
+                                .addOnCompleteListener(authTask -> {
+                                    if (authTask.isSuccessful()) {
+                                        saveUserToFirestore(account);
+                                    } else {
+                                        btnGoogleLogin.setEnabled(true);
+                                    }
+                                });
+                    } else {
+                        btnGoogleLogin.setEnabled(true);
+                    }
+                } else {
+                    // No saved Google account — show button
+                    btnGoogleLogin.setEnabled(true);
+                }
+            });
         }
     }
 
@@ -105,12 +121,10 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-
                 if (account == null || account.getIdToken() == null) {
                     btnGoogleLogin.setEnabled(true);
                     Toast.makeText(this, "Nabigo ang pag-sign in sa Google: Walang laman ang ID token.", Toast.LENGTH_SHORT).show();
@@ -150,41 +164,35 @@ public class WelcomeActivity extends AppCompatActivity {
                     goToIntroduction();
                 }
             } else {
-                db.collection("students")  .orderBy("studentId")
+                db.collection("students").orderBy("studentId")
                         .get().addOnSuccessListener(allDocs -> {
-                    int maxNumber = 0;
-                    for (DocumentSnapshot document : allDocs) {
-                        String sid = document.getString("studentId");
-                        if (sid != null && sid.startsWith("STUDENT")) {
-                            try {
-                                int num = Integer.parseInt(sid.replace("STUDENT", ""));
-                                if (num > maxNumber) maxNumber = num;
-                            } catch (NumberFormatException ignored) {}
-                        }
-                    }
+                            int maxNumber = 0;
+                            for (DocumentSnapshot document : allDocs) {
+                                String sid = document.getString("studentId");
+                                if (sid != null && sid.startsWith("STUDENT")) {
+                                    try {
+                                        int num = Integer.parseInt(sid.replace("STUDENT", ""));
+                                        if (num > maxNumber) maxNumber = num;
+                                    } catch (NumberFormatException ignored) {}
+                                }
+                            }
 
-                    String generatedId = String.format("STUDENT%03d", maxNumber + 1);
+                            String generatedId = String.format("STUDENT%03d", maxNumber + 1);
+                            Map<String, Object> student = new HashMap<>();
+                            student.put("email", email);
+                            student.put("studentId", generatedId);
 
-                    Map<String, Object> student = new HashMap<>();
-                    student.put("email", email);
-                    student.put("studentId", generatedId);
-
-
-                    docRef.set(student)
-                            .addOnSuccessListener(unused -> goToIntroduction())
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(this, "Nabigo ang pag-save ng gumagamit", Toast.LENGTH_SHORT).show();
-                            });
-                }).addOnFailureListener(e -> {
-                    Toast.makeText(this, "Nabigo ang pagbuo ng student ID", Toast.LENGTH_SHORT).show();
-                });
+                            docRef.set(student)
+                                    .addOnSuccessListener(unused -> goToIntroduction())
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(this, "Nabigo ang pag-save ng gumagamit", Toast.LENGTH_SHORT).show());
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(this, "Nabigo ang pagbuo ng student ID", Toast.LENGTH_SHORT).show());
             }
-        }).addOnFailureListener(e -> {
-            Toast.makeText(this, "May error sa pagsuri ng gumagamit", Toast.LENGTH_SHORT).show();
-        });
+        }).addOnFailureListener(e ->
+                Toast.makeText(this, "May error sa pagsuri ng gumagamit", Toast.LENGTH_SHORT).show());
     }
-
-
 
     private void checkAndGreetUser(String uid) {
         db.collection("students").document(uid).get()
@@ -202,9 +210,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         btnGoogleLogin.setEnabled(true);
                     }
                 })
-                .addOnFailureListener(e -> {
-                    btnGoogleLogin.setEnabled(true);
-                });
+                .addOnFailureListener(e -> btnGoogleLogin.setEnabled(true));
     }
 
     private void preloadLessonProgressAndGoHome(String uid) {
@@ -213,9 +219,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 LessonProgressCache.setData(snapshot.getData());
             }
             goToHomePage();
-        }).addOnFailureListener(e -> {
-            goToHomePage();
-        });
+        }).addOnFailureListener(e -> goToHomePage());
     }
 
     private void goToIntroduction() {
