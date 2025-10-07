@@ -370,6 +370,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 unlockSagotBayaniAchievement();
             }
 
+            hasSubmitted = false;
+
             errorTooltipHandler.postDelayed(() -> {
                 if (!isFinishing() && !isDestroyed()) {
                     errorTooltip.setVisibility(View.GONE);
@@ -616,7 +618,14 @@ public class PalaroDalubhasa extends AppCompatActivity {
             currentDalubhasaID = "D" + (currentQuestionNumber + 1);
 
             userSentenceInput.setText("");
-            userSentenceInput.setEnabled(true);
+
+            if (!hasSubmitted) {
+                userSentenceInput.setEnabled(true);
+                userSentenceInput.setFocusableInTouchMode(true);
+            } else {
+                userSentenceInput.setEnabled(false);
+                userSentenceInput.setFocusable(false);
+            }
 
             btnSuriin.setVisibility(View.VISIBLE);
             btnTapos.setVisibility(View.GONE);
