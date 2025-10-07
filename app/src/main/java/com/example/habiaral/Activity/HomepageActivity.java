@@ -1,6 +1,5 @@
 package com.example.habiaral.Activity;
 
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
@@ -14,31 +13,31 @@ import com.example.habiaral.Fragment.AchievementFragment;
 import com.example.habiaral.Fragment.HomeFragment;
 import com.example.habiaral.Fragment.ProgressBarFragment;
 import com.example.habiaral.Fragment.SettingsFragment;
-import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.R;
+import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class  HomepageActivity extends AppCompatActivity {
+public class HomepageActivity extends AppCompatActivity {
 
     private final Map<Integer, Fragment> fragmentMap = new HashMap<>();
     private final Handler handler = new Handler();
-    private final Handler fragmentHandler = new Handler();
-    private Runnable pendingRunnable;
     private long lastClickTime = 0;
     private static final long MIN_INTERVAL = 250;
-
     private Fragment activeFragment;
-    private MediaPlayer mediaPlayer;
-
+    private boolean isTransactionRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
+
+        if (savedInstanceState != null) {
+            return;
+        }
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -69,6 +68,7 @@ public class  HomepageActivity extends AppCompatActivity {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
         InternetCheckerUtils.resetDialogFlag();
+        isTransactionRunning = false;
     }
 
     private void RunActivity() {
@@ -80,59 +80,59 @@ public class  HomepageActivity extends AppCompatActivity {
             return insets;
         });
 
-        loadFragment(new HomeFragment());
-        activeFragment = new HomeFragment();
+        HomeFragment homeFragment = new HomeFragment();
+        ProgressBarFragment progressBarFragment = new ProgressBarFragment();
+        AchievementFragment achievementFragment = new AchievementFragment();
+        SettingsFragment settingsFragment = new SettingsFragment();
+
+        fragmentMap.put(R.id.home_nav, homeFragment);
+        fragmentMap.put(R.id.progressbar_nav, progressBarFragment);
+        fragmentMap.put(R.id.achievement_nav, achievementFragment);
+        fragmentMap.put(R.id.settings_nav, settingsFragment);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, settingsFragment, "settings").hide(settingsFragment)
+                .add(R.id.fragment_container, achievementFragment, "achievement").hide(achievementFragment)
+                .add(R.id.fragment_container, progressBarFragment, "progress").hide(progressBarFragment)
+                .add(R.id.fragment_container, homeFragment, "home")
+                .commit();
+
+        activeFragment = homeFragment;
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             long now = System.currentTimeMillis();
-            if (now - lastClickTime < MIN_INTERVAL) {
+            if (now - lastClickTime < MIN_INTERVAL || isTransactionRunning) {
                 return false;
             }
             lastClickTime = now;
+            isTransactionRunning = true;
 
             SoundClickUtils.playClickSound(this, R.raw.button_click);
 
-            Fragment selectedFragment = null;
-            int itemId = item.getItemId();
+            Fragment selectedFragment = fragmentMap.get(item.getItemId());
+            if (selectedFragment != null && selectedFragment != activeFragment) {
 
-            if (itemId == R.id.home_nav) {
-                selectedFragment = new HomeFragment();
-            } else if (itemId == R.id.progressbar_nav) {
-                selectedFragment = new ProgressBarFragment();
-            } else if (itemId == R.id.achievement_nav) {
-                selectedFragment = new AchievementFragment();
-            } else if (itemId == R.id.settings_nav) {
-                selectedFragment = new SettingsFragment();
+                if (!getSupportFragmentManager().isStateSaved()) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(activeFragment)
+                            .show(selectedFragment)
+                            .runOnCommit(() -> {
+                                isTransactionRunning = false;
+                            })
+                            .commitAllowingStateLoss();
+
+                    activeFragment = selectedFragment;
+                } else {
+                    isTransactionRunning = false;
+                }
+
+            } else {
+                isTransactionRunning = false;
             }
 
-            if (selectedFragment != null && !(selectedFragment.getClass().equals(activeFragment.getClass()))) {
-                loadFragmentDebounced(selectedFragment);
-                return true;
-            }
-            return false;
+            return true;
         });
     }
-
-    private void loadFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
-        activeFragment = fragment;
-    }
-
-    private void loadFragmentDebounced(Fragment fragment) {
-        if (pendingRunnable != null) {
-            fragmentHandler.removeCallbacks(pendingRunnable);
-        }
-
-        pendingRunnable = () -> {
-            if (!isFinishing() && !isDestroyed()) {
-                loadFragment(fragment);
-            }
-        };
-
-        fragmentHandler.postDelayed(pendingRunnable, 50);
-    }
-
 }
