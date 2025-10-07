@@ -19,7 +19,7 @@ public class TimerSoundUtils {
                     completionListener.onCompletion(mp);
                 }
             });
-            currentPlayer.setLooping(true); // Keep looping if it's a timer sound
+            currentPlayer.setLooping(true);
             currentPlayer.start();
         }
     }
@@ -34,7 +34,6 @@ public class TimerSoundUtils {
         }
     }
 
-    // ===== NEW METHOD =====
     public static void setVolume(float volume) {
         if (currentPlayer != null) {
             currentPlayer.setVolume(volume, volume);

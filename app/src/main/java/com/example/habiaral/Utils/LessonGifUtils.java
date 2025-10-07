@@ -18,7 +18,6 @@ public class LessonGifUtils {
 
         isActive = true;
 
-        // Initial load ng idle gif (para hindi mo na ulitin sa Activity)
         if (!activity.isFinishing() && !activity.isDestroyed()) {
             Glide.with(activity).asGif().load(R.drawable.idle).into(imageView);
         }

@@ -138,7 +138,6 @@ public class AchievementFragment extends Fragment{
                     image.setAlpha(1f);
                     removeLockIconIfExists(image);
 
-                    // Extract unlockedAt date
                     Map<String, Object> saData = (Map<String, Object>) achievementsMap.get(saKey);
                     String unlockedAtStr = "";
 
@@ -205,7 +204,6 @@ public class AchievementFragment extends Fragment{
     private void showAchievementDialog(String title, String description, int imgID, String unlockedAt) {
         if (getContext() == null) return;
 
-        // 🔊 Play sound kapag binuksan
         SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
 
         Dialog dialog = new Dialog(getContext());

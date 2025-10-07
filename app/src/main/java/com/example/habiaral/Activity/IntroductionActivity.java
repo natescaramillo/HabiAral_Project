@@ -12,7 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.example.habiaral.Cache.LessonProgressCache; // ✅ Added
+import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.Utils.InternetCheckerUtils;
 import com.example.habiaral.R;
 import com.google.firebase.auth.FirebaseAuth;

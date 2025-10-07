@@ -12,7 +12,6 @@ public class TextAnimationUtils {
     private static final Handler handler = new Handler();
 
     public static void animateText(TextView textView, String text, int delay) {
-        // Cancel any running animation for this TextView
         cancelAnimation(textView);
 
         textView.setText("");

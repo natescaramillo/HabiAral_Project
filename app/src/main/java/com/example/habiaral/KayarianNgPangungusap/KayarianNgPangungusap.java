@@ -99,11 +99,9 @@ public class KayarianNgPangungusap extends AppCompatActivity {
         TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
 
-        // 👉 Title ng popup
         titleText.setText("Kayarian ng Pangungusap");
-        titleText.setTextSize(18); // bawasan mo para magkasya
+        titleText.setTextSize(18);
 
-        // 👉 General explanation lang (hindi per uri, kundi kabuuan)
         contentText.setText(
                 "Ang Kayarian ng Pangungusap ay tumutukoy sa paraan ng pagbubuo ng mga pangungusap. " +
                         "Ito ang nagsisilbing gabay upang maging maayos, malinaw, at epektibo ang ating pagpapahayag. " +

@@ -78,10 +78,8 @@ public class Pabula extends AppCompatActivity {
         TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
 
-        // Title ng popup
         titleText.setText("Pabula");
 
-        // General explanation tungkol sa Pabula
         contentText.setText(
                 "Ang Pabula ay isang maikling kuwento na karaniwang gumagamit ng mga hayop bilang tauhan " +
                         "na may kakayahang magsalita at kumilos na parang tao. " +

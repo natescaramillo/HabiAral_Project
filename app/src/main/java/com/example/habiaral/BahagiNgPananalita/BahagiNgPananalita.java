@@ -59,13 +59,11 @@ public class BahagiNgPananalita extends AppCompatActivity {
         uid = user.getUid();
         db = FirebaseFirestore.getInstance();
 
-        // Load cached progress if available
         Map<String, Object> cachedData = LessonProgressCache.getData();
         if (cachedData != null) {
             updateUIFromProgress(cachedData);
         }
 
-        // Fetch studentId from students collection and save to module_progress collection
         db.collection("students").document(uid).get()
                 .addOnSuccessListener(studentSnap -> {
                     if (studentSnap.exists()) {
@@ -108,10 +106,8 @@ public class BahagiNgPananalita extends AppCompatActivity {
         TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
 
-        // 👉 Title ng popup
         titleText.setText("Bahagi ng Pananalita");
 
-        // 👉 General explanation (hindi bawat topic, kundi kabuuan lang)
         contentText.setText(
                 "Ang Bahagi ng Pananalita ay mga salita na may kanya-kanyang tungkulin sa pangungusap. " +
                         "Ito ang nagsisilbing balangkas ng wika upang maging malinaw, maayos, at mabisa ang komunikasyon. " +
@@ -152,10 +148,8 @@ public class BahagiNgPananalita extends AppCompatActivity {
         Map<String, Object> data = snapshot.getData();
         if (data == null) return;
 
-        // Update cache
         LessonProgressCache.setData(data);
 
-        // Update UI
         updateUIFromProgress(data);
     }
 
@@ -237,7 +231,6 @@ public class BahagiNgPananalita extends AppCompatActivity {
         padamdamLock = findViewById(R.id.padamdamLock);
         pangawingLock = findViewById(R.id.pangawingLock);
 
-        // 🔊 Lagyan ng tunog bawat lesson button
         btnPangngalan.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
             startActivity(new Intent(this, PangngalanLesson.class));

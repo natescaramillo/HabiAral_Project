@@ -78,10 +78,8 @@ public class Alamat extends AppCompatActivity {
         TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
 
-        // 👉 Title ng popup
         titleText.setText("Alamat");
 
-        // 👉 General explanation tungkol sa Alamat
         contentText.setText(
                 "Ang Alamat ay isang uri ng panitikan na naglalahad ng pinagmulan ng isang bagay, " +
                         "pook, hayop, o kaugalian. Karaniwan itong kwento na nagpapaliwanag kung paano nagsimula " +

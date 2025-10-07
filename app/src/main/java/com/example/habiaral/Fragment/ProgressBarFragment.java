@@ -55,7 +55,6 @@ public class ProgressBarFragment extends Fragment {
                 .addOnSuccessListener(snapshot -> {
                     if (!snapshot.exists()) return;
 
-                    // ===== Module 1: Bahagi =====
                     Map<String, Object> module1 = (Map<String, Object>) snapshot.get("module_1");
                     if (module1 != null) {
                         Map<String, Object> lessons = (Map<String, Object>) module1.get("lessons");
@@ -81,7 +80,6 @@ public class ProgressBarFragment extends Fragment {
                         }
                     }
 
-                    // ===== Module 2: Kayarian =====
                     Map<String, Object> module2 = (Map<String, Object>) snapshot.get("module_2");
                     if (module2 != null) {
                         Map<String, Object> lessons = (Map<String, Object>) module2.get("lessons");
@@ -107,7 +105,6 @@ public class ProgressBarFragment extends Fragment {
                         }
                     }
 
-                    // ===== Module 3: Panitikan =====
                     Map<String, Object> module3 = (Map<String, Object>) snapshot.get("module_3");
                     if (module3 != null) {
                         Map<String, Object> categories = (Map<String, Object>) module3.get("categories");

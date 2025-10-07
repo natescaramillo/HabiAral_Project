@@ -3,7 +3,7 @@ package com.example.habiaral.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer; // ✅ Import for sound
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -74,16 +74,12 @@ public class SettingsFragment extends Fragment {
         });
 
         btnSounds.setOnClickListener(v -> {
-            // Toggle mute/unmute
             MuteButtonUtils.toggleSound(requireContext());
 
-            // Update local isMuted state
             isMuted = !MuteButtonUtils.isSoundEnabled(requireContext());
 
-            // Update icon
             updateSoundIcon();
 
-            // Feedback
             if (MuteButtonUtils.isSoundEnabled(requireContext())) {
                 Toast.makeText(requireContext(), "Sound ON", Toast.LENGTH_SHORT).show();
             } else {
@@ -134,7 +130,7 @@ public class SettingsFragment extends Fragment {
 
                     Map<String, Object> update = new HashMap<>();
                     update.put("nickname", newNickname);
-                    update.put("updatedAt", com.google.firebase.Timestamp.now()); // Firestore Timestamp
+                    update.put("updatedAt", com.google.firebase.Timestamp.now());
 
 
                     db.collection("students").document(userId)

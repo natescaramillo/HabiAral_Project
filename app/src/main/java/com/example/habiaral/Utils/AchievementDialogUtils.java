@@ -72,7 +72,6 @@ public class AchievementDialogUtils {
                             .setDuration(600)
                             .withEndAction(() -> {
                                 MediaPlayer mp = safeCreateAndStartPlayer(appCtx);
-                                // 1 second visible
                                 main.postDelayed(() -> {
                                     overlayView.animate()
                                             .translationY(-height)
@@ -81,7 +80,6 @@ public class AchievementDialogUtils {
                                                 try {
                                                     wm.removeView(overlayView);
                                                 } catch (IllegalArgumentException ignored) {
-                                                    // already removed or never attached
                                                 }
                                             })
                                             .start();

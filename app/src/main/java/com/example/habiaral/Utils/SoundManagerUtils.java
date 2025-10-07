@@ -12,7 +12,6 @@ public class SoundManagerUtils {
     private static boolean isMuted = false;
     private static TextToSpeech tts;
 
-    // ✅ Bagong field
     private static int originalVolume = -1;
 
     public static void init(Context context, TextToSpeech textToSpeech) {
@@ -25,7 +24,6 @@ public class SoundManagerUtils {
             tts.stop();
         }
 
-        // ✅ Save original volume once
         if (originalVolume == -1) {
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             if (audioManager != null) {
@@ -70,7 +68,6 @@ public class SoundManagerUtils {
         }
     }
 
-    // ✅ Getter para sa original volume
     public static int getOriginalVolume() {
         return originalVolume;
     }

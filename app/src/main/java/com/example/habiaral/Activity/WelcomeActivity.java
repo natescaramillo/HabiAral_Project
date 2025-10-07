@@ -150,7 +150,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     goToIntroduction();
                 }
             } else {
-                db.collection("students")  .orderBy("studentId")  // 🔹 order by studentId
+                db.collection("students")  .orderBy("studentId")
                         .get().addOnSuccessListener(allDocs -> {
                     int maxNumber = 0;
                     for (DocumentSnapshot document : allDocs) {

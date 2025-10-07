@@ -200,7 +200,6 @@ public class AppNetworkMonitor extends BroadcastReceiver {
                 noInternetDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             }
 
-            // Get references to all dialog elements
             loadingSpinner = dialogView.findViewById(
                     activity.getResources().getIdentifier("loading_spinner", "id", activity.getPackageName())
             );
@@ -235,7 +234,6 @@ public class AppNetworkMonitor extends BroadcastReceiver {
     }
 
     private static void showCheckingStatus() {
-        // Show loading elements
         if (loadingSpinner != null) {
             loadingSpinner.setVisibility(View.VISIBLE);
         }
@@ -243,7 +241,6 @@ public class AppNetworkMonitor extends BroadcastReceiver {
             waitingText.setVisibility(View.VISIBLE);
         }
 
-        // Hide static text elements when loading
         if (textView9 != null) {
             textView9.setVisibility(View.GONE);
         }
@@ -251,7 +248,6 @@ public class AppNetworkMonitor extends BroadcastReceiver {
             textView15.setVisibility(View.GONE);
         }
 
-        // Disable retry button
         if (dialogRetryButton != null) {
             dialogRetryButton.setEnabled(false);
             dialogRetryButton.setAlpha(0.5f);
@@ -259,7 +255,6 @@ public class AppNetworkMonitor extends BroadcastReceiver {
     }
 
     private static void hideCheckingStatus() {
-        // Hide loading elements
         if (loadingSpinner != null) {
             loadingSpinner.setVisibility(View.GONE);
         }
@@ -267,7 +262,6 @@ public class AppNetworkMonitor extends BroadcastReceiver {
             waitingText.setVisibility(View.GONE);
         }
 
-        // Show static text elements again
         if (textView9 != null) {
             textView9.setVisibility(View.VISIBLE);
         }
@@ -275,7 +269,6 @@ public class AppNetworkMonitor extends BroadcastReceiver {
             textView15.setVisibility(View.VISIBLE);
         }
 
-        // Re-enable retry button
         if (dialogRetryButton != null) {
             dialogRetryButton.setEnabled(true);
             dialogRetryButton.setAlpha(1.0f);
@@ -287,7 +280,6 @@ public class AppNetworkMonitor extends BroadcastReceiver {
 
         isCheckingInternet = true;
 
-        // Auto-hide checking status after 10 seconds
         mainHandler.postDelayed(() -> {
             if (isCheckingInternet) {
                 isCheckingInternet = false;
@@ -324,7 +316,6 @@ public class AppNetworkMonitor extends BroadcastReceiver {
             noInternetDialog = null;
         }
 
-        // Clear all dialog references
         loadingSpinner = null;
         waitingText = null;
         textView9 = null;

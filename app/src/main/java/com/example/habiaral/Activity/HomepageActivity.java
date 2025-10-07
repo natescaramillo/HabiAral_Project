@@ -80,7 +80,6 @@ public class  HomepageActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Default fragment = Home
         loadFragment(new HomeFragment());
         activeFragment = new HomeFragment();
 

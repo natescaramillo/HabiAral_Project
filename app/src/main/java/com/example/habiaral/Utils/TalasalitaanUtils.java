@@ -22,7 +22,6 @@ public class TalasalitaanUtils {
         return isLoaded;
     }
 
-    // --- New listener interface ---
     public interface OnWordsLoadedListener {
         void onWordsLoaded(List<DocumentSnapshot> words);
         void onWordsLoadFailed(Exception e);

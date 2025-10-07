@@ -78,10 +78,8 @@ public class Parabula extends AppCompatActivity {
         TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
 
-        // Title ng popup
         titleText.setText("Parabula");
 
-        // General explanation tungkol sa Parabula
         contentText.setText(
                 "Ang Parabula ay isang maikling kwento na karaniwang may moral o aral. " +
                         "Ito ay nagpapakita ng kabutihan, kasamaan, at tamang asal ng tao sa pamamagitan ng kwento. \n\n" +

@@ -49,24 +49,20 @@ public class HomeFragment extends Fragment {
 
         nicknameTextView = view.findViewById(R.id.nickname_id);
 
-        // Map lesson buttons to their activities
         lessonMap.put(R.id.bahagi_cardView, BahagiNgPananalita.class);
         lessonMap.put(R.id.panitikan_cardView, Panitikan.class);
         lessonMap.put(R.id.kayarian_cardView, KayarianNgPangungusap.class);
         lessonMap.put(R.id.talasalitaan_cardView, Diksyonaryo.class);
         lessonMap.put(R.id.palaro_cardView, Palaro.class);
 
-        // Attach listeners to each card
         for (Map.Entry<Integer, Class<?>> entry : lessonMap.entrySet()) {
-            View button = view.findViewById(entry.getKey()); // FIX: use View instead of LinearLayout
+            View button = view.findViewById(entry.getKey());
             Class<?> activityClass = entry.getValue();
             button.setOnClickListener(v -> {
                 SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
 
-                // Play click animation
                 v.startAnimation(android.view.animation.AnimationUtils.loadAnimation(getContext(), R.anim.card_click));
 
-                // Delay the activity start slightly so animation plays first
                 new Handler().postDelayed(() -> {
                     if (isAdded()) {
                         Intent intent = new Intent(getActivity(), activityClass);
@@ -77,7 +73,6 @@ public class HomeFragment extends Fragment {
 
         }
 
-        // Listen for nickname changes
         getParentFragmentManager().setFragmentResultListener("nicknameKey", this, (requestKey, bundle) -> {
             String nickname = bundle.getString("nickname");
             nicknameTextView.setText(nickname);
@@ -94,10 +89,8 @@ public class HomeFragment extends Fragment {
         loadNicknameFromPrefs();
         loadNicknameFromFirestore();
 
-        // Start GIF animation safely
         startIdleGifRandomizer();
 
-        // Firebase actions
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             String studentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
             recordLogDate(studentId);

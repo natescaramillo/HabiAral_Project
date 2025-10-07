@@ -78,10 +78,8 @@ public class Epiko extends AppCompatActivity {
         TextView contentText = dialogView.findViewById(R.id.textView24);
         ImageView closeBtn = dialogView.findViewById(R.id.description_dialog_close);
 
-        // 👉 Title ng popup
         titleText.setText("Epiko");
 
-        // 👉 General explanation tungkol sa Epiko
         contentText.setText(
                 "Ang Epiko ay isang mahabang tulang pasalaysay na naglalahad ng kabayanihan ng isang pangunahing tauhan " +
                         "na kadalasang may kapangyarihang pambihira. Karaniwang ito ay nagpapakita ng pakikipagsapalaran, " +
