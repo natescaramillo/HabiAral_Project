@@ -525,7 +525,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
                             errorTooltip.setVisibility(View.VISIBLE);
                             errorIcon.setVisibility(View.VISIBLE);
                             loadCharacterLine("MDCL9");
-
+                            deductHeart();
+                            showWrongAnimation();
                             userSentenceInput.setText("");
                             userSentenceInput.setEnabled(true);
                             userSentenceInput.setFocusable(true);
@@ -539,7 +540,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
                             errorTooltip.setVisibility(View.VISIBLE);
                             errorIcon.setVisibility(View.VISIBLE);
                             loadCharacterLine("MDCL10");
-
+                            deductHeart();
+                            showWrongAnimation();
                             userSentenceInput.setText("");
                             userSentenceInput.setEnabled(true);
                             userSentenceInput.setFocusable(true);
