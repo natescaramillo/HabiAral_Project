@@ -20,8 +20,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imageView19"
+            app:shapeAppearanceOverlay="@style/RoundedImageStyle"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:background="@drawable/rounded_image"

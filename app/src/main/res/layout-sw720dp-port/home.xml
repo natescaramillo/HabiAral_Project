@@ -311,7 +311,7 @@
         android:layout_width="match_parent"
         android:layout_height="104dp"
         android:background="@drawable/custom_home_header_shape"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -329,7 +329,7 @@
             android:gravity="center_vertical"
             android:text="Maligayang Pagbalik,"
             android:textColor="#A27B5C"
-            android:textSize="25sp" />
+            android:textSize="30sp" />
 
         <!-- Nickname -->
         <TextView
@@ -343,23 +343,11 @@
             android:gravity="center_vertical"
             android:text="Nickname"
             android:textColor="#A27B5C"
-            android:textSize="25sp" />
+            android:textSize="30sp" />
 
         <!-- Spacer to push image to the end -->
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
 
         <!-- Image at the other end -->
-        <ImageView
-            android:id="@+id/profile_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_margin="10dp"
-            android:contentDescription="Profile Image"
-            android:scaleType="centerCrop"
-            android:src="@drawable/tarsier_logo" />
     </LinearLayout>
 
 
