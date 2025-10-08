@@ -209,7 +209,7 @@ public class PalaroHusay extends AppCompatActivity {
         setupBackConfirmation();
         setupUnlockButton();
 
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 100; i++) {
             questionIds.add("H" + i);
         }
 
