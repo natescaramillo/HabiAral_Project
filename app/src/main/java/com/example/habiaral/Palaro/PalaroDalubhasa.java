@@ -56,6 +56,9 @@ import okhttp3.RequestBody;
 
 public class PalaroDalubhasa extends AppCompatActivity {
 
+    private int consecutivePerfectCount = 0;
+    private static final int REQUIRED_CONSECUTIVE_PERFECT = 5;
+
     private TextView dalubhasaInstruction, grammarFeedbackText, errorTooltip;
     private EditText userSentenceInput;
     private List<String> dalubhasaIDs = new ArrayList<>();
@@ -380,10 +383,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         } else {
             playCorrectSound();
 
-            perfectAnswerCount++;
-            if (perfectAnswerCount >= 5) {
-                unlockSagotBayaniAchievement();
-            }
+
 
             hasSubmitted = false;
 
@@ -471,6 +471,13 @@ public class PalaroDalubhasa extends AppCompatActivity {
                         if (finalRes.equalsIgnoreCase("WALANG MALI")) {
                             playCorrectSound();
                             dalubhasaScore += 15;
+
+                            perfectAnswerCount++;
+
+                            // dagdag: bilang ng magkasunod na perfect
+                            if (perfectAnswerCount >= 10) {
+                                unlockSagotBayaniAchievement();
+                            }
                             if (countDownTimer != null) { countDownTimer.cancel(); countDownTimer = null; }
                             stopAllTimerSounds();
 
@@ -1012,6 +1019,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             }
         }
     }
+
 
     @Override
     protected void onDestroy() {
