@@ -913,7 +913,6 @@ public class PalaroHusay extends AppCompatActivity {
                     docRef.set(update, SetOptions.merge())
                             .addOnSuccessListener(unused -> {
                                 unlockAchievementA9IfEligible();
-
                                 int wrongAnswers = attemptCount - correctAnswerCount;
                                 if (correctAnswerCount >= 50 && wrongAnswers <= 3) {
                                     unlockBihasangMagsanayAchievement(firebaseUID);

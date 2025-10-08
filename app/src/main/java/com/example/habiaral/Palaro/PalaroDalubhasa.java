@@ -42,6 +42,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
     private TextView dalubhasaInstruction, grammarFeedbackText, errorTooltip;
     private EditText userSentenceInput;
+    private List<String> dalubhasaIDs = new ArrayList<>();
+
     private ProgressBar timerBar;
     private Button btnTapos, btnUmalis, btnSuriin;
     private ImageView[] heartIcons;
@@ -82,7 +85,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             errorTooltip.setVisibility(View.GONE);
         }
         if (errorIcon != null) {
-            errorIcon.setVisibility(View.GONE);
+            errorIcon.setVisibility(View.VISIBLE);
         }
         isShowingErrorTooltip = false;
     };
@@ -226,7 +229,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 btnTapos.setEnabled(true);
                 btnTapos.setAlpha(1.0f);
 
-                saveDalubhasaAnswer(FirebaseAuth.getInstance().getCurrentUser().getUid(), currentDalubhasaID);
                 hasSubmitted = false;
             } else {
                 showErrorTooltip("Pakipindot ang Enter para i-check ang grammar muna.");
@@ -265,10 +267,13 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
         if (sentence.isEmpty()) {
             showInputError("Pakisulat ang iyong pangungusap.");
+            loadCharacterLine("MDCL6");
             return;
         }
+
         if (!sentence.endsWith(".")) {
             showInputError("Siguraduhing nagtatapos ang pangungusap sa tuldok (.)");
+            loadCharacterLine("MDCL5");
             return;
         }
 
@@ -344,6 +349,9 @@ public class PalaroDalubhasa extends AppCompatActivity {
         isShowingErrorTooltip = true;
 
         if (hasError) {
+            errorTooltipHandler.removeCallbacksAndMessages(null);
+            if (tts != null) tts.setOnUtteranceProgressListener(null);
+
             playWrongSound();
             showWrongAnimation();
 
@@ -368,7 +376,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
             btnTapos.setAlpha(1.0f);
             hasSubmitted = true;
 
-            errorTooltipHandler.removeCallbacksAndMessages(null);
             errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 5000);
         } else {
             playCorrectSound();
@@ -442,19 +449,34 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                 @Override
                 public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
-                    if (response.code() == 204) {
-                        runOnUiThread(() -> {
-                            playCorrectSound();
+                    String res = "";
+                    try {
+                        if (!response.isSuccessful() || response.body() == null) {
+                            runOnUiThread(() -> Toast.makeText(getApplicationContext(),
+                                    "Walang tugon o may error sa server.", Toast.LENGTH_SHORT).show());
+                            return;
+                        }
 
-                            if (countDownTimer != null) {
-                                countDownTimer.cancel();
-                                countDownTimer = null;
-                            }
+                        res = response.body().string().trim();
+
+                    } catch (Exception e) {
+                        runOnUiThread(() -> Toast.makeText(getApplicationContext(),
+                                "Walang tugon o may error sa server.", Toast.LENGTH_SHORT).show());
+                        return;
+                    }
+
+                    final String finalRes = res;
+
+                    runOnUiThread(() -> {
+                        if (finalRes.equalsIgnoreCase("WALANG MALI")) {
+                            playCorrectSound();
+                            if (countDownTimer != null) { countDownTimer.cancel(); countDownTimer = null; }
                             stopAllTimerSounds();
 
                             errorTooltip.setText("Walang mali sa pangungusap.");
                             errorTooltip.setVisibility(View.VISIBLE);
                             errorIcon.setVisibility(View.VISIBLE);
+                            userSentenceInput.setEnabled(false);
 
                             if (tts != null && isTtsReady) {
                                 tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
@@ -468,13 +490,17 @@ public class PalaroDalubhasa extends AppCompatActivity {
                                                     errorTooltip.setVisibility(View.GONE);
                                                     errorIcon.setVisibility(View.GONE);
                                                     isShowingErrorTooltip = false;
+
+                                                    userSentenceInput.setEnabled(true);
+                                                    userSentenceInput.setFocusableInTouchMode(true);
+                                                    userSentenceInput.requestFocus();
+
                                                     nextQuestion();
                                                 }
                                             });
                                         }
                                     }
                                 });
-
                                 loadCharacterLine("MDCL2");
                             } else {
                                 errorTooltipHandler.postDelayed(() -> {
@@ -482,17 +508,51 @@ public class PalaroDalubhasa extends AppCompatActivity {
                                         errorTooltip.setVisibility(View.GONE);
                                         errorIcon.setVisibility(View.GONE);
                                         isShowingErrorTooltip = false;
+                                        userSentenceInput.setEnabled(true);
+                                        userSentenceInput.setFocusableInTouchMode(true);
+                                        userSentenceInput.requestFocus();
                                         nextQuestion();
                                     }
                                 }, 1200);
                             }
-                        });
-                        return;
-                    }
 
+                        } else if (finalRes.startsWith("MALI:")) {
+                            showGrammarResultTooltip(finalRes);
+                            loadCharacterLine("MDCL3");
 
-                    final String res = response.body().string().trim();
-                    runOnUiThread(() -> showGrammarResultTooltip(res));
+                        } else if (finalRes.contains("Bawal gumamit")) {
+                            errorTooltip.setText("Bawal gumamit ng masasamang salita!");
+                            errorTooltip.setVisibility(View.VISIBLE);
+                            errorIcon.setVisibility(View.VISIBLE);
+                            loadCharacterLine("MDCL9");
+
+                            userSentenceInput.setText("");
+                            userSentenceInput.setEnabled(true);
+                            userSentenceInput.setFocusable(true);
+                            userSentenceInput.setFocusableInTouchMode(true);
+                            userSentenceInput.requestFocus();
+
+                            btnSuriin.setEnabled(true);
+                            btnSuriin.setAlpha(1.0f);
+                        } else if (finalRes.contains("Filipino lamang")) {
+                            errorTooltip.setText("Filipino lamang ang pinapayagan.");
+                            errorTooltip.setVisibility(View.VISIBLE);
+                            errorIcon.setVisibility(View.VISIBLE);
+                            loadCharacterLine("MDCL10");
+
+                            userSentenceInput.setText("");
+                            userSentenceInput.setEnabled(true);
+                            userSentenceInput.setFocusable(true);
+                            userSentenceInput.setFocusableInTouchMode(true);
+                            userSentenceInput.requestFocus();
+
+                            btnSuriin.setEnabled(true);
+                            btnSuriin.setAlpha(1.0f);
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "Hindi malinaw ang sagot ng server.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
         } catch (Exception e) {
@@ -536,12 +596,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
         errorIcon.setOnClickListener(v -> {
             if (errorTooltip.getVisibility() == View.VISIBLE) {
                 errorTooltip.setVisibility(View.GONE);
-                errorIcon.setVisibility(View.GONE);
                 isShowingErrorTooltip = false;
                 errorTooltipHandler.removeCallbacksAndMessages(null);
             } else {
                 errorTooltip.setVisibility(View.VISIBLE);
-                errorIcon.setVisibility(View.VISIBLE);
                 isShowingErrorTooltip = true;
                 errorTooltipHandler.removeCallbacksAndMessages(null);
                 errorTooltipHandler.postDelayed(hideErrorTooltipRunnable, 3500);
@@ -633,9 +691,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
                         keywordList.clear();
 
                         for (QueryDocumentSnapshot document : querySnapshot) {
+                            String docId = document.getId();
                             String instruction = document.getString("instruction");
                             List<String> keywords = (List<String>) document.get("keywords");
 
+                            dalubhasaIDs.add(docId);
                             instructionList.add(instruction);
                             keywordList.add(keywords);
                         }
@@ -652,19 +712,23 @@ public class PalaroDalubhasa extends AppCompatActivity {
         for (int i = 0; i < instructionList.size(); i++) {
             indices.add(i);
         }
-        java.util.Collections.shuffle(indices);
+        Collections.shuffle(indices);
 
         List<String> shuffledInstructions = new ArrayList<>();
         List<List<String>> shuffledKeywords = new ArrayList<>();
+        List<String> shuffledIDs = new ArrayList<>();
 
         for (int idx : indices) {
             shuffledInstructions.add(instructionList.get(idx));
             shuffledKeywords.add(keywordList.get(idx));
+            shuffledIDs.add(dalubhasaIDs.get(idx));
         }
 
         instructionList = shuffledInstructions;
         keywordList = shuffledKeywords;
+        dalubhasaIDs = shuffledIDs;
     }
+
 
     private void speakLine(String text) {
         if (text == null || text.trim().isEmpty()) return;
@@ -677,6 +741,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private void nextQuestion() {
         if (isGameOver) return;
 
+        if (FirebaseAuth.getInstance().getCurrentUser() != null && !currentDalubhasaID.isEmpty()) {
+            saveDalubhasaAnswer(FirebaseAuth.getInstance().getCurrentUser().getUid(), currentDalubhasaID);
+        }
+
         if (errorTooltipHandler != null) errorTooltipHandler.removeCallbacksAndMessages(null);
         if (errorTooltip != null) errorTooltip.setVisibility(View.GONE);
         if (errorIcon != null) errorIcon.setVisibility(View.GONE);
@@ -686,17 +754,17 @@ public class PalaroDalubhasa extends AppCompatActivity {
             String instruction = instructionList.get(currentQuestionNumber);
             dalubhasaInstruction.setText(instruction);
             currentKeywords = keywordList.get(currentQuestionNumber);
-            currentDalubhasaID = "D" + (currentQuestionNumber + 1);
+            currentDalubhasaID = dalubhasaIDs.get(currentQuestionNumber);
+            currentQuestionNumber++;
 
             userSentenceInput.setText("");
 
-            if (!hasSubmitted) {
-                userSentenceInput.setEnabled(true);
-                userSentenceInput.setFocusableInTouchMode(true);
-            } else {
-                userSentenceInput.setEnabled(false);
-                userSentenceInput.setFocusable(false);
-            }
+            hasSubmitted = false;
+
+            userSentenceInput.setEnabled(true);
+            userSentenceInput.setFocusable(true);
+            userSentenceInput.setFocusableInTouchMode(true);
+            userSentenceInput.requestFocus();
 
             btnSuriin.setVisibility(View.VISIBLE);
             btnTapos.setVisibility(View.GONE);
@@ -706,9 +774,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             btnTapos.setEnabled(true);
             btnTapos.setAlpha(1.0f);
 
-            hasSubmitted = false;
             grammarFeedbackText.setText("");
-            currentQuestionNumber++;
 
             startTimer();
         } else {
