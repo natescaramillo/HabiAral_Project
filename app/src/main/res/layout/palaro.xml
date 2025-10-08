@@ -186,15 +186,15 @@
 
             <ImageView
                 android:id="@+id/trophy_image"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
+                android:layout_width="51dp"
+                android:layout_height="41dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="@+id/user_point"
                 app:layout_constraintEnd_toEndOf="@+id/palaro_progress"
-                app:layout_constraintHorizontal_bias="0.98"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="@+id/palaro_progress"
                 app:layout_constraintTop_toTopOf="@+id/palaro_progress"
-                app:layout_constraintVertical_bias="0.266"
+                app:layout_constraintVertical_bias="0.214"
                 app:srcCompat="@drawable/trophy_unranked" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
