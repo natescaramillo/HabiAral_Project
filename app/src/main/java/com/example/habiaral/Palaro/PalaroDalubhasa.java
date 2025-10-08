@@ -470,6 +470,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                     runOnUiThread(() -> {
                         if (finalRes.equalsIgnoreCase("WALANG MALI")) {
                             playCorrectSound();
+                            dalubhasaScore += 15;
                             if (countDownTimer != null) { countDownTimer.cancel(); countDownTimer = null; }
                             stopAllTimerSounds();
 
@@ -518,6 +519,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                         } else if (finalRes.startsWith("MALI:")) {
                             showGrammarResultTooltip(finalRes);
+                            dalubhasaScore += 10;
                             loadCharacterLine("MDCL3");
 
                         } else if (finalRes.contains("Bawal gumamit")) {
