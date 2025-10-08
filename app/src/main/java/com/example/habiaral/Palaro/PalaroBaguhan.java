@@ -295,6 +295,10 @@ public class PalaroBaguhan extends AppCompatActivity {
                                     correctStreak++;
                                     handleCorrectStreak(correctStreak);
 
+                                    if (correctStreak == 20) {
+                                        unlockPerfectStreakAchievement();
+                                    }
+
                                     if (!isFinishing() && !isDestroyed()) {
                                         Glide.with(this).asGif()
                                                 .load(R.drawable.right_1)
@@ -461,7 +465,6 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         saveBaguhanScore();
         unlockAchievementA8IfEligible();
-        if (correctAnswerCount >= 20) unlockPerfectStreakAchievement();
 
         showFinishDialog();
     }
