@@ -319,7 +319,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                                     String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                     saveCorrectBaguhanAnswer(uid, studentID, correctDocId);
 
-                                    timeLeft = Math.min(timeLeft + 3000, TOTAL_TIME);
+                                    timeLeft = Math.min(timeLeft + 5000, TOTAL_TIME);
                                     startTimer(timeLeft);
                                 } else {
                                     correctStreak = 0;

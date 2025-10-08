@@ -37,9 +37,9 @@ public class Palaro extends AppCompatActivity {
     private int userPoints = 0;
     private int userEnergy = 100;
 
-    private final int ENERGY_COST = 0;
+    private final int ENERGY_COST = 20;
     private final int ENERGY_MAX = 100;
-    private final long ENERGY_INTERVAL = 3 * 60 * 1000; // 3 minutes
+    private final long ENERGY_INTERVAL = 3 * 60 * 1000;
 
     private CountDownTimer energyTimer;
     private FirebaseFirestore db;
