@@ -55,7 +55,7 @@
                 android:fontFamily="@font/special"
                 android:gravity="center_horizontal"
                 android:text="Logout"
-                android:textColor="#3E1919"
+                android:textColor="#4E3929"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
