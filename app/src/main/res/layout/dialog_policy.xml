@@ -6,15 +6,16 @@
              android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="25dp"
+        android:layout_marginHorizontal="10dp"
         android:background="@drawable/pop_up_main_color"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -36,7 +37,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
+            android:layout_marginHorizontal="10dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="0dp"
             android:background="@drawable/background_with_border"
@@ -49,14 +50,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
-                android:padding="10dp"
                 android:ellipsize="none"
                 android:fontFamily="@font/ala_sans"
                 android:lineSpacingExtra="3sp"
+                android:padding="10dp"
                 android:singleLine="false"
                 android:text="@string/policy"
 
-                android:textColor="#3C2B22" />
+                android:textColor="#453229" />
         </LinearLayout>
 
         <LinearLayout
@@ -73,12 +74,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:background="@drawable/button_color"
                 android:layout_weight="1"
-                android:textAllCaps="false"
-                android:textColor="#fff"
+                android:background="@drawable/button_color"
                 android:fontFamily="@font/ala_sans"
-                android:text="Sumang-ayon   " />
+                android:text="Sumang-ayon   "
+                android:textAllCaps="false"
+                android:textColor="#fff" />
 
             <Button
                 android:id="@+id/hindi_muna"
