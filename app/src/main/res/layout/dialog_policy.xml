@@ -3,21 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp">
+    android:layout_height="match_parent">
 
     <!-- Popup -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="711dp"
-        android:layout_margin="10dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginVertical="20dp"
         android:background="@drawable/pop_up_main_color"
-        android:maxHeight="600dp"
+        android:elevation="6dp"
         android:orientation="vertical"
+        android:paddingBottom="10dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.9">
 
         <!-- Title -->
         <FrameLayout
@@ -32,7 +34,7 @@
                 android:fontFamily="@font/ala_sans"
                 android:text="Mga Patakaran"
                 android:textColor="#4E3929"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
         </FrameLayout>
 
         <!-- Scrollable content -->
@@ -40,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginHorizontal="12dp"
             android:layout_weight="1"
             android:background="@drawable/background_with_border"
             android:orientation="vertical">
@@ -49,8 +51,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fillViewport="true"
-                android:scrollbarSize="0dp"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:scrollbarSize="0dp">
 
                 <TextView
                     android:id="@+id/patakarantext"
@@ -61,7 +63,8 @@
                     android:lineSpacingExtra="3dp"
                     android:padding="10dp"
                     android:text="@string/policy"
-                    android:textColor="#453229" />
+                    android:textColor="#453229"
+                    android:textSize="14sp" />
             </ScrollView>
         </LinearLayout>
 
@@ -69,7 +72,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginHorizontal="20dp"
             android:orientation="horizontal">
 
             <Button
@@ -82,7 +86,8 @@
                 android:fontFamily="@font/ala_sans"
                 android:text="Sumang-ayon"
                 android:textAllCaps="false"
-                android:textColor="#fff" />
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/hindi_muna"
@@ -94,8 +99,9 @@
                 android:fontFamily="@font/ala_sans"
                 android:text="Hindi muna"
                 android:textAllCaps="false"
-                android:textColor="#fff" />
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
         </LinearLayout>
-    </LinearLayout>
 
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
