@@ -30,9 +30,9 @@ import java.util.Map;
 
 public class Panitikan extends AppCompatActivity {
 
-    LinearLayout epikoBtn, parabulaBtn, pabulaBtn, maiklingKuwentoBtn, alamatBtn;
-    FirebaseFirestore db;
-    String uid;
+    private LinearLayout epikoBtn, parabulaBtn, pabulaBtn, maiklingKuwentoBtn, alamatBtn;
+    private FirebaseFirestore db;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -81,9 +81,9 @@ public class SettingsFragment extends Fragment {
             updateSoundIcon();
 
             if (MuteButtonUtils.isSoundEnabled(requireContext())) {
-                Toast.makeText(requireContext(), "Sound ON", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Naka-on ang tunog.", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(requireContext(), "Sound OFF", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Naka-off ang tunog.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -185,7 +185,7 @@ public class SettingsFragment extends Fragment {
 
         btnYes.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
-            Toast.makeText(requireContext(), "Logging out...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Nagla-log out...", Toast.LENGTH_SHORT).show();
 
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 FirebaseAuth.getInstance().signOut();

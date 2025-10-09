@@ -2,40 +2,28 @@ package com.example.habiaral.Palaro;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.speech.tts.TextToSpeech;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Locale;
-
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.example.habiaral.KayarianNgPangungusap.Quiz.LangkapanQuiz;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.FinishDialogUtils;
@@ -46,62 +34,51 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Timer;
-
-import androidx.activity.OnBackPressedCallback;
-import androidx.core.content.ContextCompat;
-
 
 public class PalaroBaguhan extends AppCompatActivity {
 
-    private Button selectedAnswer;
+    private Button selectedAnswer, unlockButton, unlockButton1;
+    private Button[] answerButtons;
     private TextView baguhanQuestion;
     private ProgressBar timerBar;
-    private Button unlockButton, unlockButton1;
-    private boolean isGameOver = false;
-    private CountDownTimer countDownTimer;
-    private static final long TOTAL_TIME = 60000;
-    private long timeLeft = TOTAL_TIME;
-    private FirebaseFirestore db;
-    private int correctAnswerCount = 0;
-    private int baguhanScore = 0;
-    private int currentQuestionNumber = 1;
-    private boolean isAnswered = false;
-    private boolean isTimeUp = false;
-    private String studentID;
-    private TextToSpeech tts;
-    private int remainingHearts = 5;
-    private int correctStreak = 0;
     private ImageView[] heartIcons;
-    private List<String> questionIds = new ArrayList<>();
-    private long startTime;
-    private MediaPlayer mediaPlayer, beepPlayer;
-    private String lastTimerZone = "";
-    private Handler handler = new Handler();
+    private boolean isGameOver = false, isAnswered = false, isTimeUp = false;
+    private int correctAnswerCount = 0, baguhanScore = 0, currentQuestionNumber = 1;
+    private int remainingHearts = 5, correctStreak = 0;
+    private long startTime, timeLeft = TOTAL_TIME;
+    private static final long TOTAL_TIME = 60000;
+    private CountDownTimer countDownTimer;
+    private final Handler handler = new Handler();
     private Handler countdownHandler;
     private Runnable countdownRunnable;
-    private Button[] answerButtons;
-    public static final String LINE_ONE_CORRECT = "MCL2";
-    public static final String LINE_TWO_CORRECT = "MCL3";
-    public static final String LINE_STREAK = "MCL4";
-    public static final String LINE_WRONG = "MCL6";
-    private static final String LINE_WRONG_2 = "MCL5";
-    private static final String FIELD_BAGUHAN = "baguhan_score";
-    private static final String FIELD_HUSAY = "husay_score";
-    private static final String FIELD_DALUBHASA = "dalubhasa_score";
-    private static final String FIELD_TOTAL = "total_score";
-    private static final String FIELD_HUSAY_UNLOCKED = "husay_unlocked";
-    private static final String FIELD_DALUBHASA_UNLOCKED = "dalubhasa_unlocked";
+    private FirebaseFirestore db;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
+    private MediaPlayer mediaPlayer, beepPlayer;
+    private TextToSpeech tts;
+    private String studentID, lastTimerZone = "";
+    private final List<String> questionIds = new ArrayList<>();
+    private static final String FIELD_BAGUHAN = "baguhan_score",
+            FIELD_HUSAY = "husay_score",
+            FIELD_DALUBHASA = "dalubhasa_score",
+            FIELD_TOTAL = "total_score",
+            FIELD_HUSAY_UNLOCKED = "husay_unlocked",
+            FIELD_DALUBHASA_UNLOCKED = "dalubhasa_unlocked";
+    public static final String LINE_ONE_CORRECT = "MCL2",
+            LINE_TWO_CORRECT = "MCL3",
+            LINE_STREAK = "MCL4",
+            LINE_WRONG = "MCL6";
+    private static final String LINE_WRONG_2 = "MCL5";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +123,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                         startActivity(installIntent);
                     } catch (ActivityNotFoundException e) {
                         Toast.makeText(this,
-                                "Hindi ma-open ang installer ng TTS.",
+                                "Hindi ma-buksan ang installer ng TTS.",
                                 Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -227,7 +204,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                 }
 
             } else {
-                Toast.makeText(this, "Hindi ma-initialize ang Text-to-Speech", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Di maayos na na-setup ang Text-to-Speech", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -569,7 +546,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         });
     }
 
-
     private void continueUnlockingAchievement(String uid, String saCode, String achievementID) {
         db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
             if (!studentDoc.exists() || !studentDoc.contains("studentId")) return;
@@ -602,7 +578,6 @@ public class PalaroBaguhan extends AppCompatActivity {
             });
         });
     }
-
 
     private void unlockPerfectStreakAchievement() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -647,7 +622,6 @@ public class PalaroBaguhan extends AppCompatActivity {
         });
     }
 
-
     private void saveBaguhanScore() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) return;
@@ -656,13 +630,13 @@ public class PalaroBaguhan extends AppCompatActivity {
 
         db.collection("students").document(uid).get().addOnSuccessListener(studentDoc -> {
             if (!studentDoc.exists()) {
-                Toast.makeText(this, "Student document not found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Walang nakitang dokumento ng estudyante", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             String studentId = studentDoc.getString("studentId");
             if (studentId == null || studentId.isEmpty()) {
-                Toast.makeText(this, "Student ID not found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Walang nakitang Student ID", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -691,14 +665,10 @@ public class PalaroBaguhan extends AppCompatActivity {
                             baguhanScore = 0;
                         })
                         .addOnFailureListener(e -> {
-                            Toast.makeText(this, "Error saving score", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Nagkaroon ng error sa pag-save ng iskor", Toast.LENGTH_SHORT).show();
                         });
             });
         });
-    }
-
-    private int getScore(DocumentSnapshot snapshot, String field) {
-        return snapshot.contains(field) ? snapshot.getLong(field).intValue() : 0;
     }
 
     private void checkAndUnlock(DocumentReference docRef, int totalScore, int threshold, String unlockField, String message) {

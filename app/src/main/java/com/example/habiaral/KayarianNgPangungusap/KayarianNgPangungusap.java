@@ -29,10 +29,10 @@ import java.util.Map;
 
 public class KayarianNgPangungusap extends AppCompatActivity {
 
-    LinearLayout btnPayak, btnTambalan, btnHugnayan, btnLangkapan;
-    FrameLayout payakLock, tambalanLock, hugnayanLock, langkapanLock;
-    FirebaseFirestore db;
-    String uid;
+    private LinearLayout btnPayak, btnTambalan, btnHugnayan, btnLangkapan;
+    private FrameLayout payakLock, tambalanLock, hugnayanLock, langkapanLock;
+    private FirebaseFirestore db;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

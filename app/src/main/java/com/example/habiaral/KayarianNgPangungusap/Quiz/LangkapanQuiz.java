@@ -17,7 +17,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
-import com.example.habiaral.KayarianNgPangungusap.Lessons.TambalanLesson;
 import com.example.habiaral.Panitikan.Panitikan;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AchievementDialogUtils;
@@ -41,33 +40,20 @@ import com.example.habiaral.Cache.LessonProgressCache;
 
 public class LangkapanQuiz extends AppCompatActivity {
 
-    private List<Map<String, Object>> allQuizList = new ArrayList<>();
+    private List<Map<String, Object>> allQuizList = new ArrayList<>(), quizList = new ArrayList<>();
     private Button answer1, answer2, answer3, nextButton, introButton;
-    private List<Map<String, Object>> quizList = new ArrayList<>();
-    private Drawable redDrawable, orangeDrawable, greenDrawable;
     private TextView questionText, questionTitle;
-    private CountDownTimer countDownTimer;
-    private long timeLeftInMillis = 30000;
-    private boolean quizFinished = false;
-    private boolean isAnswered = false;
-    private String correctAnswer = "";
-    private AlertDialog resultDialog;
-    private MediaPlayer resultPlayer;
-    private MediaPlayer mediaPlayer;
-    private MediaPlayer readyPlayer;
-    private int lastColorStage = 3;
-    private String lessonName = "";
-    private int correctAnswers = 0;
-    private int totalQuestions = 0;
-    private String introText = "";
-    private int currentIndex = -1;
+    private Drawable redDrawable, orangeDrawable, greenDrawable;
     private ProgressBar timerBar;
-    private FirebaseFirestore db;
     private View background;
-    private boolean isMuted = false;
-    private MediaPlayer timerPlayer;
-    private CountDownTimer startCountdownTimer;
-
+    private CountDownTimer countDownTimer, startCountdownTimer;
+    private long timeLeftInMillis = 30000;
+    private MediaPlayer resultPlayer, mediaPlayer, readyPlayer, timerPlayer;
+    private AlertDialog resultDialog;
+    private FirebaseFirestore db;
+    private boolean quizFinished = false, isAnswered = false, isMuted = false;
+    private int lastColorStage = 3, correctAnswers = 0, totalQuestions = 0, currentIndex = -1;
+    private String correctAnswer = "", lessonName = "", introText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

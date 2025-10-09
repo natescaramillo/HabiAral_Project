@@ -28,10 +28,10 @@ import java.util.Map;
 
 public class Alamat extends AppCompatActivity {
 
-    ConstraintLayout btnKwento1, btnKwento2;
-    FrameLayout kwento1Lock, kwento2Lock;
-    FirebaseFirestore db;
-    String uid;
+    private ConstraintLayout btnKwento1, btnKwento2;
+    private FrameLayout kwento1Lock, kwento2Lock;
+    private FirebaseFirestore db;
+    private String uid;
     private MediaPlayer mediaPlayer;
 
     @Override

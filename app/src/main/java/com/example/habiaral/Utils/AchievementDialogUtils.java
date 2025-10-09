@@ -90,8 +90,7 @@ public class AchievementDialogUtils {
 
                 return;
 
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { }
 
             try {
                 final View toastView = inflater.inflate(R.layout.achievement_unlocked, null);

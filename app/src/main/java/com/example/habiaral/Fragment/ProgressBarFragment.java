@@ -20,8 +20,9 @@ import java.util.Map;
 public class ProgressBarFragment extends Fragment {
 
     private ProgressBar progressBarBahagi, progressBarPagUnawa, progressBarKayarian;
-    private TextView progressPercentageBahagi, progressPercentagePagUnawa, progressPercentageKayarian;
-    private TextView bahagiDescription, pagUnawaDescription, kayarianDescription;
+    private TextView progressPercentageBahagi, progressPercentagePagUnawa, progressPercentageKayarian,
+            bahagiDescription, pagUnawaDescription, kayarianDescription;
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

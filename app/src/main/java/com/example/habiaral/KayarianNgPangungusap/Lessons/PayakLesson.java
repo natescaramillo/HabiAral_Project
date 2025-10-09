@@ -13,8 +13,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.example.habiaral.BahagiNgPananalita.BahagiNgPananalita;
-import com.example.habiaral.BahagiNgPananalita.Lessons.PangUriLesson;
 import com.example.habiaral.KayarianNgPangungusap.KayarianNgPangungusap;
 import com.example.habiaral.KayarianNgPangungusap.Quiz.PayakQuiz;
 import com.example.habiaral.R;
@@ -35,15 +33,14 @@ import android.speech.tts.Voice;
 
 public class PayakLesson extends AppCompatActivity {
 
-    FirebaseFirestore db;
-    String uid;
-    TextToSpeech textToSpeech;
-    ImageView descriptionImageView, imageView2, exampleImageView, btnBack;
-    Button quizButton;
-    private boolean introCompleted = false;
-    private Handler idleGifHandler = new Handler();
+    private FirebaseFirestore db;
+    private String uid;
+    private TextToSpeech textToSpeech;
+    private ImageView descriptionImageView, imageView2, exampleImageView, btnBack;
+    private Button quizButton;
+    private final Handler idleGifHandler = new Handler();
     private Runnable idleGifRunnable;
-    private boolean isActivityActive = false;
+    private boolean introCompleted = false, isActivityActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

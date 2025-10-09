@@ -47,24 +47,19 @@ public class EpikoKwento1 extends AppCompatActivity {
 
     private static final String STORY_ID = "EpikoKwento1";
     private static final String STORY_TITLE = "Indarapatra at Sulayman";
-
     private boolean isLessonDone = false;
     private boolean introFinished = false;
     private ImageView storyImage, btnBack;
     private Button unlockButton;
     private int currentPage = 0;
-
     private FirebaseFirestore db;
     private String uid;
-
     private TextToSpeech textToSpeech;
     private List<String> introLines;
     private int currentIntroIndex = 0;
-
     private List<String> pageLines;
     private int currentLineIndex = 0;
     private boolean introPlayed = false;
-
     private AudioManager audioManager;
     private int originalVolume;
     private boolean isNavigatingToQuiz = false;

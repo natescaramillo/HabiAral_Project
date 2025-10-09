@@ -110,7 +110,6 @@ public class HomeFragment extends Fragment {
         stopIdleGifRandomizer();
     }
 
-    /** ----------------- Idle GIF Randomizer ----------------- **/
     private void startIdleGifRandomizer() {
         stopIdleGifRandomizer();
         isFragmentActive = true;
@@ -154,7 +153,6 @@ public class HomeFragment extends Fragment {
             Glide.with(this).asGif().load(R.drawable.idle).into(imageView);
     }
 
-    /** ----------------- Nickname Handling ----------------- **/
     private void loadNicknameFromPrefs() {
         SharedPreferences prefs = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         String nickname = prefs.getString("nickname", "Walang Palayaw");
@@ -183,7 +181,6 @@ public class HomeFragment extends Fragment {
                 .addOnFailureListener(e -> Toast.makeText(requireContext(), "Di makuha ang palayaw", Toast.LENGTH_SHORT).show());
     }
 
-    /** ----------------- Firebase Achievement / Log ----------------- **/
     private void recordLogDate(String studentDocId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("students").document(studentDocId)

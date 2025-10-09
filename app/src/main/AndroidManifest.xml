@@ -117,7 +117,8 @@
             android:screenOrientation="portrait" />
         <activity android:name=".BahagiNgPananalita.Quiz.PangawingQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Alamat.Alamat" />
+        <activity android:name=".Panitikan.Alamat.Alamat"
+            android:screenOrientation="portrait" />
         <activity android:name=".Panitikan.Alamat.Stories.AlamatKwento1"
             android:screenOrientation="portrait" />
         <activity android:name=".Panitikan.Alamat.Quiz.AlamatKwento1Quiz"

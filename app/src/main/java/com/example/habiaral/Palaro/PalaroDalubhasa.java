@@ -474,7 +474,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
 
                             perfectAnswerCount++;
 
-                            // dagdag: bilang ng magkasunod na perfect
                             if (perfectAnswerCount >= 10) {
                                 unlockSagotBayaniAchievement();
                             }
@@ -739,7 +738,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         keywordList = shuffledKeywords;
         dalubhasaIDs = shuffledIDs;
     }
-
 
     private void speakLine(String text) {
         if (text == null || text.trim().isEmpty()) return;
@@ -1019,7 +1017,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
             }
         }
     }
-
 
     @Override
     protected void onDestroy() {

@@ -42,23 +42,16 @@ public class PangAbayLesson extends AppCompatActivity {
             R.drawable.pangabay10, R.drawable.pangabay11, R.drawable.pangabay12
     };
 
-    private android.os.Handler textHandler = new android.os.Handler();
-    private Map<Integer, List<String>> pageLines = new HashMap<>();
-    private final boolean[] isFullScreen = {false};
-    private boolean isNavigatingInsideApp = false;
-    private boolean waitForResumeChoice = false;
-    private ImageView backOption, nextOption, imageView, imageView2, fullScreenOption, btnBack;
-    private boolean isLessonDone = false;
-    private boolean isFirstTime = true;
-    private TextToSpeech textToSpeech;
-    private Button unlockButton;
-    private int currentPage = 0;
-    private int resumePage = -1;
-    private int resumeLine = -1;
-
-    private Handler idleGifHandler = new Handler();
+    private final Handler textHandler = new Handler(), idleGifHandler = new Handler();
     private Runnable idleGifRunnable;
-    private boolean isActivityActive = false;
+    private final Map<Integer, List<String>> pageLines = new HashMap<>();
+    private int currentPage = 0, resumePage = -1, resumeLine = -1;
+    private ImageView backOption, nextOption, imageView, imageView2, fullScreenOption, btnBack;
+    private Button unlockButton;
+    private final boolean[] isFullScreen = {false};
+    private boolean isNavigatingInsideApp = false, waitForResumeChoice = false,
+            isLessonDone = false, isFirstTime = true, isActivityActive = false;
+    private TextToSpeech textToSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

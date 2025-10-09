@@ -30,14 +30,11 @@ public class BahagiNgPananalita extends AppCompatActivity {
 
     private LinearLayout btnPangngalan, btnPandiwa, btnPangUri, btnPangHalip, btnPangAbay,
             btnPangatnig, btnPangUkol, btnPangAkop, btnPadamdam, btnPangawing;
-
     private FrameLayout pangngalanLock, pandiwaLock, pangUriLock, pangHalipLock, pangAbayLock,
             pangatnigLock, pangUkolLock, pangAkopLock, padamdamLock, pangawingLock;
-
     private FirebaseFirestore db;
     private String uid;
     private MediaPlayer mediaPlayer;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

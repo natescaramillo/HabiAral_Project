@@ -1,7 +1,6 @@
 package com.example.habiaral.Fragment;
 
 import android.app.Dialog;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -69,7 +68,7 @@ public class AchievementFragment extends Fragment{
         if (currentUser != null) {
             uid = currentUser.getUid();
         } else {
-            Toast.makeText(getContext(), "User not logged in.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Hindi ka naka-login.", Toast.LENGTH_SHORT).show();
             return root;
         }
 
@@ -151,7 +150,7 @@ public class AchievementFragment extends Fragment{
                 } else {
                     image.setAlpha(0.3f);
                     addLockIcon(image);
-                    box.setOnClickListener(v -> Toast.makeText(getContext(), "This achievement is locked.", Toast.LENGTH_SHORT).show());
+                    box.setOnClickListener(v -> Toast.makeText(getContext(), "Hindi mo pa ito nabubuksan.", Toast.LENGTH_SHORT).show());
                 }
             }
         });

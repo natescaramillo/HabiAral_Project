@@ -33,13 +33,11 @@ public class Diksyonaryo extends AppCompatActivity {
 
     private LinearLayout wordContainer;
     private LayoutInflater inflater;
-
     private TextToSpeech textToSpeech;
     private EditText searchBar;
     private List<DocumentSnapshot> allWords = new ArrayList<>();
-    private boolean hasShownNoResults = false;
+    private boolean hasShownNoResults = false, isSpeakerActive = false;
     private ImageView activeSpeakerIcon = null;
-    private boolean isSpeakerActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +106,7 @@ public class Diksyonaryo extends AppCompatActivity {
                 @Override
                 public void onWordsLoadFailed(Exception e) {
                     runOnUiThread(() ->
-                            Toast.makeText(Diksyonaryo.this, "Failed to load words", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(Diksyonaryo.this, "Hindi ma-load ang mga salita", Toast.LENGTH_SHORT).show()
                     );
                 }
             });

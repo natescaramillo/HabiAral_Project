@@ -33,19 +33,13 @@ public class Palaro extends AppCompatActivity {
     private ImageView gameMechanicsIcon;
     private TextView userPointText, currentEnergyText, energyTimerText;
     private ProgressBar palaroProgress;
-
-    private int userPoints = 0;
-    private int userEnergy = 100;
-
-    private final int ENERGY_COST = 20;
-    private final int ENERGY_MAX = 100;
-    private final long ENERGY_INTERVAL = 3 * 60 * 1000;
-
-    private CountDownTimer energyTimer;
+    private int userPoints = 0, userEnergy = 100;
+    private static final int ENERGY_COST = 20, ENERGY_MAX = 100;
+    private static final long ENERGY_INTERVAL = 3 * 60 * 1000;
     private FirebaseFirestore db;
-    private boolean isUnlocking = false;
     private MediaPlayer mediaPlayer;
-
+    private CountDownTimer energyTimer;
+    private boolean isUnlocking = false;
     private static final int BAGUHAN_REQUEST_CODE = 1;
 
     @Override
@@ -92,7 +86,6 @@ public class Palaro extends AppCompatActivity {
             if (currentUser == null) return;
             String userId = currentUser.getUid();
 
-            // Bawasan ang energy at i-save sa Firebase
             userEnergy -= ENERGY_COST;
             long now = System.currentTimeMillis();
 
@@ -104,31 +97,24 @@ public class Palaro extends AppCompatActivity {
             updateUI();
             checkLocks();
 
-            // Restart energy regeneration
             startEnergyRegeneration(userId, now);
 
             Intent intent = new Intent(this, PalaroBaguhan.class);
             intent.putExtra("resetProgress", true);
             startActivityForResult(intent, BAGUHAN_REQUEST_CODE);
         } else {
-            Toast.makeText(this, "Not enough energy!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Kulang ka sa enerhiya!", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void playHusay() {
         SoundClickUtils.playClickSound(this, R.raw.button_click);
 
-        if (userPoints < 400) {
-            Toast.makeText(this, "Unlock Husay at 400 points!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         if (userEnergy >= ENERGY_COST) {
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             if (currentUser == null) return;
             String userId = currentUser.getUid();
 
-            // Bawasan energy
             userEnergy -= ENERGY_COST;
             long now = System.currentTimeMillis();
 
@@ -144,24 +130,18 @@ public class Palaro extends AppCompatActivity {
 
             startActivity(new Intent(this, PalaroHusay.class));
         } else {
-            Toast.makeText(this, "Not enough energy!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Kulang ka sa enerhiya!", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void playDalubhasa() {
         SoundClickUtils.playClickSound(this, R.raw.button_click);
 
-        if (userPoints < 800) {
-            Toast.makeText(this, "Unlock Dalubhasa at 800 points!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         if (userEnergy >= ENERGY_COST) {
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             if (currentUser == null) return;
             String userId = currentUser.getUid();
 
-            // Bawasan energy
             userEnergy -= ENERGY_COST;
             long now = System.currentTimeMillis();
 
@@ -177,7 +157,7 @@ public class Palaro extends AppCompatActivity {
 
             startActivity(new Intent(this, PalaroDalubhasa.class));
         } else {
-            Toast.makeText(this, "Not enough energy!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Kulang ka sa enerhiya!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -190,7 +170,7 @@ public class Palaro extends AppCompatActivity {
 
         docRef.addSnapshotListener((snapshot, error) -> {
             if (error != null) {
-                Toast.makeText(this, "Error loading progress", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Nagkaproblema sa pag-load ng iyong progreso.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -199,7 +179,6 @@ public class Palaro extends AppCompatActivity {
                 long firebaseEnergy = snapshot.getLong("userEnergy") != null ? snapshot.getLong("userEnergy") : ENERGY_MAX;
                 long lastEnergyTime = snapshot.getLong("lastEnergyTime") != null ? snapshot.getLong("lastEnergyTime") : System.currentTimeMillis();
 
-                // Prevent score rollback
                 userPoints = Math.max(userPoints, firebasePoints);
                 userEnergy = (int) firebaseEnergy;
 
@@ -237,7 +216,6 @@ public class Palaro extends AppCompatActivity {
             userEnergy = Math.min(userEnergy + regenCount, ENERGY_MAX);
             lastTime += regenCount * ENERGY_INTERVAL;
 
-            // I-update lang sa Firebase
             Map<String, Object> update = new HashMap<>();
             update.put("userEnergy", userEnergy);
             update.put("lastEnergyTime", lastTime);
@@ -247,12 +225,10 @@ public class Palaro extends AppCompatActivity {
         updateUI();
         checkLocks();
 
-        // Kung energy full, itago ang timer
         if (userEnergy >= ENERGY_MAX) {
             energyTimerText.setVisibility(View.GONE);
             energyTimerRunning = false;
         } else {
-            // Restart timer lang kung hindi pa tumatakbo
             if (!energyTimerRunning) {
                 long timeSinceLastEnergy = currentTime - lastTime;
                 long timeUntilNext = ENERGY_INTERVAL - timeSinceLastEnergy;
@@ -265,7 +241,7 @@ public class Palaro extends AppCompatActivity {
         if (energyTimer != null) energyTimer.cancel();
 
         energyTimerRunning = true;
-        energyTimerText.setVisibility(View.VISIBLE); // Siguraduhin na visible kapag countdown
+        energyTimerText.setVisibility(View.VISIBLE);
 
         energyTimer = new CountDownTimer(millisUntilFinished, 1000) {
             public void onTick(long millisUntilFinished) {
@@ -290,8 +266,7 @@ public class Palaro extends AppCompatActivity {
                     if (userEnergy < ENERGY_MAX) {
                         startEnergyCountDown(userId, ENERGY_INTERVAL);
                     } else {
-                        // Kapag full na, hide timer
-                        energyTimerText.setText("FULL");
+                        energyTimerText.setText("Puno na!");
                         energyTimerText.setVisibility(View.GONE);
                         energyTimerRunning = false;
                     }
@@ -361,8 +336,8 @@ public class Palaro extends AppCompatActivity {
 
     private void unlockGanapNaKaalamanAchievement() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String achievementCode = "SA1"; // Display key
-        String achievementId = "A1";    // Firestore doc ID
+        String achievementCode = "SA1";
+        String achievementId = "A1";
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -371,7 +346,6 @@ public class Palaro extends AppCompatActivity {
 
             String studentId = studentDoc.getString("studentId");
 
-            // Check if all palaro questions are answered
             db.collection("palaro_answered").document(uid).get().addOnSuccessListener(progressDoc -> {
                 if (!progressDoc.exists()) return;
 
@@ -384,14 +358,12 @@ public class Palaro extends AppCompatActivity {
                 boolean allDalubhasaAnswered = dalubhasaMap.size() >= 5;
 
                 if (allBaguhanAnswered && allHusayAnswered && allDalubhasaAnswered) {
-                    // Check if already unlocked
                     db.collection("student_achievements").document(uid).get().addOnSuccessListener(achSnapshot -> {
                         Map<String, Object> achievements = (Map<String, Object>) achSnapshot.get("achievements");
                         if (achievements != null && achievements.containsKey(achievementCode)) {
-                            return; // Already unlocked
+                            return;
                         }
 
-                        // Get data from achievements collection
                         db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
                             if (!achDoc.exists()) return;
 
@@ -421,9 +393,9 @@ public class Palaro extends AppCompatActivity {
         });
     }
     private void unlockBatangHenyoAchievement(int totalScore) {
-        if (totalScore < 2000) return; // Only unlock if score is 2000+
+        if (totalScore < 2000) return;
 
-        if (isUnlocking) return; // Prevent re-entrance
+        if (isUnlocking) return;
         isUnlocking = true;
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String achievementCode = "SA7";
@@ -435,10 +407,9 @@ public class Palaro extends AppCompatActivity {
             Map<String, Object> achievements = (Map<String, Object>) snapshot.get("achievements");
 
             if (achievements != null && achievements.containsKey(achievementCode)) {
-                return; // Already unlocked
+                return;
             }
 
-            // Get data from achievements collection
             db.collection("achievements").document(achievementId).get().addOnSuccessListener(achDoc -> {
                 if (!achDoc.exists()) return;
 
@@ -453,7 +424,7 @@ public class Palaro extends AppCompatActivity {
                 achievementMap.put(achievementCode, achievementData);
 
                 Map<String, Object> wrapper = new HashMap<>();
-                wrapper.put("studentId", uid); // Optional kung hindi required
+                wrapper.put("studentId", uid);
                 wrapper.put("achievements", achievementMap);
 
                 db.collection("student_achievements").document(uid)
