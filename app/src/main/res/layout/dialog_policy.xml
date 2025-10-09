@@ -6,8 +6,8 @@
              android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="371dp"
+        android:layout_height="726dp"
         android:layout_margin="20dp"
         android:background="@drawable/pop_up_main_color"
         android:orientation="vertical"
@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="15dp"
             android:orientation="horizontal">
 
@@ -74,8 +74,8 @@
                 android:id="@+id/sang_ayon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
                 android:layout_weight="1"
+                android:layout_margin="10dp"
                 android:background="@drawable/button_color"
                 android:fontFamily="@font/ala_sans"
                 android:text="Sumang-ayon   "
