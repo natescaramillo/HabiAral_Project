@@ -55,7 +55,7 @@
                 android:lineSpacingExtra="3sp"
                 android:singleLine="false"
                 android:text="@string/policy"
-                android:textColor="#000"
+                android:textColor="#3C2B22"
 
                 android:textSize="20sp" />
         </LinearLayout>

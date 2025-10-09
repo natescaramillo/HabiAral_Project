@@ -56,7 +56,7 @@
                 android:singleLine="false"
                 android:text="@string/policy"
 
-                android:textColor="#000" />
+                android:textColor="#3C2B22" />
         </LinearLayout>
 
         <LinearLayout
