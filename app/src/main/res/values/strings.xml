@@ -123,4 +123,21 @@
         Ang gantimpala ay 5 hanggang 10 puntos, depende sa kaayusan, wastong gramatika, at
         kabuuan ng sagot.
     </string>
+
+    <!-- Policy -->
+    <string name ="policy">
+        "Huling Updated: Oktubre 2025\n\n" +
+        "Ang HabiAral ay isang educational mobile app na tumutulong sa pag-aaral ng wikang Filipino. " +
+        "Kami ay nangangalaga sa iyong privacy at tinitiyak na ligtas ang iyong impormasyon.\n\n" +
+        "Kinokolekta lamang namin ang mga sumusunod:\n" +
+        "• Pangalan at Email mula sa Google Sign-In\n" +
+        "• Auto-generated Student ID\n" +
+        "• Optional na nickname\n\n" +
+        "Ginagamit ito para i-save ang iyong progress at achievements sa app. " +
+        "Walang sensitibong impormasyon (password, address, contact number) ang kinokolekta. " +
+        "Ang lahat ng data ay ini-store nang secure sa Google Firebase.\n\n" +
+        "Sa pagpapatuloy, sumasang-ayon ka sa pagproseso ng iyong impormasyon alinsunod sa patakarang ito.\n\n" +
+        "Para sa mga katanungan, makipag-ugnayan sa: habiaral.devs@gmail.com"
+
+    </string>
 </resources>
