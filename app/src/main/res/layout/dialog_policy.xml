@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-             android:layout_height="match_parent">
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="371dp"
-        android:layout_height="726dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:background="@drawable/pop_up_main_color"
         android:orientation="vertical"
@@ -22,7 +22,6 @@
             android:layout_height="60dp"
             android:background="@drawable/log_out_highlight">
 
-
             <TextView
                 android:id="@+id/textView19"
                 android:layout_width="wrap_content"
@@ -34,31 +33,37 @@
                 android:textSize="20sp" />
         </FrameLayout>
 
+        <!-- Scrollable text container -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="0dp"
             android:background="@drawable/background_with_border"
             android:orientation="vertical">
 
-
-            <TextView
-                android:id="@+id/patakarantext"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="10dp"
-                android:ellipsize="none"
-                android:fontFamily="@font/ala_sans"
-                android:justificationMode="inter_word"
-                android:lineSpacingExtra="3sp"
-                android:padding="10dp"
-                android:singleLine="false"
-                android:text="@string/policy"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
 
-                android:textColor="#453229" />
+                <TextView
+                    android:id="@+id/patakarantext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:ellipsize="none"
+                    android:fontFamily="@font/ala_sans"
+                    android:justificationMode="inter_word"
+                    android:lineSpacingExtra="3sp"
+                    android:padding="10dp"
+                    android:singleLine="false"
+                    android:text="@string/policy"
+                    android:textColor="#453229" />
+            </ScrollView>
         </LinearLayout>
 
         <LinearLayout
@@ -69,16 +74,15 @@
             android:layout_marginBottom="15dp"
             android:orientation="horizontal">
 
-
             <Button
                 android:id="@+id/sang_ayon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_margin="10dp"
+                android:layout_weight="1"
                 android:background="@drawable/button_color"
                 android:fontFamily="@font/ala_sans"
-                android:text="Sumang-ayon   "
+                android:text="Sumang-ayon"
                 android:textAllCaps="false"
                 android:textColor="#fff" />
 
@@ -94,7 +98,6 @@
                 android:textAllCaps="false"
                 android:textColor="#fff" />
         </LinearLayout>
-
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
