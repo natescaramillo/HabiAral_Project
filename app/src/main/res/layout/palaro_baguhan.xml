@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@drawable/question_bg_drawable"
-    tools:context=".Activity.PalaroBaguhan">
+    android:background="@drawable/question_bg_drawable">
 
     <!-- Top guideline -->
     <androidx.constraintlayout.widget.Guideline
