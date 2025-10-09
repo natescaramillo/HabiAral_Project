@@ -99,4 +99,28 @@
     <string name="mcl1_line">
         Tara! Simulan na natin ang baguhan!
     </string>
+
+    <!-- Game Mechanics -->
+    <string name ="baguhan_description">
+        Sa antas na ito, may mga pangungusap na may nawawalang salita.
+        Kailangang punan ng mag-aaral ang patlang gamit ang tamang salita upang mabuo
+        ang pangungusap. Bawat tamang sagot ay may katumbas na 5 puntos. Kapag nakaipon ng
+        sapat na puntos, maaabot
+        mo ang susunod na antas — Husay.
+    </string>
+
+    <string name ="husay_description">
+        Sa bahaging ito, pipili ang mag-aaral ng mga salita mula sa ibinigay na
+        pagpipilian upang makabuo ng isang pangungusap na malinaw at may wastong kahulugan.
+        Bawat tamang sagot ay may katumbas na 3 puntos. Kung makakalikom ng sapat na puntos,
+        maa-unlock ang pinakamataas na antas — Dalubhasa.
+    </string>
+
+    <string name ="dalubhasa_description">
+        Sa pinakahuling antas, bibigyan ang mag-aaral ng panuto kung anong uri ng
+        pangungusap ang bubuuin. Kailangang gumawa ng sariling pangungusap na kumpleto,
+        malinaw, at wasto. Gagamit ng Tagasuri ng Gramatika upang makita kung tama ang pagkakabuo.
+        Ang gantimpala ay 5 hanggang 10 puntos, depende sa kaayusan, wastong gramatika, at
+        kabuuan ng sagot.
+    </string>
 </resources>
