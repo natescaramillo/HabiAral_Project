@@ -3,9 +3,13 @@ package com.example.habiaral.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -24,6 +28,9 @@ import java.util.Map;
 public class WelcomeActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 1000;
+    private static final String PREFS_NAME = "AppPreferences";
+    private static final String KEY_PRIVACY_ACCEPTED = "privacy_accepted";
+
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseFirestore db;
@@ -40,7 +47,50 @@ public class WelcomeActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        startInternetChecking();
+        boolean hasAccepted = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getBoolean(KEY_PRIVACY_ACCEPTED, false);
+
+        if (hasAccepted) {
+            startInternetChecking();
+        } else {
+            showPrivacyPolicyDialog();
+        }
+    }
+
+    private void showPrivacyPolicyDialog() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_policy, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+
+        AlertDialog dialog = builder.create();
+
+        Button btnAgree = dialogView.findViewById(R.id.sang_ayon);
+        Button btnDecline = dialogView.findViewById(R.id.hindi_muna);
+
+        btnAgree.setOnClickListener(v -> {
+            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                    .edit()
+                    .putBoolean(KEY_PRIVACY_ACCEPTED, true)
+                    .apply();
+
+            dialog.dismiss();
+            startInternetChecking();
+        });
+
+        btnDecline.setOnClickListener(v -> {
+            dialog.dismiss();
+            Toast.makeText(this, "Kailangan mong sumang-ayon sa Patakaran upang magpatuloy.", Toast.LENGTH_LONG).show();
+            finish();
+        });
+
+        dialog.show();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
     }
 
     private void startInternetChecking() {
