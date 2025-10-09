@@ -87,10 +87,10 @@
                 android:id="@+id/textView24"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="none"
-                android:fontFamily="@font/ala_sans"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
+                android:ellipsize="none"
+                android:fontFamily="@font/ala_sans"
                 android:justificationMode="inter_word"
                 android:lineSpacingExtra="3dp"
                 android:padding="10dp"
@@ -109,13 +109,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.02" />
+        app:layout_constraintGuide_percent="0.1" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vertical_line2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.98" />
+        app:layout_constraintGuide_percent="0.9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
