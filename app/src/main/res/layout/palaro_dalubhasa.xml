@@ -245,9 +245,11 @@
 
     <TextView
         android:id="@+id/dalubhasa_instructionText"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="84dp"
         android:layout_weight="1"
+        android:padding="10dp"
+        android:layout_marginHorizontal="20dp"
         android:background="@drawable/rounded_rect"
         android:backgroundTint="#FFEFEA"
         android:fontFamily="@font/ala_sans"
