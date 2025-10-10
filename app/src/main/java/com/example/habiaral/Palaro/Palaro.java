@@ -353,9 +353,9 @@ public class Palaro extends AppCompatActivity {
                 Map<String, Object> husayMap = progressDoc.contains("husay") ? (Map<String, Object>) progressDoc.get("husay") : new HashMap<>();
                 Map<String, Object> dalubhasaMap = progressDoc.contains("dalubhasa") ? (Map<String, Object>) progressDoc.get("dalubhasa") : new HashMap<>();
 
-                boolean allBaguhanAnswered = baguhanMap.size() >= 20;
-                boolean allHusayAnswered = husayMap.size() >= 5;
-                boolean allDalubhasaAnswered = dalubhasaMap.size() >= 5;
+                boolean allBaguhanAnswered = baguhanMap.size() >= 100;
+                boolean allHusayAnswered = husayMap.size() >= 100;
+                boolean allDalubhasaAnswered = dalubhasaMap.size() >= 100;
 
                 if (allBaguhanAnswered && allHusayAnswered && allDalubhasaAnswered) {
                     db.collection("student_achievements").document(uid).get().addOnSuccessListener(achSnapshot -> {
