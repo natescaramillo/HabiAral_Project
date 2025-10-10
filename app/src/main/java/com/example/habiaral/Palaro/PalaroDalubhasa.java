@@ -42,13 +42,16 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import android.speech.tts.TextToSpeech;
 import java.util.Locale;
+import java.util.Set;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -278,6 +281,13 @@ public class PalaroDalubhasa extends AppCompatActivity {
         int wordCount = countWordsExcludingKeywords(sentence, currentKeywords);
         if (wordCount > 20) {
             showInputError("Pinakamataas na bilang ay sampung salita, ngunit hindi kabilang ang panuto.");
+            return;
+        }
+
+        // **Check for repeated phrases bago ipadala sa server**
+        if (hasDuplicateWordOrPhrase(sentence)) {
+            showInputError("Napansin ang paulit-ulit na salita o parirala. Pakibago ang pangungusap.");
+            deductHeart();
             return;
         }
 
@@ -1290,4 +1300,55 @@ public class PalaroDalubhasa extends AppCompatActivity {
         }
         return count;
     }
+    private boolean hasDuplicateWordOrPhrase(String sentence) {
+        // List ng legit repeated phrases na puwedeng exempted
+        Set<String> whitelist = new HashSet<>(Arrays.asList(
+                "araw-araw", "gabi-gabi", "isa-isa", "dahan-dahan",
+                "tuwing-tuwing", "oras-oras", "minuto-minuto", "linggo-linggo",
+                "dalawa-dalawa", "sunod-sunod", "pila-pila",
+                "mabilis-mabilis", "marahan-marahan",
+                "sama-sama", "magkakasama-sama", "buo-buo",
+                "taon-taon", "buwan-buwan"
+        ));
+
+        // Linisin: tanggalin punctuation, panatilihin ang gitling at spaces
+        String cleaned = sentence.replaceAll("[^a-zA-ZÀ-ÿ0-9\\-\\s]", " ").toLowerCase();
+        String[] words = cleaned.trim().split("\\s+");
+
+        Set<String> seenSingle = new HashSet<>();
+
+        // --- Check for single word duplicates ---
+        for (String word : words) {
+            if (seenSingle.contains(word) && !whitelist.contains(word)) return true;
+            seenSingle.add(word);
+        }
+
+        // --- Check for consecutive multi-word phrases ---
+        int wordCount = words.length;
+        for (int n = 2; n <= wordCount / 2; n++) { // phrases ng 2+ words
+            for (int i = 0; i <= wordCount - 2 * n; i++) {
+                boolean duplicate = true;
+                StringBuilder phrase1 = new StringBuilder();
+                StringBuilder phrase2 = new StringBuilder();
+
+                for (int j = 0; j < n; j++) {
+                    phrase1.append(words[i + j]).append(" ");
+                    phrase2.append(words[i + j + n]).append(" ");
+                    if (!words[i + j].equals(words[i + j + n])) {
+                        duplicate = false;
+                        break;
+                    }
+                }
+
+                String p1 = phrase1.toString().trim();
+                if (duplicate && !whitelist.contains(p1)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
 }
