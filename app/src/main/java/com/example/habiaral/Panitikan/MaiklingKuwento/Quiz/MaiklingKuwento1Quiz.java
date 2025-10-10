@@ -563,7 +563,7 @@ public class MaiklingKuwento1Quiz extends AppCompatActivity {
 
         db.collection("module_progress").document(uid).update(updates)
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Next Lesson Unlocked: Kwento2!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Nabuksan na ang kwento: Ang Tahanan ng Isang Sugarol!", Toast.LENGTH_SHORT).show();
                     checkIfCategoryCompleted("Maikling Kuwento");
                 })
                 .addOnFailureListener(e ->

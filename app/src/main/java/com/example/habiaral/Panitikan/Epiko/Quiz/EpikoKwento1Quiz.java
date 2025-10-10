@@ -563,7 +563,7 @@ public class EpikoKwento1Quiz extends AppCompatActivity {
 
         db.collection("module_progress").document(uid).update(updates)
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Next Lesson Unlocked: Kwento2!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Nabuksan na ang kwento: Epiko ni Gilgamesh!", Toast.LENGTH_SHORT).show();
                     checkIfCategoryCompleted("Epiko");
                 })
                 .addOnFailureListener(e ->

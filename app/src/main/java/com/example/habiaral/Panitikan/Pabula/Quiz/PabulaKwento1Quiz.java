@@ -563,7 +563,7 @@ public class PabulaKwento1Quiz extends AppCompatActivity {
 
         db.collection("module_progress").document(uid).update(updates)
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Next Lesson Unlocked: Kwento2!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Nabuksan na ang kwento: Ang Mag-Inang Palakang Puno!", Toast.LENGTH_SHORT).show();
                     checkIfCategoryCompleted("Pabula");
                 })
                 .addOnFailureListener(e ->
