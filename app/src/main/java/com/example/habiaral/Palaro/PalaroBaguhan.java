@@ -293,7 +293,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                                                     .transition(DrawableTransitionOptions.withCrossFade(300))
                                                     .into(imageView);
                                         }
-                                    }, 3000);
+                                    }, 5000);
 
                                     SoundEffectsManager.play("CORRECT");
 

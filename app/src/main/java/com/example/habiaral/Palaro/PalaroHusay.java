@@ -314,7 +314,7 @@ public class PalaroHusay extends AppCompatActivity {
             if (!isFinishing() && !isDestroyed()) {
                 playGif(R.drawable.idle, 300);
             }
-        }, 2300);
+        }, 4000);
 
         correctAnswerCount++;
         husayScore += 3;
