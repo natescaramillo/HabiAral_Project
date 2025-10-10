@@ -29,6 +29,7 @@ import java.util.Locale;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
+import com.example.habiaral.Utils.SoundEffectsManager;
 import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
@@ -94,6 +95,8 @@ public class PalaroHusay extends AppCompatActivity {
             };
             connectivityManager.registerDefaultNetworkCallback(networkCallback);
         }
+
+        SoundEffectsManager.init(this);
 
         answer1 = findViewById(R.id.husay_answer1);
         answer2 = findViewById(R.id.husay_answer2);
@@ -304,7 +307,7 @@ public class PalaroHusay extends AppCompatActivity {
     }
 
     private void handleCorrectAnswer(long elapsedTime, String docId) {
-        playSound(R.raw.correct);
+        SoundEffectsManager.play("CORRECT");
         playGif(R.drawable.right_1, 300);
 
         new Handler().postDelayed(() -> {
@@ -333,27 +336,15 @@ public class PalaroHusay extends AppCompatActivity {
     }
 
     private void handleWrongAnswer() {
-        playSound(R.raw.wrong);
+        SoundEffectsManager.play("WRONG");
         playGif(R.drawable.wrong, 300);
         new Handler().postDelayed(() -> playGif(R.drawable.idle, 300), 2300);
 
         correctStreak = 0;
         deductHeart();
         loadCharacterLine(remainingHearts > 0 ? "MCL6" : "MCL5");
-        speakText("Mali ang sagot.");
+        new Handler().postDelayed(() -> speakText("Mali ang sagot."), 400);
         Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
-    }
-
-    private void playSound(int resId) {
-        try {
-            MediaPlayer mp = MediaPlayer.create(this, resId);
-            mp.setOnCompletionListener(m -> {
-                m.release();
-            });
-            mp.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void playGif(int drawableId, int fadeMs) {
