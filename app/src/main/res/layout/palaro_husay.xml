@@ -72,7 +72,7 @@
 
             <ImageView
                 android:id="@+id/heart05"
-                android:layout_width="44dp"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="4dp"
                 app:srcCompat="@drawable/design_heart" />
@@ -136,7 +136,7 @@
 
             <Button
                 android:id="@+id/husay_answer1"
-                android:layout_width="90dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
@@ -147,7 +147,7 @@
 
             <Button
                 android:id="@+id/husay_answer2"
-                android:layout_width="90dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
@@ -158,7 +158,7 @@
 
             <Button
                 android:id="@+id/husay_answer3"
-                android:layout_width="90dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
@@ -169,7 +169,7 @@
 
             <Button
                 android:id="@+id/husay_answer4"
-                android:layout_width="90dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
@@ -180,7 +180,7 @@
 
             <Button
                 android:id="@+id/husay_answer5"
-                android:layout_width="90dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
@@ -191,7 +191,7 @@
 
             <Button
                 android:id="@+id/husay_answer6"
-                android:layout_width="90dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
@@ -202,7 +202,7 @@
 
             <Button
                 android:id="@+id/husay_answer7"
-                android:layout_width="90dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
@@ -213,7 +213,7 @@
 
             <Button
                 android:id="@+id/husay_answer8"
-                android:layout_width="90dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
@@ -224,7 +224,7 @@
 
             <Button
                 android:id="@+id/husay_answer9"
-                android:layout_width="90dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
