@@ -1308,7 +1308,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 "dalawa-dalawa", "sunod-sunod", "pila-pila",
                 "mabilis-mabilis", "marahan-marahan",
                 "sama-sama", "magkakasama-sama", "buo-buo",
-                "taon-taon", "buwan-buwan"
+                "taon-taon", "buwan-buwan", "ang", "ako", "ko", "siya", "ay",
+                "ng", "nang", "at", "mga", "na", "ko", "mo", "si", "ni", "kay", "ito", "iyon", "doon", "dito",
+                "nga", "rin", "din", "pa", "ba", "lang", "para", "wala", "meron",
+                "may", "ngunit", "subalit", "dahil", "kung", "kapag", "sapagkat", "upang"
         ));
 
         // Linisin: tanggalin punctuation, panatilihin ang gitling at spaces
