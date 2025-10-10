@@ -13,7 +13,7 @@
         android:layout_marginHorizontal="32dp"
         android:layout_marginVertical="20dp"
         android:background="@drawable/pop_up_main_color"
-        android:elevation="6dp"
+        android:elevation="0dp"
         android:orientation="vertical"
         android:paddingBottom="10dp"
         app:layout_constraintTop_toTopOf="parent"
