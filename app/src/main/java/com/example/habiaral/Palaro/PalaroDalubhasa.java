@@ -1310,7 +1310,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 "taon-taon", "buwan-buwan", "ang", "ako", "ko", "siya", "ay",
                 "ng", "nang", "at", "mga", "na", "ko", "mo", "si", "ni", "kay", "ito", "iyon", "doon", "dito",
                 "nga", "rin", "din", "pa", "ba", "lang", "para", "wala", "meron",
-                "may", "ngunit", "subalit", "dahil", "kung", "kapag", "sapagkat", "upang"
+                "may", "ngunit", "subalit", "dahil", "kung", "kapag", "sapagkat", "upang", "sa"
         ));
 
         String cleaned = sentence.replaceAll("[^a-zA-ZÀ-ÿ0-9\\-\\s]", " ").toLowerCase();
