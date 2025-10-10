@@ -284,10 +284,10 @@ public class PalaroDalubhasa extends AppCompatActivity {
             return;
         }
 
-        // **Check for repeated phrases bago ipadala sa server**
         if (hasDuplicateWordOrPhrase(sentence)) {
             showInputError("Napansin ang paulit-ulit na salita o parirala. Pakibago ang pangungusap.");
             deductHeart();
+            loadCharacterLine("MDCL11");
             return;
         }
 
@@ -1301,7 +1301,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         return count;
     }
     private boolean hasDuplicateWordOrPhrase(String sentence) {
-        // List ng legit repeated phrases na puwedeng exempted
         Set<String> whitelist = new HashSet<>(Arrays.asList(
                 "araw-araw", "gabi-gabi", "isa-isa", "dahan-dahan",
                 "tuwing-tuwing", "oras-oras", "minuto-minuto", "linggo-linggo",
@@ -1314,21 +1313,18 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 "may", "ngunit", "subalit", "dahil", "kung", "kapag", "sapagkat", "upang"
         ));
 
-        // Linisin: tanggalin punctuation, panatilihin ang gitling at spaces
         String cleaned = sentence.replaceAll("[^a-zA-ZÀ-ÿ0-9\\-\\s]", " ").toLowerCase();
         String[] words = cleaned.trim().split("\\s+");
 
         Set<String> seenSingle = new HashSet<>();
 
-        // --- Check for single word duplicates ---
         for (String word : words) {
             if (seenSingle.contains(word) && !whitelist.contains(word)) return true;
             seenSingle.add(word);
         }
 
-        // --- Check for consecutive multi-word phrases ---
         int wordCount = words.length;
-        for (int n = 2; n <= wordCount / 2; n++) { // phrases ng 2+ words
+        for (int n = 2; n <= wordCount / 2; n++) {
             for (int i = 0; i <= wordCount - 2 * n; i++) {
                 boolean duplicate = true;
                 StringBuilder phrase1 = new StringBuilder();
