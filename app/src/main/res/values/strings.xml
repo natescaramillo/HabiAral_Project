@@ -125,19 +125,47 @@
     </string>
 
     <!-- Policy -->
-    <string name ="policy">
-        "Huling Updated: Oktubre 2025\n\n"
-        "Ang HabiAral ay isang educational mobile app na tumutulong sa pag-aaral ng wikang Filipino. "
-        "Kami ay nangangalaga sa iyong privacy at tinitiyak na ligtas ang iyong impormasyon.\n\n"
-        "Kinokolekta lamang namin ang mga sumusunod:\n"
-        "• Pangalan at Email mula sa Google Sign-In\n"
-        "• Auto-generated Student ID\n"
-        "• Optional na nickname\n\n"
-        "Ginagamit ito para i-save ang iyong progress at achievements sa app. "
-        "Walang sensitibong impormasyon (password, address, contact number) ang kinokolekta. "
-        "Ang lahat ng data ay ini-store nang secure sa Google Firebase.\n\n"
-        "Sa pagpapatuloy, sumasang-ayon ka sa pagproseso ng iyong impormasyon alinsunod sa patakarang ito.\n\n"
-        "Para sa mga katanungan, makipag-ugnayan sa: habiaral.devs@gmail.com"
+    <string name="policy">
+<![CDATA[
+<b>Huling Update:</b> Oktubre 2025<br><br>
 
-    </string>
+<b>Patakaran sa Privacy ng HabiAral</b><br><br>
+Ang <b>HabiAral</b> ay isang educational mobile application na idinisenyo upang tulungan ang mga mag-aaral sa pag-aaral ng wikang Filipino sa mas masaya at interaktibong paraan. Kami ay lubos na iginagalang ang iyong karapatan sa privacy at tinitiyak na ligtas ang lahat ng impormasyong ibinibigay mo habang ginagamit ang aming app.<br><br>
+
+<b>1. Impormasyong Kinokolekta</b><br>
+Kinokolekta lamang ng HabiAral ang mga sumusunod na impormasyon para sa layunin ng edukasyon at pag-save ng progreso:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;• Email mula sa Google Sign-In<br>
+&nbsp;&nbsp;&nbsp;&nbsp;• Auto-generated Student ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;• Palayaw (Nickname)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;• Mga naipasa mong aralin, puntos, at parangal sa app<br><br>
+
+<b>2. Layunin ng Pagkolekta</b><br>
+Ginagamit ang impormasyong ito para sa mga sumusunod na dahilan:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;• Pagrekord ng progreso sa mga aralin at palaro<br>
+&nbsp;&nbsp;&nbsp;&nbsp;• Pagpapakita ng parangal at puntos<br><br>
+
+<b>3. Seguridad ng Iyong Datos</b><br>
+Ang lahat ng data ay iniimbak nang ligtas gamit ang <b>Google Firebase</b>. Tanging ang mga developer ng HabiAral lamang ang may access dito. Walang sensitibong impormasyon tulad ng password, tirahan, o numero ng telepono ang kinokolekta o iniimbak.<br><br>
+
+<b>4. Pagbabahagi ng Impormasyon</b><br>
+Hindi ibinabahagi ng HabiAral ang iyong impormasyon sa mga third-party apps o advertisers. Ang lahat ng impormasyon ay ginagamit lamang sa loob ng sistema ng HabiAral para sa mga layuning pang-edukasyon.<br><br>
+
+<b>5. Mga Karapatan ng Gumagamit</b><br>
+Bilang gumagamit, ikaw ay may karapatang:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;• Humiling ng kopya ng iyong data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;• Humiling ng pagbura ng iyong account o impormasyon<br>
+&nbsp;&nbsp;&nbsp;&nbsp;• Makipag-ugnayan sa aming team kung may katanungan o alalahanin<br><br>
+
+<b>6. Mga Pagbabago sa Patakaran</b><br>
+Maaaring baguhin o i-update ang patakaran sa privacy anumang oras upang mapabuti ang seguridad at serbisyo. Ang mga pagbabago ay ipapaalam sa pamamagitan ng update sa Google Play Store.<br><br>
+
+<b>7. Para sa mga Katanungan</b><br>
+Kung may mga katanungan, suhestiyon, o alalahanin tungkol sa patakarang ito, makipag-ugnayan sa amin sa:<br>
+<b>Email:</b> habiaral.devs@gmail.com<br><br>
+
+Sa pagpapatuloy ng paggamit ng HabiAral, sumasang-ayon ka sa pangongolekta at paggamit ng iyong impormasyon alinsunod sa patakarang ito.
+]]>
+</string>
+
+
 </resources>

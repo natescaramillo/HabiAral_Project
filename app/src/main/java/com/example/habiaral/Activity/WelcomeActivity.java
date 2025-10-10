@@ -3,9 +3,11 @@ package com.example.habiaral.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -91,6 +93,9 @@ public class WelcomeActivity extends AppCompatActivity {
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
+        TextView policyText = dialogView.findViewById(R.id.patakarantext);
+        policyText.setText(Html.fromHtml(getString(R.string.policy), Html.FROM_HTML_MODE_LEGACY));
+
     }
 
     private void startInternetChecking() {
