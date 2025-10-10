@@ -18,6 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.habiaral.Cache.LessonProgressCache;
 import com.example.habiaral.R;
 import com.example.habiaral.Utils.InternetCheckerUtils;
+import com.example.habiaral.Utils.SoundClickUtils;
 import com.google.android.gms.auth.api.signin.*;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
@@ -73,6 +74,7 @@ public class WelcomeActivity extends AppCompatActivity {
         Button btnDecline = dialogView.findViewById(R.id.hindi_muna);
 
         btnAgree.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                     .edit()
                     .putBoolean(KEY_PRIVACY_ACCEPTED, true)
@@ -83,6 +85,7 @@ public class WelcomeActivity extends AppCompatActivity {
         });
 
         btnDecline.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             dialog.dismiss();
             Toast.makeText(this, "Kailangan mong sumang-ayon sa Patakaran upang magpatuloy.", Toast.LENGTH_LONG).show();
             finish();

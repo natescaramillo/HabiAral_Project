@@ -55,14 +55,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 
 public class PalaroDalubhasa extends AppCompatActivity {
-
-    private int consecutivePerfectCount = 0;
-    private static final int REQUIRED_CONSECUTIVE_PERFECT = 5;
-
     private TextView dalubhasaInstruction, grammarFeedbackText, errorTooltip;
     private EditText userSentenceInput;
     private List<String> dalubhasaIDs = new ArrayList<>();
-
     private ProgressBar timerBar;
     private Button btnTapos, btnUmalis, btnSuriin;
     private ImageView[] heartIcons;
@@ -281,7 +276,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         }
 
         int wordCount = countWordsExcludingKeywords(sentence, currentKeywords);
-        if (wordCount > 10) {
+        if (wordCount > 20) {
             showInputError("Pinakamataas na bilang ay sampung salita, ngunit hindi kabilang ang panuto.");
             return;
         }

@@ -28,6 +28,7 @@ import com.example.habiaral.R;
 import com.example.habiaral.Utils.AchievementDialogUtils;
 import com.example.habiaral.Utils.FinishDialogUtils;
 import com.example.habiaral.Utils.SoundClickUtils;
+import com.example.habiaral.Utils.SoundEffectsManager;
 import com.example.habiaral.Utils.TimerSoundUtils;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -107,6 +108,8 @@ public class PalaroBaguhan extends AppCompatActivity {
             };
             connectivityManager.registerDefaultNetworkCallback(networkCallback);
         }
+
+        SoundEffectsManager.init(this);
 
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
@@ -292,9 +295,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                                         }
                                     }, 3000);
 
-                                    MediaPlayer correctSound = MediaPlayer.create(this, R.raw.correct);
-                                    correctSound.setOnCompletionListener(MediaPlayer::release);
-                                    correctSound.start();
+                                    SoundEffectsManager.play("CORRECT");
 
                                     Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
                                     String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -305,9 +306,7 @@ public class PalaroBaguhan extends AppCompatActivity {
                                 } else {
                                     correctStreak = 0;
                                     deductHeart();
-                                    MediaPlayer wrongSound = MediaPlayer.create(this, R.raw.wrong);
-                                    wrongSound.setOnCompletionListener(MediaPlayer::release);
-                                    wrongSound.start();
+                                    SoundEffectsManager.play("WRONG");
 
                                     if (!isFinishing() && !isDestroyed()) {
                                         Glide.with(this).asGif()
@@ -927,6 +926,9 @@ public class PalaroBaguhan extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         exitGame();
+
+        SoundEffectsManager.release();
+
         if (tts != null) {
             tts.shutdown();
             tts = null;
