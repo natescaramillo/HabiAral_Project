@@ -5,8 +5,8 @@
     android:id="@+id/questionBaguhan"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="@drawable/question_bg_drawable">
+    android:background="@drawable/question_bg_drawable"
+    android:fitsSystemWindows="true">
 
     <!-- Top guideline -->
     <androidx.constraintlayout.widget.Guideline
@@ -30,9 +30,9 @@
         android:fontFamily="@font/special"
         android:text="Punan ang mga patlang"
         android:textSize="16sp"
-        app:layout_constraintTop_toTopOf="@id/topGuide"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/topGuide" />
 
     <TextView
         android:id="@+id/baguhan_instructionText"
@@ -74,7 +74,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/characterIcon"
+        app:layout_constraintTop_toBottomOf="@+id/characterIcon"
         app:layout_constraintVertical_bias="1.0">
         <!-- Hearts Row -->
         <LinearLayout
@@ -189,8 +189,8 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/ala_sans"
                     android:gravity="center"
-                    android:textAllCaps="false"
                     android:text=""
+                    android:textAllCaps="false"
                     android:textSize="12sp" />
 
                 <Button
@@ -203,8 +203,8 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/ala_sans"
                     android:gravity="center"
-                    android:textAllCaps="false"
                     android:text=""
+                    android:textAllCaps="false"
                     android:textSize="12sp" />
 
                 <Button
@@ -215,8 +215,8 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/ala_sans"
                     android:gravity="center"
-                    android:textAllCaps="false"
                     android:text=""
+                    android:textAllCaps="false"
                     android:textSize="12sp" />
 
                 <Button
@@ -227,8 +227,8 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/ala_sans"
                     android:gravity="center"
-                    android:textAllCaps="false"
                     android:text=""
+                    android:textAllCaps="false"
                     android:textSize="12sp" />
 
                 <Button
@@ -239,8 +239,8 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/ala_sans"
                     android:gravity="center"
-                    android:textAllCaps="false"
                     android:text=""
+                    android:textAllCaps="false"
                     android:textSize="12sp" />
 
                 <Button
@@ -251,8 +251,8 @@
                     android:background="@drawable/answer_option_bg"
                     android:fontFamily="@font/ala_sans"
                     android:gravity="center"
-                    android:textAllCaps="false"
                     android:text=""
+                    android:textAllCaps="false"
                     android:textSize="12sp" />
 
             </GridLayout>
@@ -267,8 +267,8 @@
 
                 <Button
                     android:id="@+id/UnlockButtonPalaro1"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="120dp"
+                    android:layout_height="52dp"
                     android:layout_marginEnd="50dp"
                     android:background="@drawable/rounded_button_achievement"
                     android:fontFamily="@font/ala_sans"
@@ -276,8 +276,8 @@
 
                 <Button
                     android:id="@+id/UnlockButtonPalaro"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="120dp"
+                    android:layout_height="52dp"
                     android:layout_marginStart="100dp"
                     android:background="@drawable/rounded_button_achievement"
                     android:fontFamily="@font/ala_sans"
@@ -288,6 +288,13 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline46"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.46" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
