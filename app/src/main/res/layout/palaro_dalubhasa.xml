@@ -102,7 +102,6 @@
             android:layout_width="0dp"
             android:layout_height="140dp"
             android:layout_marginTop="12dp"
-            android:layout_marginEnd="10dp"
             android:background="@drawable/rounded_rect"
             android:gravity="top|start"
             android:hint="Ilagay ang iyong sagot dito..."
