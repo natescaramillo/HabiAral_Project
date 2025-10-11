@@ -27,8 +27,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomBar"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="413dp"
+        android:layout_height="481dp"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -222,6 +222,23 @@
             app:layout_constraintTop_toTopOf="@+id/dalubhasa_answer"
             app:layout_constraintVertical_bias="0.036" />
 
+        <TextView
+            android:id="@+id/errorTooltip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:background="@drawable/tooltip_bubble"
+            android:padding="4dp"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/dalubhasa_answer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline16"
+            app:layout_constraintVertical_bias="1.0" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -278,23 +295,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.46" />
-
-    <TextView
-        android:id="@+id/errorTooltip"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="180dp"
-        android:background="@drawable/tooltip_bubble"
-        android:padding="4dp"
-        android:textColor="@android:color/white"
-        android:textSize="14sp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintGuide_percent="0.46015713" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

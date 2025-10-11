@@ -128,10 +128,10 @@
             android:useDefaultMargins="true"
             app:layout_constraintBottom_toTopOf="@id/UnlockButtonPalaro"
             app:layout_constraintEnd_toEndOf="@id/guideline8"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="@id/guideline8"
             app:layout_constraintTop_toBottomOf="@id/timerBar"
-            app:layout_constraintVertical_bias="0.5">
+            app:layout_constraintVertical_bias="0.224">
 
 
             <Button
@@ -141,8 +141,8 @@
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
                 android:fontFamily="@font/ala_sans"
-                android:textAllCaps="false"
                 android:gravity="center"
+                android:textAllCaps="false"
                 android:textSize="15sp" />
 
             <Button
@@ -152,8 +152,8 @@
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
                 android:fontFamily="@font/ala_sans"
-                android:textAllCaps="false"
                 android:gravity="center"
+                android:textAllCaps="false"
                 android:textSize="15sp" />
 
             <Button
@@ -163,8 +163,8 @@
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
                 android:fontFamily="@font/ala_sans"
-                android:textAllCaps="false"
                 android:gravity="center"
+                android:textAllCaps="false"
                 android:textSize="15sp" />
 
             <Button
@@ -174,8 +174,8 @@
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
                 android:fontFamily="@font/ala_sans"
-                android:textAllCaps="false"
                 android:gravity="center"
+                android:textAllCaps="false"
                 android:textSize="15sp" />
 
             <Button
@@ -185,8 +185,8 @@
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
                 android:fontFamily="@font/ala_sans"
-                android:textAllCaps="false"
                 android:gravity="center"
+                android:textAllCaps="false"
                 android:textSize="15sp" />
 
             <Button
@@ -196,8 +196,8 @@
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
                 android:fontFamily="@font/ala_sans"
-                android:textAllCaps="false"
                 android:gravity="center"
+                android:textAllCaps="false"
                 android:textSize="15sp" />
 
             <Button
@@ -207,8 +207,8 @@
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
                 android:fontFamily="@font/ala_sans"
-                android:textAllCaps="false"
                 android:gravity="center"
+                android:textAllCaps="false"
                 android:textSize="15sp" />
 
             <Button
@@ -218,8 +218,8 @@
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
                 android:fontFamily="@font/ala_sans"
-                android:textAllCaps="false"
                 android:gravity="center"
+                android:textAllCaps="false"
                 android:textSize="15sp" />
 
             <Button
@@ -229,8 +229,8 @@
                 android:layout_margin="9dp"
                 android:background="@drawable/answer_option_bg"
                 android:fontFamily="@font/ala_sans"
-                android:textAllCaps="false"
                 android:gravity="center"
+                android:textAllCaps="false"
                 android:textSize="15sp" />
 
         </GridLayout>
@@ -244,10 +244,10 @@
             android:text="Tapos"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guidelinehorizontal4"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.718"
             app:layout_constraintStart_toStartOf="@+id/guideline8"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.962" />
+            app:layout_constraintVertical_bias="0.901" />
 
         <Button
             android:id="@+id/UnlockButtonPalaro1"
@@ -258,10 +258,10 @@
             android:text="Umalis"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline8"
-            app:layout_constraintHorizontal_bias="0.244"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.962" />
+            app:layout_constraintHorizontal_bias="0.465"
+            app:layout_constraintStart_toStartOf="@+id/guidelinehorizontal3"
+            app:layout_constraintTop_toBottomOf="@+id/husay_grid"
+            app:layout_constraintVertical_bias="0.55" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline8"
