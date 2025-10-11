@@ -377,7 +377,7 @@
                 android:fontFamily="@font/ala_sans"
                 android:text="Tara na at matuto!"
                 android:textColor="#A27B5C"
-                android:textSize="20sp" />
+                android:textSize="23sp" />
 
             <TextView
                 android:id="@+id/character_Line_homepage2"
@@ -386,7 +386,7 @@
                 android:fontFamily="@font/ala_sans"
                 android:text="Salamat sa pag gamit."
                 android:textColor="#A27B5C"
-                android:textSize="15sp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
