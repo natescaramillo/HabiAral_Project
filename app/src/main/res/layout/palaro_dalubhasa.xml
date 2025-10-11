@@ -27,7 +27,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomBar"
-        android:layout_width="ma"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -207,8 +207,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/guideline12"
-            app:layout_constraintTop_toBottomOf="@+id/dalubhasa_answer"
-            app:layout_constraintVertical_bias="0.512" />
+            app:layout_constraintTop_toBottomOf="@+id/dalubhasa_answer" />
 
         <ImageView
             android:id="@+id/error_icon"
