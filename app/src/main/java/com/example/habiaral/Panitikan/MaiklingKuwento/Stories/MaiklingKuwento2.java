@@ -83,9 +83,12 @@ public class MaiklingKuwento2 extends AppCompatActivity {
         btnBack = findViewById(R.id.back_button);
         btnBack.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
-            startActivity(new Intent(MaiklingKuwento2.this, MaiklingKuwento.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
-            finish();
+            v.postDelayed(() -> {
+                startActivity(new Intent(MaiklingKuwento2.this, MaiklingKuwento.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+                finish();
+            }, 250);
+
         });
 
         storyImage = findViewById(R.id.imageViewComic);

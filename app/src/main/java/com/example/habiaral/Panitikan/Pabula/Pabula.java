@@ -63,7 +63,10 @@ public class Pabula extends AppCompatActivity {
         }
 
         ImageView helpBtn = findViewById(R.id.imageView14);
-        helpBtn.setOnClickListener(v -> showDescriptionDialog());
+        helpBtn.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            showDescriptionDialog();
+        });
     }
 
     private void showDescriptionDialog() {
