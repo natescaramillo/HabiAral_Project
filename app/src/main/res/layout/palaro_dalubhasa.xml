@@ -27,7 +27,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomBar"
-        android:layout_width="match_parent"
+        android:layout_width="ma"
         android:layout_height="wrap_content"
         android:background="@drawable/bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -102,6 +102,7 @@
             android:layout_width="344dp"
             android:layout_height="140dp"
             android:layout_marginTop="12dp"
+            android:layout_marginEnd="10dp"
             android:background="@drawable/rounded_rect"
             android:gravity="top|start"
             android:hint="Ilagay ang iyong sagot dito..."
@@ -213,18 +214,19 @@
             android:id="@+id/error_icon"
             android:layout_width="23dp"
             android:layout_height="22dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/exclamation_mark"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/dalubhasa_answer"
             app:layout_constraintEnd_toEndOf="@+id/dalubhasa_answer"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.964"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/dalubhasa_answer"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.021" />
 
         <TextView
             android:id="@+id/errorTooltip"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:background="@drawable/tooltip_bubble"
@@ -233,11 +235,11 @@
             android:textSize="14sp"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/dalubhasa_answer"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/dalubhasa_answer"
             app:layout_constraintHorizontal_bias="0.6"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/dalubhasa_answer"
             app:layout_constraintTop_toTopOf="@+id/guideline16"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.885" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
