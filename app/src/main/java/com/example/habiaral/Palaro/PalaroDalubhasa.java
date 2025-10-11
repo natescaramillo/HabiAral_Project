@@ -1301,7 +1301,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
         return count;
     }
     private boolean hasDuplicateWordOrPhrase(String sentence) {
-        // ✅ Mga pinapayagang paulit-ulit (legit reduplication o pangkaraniwang salita)
         Set<String> whitelist = new HashSet<>(Arrays.asList(
                 "araw-araw", "gabi-gabi", "isa-isa", "dahan-dahan",
                 "tuwing-tuwing", "oras-oras", "minuto-minuto", "linggo-linggo",
@@ -1315,13 +1314,11 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 "may", "ngunit", "subalit", "dahil", "kung", "kapag", "sapagkat", "upang", "sa"
         ));
 
-        // ✅ Linisin ang pangungusap: alisin punctuation at gawing lowercase
         String cleaned = sentence.replaceAll("[^a-zA-ZÀ-ÿ0-9\\-\\s]", " ").toLowerCase();
         String[] words = cleaned.trim().split("\\s+");
 
         if (words.length < 2) return false;
 
-        // ✅ 1. Detect MAGKASUNOD na dobleng salita (e.g. "ako ako")
         for (int i = 0; i < words.length - 1; i++) {
             String current = words[i];
             String next = words[i + 1];
@@ -1331,9 +1328,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
             }
         }
 
-        // ✅ 2. Detect MAGKASUNOD na dobleng parirala (e.g. "ako ay ako ay")
         int wordCount = words.length;
-        for (int n = 2; n <= Math.min(4, wordCount / 2); n++) { // limit 4-word phrases
+        for (int n = 2; n <= Math.min(4, wordCount / 2); n++) {
             for (int i = 0; i <= wordCount - 2 * n; i++) {
                 boolean duplicate = true;
                 for (int j = 0; j < n; j++) {
@@ -1352,7 +1348,6 @@ public class PalaroDalubhasa extends AppCompatActivity {
             }
         }
 
-        // ✅ 3. Detect NON-CONSECUTIVE duplicates (e.g. “ako ay mabait ako”)
         Set<String> seen = new HashSet<>();
         for (String word : words) {
             if (seen.contains(word) && !whitelist.contains(word)) {
