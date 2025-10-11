@@ -36,7 +36,7 @@
         <LinearLayout
             android:id="@+id/heartsRow"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:orientation="horizontal"
@@ -247,7 +247,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/guideline8"
             app:layout_constraintTop_toBottomOf="@+id/husay_grid"
-            app:layout_constraintVertical_bias="0.542" />
+            app:layout_constraintVertical_bias="0.48" />
 
         <Button
             android:id="@+id/UnlockButtonPalaro1"
@@ -293,7 +293,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.42" />
+        app:layout_constraintGuide_percent="0.38" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
