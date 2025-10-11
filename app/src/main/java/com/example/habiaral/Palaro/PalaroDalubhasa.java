@@ -1323,7 +1323,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
             String current = words[i];
             String next = words[i + 1];
             if (current.equals(next) && !whitelist.contains(current)) {
-                System.out.println("⚠️ Dobleng salita: " + current);
+                System.out.println("Dobleng salita: " + current);
                 return true;
             }
         }
@@ -1341,7 +1341,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
                 if (duplicate) {
                     String phrase = String.join(" ", Arrays.copyOfRange(words, i, i + n));
                     if (!whitelist.contains(phrase)) {
-                        System.out.println("⚠️ Dobleng parirala: " + phrase);
+                        System.out.println("Dobleng parirala: " + phrase);
                         return true;
                     }
                 }
@@ -1351,7 +1351,7 @@ public class PalaroDalubhasa extends AppCompatActivity {
         Set<String> seen = new HashSet<>();
         for (String word : words) {
             if (seen.contains(word) && !whitelist.contains(word)) {
-                System.out.println("⚠️ Paulit-ulit na salita: " + word);
+                System.out.println("Paulit-ulit na salita: " + word);
                 return true;
             }
             seen.add(word);
