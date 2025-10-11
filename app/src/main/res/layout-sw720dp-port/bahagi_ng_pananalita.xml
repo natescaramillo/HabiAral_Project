@@ -135,8 +135,8 @@
             <!-- PANG-URI -->
             <LinearLayout
                 android:id="@+id/pandiwa"
-                android:layout_width="699dp"
-                android:layout_height="96dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
                 android:layout_marginHorizontal="50dp"
                 android:layout_marginTop="16dp"
                 android:alpha="0.5"
