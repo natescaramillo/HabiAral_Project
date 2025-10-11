@@ -1301,53 +1301,70 @@ public class PalaroDalubhasa extends AppCompatActivity {
         return count;
     }
     private boolean hasDuplicateWordOrPhrase(String sentence) {
+        // ✅ Mga pinapayagang paulit-ulit (legit reduplication o pangkaraniwang salita)
         Set<String> whitelist = new HashSet<>(Arrays.asList(
                 "araw-araw", "gabi-gabi", "isa-isa", "dahan-dahan",
                 "tuwing-tuwing", "oras-oras", "minuto-minuto", "linggo-linggo",
                 "dalawa-dalawa", "sunod-sunod", "pila-pila",
                 "mabilis-mabilis", "marahan-marahan",
                 "sama-sama", "magkakasama-sama", "buo-buo",
-                "taon-taon", "buwan-buwan", "ang", "ako", "ko", "siya", "ay",
-                "ng", "nang", "at", "mga", "na", "ko", "mo", "si", "ni", "kay", "ito", "iyon", "doon", "dito",
+                "taon-taon", "buwan-buwan",
+                "ang", "ako", "ko", "siya", "ay", "ng", "nang", "at", "mga", "na",
+                "mo", "si", "ni", "kay", "ito", "iyon", "doon", "dito",
                 "nga", "rin", "din", "pa", "ba", "lang", "para", "wala", "meron",
                 "may", "ngunit", "subalit", "dahil", "kung", "kapag", "sapagkat", "upang", "sa"
         ));
 
+        // ✅ Linisin ang pangungusap: alisin punctuation at gawing lowercase
         String cleaned = sentence.replaceAll("[^a-zA-ZÀ-ÿ0-9\\-\\s]", " ").toLowerCase();
         String[] words = cleaned.trim().split("\\s+");
 
-        Set<String> seenSingle = new HashSet<>();
+        if (words.length < 2) return false;
 
-        for (String word : words) {
-            if (seenSingle.contains(word) && !whitelist.contains(word)) return true;
-            seenSingle.add(word);
+        // ✅ 1. Detect MAGKASUNOD na dobleng salita (e.g. "ako ako")
+        for (int i = 0; i < words.length - 1; i++) {
+            String current = words[i];
+            String next = words[i + 1];
+            if (current.equals(next) && !whitelist.contains(current)) {
+                System.out.println("⚠️ Dobleng salita: " + current);
+                return true;
+            }
         }
 
+        // ✅ 2. Detect MAGKASUNOD na dobleng parirala (e.g. "ako ay ako ay")
         int wordCount = words.length;
-        for (int n = 2; n <= wordCount / 2; n++) {
+        for (int n = 2; n <= Math.min(4, wordCount / 2); n++) { // limit 4-word phrases
             for (int i = 0; i <= wordCount - 2 * n; i++) {
                 boolean duplicate = true;
-                StringBuilder phrase1 = new StringBuilder();
-                StringBuilder phrase2 = new StringBuilder();
-
                 for (int j = 0; j < n; j++) {
-                    phrase1.append(words[i + j]).append(" ");
-                    phrase2.append(words[i + j + n]).append(" ");
                     if (!words[i + j].equals(words[i + j + n])) {
                         duplicate = false;
                         break;
                     }
                 }
-
-                String p1 = phrase1.toString().trim();
-                if (duplicate && !whitelist.contains(p1)) {
-                    return true;
+                if (duplicate) {
+                    String phrase = String.join(" ", Arrays.copyOfRange(words, i, i + n));
+                    if (!whitelist.contains(phrase)) {
+                        System.out.println("⚠️ Dobleng parirala: " + phrase);
+                        return true;
+                    }
                 }
             }
         }
 
+        // ✅ 3. Detect NON-CONSECUTIVE duplicates (e.g. “ako ay mabait ako”)
+        Set<String> seen = new HashSet<>();
+        for (String word : words) {
+            if (seen.contains(word) && !whitelist.contains(word)) {
+                System.out.println("⚠️ Paulit-ulit na salita: " + word);
+                return true;
+            }
+            seen.add(word);
+        }
+
         return false;
     }
+
 
 
 }
