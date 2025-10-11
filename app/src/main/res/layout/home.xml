@@ -17,7 +17,7 @@
         android:layout_height="300dp"
         android:layout_marginStart="250dp"
         android:layout_marginTop="-22dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginEnd="35dp"
         android:src="@drawable/idle"
         android:translationZ="10dp"
         app:layout_constraintEnd_toEndOf="parent"

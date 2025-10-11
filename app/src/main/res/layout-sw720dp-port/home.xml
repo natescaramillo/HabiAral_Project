@@ -13,10 +13,11 @@
 
     <ImageView
         android:id="@+id/imageView7"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
+        android:layout_width="558dp"
+        android:layout_height="399dp"
         android:layout_marginStart="500dp"
         android:layout_marginTop="-30dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/idle"
         android:translationZ="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -354,8 +355,8 @@
     <!-- Character Card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_width="765dp"
+        android:layout_height="189dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="16dp"
@@ -379,7 +380,7 @@
                 android:fontFamily="@font/ala_sans"
                 android:text="Tara na at matuto!"
                 android:textColor="#A27B5C"
-                android:textSize="30sp" />
+                android:textSize="40sp" />
 
             <TextView
                 android:id="@+id/character_Line_homepage2"
@@ -388,7 +389,7 @@
                 android:fontFamily="@font/ala_sans"
                 android:text="Salamat sa pag gamit."
                 android:textColor="#A27B5C"
-                android:textSize="20sp" />
+                android:textSize="30sp" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
