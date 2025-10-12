@@ -47,7 +47,7 @@ public class MaiklingKuwento2 extends AppCompatActivity {
             R.drawable.tahanan28, R.drawable.tahanan29, R.drawable.tahanan30,
             R.drawable.tahanan31, R.drawable.tahanan32, R.drawable.tahanan33,
             R.drawable.tahanan34, R.drawable.tahanan35, R.drawable.tahanan36,
-            R.drawable.tahanan37, R.drawable.tahanan38
+            R.drawable.tahanan37, R.drawable.tahanan38, R.drawable.tahanan39
     };
 
     private static final String STORY_ID = "MaiklingKuwento2";
