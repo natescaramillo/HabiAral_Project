@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
+    android:background="@drawable/story_bg8"
     android:padding="16dp">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -19,14 +19,15 @@
         app:shapeAppearanceOverlay="@style/RoundedStyle"
         app:srcCompat="@drawable/back_button" />
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imageViewComic"
         android:layout_width="match_parent"
         android:layout_height="1000dp"
         android:layout_marginTop="24dp"
         android:layout_marginHorizontal="40dp"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
+        android:scaleType="fitXY"
+        app:shapeAppearanceOverlay="@style/RoundedStyle"
         android:src="@drawable/tupa1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,6 +41,7 @@
         android:background="@drawable/rounded_button_achievement"
         android:fontFamily="@font/special"
         android:text="Pagsusulit"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.528"
