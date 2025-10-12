@@ -108,6 +108,7 @@ public class EpikoKwento2 extends AppCompatActivity {
         });
 
         unlockButton.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
             if (isLessonDone) {
                 if (audioManager != null) {
                     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
