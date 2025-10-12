@@ -299,10 +299,16 @@ public class PayakQuiz extends AppCompatActivity {
 
     private void playTimerSound() {
         stopTimerSound();
-        timerPlayer = MediaPlayer.create(this, R.raw.quiz_timer);
-        timerPlayer.setLooping(false);
-        timerPlayer.setVolume(1f, 1f);
-        timerPlayer.start();
+        try {
+            timerPlayer = MediaPlayer.create(this, R.raw.quiz_timer);
+            if (timerPlayer != null) {
+                timerPlayer.setLooping(false);
+                timerPlayer.setVolume(1f, 1f);
+                timerPlayer.start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void stopTimerSound() {
@@ -626,12 +632,17 @@ public class PayakQuiz extends AppCompatActivity {
 
     private void playReadySound() {
         if (!MuteButtonUtils.isSoundEnabled(this)) return;
+        if (isFinishing() || isDestroyed()) return;
 
         releaseReadyPlayer();
-        readyPlayer = MediaPlayer.create(this, R.raw.beep);
-        if (readyPlayer != null) {
-            readyPlayer.setOnCompletionListener(mp -> releaseReadyPlayer());
-            readyPlayer.start();
+        try {
+            readyPlayer = MediaPlayer.create(this, R.raw.beep);
+            if (readyPlayer != null) {
+                readyPlayer.setOnCompletionListener(mp -> releaseReadyPlayer());
+                readyPlayer.start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
