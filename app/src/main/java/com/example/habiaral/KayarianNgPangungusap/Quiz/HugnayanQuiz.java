@@ -227,11 +227,7 @@ public class HugnayanQuiz extends AppCompatActivity {
 
     private void loadQuestion(int index) {
         if (countDownTimer != null) countDownTimer.cancel();
-        if (quizList == null || quizList.isEmpty()) {
-            Toast.makeText(this, "Walang tanong na available.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (index < 0 || index >= quizList.size()) return;
+        if (quizList == null || quizList.isEmpty()) return;
 
         timerBar.setVisibility(View.VISIBLE);
         Map<String, Object> qData = quizList.get(index);
