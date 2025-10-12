@@ -11,16 +11,15 @@
 
     <ImageView
         android:id="@+id/characterIcon"
-        android:layout_width="400dp"
-        android:layout_height="500dp"
+        android:layout_width="597dp"
+        android:layout_height="493dp"
         android:src="@drawable/idle"
         app:layout_constraintBottom_toTopOf="@+id/guideline22"
         app:layout_constraintDimensionRatio="16:11"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.233" />
+        app:layout_constraintVertical_bias="0.259" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomBar"
