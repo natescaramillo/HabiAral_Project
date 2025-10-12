@@ -8,9 +8,9 @@
 
     <ImageView
         android:id="@+id/tarsierImage"
-        android:layout_width="194dp"
-        android:layout_height="188dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_width="239dp"
+        android:layout_height="264dp"
+        android:layout_gravity="center"
         android:layout_marginTop="300dp"
         android:src="@drawable/tarsier_logo" />
 
