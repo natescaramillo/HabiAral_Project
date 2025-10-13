@@ -328,8 +328,6 @@ public class PalaroHusay extends AppCompatActivity {
         );
 
         Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
-        timeLeft = Math.min(timeLeft + 3000, TOTAL_TIME);
-        restartTimer(timeLeft);
 
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         saveCorrectHusayAnswer(userId, userId, docId);
