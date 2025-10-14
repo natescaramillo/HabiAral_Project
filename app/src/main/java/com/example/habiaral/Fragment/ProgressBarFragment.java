@@ -110,17 +110,25 @@ public class ProgressBarFragment extends Fragment {
                     if (module3 != null) {
                         Map<String, Object> categories = (Map<String, Object>) module3.get("categories");
                         if (categories != null) {
-                            int totalCategories = 5;
-                            int completedCategories = 0;
+                            int totalStories = 10;
+                            int completedStories = 0;
 
                             for (Map.Entry<String, Object> categoryEntry : categories.entrySet()) {
                                 Map<String, Object> categoryData = (Map<String, Object>) categoryEntry.getValue();
-                                if (categoryData != null && "completed".equals(categoryData.get("status"))) {
-                                    completedCategories++;
+                                if (categoryData != null) {
+                                    Map<String, Object> stories = (Map<String, Object>) categoryData.get("stories");
+                                    if (stories != null) {
+                                        for (Map.Entry<String, Object> storyEntry : stories.entrySet()) {
+                                            Map<String, Object> storyData = (Map<String, Object>) storyEntry.getValue();
+                                            if (storyData != null && "completed".equals(storyData.get("status"))) {
+                                                completedStories++;
+                                            }
+                                        }
+                                    }
                                 }
                             }
 
-                            int progress = (completedCategories * 100) / totalCategories;
+                            int progress = (completedStories * 100) / totalStories;
                             progressBarPagUnawa.setProgress(progress);
                             progressPercentagePagUnawa.setText(progress + "%");
                             pagUnawaDescription.setText(getDescription(progress));
