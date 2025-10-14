@@ -50,7 +50,6 @@ public class SettingsFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
 
         FrameLayout btnAboutUs = view.findViewById(R.id.about_us);
-        FrameLayout btnChangeUsername = view.findViewById(R.id.change_username);
         FrameLayout btnLogout = view.findViewById(R.id.logout);
         FrameLayout btnSounds = view.findViewById(R.id.sounds);
         btnSound = view.findViewById(R.id.imageView11);
@@ -66,11 +65,6 @@ public class SettingsFragment extends Fragment {
         btnAboutUs.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
             startActivity(new Intent(requireActivity(), AboutUsActivity.class));
-        });
-
-        btnChangeUsername.setOnClickListener(v -> {
-            SoundClickUtils.playClickSound(getContext(), R.raw.button_click);
-            showChangeNicknameDialog();
         });
 
         btnSounds.setOnClickListener(v -> {
