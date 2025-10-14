@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.habiaral">
+    package="com.habiaral.app">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-sdk
@@ -9,19 +9,19 @@
         android:targetSdkVersion="35" />
 
     <application
-        android:name=".HabiAral"
+        android:name="com.habiaral.app.HabiAral"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.HabiAral">
 
-        <activity android:name=".Activity.IntroductionActivity" />
+        <activity android:name="com.habiaral.app.Activity.IntroductionActivity" />
 
         <activity
-            android:name=".Activity.AboutUsActivity"
+            android:name="com.habiaral.app.Activity.AboutUsActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.MainActivity"
+            android:name="com.habiaral.app.Activity.MainActivity"
             android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
@@ -31,157 +31,157 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.HomepageActivity"
+            android:name="com.habiaral.app.Activity.HomepageActivity"
             android:screenOrientation="portrait"
             android:exported="true" />
         <activity
-            android:name=".Activity.WelcomeActivity"
+            android:name="com.habiaral.app.Activity.WelcomeActivity"
             android:screenOrientation="portrait"
 
             android:exported="true" />
         <activity
-            android:name=".Palaro.Palaro"
+            android:name="com.habiaral.app.Palaro.Palaro"
             android:screenOrientation="portrait"
             android:exported="false" />
 
         <activity
-            android:name=".Diksyonaryo.Diksyonaryo"
+            android:name="com.habiaral.app.Diksyonaryo.Diksyonaryo"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".KayarianNgPangungusap.KayarianNgPangungusap"
+            android:name="com.habiaral.app.KayarianNgPangungusap.KayarianNgPangungusap"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".Panitikan.Panitikan"
+            android:name="com.habiaral.app.Panitikan.Panitikan"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".BahagiNgPananalita.BahagiNgPananalita"
+            android:name="com.habiaral.app.BahagiNgPananalita.BahagiNgPananalita"
             android:screenOrientation="portrait"
             android:exported="false" />
-        <activity android:name=".Palaro.PalaroBaguhan"
+        <activity android:name="com.habiaral.app.Palaro.PalaroBaguhan"
             android:screenOrientation="portrait" />
-        <activity android:name=".Palaro.PalaroHusay"
+        <activity android:name="com.habiaral.app.Palaro.PalaroHusay"
             android:screenOrientation="portrait" />
-        <activity android:name=".Palaro.PalaroDalubhasa"
+        <activity android:name="com.habiaral.app.Palaro.PalaroDalubhasa"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".BahagiNgPananalita.Lessons.PangngalanLesson"
+            android:name="com.habiaral.app.BahagiNgPananalita.Lessons.PangngalanLesson"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangngalanQuiz"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Quiz.PangngalanQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PandiwaLesson"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Lessons.PandiwaLesson"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PandiwaQuiz"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Quiz.PandiwaQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangUriLesson"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Lessons.PangUriLesson"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangUriQuiz"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Quiz.PangUriQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangHalipLesson"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Lessons.PangHalipLesson"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangHalipQuiz"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Quiz.PangHalipQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangAbayLesson"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Lessons.PangAbayLesson"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangAbayQuiz"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Quiz.PangAbayQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangatnigLesson"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Lessons.PangatnigLesson"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangatnigQuiz"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Quiz.PangatnigQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangUkolLesson"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Lessons.PangUkolLesson"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangUkolQuiz"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Quiz.PangUkolQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangAngkopLesson"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Lessons.PangAngkopLesson"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangAngkopQuiz"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Quiz.PangAngkopQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PandamdamLesson"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Lessons.PandamdamLesson"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PandamdamQuiz"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Quiz.PandamdamQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Lessons.PangawingLesson"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Lessons.PangawingLesson"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
-        <activity android:name=".BahagiNgPananalita.Quiz.PangawingQuiz"
+        <activity android:name="com.habiaral.app.BahagiNgPananalita.Quiz.PangawingQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Alamat.Alamat"
+        <activity android:name="com.habiaral.app.Panitikan.Alamat.Alamat"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Alamat.Stories.AlamatKwento1"
+        <activity android:name="com.habiaral.app.Panitikan.Alamat.Stories.AlamatKwento1"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Alamat.Quiz.AlamatKwento1Quiz"
+        <activity android:name="com.habiaral.app.Panitikan.Alamat.Quiz.AlamatKwento1Quiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Alamat.Stories.AlamatKwento2"
+        <activity android:name="com.habiaral.app.Panitikan.Alamat.Stories.AlamatKwento2"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Alamat.Quiz.AlamatKwento2Quiz"
+        <activity android:name="com.habiaral.app.Panitikan.Alamat.Quiz.AlamatKwento2Quiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Epiko.Epiko"
+        <activity android:name="com.habiaral.app.Panitikan.Epiko.Epiko"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Epiko.Stories.EpikoKwento1"
+        <activity android:name="com.habiaral.app.Panitikan.Epiko.Stories.EpikoKwento1"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Epiko.Quiz.EpikoKwento1Quiz"
+        <activity android:name="com.habiaral.app.Panitikan.Epiko.Quiz.EpikoKwento1Quiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Epiko.Stories.EpikoKwento2"
+        <activity android:name="com.habiaral.app.Panitikan.Epiko.Stories.EpikoKwento2"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Epiko.Quiz.EpikoKwento2Quiz"
+        <activity android:name="com.habiaral.app.Panitikan.Epiko.Quiz.EpikoKwento2Quiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.MaiklingKuwento.MaiklingKuwento"
+        <activity android:name="com.habiaral.app.Panitikan.MaiklingKuwento.MaiklingKuwento"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.MaiklingKuwento.Stories.MaiklingKuwento1"
+        <activity android:name="com.habiaral.app.Panitikan.MaiklingKuwento.Stories.MaiklingKuwento1"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.MaiklingKuwento.Quiz.MaiklingKuwento1Quiz"
+        <activity android:name="com.habiaral.app.Panitikan.MaiklingKuwento.Quiz.MaiklingKuwento1Quiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.MaiklingKuwento.Stories.MaiklingKuwento2"
+        <activity android:name="com.habiaral.app.Panitikan.MaiklingKuwento.Stories.MaiklingKuwento2"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.MaiklingKuwento.Quiz.MaiklingKuwento2Quiz"
+        <activity android:name="com.habiaral.app.Panitikan.MaiklingKuwento.Quiz.MaiklingKuwento2Quiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Pabula.Pabula"
+        <activity android:name="com.habiaral.app.Panitikan.Pabula.Pabula"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Pabula.Stories.PabulaKwento1"
+        <activity android:name="com.habiaral.app.Panitikan.Pabula.Stories.PabulaKwento1"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Pabula.Quiz.PabulaKwento1Quiz"
+        <activity android:name="com.habiaral.app.Panitikan.Pabula.Quiz.PabulaKwento1Quiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Pabula.Stories.PabulaKwento2"
+        <activity android:name="com.habiaral.app.Panitikan.Pabula.Stories.PabulaKwento2"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Pabula.Quiz.PabulaKwento2Quiz"
+        <activity android:name="com.habiaral.app.Panitikan.Pabula.Quiz.PabulaKwento2Quiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Parabula.Parabula"
+        <activity android:name="com.habiaral.app.Panitikan.Parabula.Parabula"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Parabula.Stories.ParabulaKwento1"
+        <activity android:name="com.habiaral.app.Panitikan.Parabula.Stories.ParabulaKwento1"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Parabula.Quiz.ParabulaKwento1Quiz"
+        <activity android:name="com.habiaral.app.Panitikan.Parabula.Quiz.ParabulaKwento1Quiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Parabula.Stories.ParabulaKwento2"
+        <activity android:name="com.habiaral.app.Panitikan.Parabula.Stories.ParabulaKwento2"
             android:screenOrientation="portrait" />
-        <activity android:name=".Panitikan.Parabula.Quiz.ParabulaKwento2Quiz"
+        <activity android:name="com.habiaral.app.Panitikan.Parabula.Quiz.ParabulaKwento2Quiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".KayarianNgPangungusap.Lessons.PayakLesson"
+        <activity android:name="com.habiaral.app.KayarianNgPangungusap.Lessons.PayakLesson"
             android:screenOrientation="portrait" />
-        <activity android:name=".KayarianNgPangungusap.Quiz.PayakQuiz"
+        <activity android:name="com.habiaral.app.KayarianNgPangungusap.Quiz.PayakQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".KayarianNgPangungusap.Lessons.TambalanLesson"
+        <activity android:name="com.habiaral.app.KayarianNgPangungusap.Lessons.TambalanLesson"
             android:screenOrientation="portrait" />
-        <activity android:name=".KayarianNgPangungusap.Quiz.TambalanQuiz"
+        <activity android:name="com.habiaral.app.KayarianNgPangungusap.Quiz.TambalanQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".KayarianNgPangungusap.Lessons.HugnayanLesson"
+        <activity android:name="com.habiaral.app.KayarianNgPangungusap.Lessons.HugnayanLesson"
             android:screenOrientation="portrait" />
-        <activity android:name=".KayarianNgPangungusap.Quiz.HugnayanQuiz"
+        <activity android:name="com.habiaral.app.KayarianNgPangungusap.Quiz.HugnayanQuiz"
             android:screenOrientation="portrait" />
-        <activity android:name=".KayarianNgPangungusap.Lessons.LangkapanLesson"
+        <activity android:name="com.habiaral.app.KayarianNgPangungusap.Lessons.LangkapanLesson"
             android:screenOrientation="portrait" />
-        <activity android:name=".KayarianNgPangungusap.Quiz.LangkapanQuiz"
+        <activity android:name="com.habiaral.app.KayarianNgPangungusap.Quiz.LangkapanQuiz"
             android:screenOrientation="portrait" />
     </application>
 

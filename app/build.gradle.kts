@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.habiaral"
+    namespace = "com.habiaral.app"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.habiaral"
+        applicationId ="com.habiaral.app"
         minSdk = 29
         targetSdk = 35
         versionCode = 1
