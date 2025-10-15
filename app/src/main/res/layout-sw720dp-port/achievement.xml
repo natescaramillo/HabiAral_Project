@@ -41,8 +41,9 @@
 
             <!-- Row 1 -->
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="20dp"
+                android:layout_height="155dp"
                 android:layout_marginBottom="16dp"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -66,12 +67,12 @@
                             android:layout_width="80dp"
                             android:layout_height="80dp"
                             android:layout_gravity="center"
+                            android:alpha="0.2"
                             android:background="@drawable/rounded_image"
                             android:clipToOutline="true"
-                            android:alpha="0.2"
                             android:scaleType="centerCrop"
                             android:src="@drawable/achievement01"
-                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
 
                     </FrameLayout>
 
@@ -79,7 +80,8 @@
                     <TextView
                         android:id="@+id/achievement1text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -108,16 +110,17 @@
                             android:layout_width="80dp"
                             android:layout_height="80dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/achievement02"
                             android:alpha="0.2"
                             android:scaleType="centerCrop"
-                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
+                            android:src="@drawable/achievement02"
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
                     </FrameLayout>
 
                     <TextView
                         android:id="@+id/achievement2text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -146,19 +149,20 @@
                             android:layout_width="80dp"
                             android:layout_height="80dp"
                             android:layout_gravity="center"
-                            android:background="@drawable/rounded_image"
                             android:alpha="0.2"
+                            android:background="@drawable/rounded_image"
                             android:clipToOutline="true"
                             android:scaleType="centerCrop"
                             android:src="@drawable/achievement03"
-                            app:shapeAppearanceOverlay="@style/RoundedImageStyle"/>
+                            app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
 
                     </FrameLayout>
 
                     <TextView
                         android:id="@+id/achievement3text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -171,7 +175,8 @@
 
             <!-- Row 2 -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="20dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:gravity="center"
@@ -208,7 +213,8 @@
                     <TextView
                         android:id="@+id/achievement4text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -249,7 +255,8 @@
                     <TextView
                         android:id="@+id/achievement5text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -290,7 +297,8 @@
                     <TextView
                         android:id="@+id/achievement6text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -303,7 +311,8 @@
 
             <!-- Row 3 -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="20dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -339,7 +348,8 @@
                     <TextView
                         android:id="@+id/achievement7text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -380,7 +390,8 @@
                     <TextView
                         android:id="@+id/achievement8text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -421,7 +432,8 @@
                     <TextView
                         android:id="@+id/achievement9text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -433,7 +445,8 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="20dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginTop="10dp"
@@ -470,7 +483,8 @@
                     <TextView
                         android:id="@+id/achievement10text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -511,7 +525,8 @@
                     <TextView
                         android:id="@+id/achievement11text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -552,7 +567,8 @@
                     <TextView
                         android:id="@+id/achievement12text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -564,7 +580,8 @@
             </LinearLayout>
             <!-- Row 5: Achievement 13 -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="20dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginTop="10dp"
@@ -601,7 +618,8 @@
                     <TextView
                         android:id="@+id/achievement13text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"

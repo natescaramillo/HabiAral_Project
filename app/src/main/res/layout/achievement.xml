@@ -79,8 +79,9 @@
                     <TextView
                         android:id="@+id/achievement1text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
+                        android:padding="10dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
                         android:gravity="center"
@@ -117,7 +118,8 @@
                     <TextView
                         android:id="@+id/achievement2text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -158,7 +160,8 @@
                     <TextView
                         android:id="@+id/achievement3text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -208,7 +211,8 @@
                     <TextView
                         android:id="@+id/achievement4text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -249,7 +253,8 @@
                     <TextView
                         android:id="@+id/achievement5text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -290,7 +295,8 @@
                     <TextView
                         android:id="@+id/achievement6text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -339,7 +345,8 @@
                     <TextView
                         android:id="@+id/achievement7text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -380,7 +387,8 @@
                     <TextView
                         android:id="@+id/achievement8text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -421,7 +429,8 @@
                     <TextView
                         android:id="@+id/achievement9text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -470,7 +479,8 @@
                     <TextView
                         android:id="@+id/achievement10text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -511,7 +521,8 @@
                     <TextView
                         android:id="@+id/achievement11text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -552,7 +563,8 @@
                     <TextView
                         android:id="@+id/achievement12text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
@@ -601,7 +613,8 @@
                     <TextView
                         android:id="@+id/achievement13text"
                         android:layout_width="94dp"
-                        android:layout_height="33dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/achievement_label"
                         android:fontFamily="@font/special"
