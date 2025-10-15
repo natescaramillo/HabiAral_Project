@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import android.content.ActivityNotFoundException;
 import android.speech.tts.Voice;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class PangAngkopLesson extends AppCompatActivity {
@@ -44,7 +45,7 @@ public class PangAngkopLesson extends AppCompatActivity {
     private Runnable idleGifRunnable;
     private final Map<Integer, List<String>> pageLines = new HashMap<>();
     private int currentPage = 0, resumePage = -1, resumeLine = -1;
-    private ImageView backOption, nextOption, imageView, imageView2, fullScreenOption, btnBack;
+    private ImageView backOption, nextOption, imageView, imageView2, fullScreenOption, btnBack, repeatButton;
     private Button unlockButton;
     private final boolean[] isFullScreen = {false};
     private boolean isNavigatingInsideApp = false, waitForResumeChoice = false,
@@ -78,8 +79,33 @@ public class PangAngkopLesson extends AppCompatActivity {
         nextOption = findViewById(R.id.button_next);
         fullScreenOption = findViewById(R.id.button_fullscreen);
 
+        TextView currentPageText = findViewById(R.id.current_page);
+        TextView totalPageText = findViewById(R.id.total_page);
+        repeatButton = findViewById(R.id.button_repeat);
+
+        totalPageText.setText(" / " + lessonPPT.length);
+
+        currentPageText.setText(String.valueOf(currentPage + 1));
+
+        repeatButton.setOnClickListener(v -> {
+            SoundClickUtils.playClickSound(this, R.raw.button_click);
+            stopSpeaking();
+            List<String> lines = pageLines.get(currentPage);
+            if (lines != null && !lines.isEmpty()) {
+                speakSequentialLines(lines, () -> {});
+            } else {
+                Toast.makeText(this, "Walang narration sa pahinang ito.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         unlockButton.setEnabled(false);
         unlockButton.setAlpha(0.5f);
+        backOption.setEnabled(false);
+        backOption.setAlpha(0.5f);
+        nextOption.setEnabled(false);
+        nextOption.setAlpha(0.5f);
+        repeatButton.setEnabled(false);
+        repeatButton.setAlpha(0.5f);
 
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
@@ -219,8 +245,18 @@ public class PangAngkopLesson extends AppCompatActivity {
 
     private void updatePage() {
         imageView.setImageResource(lessonPPT[currentPage]);
-        BahagiFirestoreUtils.saveLessonProgress(BahagiFirestoreUtils.getCurrentUser().getUid(),
-                "pangangkop", currentPage, isLessonDone);
+
+        TextView currentPageText = findViewById(R.id.current_page);
+        TextView totalPageText = findViewById(R.id.total_page);
+        currentPageText.setText(String.valueOf(currentPage + 1));
+        totalPageText.setText(" / " + lessonPPT.length);
+
+        BahagiFirestoreUtils.saveLessonProgress(
+                BahagiFirestoreUtils.getCurrentUser().getUid(),
+                "pangngalan",
+                currentPage,
+                isLessonDone
+        );
 
         stopSpeaking();
         updateNavigationButtons();
@@ -289,8 +325,17 @@ public class PangAngkopLesson extends AppCompatActivity {
                     if (!waitForResumeChoice) {
                         if (introLines != null && isFirstTime && !introLines.isEmpty()) {
                             isFirstTime = false;
-                            speakSequentialLines(introLines, this::updatePage);
-                        } else updatePage();
+
+                            speakSequentialLines(introLines, () -> {
+                                nextOption.setEnabled(true);
+                                nextOption.setAlpha(1f);
+                                repeatButton.setEnabled(true);
+                                repeatButton.setAlpha(1f);
+                                updatePage();
+                            });
+                        } else {
+                            updatePage();
+                        }
                     }
                 });
     }
