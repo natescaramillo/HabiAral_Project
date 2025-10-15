@@ -90,12 +90,19 @@ public class PangUriLesson extends AppCompatActivity {
 
         repeatButton.setOnClickListener(v -> {
             SoundClickUtils.playClickSound(this, R.raw.button_click);
+            repeatButton.setEnabled(false);
+            repeatButton.setAlpha(0.5f);
             stopSpeaking();
             List<String> lines = pageLines.get(currentPage);
             if (lines != null && !lines.isEmpty()) {
-                speakSequentialLines(lines, () -> {});
+                speakSequentialLines(lines, () -> {
+                    repeatButton.setEnabled(true);
+                    repeatButton.setAlpha(1f);
+                });
             } else {
                 Toast.makeText(this, "Walang narration sa pahinang ito.", Toast.LENGTH_SHORT).show();
+                repeatButton.setEnabled(true);
+                repeatButton.setAlpha(1f);
             }
         });
 
@@ -258,6 +265,9 @@ public class PangUriLesson extends AppCompatActivity {
                 isLessonDone
         );
 
+        repeatButton.setEnabled(false);
+        repeatButton.setAlpha(0.5f);
+
         stopSpeaking();
         updateNavigationButtons();
 
@@ -268,7 +278,10 @@ public class PangUriLesson extends AppCompatActivity {
 
         List<String> lines = pageLines.get(currentPage);
         if (lines != null && !lines.isEmpty()) {
-            speakSequentialLines(lines, () -> {});
+            speakSequentialLines(lines, () -> {
+                repeatButton.setEnabled(true);
+                repeatButton.setAlpha(1f);
+            });
         }
     }
 
@@ -329,8 +342,6 @@ public class PangUriLesson extends AppCompatActivity {
                             speakSequentialLines(introLines, () -> {
                                 nextOption.setEnabled(true);
                                 nextOption.setAlpha(1f);
-                                repeatButton.setEnabled(true);
-                                repeatButton.setAlpha(1f);
                                 updatePage();
                             });
                         } else {
