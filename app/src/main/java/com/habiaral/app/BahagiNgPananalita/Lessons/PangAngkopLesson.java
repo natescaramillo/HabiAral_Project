@@ -260,7 +260,7 @@ public class PangAngkopLesson extends AppCompatActivity {
 
         BahagiFirestoreUtils.saveLessonProgress(
                 BahagiFirestoreUtils.getCurrentUser().getUid(),
-                "pangngalan",
+                "pangangkop",
                 currentPage,
                 isLessonDone
         );

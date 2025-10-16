@@ -260,7 +260,7 @@ public class PandamdamLesson extends AppCompatActivity {
 
         BahagiFirestoreUtils.saveLessonProgress(
                 BahagiFirestoreUtils.getCurrentUser().getUid(),
-                "pangngalan",
+                "pandamdam",
                 currentPage,
                 isLessonDone
         );

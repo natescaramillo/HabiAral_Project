@@ -264,7 +264,7 @@ public class PandiwaLesson extends AppCompatActivity {
 
         BahagiFirestoreUtils.saveLessonProgress(
                 BahagiFirestoreUtils.getCurrentUser().getUid(),
-                "pangngalan",
+                "pandiwa",
                 currentPage,
                 isLessonDone
         );

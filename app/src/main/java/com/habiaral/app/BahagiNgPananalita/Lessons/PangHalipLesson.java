@@ -261,7 +261,7 @@ public class PangHalipLesson extends AppCompatActivity {
 
         BahagiFirestoreUtils.saveLessonProgress(
                 BahagiFirestoreUtils.getCurrentUser().getUid(),
-                "pangngalan",
+                "panghalip",
                 currentPage,
                 isLessonDone
         );
