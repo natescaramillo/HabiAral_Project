@@ -124,6 +124,13 @@
         kabuuan ng sagot.
     </string>
 
+    <string name ="quiz_rule">
+        Paalala:\nMaaaring pumili lamang ng isang (1) sagot sa bawat tanong.
+        Kapag napili mo na ang iyong sagot, hindi mo na ito maaaring baguhin.
+        Mangyaring basahing mabuti ang bawat tanong bago pumili ng sagot.
+        Ang unang pagpili mo ang siyang itatala bilang iyong huling kasagutan.
+    </string>
+
     <!-- Policy -->
     <string name="policy">
 <![CDATA[
