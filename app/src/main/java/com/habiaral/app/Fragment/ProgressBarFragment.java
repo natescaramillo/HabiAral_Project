@@ -144,9 +144,9 @@ public class ProgressBarFragment extends Fragment {
     private String getDescription(int progress) {
         if (progress == 100) {
             return "Tapos na!";
-        } else if (progress >= 70) {
+        } else if (progress >= 80) {
             return "Malapit nang matapos...";
-        } else if (progress >= 40) {
+        } else if (progress >= 50) {
             return "Patuloy lang, kalahati na!";
         } else if (progress > 0) {
             return "Kakaumpisa pa lang.";
