@@ -719,31 +719,36 @@ public class ParabulaKwento2Quiz extends AppCompatActivity {
         if (startCountdownTimer != null) {
             startCountdownTimer.cancel();
             startCountdownTimer = null;
-
-            stopTimerSound();
-            releaseReadyPlayer();
-
-            answer1.setVisibility(View.GONE);
-            answer2.setVisibility(View.GONE);
-            answer3.setVisibility(View.GONE);
-            timerBar.setVisibility(View.GONE);
-            nextButton.setVisibility(View.GONE);
-            background.setVisibility(View.GONE);
-            introButton.setVisibility(View.VISIBLE);
-            introButton.setEnabled(true);
-
-            questionTitle.setText("Simula");
-            questionText.setText(introText);
-            currentIndex = -1;
         }
 
-        if (isFinishing() || isDestroyed()) {
-            if (countDownTimer != null) {
-                countDownTimer.cancel();
-                countDownTimer = null;
-            }
-            stopTimerSound();
-            releaseReadyPlayer();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
         }
+
+        stopTimerSound();
+        releaseReadyPlayer();
+        releaseResultPlayer();
+
+        quizFinished = false;
+        isAnswered = false;
+        correctAnswers = 0;
+        currentIndex = -1;
+
+        answer1.setVisibility(View.GONE);
+        answer2.setVisibility(View.GONE);
+        answer3.setVisibility(View.GONE);
+        timerBar.setVisibility(View.GONE);
+        nextButton.setVisibility(View.GONE);
+        background.setVisibility(View.GONE);
+        box.setVisibility(View.VISIBLE);
+        paalala.setVisibility(View.VISIBLE);
+        character.setVisibility(View.VISIBLE);
+
+        introButton.setVisibility(View.VISIBLE);
+        introButton.setEnabled(true);
+
+        questionTitle.setText("Simula");
+        questionText.setText(introText);
     }
 }
