@@ -48,24 +48,45 @@
         app:layout_constraintTop_toBottomOf="@+id/question_number"
         app:layout_constraintVertical_bias="0.18" />
 
-    <TextView
-        android:id="@+id/textView25"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="."
-        app:layout_constraintBottom_toTopOf="@+id/intro_button"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/search_bar"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question_text"
-        app:layout_constraintVertical_bias="0.115" />
+        app:layout_constraintTop_toBottomOf="@+id/question_text">
 
+
+        <TextView
+            android:id="@+id/textView25"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ala_sans"
+            android:justificationMode="inter_word"
+            android:text="@string/quiz_rule"
+            android:textColor="#543626"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+    <!-- Bottom Bar -->
     <View
         android:id="@+id/bottom_bar"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/bottom_bar_bg"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -88,7 +109,7 @@
         android:max="100"
         android:progress="100"
         android:progressDrawable="@drawable/timer_color_green"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/bottom_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -109,7 +130,7 @@
         android:text="Answer 1"
         android:textAllCaps="false"
         android:textSize="12sp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -126,7 +147,7 @@
         android:text="Answer 2"
         android:textAllCaps="false"
         android:textSize="12sp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/answer1"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/answer1"
@@ -143,7 +164,7 @@
         android:text="Answer 3"
         android:textAllCaps="false"
         android:textSize="12sp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/answer1"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/answer1"
@@ -159,6 +180,7 @@
         android:text="Magsimula"
         android:textColor="#000000"
         android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
@@ -174,6 +196,8 @@
         android:fontFamily="@font/special"
         android:text="Sunod"
         android:textColor="#000000"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/answer3" />
 
@@ -184,6 +208,17 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.45" />
 
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="284dp"
+        android:layout_height="254dp"
+        app:layout_constraintBottom_toTopOf="@+id/intro_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3"
+        app:layout_constraintVertical_bias="0.471"
+        app:srcCompat="@drawable/warning_tarsier" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
