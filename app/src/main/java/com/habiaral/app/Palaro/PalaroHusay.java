@@ -341,7 +341,6 @@ public class PalaroHusay extends AppCompatActivity {
         correctStreak = 0;
         deductHeart();
         loadCharacterLine(remainingHearts > 0 ? "MCL6" : "MCL5");
-        new Handler().postDelayed(() -> speakText("Mali ang sagot."), 400);
         Toast.makeText(this, "Mali.", Toast.LENGTH_SHORT).show();
     }
 
