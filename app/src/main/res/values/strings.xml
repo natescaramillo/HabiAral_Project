@@ -129,6 +129,13 @@
         Kapag napili mo na ang iyong sagot, hindi mo na ito maaaring baguhin.
     </string>
 
+    <string name ="palaro_rule">
+        Paalala:
+        Maaaring pumili lamang ng sagot na sa tingin mo ay tama sa bawat tanong.
+        Kapag napili mo na ang iyong sagot, hindi mo na ito maaaring palitan.
+    </string>
+
+
     <!-- Policy -->
     <string name="policy">
 <![CDATA[
