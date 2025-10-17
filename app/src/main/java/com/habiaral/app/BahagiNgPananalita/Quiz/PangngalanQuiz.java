@@ -9,12 +9,14 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.habiaral.app.BahagiNgPananalita.BahagiNgPananalita;
 import com.habiaral.app.BahagiNgPananalita.Lessons.PandiwaLesson;
@@ -40,7 +42,7 @@ public class PangngalanQuiz extends AppCompatActivity {
 
     private List<Map<String, Object>> allQuizList = new ArrayList<>(), quizList = new ArrayList<>();
     private Button answer1, answer2, answer3, nextButton, introButton;
-    private TextView questionText, questionTitle;
+    private TextView questionText, questionTitle, paalala;
     private Drawable redDrawable, orangeDrawable, greenDrawable;
     private ProgressBar timerBar;
     private View background;
@@ -52,6 +54,8 @@ public class PangngalanQuiz extends AppCompatActivity {
     private boolean quizFinished = false, isAnswered = false, isMuted = false;
     private int lastColorStage = 3, correctAnswers = 0, totalQuestions = 0, currentIndex = -1;
     private String correctAnswer = "", lessonName = "", introText = "";
+    private ConstraintLayout box;
+    private ImageView character;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +77,9 @@ public class PangngalanQuiz extends AppCompatActivity {
         answer1 = findViewById(R.id.answer1);
         answer2 = findViewById(R.id.answer2);
         answer3 = findViewById(R.id.answer3);
+        box = findViewById(R.id.constraintLayout3);
+        paalala = findViewById(R.id.textView25);
+        character = findViewById(R.id.imageView9);
         db = FirebaseFirestore.getInstance();
 
         answer1.setVisibility(View.GONE);
@@ -229,6 +236,9 @@ public class PangngalanQuiz extends AppCompatActivity {
         if (countDownTimer != null) countDownTimer.cancel();
         if (quizList == null || quizList.isEmpty()) return;
 
+        box.setVisibility(View.GONE);
+        paalala.setVisibility(View.GONE);
+        character.setVisibility(View.GONE);
         timerBar.setVisibility(View.VISIBLE);
         Map<String, Object> qData = quizList.get(index);
         String question = (String) qData.get("question");
