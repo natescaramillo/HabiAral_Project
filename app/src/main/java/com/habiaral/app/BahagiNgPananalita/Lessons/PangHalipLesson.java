@@ -25,6 +25,10 @@ import com.habiaral.app.Utils.SoundManagerUtils;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -75,6 +79,15 @@ public class PangHalipLesson extends AppCompatActivity {
 
         unlockButton = findViewById(R.id.button_unlock);
         imageView = findViewById(R.id.lesson_image);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.lesson_root), (v, insets) -> {
+            Insets navInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            ConstraintLayout.LayoutParams params =
+                    (ConstraintLayout.LayoutParams) unlockButton.getLayoutParams();
+            params.bottomMargin = navInsets.bottom + 20;
+            unlockButton.setLayoutParams(params);
+            return insets;
+        });
 
         backOption = findViewById(R.id.button_back);
         nextOption = findViewById(R.id.button_next);
