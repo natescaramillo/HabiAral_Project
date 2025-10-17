@@ -64,9 +64,12 @@ public class PalaroHusay extends AppCompatActivity {
     private static final long TOTAL_TIME = 60000;
     private long timeLeft = TOTAL_TIME;
     private String currentHusayDocId = null;
-    private int correctAnswerCount = 0, currentQuestionNumber = 1, husayScore = 0, correctStreak = 0,
-            remainingHearts = 5, attemptCount = 0, currentQuestionIndex = 0, countdownValue = 3;
-    private boolean isTimeUp = false, isAnswered = false, isTtsReady = false, isGameOver = false, playMHCL2 = false;
+    private int correctAnswerCount = 0, currentQuestionNumber = 1, husayScore = 0,
+            correctStreak = 0, remainingHearts = 5, attemptCount = 0,
+            currentQuestionIndex = 0, countdownValue = 3;
+
+    private boolean isTimeUp = false, isAnswered = false, isTtsReady = false,
+            isGameOver = false, playMHCL2 = false;
     private ImageView[] heartIcons;
     private ImageView characterIcon;
     private final List<TextView> selectedWords = new ArrayList<>();
@@ -321,7 +324,7 @@ public class PalaroHusay extends AppCompatActivity {
 
         loadCharacterLine(
                 correctStreak == 1 ? "MCL2" :
-                correctStreak == 2 ? "MCL3" : "MCL4"
+                        correctStreak == 2 ? "MCL3" : "MCL4"
         );
 
         Toast.makeText(this, "Tama!", Toast.LENGTH_SHORT).show();
