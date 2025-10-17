@@ -9,12 +9,14 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.habiaral.app.Panitikan.MaiklingKuwento.MaiklingKuwento;
 import com.habiaral.app.Panitikan.MaiklingKuwento.Stories.MaiklingKuwento2;
@@ -37,35 +39,23 @@ import com.habiaral.app.Cache.LessonProgressCache;
 
 public class MaiklingKuwento1Quiz extends AppCompatActivity {
 
-    private List<Map<String, Object>> allQuizList = new ArrayList<>();
+    private List<Map<String, Object>> allQuizList = new ArrayList<>(), quizList = new ArrayList<>();
     private Button answer1, answer2, answer3, nextButton, introButton;
-    private List<Map<String, Object>> quizList = new ArrayList<>();
     private Drawable redDrawable, orangeDrawable, greenDrawable;
-    private TextView questionText, questionTitle;
-    private CountDownTimer countDownTimer;
+    private TextView questionText, questionTitle, paalala;
+    private CountDownTimer countDownTimer, startCountdownTimer;
     private long timeLeftInMillis = 30000;
-    private boolean quizFinished = false;
-    private boolean isAnswered = false;
-    private String correctAnswer = "";
+    private boolean quizFinished = false, isAnswered = false, isMuted = false;
+    private int correctAnswers = 0, totalQuestions = 0, currentIndex = -1, lastColorStage = 3;
     private AlertDialog resultDialog;
-    private MediaPlayer resultPlayer;
-    private MediaPlayer mediaPlayer;
-    private MediaPlayer readyPlayer;
-    private int lastColorStage = 3;
-    private String lessonName = "";
-    private int correctAnswers = 0;
-    private int totalQuestions = 0;
-    private String introText = "";
-    private int currentIndex = -1;
+    private MediaPlayer resultPlayer, mediaPlayer, readyPlayer, timerPlayer;
+    private String lessonName = "", introText = "", uid, correctAnswer = "";
     private ProgressBar timerBar;
     private FirebaseFirestore db;
     private View background;
-    private boolean isMuted = false;
-    private MediaPlayer timerPlayer;
-    private CountDownTimer startCountdownTimer;
-    private String uid;
-    private static final String STORY_ID = "MaiklingKuwento1";
-    private static final String STORY_TITLE = "Suyuan sa Tubigan";
+    private ImageView character;
+    private ConstraintLayout box;
+    private static final String STORY_ID = "MaiklingKuwento1", STORY_TITLE = "Suyuan sa Tubigan";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +78,9 @@ public class MaiklingKuwento1Quiz extends AppCompatActivity {
         answer1 = findViewById(R.id.answer1);
         answer2 = findViewById(R.id.answer2);
         answer3 = findViewById(R.id.answer3);
+        box = findViewById(R.id.constraintLayout3);
+        paalala = findViewById(R.id.textView25);
+        character = findViewById(R.id.imageView9);
 
         db = FirebaseFirestore.getInstance();
 
@@ -202,6 +195,9 @@ public class MaiklingKuwento1Quiz extends AppCompatActivity {
                 loadQuestion(currentIndex);
 
                 introButton.setVisibility(View.GONE);
+                box.setVisibility(View.GONE);
+                paalala.setVisibility(View.GONE);
+                character.setVisibility(View.GONE);
                 answer1.setVisibility(View.VISIBLE);
                 answer2.setVisibility(View.VISIBLE);
                 answer3.setVisibility(View.VISIBLE);

@@ -191,6 +191,9 @@ public class PangngalanQuiz extends AppCompatActivity {
                 loadQuestion(currentIndex);
 
                 introButton.setVisibility(View.GONE);
+                box.setVisibility(View.GONE);
+                paalala.setVisibility(View.GONE);
+                character.setVisibility(View.GONE);
                 answer1.setVisibility(View.VISIBLE);
                 answer2.setVisibility(View.VISIBLE);
                 answer3.setVisibility(View.VISIBLE);
@@ -236,9 +239,6 @@ public class PangngalanQuiz extends AppCompatActivity {
         if (countDownTimer != null) countDownTimer.cancel();
         if (quizList == null || quizList.isEmpty()) return;
 
-        box.setVisibility(View.GONE);
-        paalala.setVisibility(View.GONE);
-        character.setVisibility(View.GONE);
         timerBar.setVisibility(View.VISIBLE);
         Map<String, Object> qData = quizList.get(index);
         String question = (String) qData.get("question");

@@ -53,8 +53,7 @@ public class PalaroBaguhan extends AppCompatActivity {
     private ProgressBar timerBar;
     private ImageView[] heartIcons;
     private boolean isGameOver = false, isAnswered = false, isTimeUp = false;
-    private int correctAnswerCount = 0, baguhanScore = 0, currentQuestionNumber = 1;
-    private int remainingHearts = 5, correctStreak = 0;
+    private int correctAnswerCount = 0, baguhanScore = 0, currentQuestionNumber = 1, remainingHearts = 5, correctStreak = 0;
     private long startTime, timeLeft = TOTAL_TIME;
     private static final long TOTAL_TIME = 60000;
     private CountDownTimer countDownTimer;
@@ -68,17 +67,9 @@ public class PalaroBaguhan extends AppCompatActivity {
     private TextToSpeech tts;
     private String studentID, lastTimerZone = "";
     private final List<String> questionIds = new ArrayList<>();
-    private static final String FIELD_BAGUHAN = "baguhan_score",
-            FIELD_HUSAY = "husay_score",
-            FIELD_DALUBHASA = "dalubhasa_score",
-            FIELD_TOTAL = "total_score",
-            FIELD_HUSAY_UNLOCKED = "husay_unlocked",
-            FIELD_DALUBHASA_UNLOCKED = "dalubhasa_unlocked";
-    public static final String LINE_ONE_CORRECT = "MCL2",
-            LINE_TWO_CORRECT = "MCL3",
-            LINE_STREAK = "MCL4",
-            LINE_WRONG = "MCL6";
-    private static final String LINE_WRONG_2 = "MCL5";
+    private static final String FIELD_BAGUHAN = "baguhan_score", FIELD_HUSAY = "husay_score", FIELD_DALUBHASA = "dalubhasa_score",
+            FIELD_TOTAL = "total_score", FIELD_HUSAY_UNLOCKED = "husay_unlocked", FIELD_DALUBHASA_UNLOCKED = "dalubhasa_unlocked",
+            LINE_ONE_CORRECT = "MCL2", LINE_TWO_CORRECT = "MCL3", LINE_STREAK = "MCL4", LINE_WRONG = "MCL6", LINE_WRONG_2 = "MCL5";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

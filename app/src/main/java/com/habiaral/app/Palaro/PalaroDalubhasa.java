@@ -60,7 +60,7 @@ import okhttp3.RequestBody;
 public class PalaroDalubhasa extends AppCompatActivity {
     private TextView dalubhasaInstruction, grammarFeedbackText, errorTooltip;
     private EditText userSentenceInput;
-    private List<String> dalubhasaIDs = new ArrayList<>();
+    private List<String> dalubhasaIDs = new ArrayList<>(), instructionList = new ArrayList<>(), currentKeywords = new ArrayList<>();
     private ProgressBar timerBar;
     private Button btnTapos, btnUmalis, btnSuriin;
     private ImageView[] heartIcons;
@@ -69,16 +69,12 @@ public class PalaroDalubhasa extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private static final long TOTAL_TIME = 60000;
     private long timeLeft = TOTAL_TIME;
-    private int dalubhasaScore = 0, currentErrorCount = 0, currentQuestionNumber = 0;
-    private int remainingHearts = 5, perfectAnswerCount = 0;
-    private boolean hasSubmitted = false, isTtsReady = false, isGameOver = false;
+    private int dalubhasaScore = 0, currentErrorCount = 0, currentQuestionNumber = 0, remainingHearts = 5, perfectAnswerCount = 0;
+    private boolean hasSubmitted = false, isTtsReady = false, isGameOver = false, isShowingErrorTooltip = false, hasSpokenMDCL1 = false;
     private String currentDalubhasaID = "", lastTimerZone = "";
-    private List<String> instructionList = new ArrayList<>();
     private List<List<String>> keywordList = new ArrayList<>();
-    private List<String> currentKeywords = new ArrayList<>();
     private TextToSpeech tts;
     private MediaPlayer countdownBeepPlayer, timerSoundPlayer;
-    private boolean isShowingErrorTooltip = false;
     private Handler countdownHandler, internetHandler = new Handler(), errorTooltipHandler = new Handler();
     private Runnable countdownRunnable, internetRunnable;
     private final Runnable hideErrorTooltipRunnable = () -> {
@@ -90,10 +86,8 @@ public class PalaroDalubhasa extends AppCompatActivity {
         }
         isShowingErrorTooltip = false;
     };
-
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
-    private boolean hasSpokenMDCL1 = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
