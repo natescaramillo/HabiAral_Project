@@ -1,56 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="50dp"
+    android:layout_marginVertical="5dp"
+    android:background="@drawable/leaderboard_bar_users"
+    android:orientation="horizontal"
+    android:padding="8dp">
 
-    <LinearLayout
-        android:id="@+id/first_user"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/leaderboard_bar_users"
+    <ImageView
+        android:id="@+id/rank_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/trophy_unranked"
+        android:contentDescription="Rank Icon" />
+
+    <TextView
+        android:id="@+id/rank_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:fontFamily="@font/ala_sans"
+        android:text="1"
+        android:textColor="#3C2A1B"
+        android:textSize="14sp" />
 
+    <TextView
+        android:id="@+id/name_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:fontFamily="@font/ala_sans"
+        android:text="Juan Dela Cruz"
+        android:textColor="#3C2A1B"
+        android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/rank1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/ala_sans"
-            android:gravity="center"
-            android:text="1"
-
-            android:textColor="#3C2A1B" />
-
-        <TextView
-            android:id="@+id/textView28"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/ala_sans"
-            android:gravity="center"
-            android:text="User"
-            android:textColor="#3C2A1B" />
-
-        <View
-            android:layout_width="93dp"
-            android:layout_height="30dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/textView33"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/ala_sans"
-            android:gravity="center"
-            android:text="Points"
-            android:textColor="#3C2A1B" />
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/points_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:fontFamily="@font/ala_sans"
+        android:text="1200"
+        android:textColor="#3C2A1B"
+        android:textSize="14sp" />
+</LinearLayout>
