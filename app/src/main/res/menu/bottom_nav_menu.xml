@@ -12,6 +12,13 @@
         android:icon="@drawable/nav_menu_progress"
         android:id="@+id/progressbar_nav"
         app:iconSize="15dp"/>
+
+    <item
+        android:title="Ranggo"
+        android:icon="@drawable/nav_menu_leaderboard"
+        android:id="@+id/leaderboard_nav"
+        app:iconSize="15dp"/>
+
     <item
         android:title="Parangal"
         android:icon="@drawable/nav_menu_achievement"
